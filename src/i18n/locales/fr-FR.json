@@ -100,8 +100,6 @@
       "nameDesc": "Nom (Z-A)"
     },
     "noGamesQueued": "Aucun jeu en attente",
-    "gamesQueuedCount_one": "{{count}} jeu en attente",
-    "gamesQueuedCount_other": "{{count}} jeux en attente",
     "completedThisSessionCount": "Cette session est terminée ({{count}})"
   },
   "update": {
@@ -351,8 +349,6 @@
         "steamRequired": "Steam doit être en cours d'exécution pour passer à ce compte",
         "addAccount": {
           "trigger": "Ajouter un autre compte",
-          "capReached_one": "Le palier {{tier}} permet {{count}} compte connecté avec Steam en même temps. Déconnectez-vous d'un compte pour en ajouter un, ou mettez à niveau pour en avoir plus.",
-          "capReached_other": "Le palier {{tier}} permet {{count}} comptes connectés avec Steam en même temps. Déconnectez-vous d'un compte pour en ajouter un, ou changez de plus pour en avoir plus.",
           "capReachedMax": "Vous avez atteint le nombre maximum de comptes connecté avec Steam en même temps.",
           "added": "{{name}} ajouté"
         },
@@ -370,8 +366,6 @@
       }
     },
     "games": {
-      "count_one": "{{count}} jeu",
-      "count_other": "{{count}} jeux",
       "unknownName": "Application {{appId}}",
       "carousels": {
         "recommended": "Recommandés",
@@ -401,8 +395,6 @@
       }
     },
     "idling": {
-      "count_one": "{{count}} jeu idle en cours",
-      "count_other": "{{count}} jeux idle en cours",
       "stopAll": "Tout arrêter",
       "sections": {
         "manual": "Joué en mode idle manuellement",
@@ -419,8 +411,6 @@
       }
     },
     "favorites": {
-      "count_one": "{{count}} favoris",
-      "count_other": "{{count}} favoris",
       "confirmClear": {
         "title": "Effacer tous les favoris ?",
         "description": "Cette action va supprimer les {{count}} jeux de votre liste de favoris."
@@ -436,8 +426,6 @@
       }
     },
     "freeGames": {
-      "count_one": "{{count}} jeu gratuit disponible",
-      "count_other": "{{count}} jeux gratuits disponibles",
       "actions": {
         "claim": "Réclamer",
         "claimed": "Réclamé"
@@ -476,7 +464,6 @@
         "statistics": "Statistiques"
       },
       "header": {
-        "viewOnSteam": "Voir sur Steam",
         "viewOnSteamDb": "Voir sur SteamDB"
       },
       "protectedAlert": {
@@ -484,8 +471,6 @@
         "description": "Les succès ou statistiques marqués comme protégés sont définis par le serveur du jeu et ne peuvent pas être changés par les clients."
       },
       "unlockedCount": "{{unlocked}} / {{total}} débloqués",
-      "statCount_one": "{{count}} statistique",
-      "statCount_other": "{{count}} statistiques",
       "noDescription": "Aucune description",
       "protectedTooltip": "Défini par le serveur du jeu et ne peut pas être changé par les clients.",
       "statFlags": "Drapeaux : {{flags}}",
@@ -550,16 +535,8 @@
       "toasts": {
         "achievementUnlocked": "\"{{name}}\" débloqué",
         "achievementLocked": "\"{{name}}\" verrouillé",
-        "bulkUnlocked_one": "{{count}} succès débloqué",
-        "bulkUnlocked_other": "{{count}} succès débloqués",
-        "bulkLocked_one": "{{count}} succès verrouillé",
-        "bulkLocked_other": "{{count}} succès verrouillés",
         "bulkNoChanges": "Rien à changer - déjà dans l'état demandé, ou protégé.",
-        "changesApplied_one": "{{count}} succès mis à jour",
-        "changesApplied_other": "{{count}} succès mis à jour",
         "applyPartialFailure": "Certains succès en attente n'ont pas pu être mis à jour. Veuillez réessayer.",
-        "statsSaved_one": "{{count}} statistique mise à jour",
-        "statsSaved_other": "{{count}} statistiques mises à jour",
         "statsReset": "Remise à zéro des statistiques"
       },
       "errors": {
@@ -576,9 +553,7 @@
       "status": {
         "idle": "Aucun farm en cours",
         "modeAllGames": "Mode de farming : Tous les jeux",
-        "modeQueue": "Mode farming : jeux en attente",
-        "farming_one": "{{count}} jeu en farming",
-        "farming_other": "{{count}} jeux en farming"
+        "modeQueue": "Mode farming : jeux en attente"
       },
       "actions": {
         "stop": "Arrêter de farmer"
@@ -620,8 +595,6 @@
       "progress": {
         "activeTitle": "Farming ({{count}})",
         "queueTitle": "À suivre ({{count}})",
-        "dropsRemaining_one": "{{count}} drop restant",
-        "dropsRemaining_other": "{{count}} drops restants",
         "completedMaxCardDrops": "Maximum de drops de cartes atteint ({{remaining}} restant)",
         "completedMaxCardFarmingTime": "Maximum de temps de farm atteint ({{remaining}} restant)",
         "completedMaxPlaytime": "Maximum de temps de jeu atteint ({{remaining}} restant)",
@@ -680,10 +653,6 @@
       }
     },
     "achievementUnlocker": {
-      "status": {
-        "running_one": "Déblocage de {{count}} jeu",
-        "running_other": "Déblocage de {{count}} jeux"
-      },
       "addAllToQueue": "Tout ajouter dans la file d'attente",
       "confirmAddAllToQueue": {
         "title": "Ajouter les {{count}} jeux dans la file d'attente ?",
@@ -739,8 +708,6 @@
         "description": "Récupérez les durées réelles de déblocage des succès d'un autre joueur et utilisez-les pour estimer des délais réalistes pour chaque succès.",
         "inputPlaceholder": "SteamID64, URL du profil ou URL personnalisé",
         "importButton": "Importer",
-        "success_one": "Timing importé pour {{count}} succès",
-        "success_other": "Timings importés pour {{count}} succès",
         "errors": {
           "profilePrivate": "Ce profil est privé ou n'a pas de donnée publique de succès.",
           "noTimestamps": "Ce joueur n'a pas de succès avec des horodatages pour ce jeu.",
@@ -751,8 +718,6 @@
       "progress": {
         "scanning": "Vérification des jeux en attente pour le déblocage de succès",
         "scanningCount": "{{checked}} de {{total}} vérifiés",
-        "remaining_one": "{{count}} succès restant",
-        "remaining_other": "{{count}} succès restants",
         "starting": "Démarrage…",
         "waitingForSchedule": "En attente de la fenêtre de déblocage programmée",
         "currentGame": "Jeu actuel",
@@ -785,8 +750,6 @@
       }
     },
     "inventoryManager": {
-      "count_one": "{{count}} élément",
-      "count_other": "{{count}} éléments",
       "fetchPrice": "Récupérer le prix",
       "fetchingPrice": "Récupération du prix…",
       "badgeLevel": "Badge de niveau {{level}}",
@@ -875,21 +838,13 @@
         }
       },
       "toasts": {
-        "listed_one": "{{count}} élément listé",
-        "listed_other": "{{count}} éléments listés",
-        "listFailed_one": "{{count}} élément n'a pas pu être listé",
-        "listFailed_other": "{{count}} éléments n'ont pas pu être listés",
         "noListings": "Vous n'avez aucune annonce active sur le marché.",
         "removedListings": "Supprimé {{count}} de {{total}} annonces",
         "removeFailed": "Impossible de supprimer une annonce.",
         "noneEligible": "Aucun élément ne satisfait les condition requises pour la vente - vérifiez les limites de vente dans les paramètres de votre inventaire.",
         "priceFetchCooldown": "Veuillez patienter {{seconds}} secondes avant de récupérer plus de prix d'objets",
         "itemLocked": "Cet élément est verrouillé et ne peut pas être listé.",
-        "priceOutOfRange": "{{price}} est en dehors de vos limites de ventes configurées ({{min}} - {{max}}).",
-        "skippedLocked_one": "Ignoré {{count}} élément verrouillé",
-        "skippedLocked_other": "Ignoré {{count}} éléments verrouillés",
-        "skippedOutOfRange_one": "Ignoré {{count}} élément en dehors des limites de vente",
-        "skippedOutOfRange_other": "Ignoré {{count}} éléments en dehors des limites de vente"
+        "priceOutOfRange": "{{price}} est en dehors de vos limites de ventes configurées ({{min}} - {{max}})."
       },
       "errors": {
         "title": "Impossible de mettre à jour votre inventaire",
@@ -904,7 +859,6 @@
       }
     },
     "settings": {
-      "title": "Paramètres",
       "general": {
         "title": "Général",
         "account": {

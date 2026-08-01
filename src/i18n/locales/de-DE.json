@@ -100,8 +100,6 @@
       "nameDesc": "Name (Z-A)"
     },
     "noGamesQueued": "Keine Spiele in der Warteschlange",
-    "gamesQueuedCount_one": "{{count}} Spiel in Warteschlange",
-    "gamesQueuedCount_other": "{{count}} Spiel in Warteschlange",
     "completedThisSessionCount": "Diese Sitzung wurde abgeschlossen ({{count}})"
   },
   "update": {
@@ -353,8 +351,6 @@
         "steamRequired": "Steam muss ausgeführt werden, um zu diesem Konto zu wechseln",
         "addAccount": {
           "trigger": "Weiteres Konto hinzufügen",
-          "capReached_one": "Mit dem {{tier}} Plan können gleichzeitig {{count}} Benutzerkonten über Steam angemeldet sein. Melde eines davon ab, um ein weiteres hinzuzufügen, oder upgrade deinen Plan für mehr.",
-          "capReached_other": "Mit dem {{tier}} Plan können gleichzeitig {{count}} Benutzerkonten über Steam angemeldet sein. Melde eines davon ab, um ein weiteres hinzuzufügen, oder upgrade deinen Tarif für mehr.",
           "capReachedMax": "Du hast die maximale Anzahl an Accounts erreicht, die gleichzeitig mit Steam angemeldet werden können.",
           "added": "{{name}} hinzugefügt"
         },
@@ -373,8 +369,6 @@
       }
     },
     "games": {
-      "count_one": "{{count}} Spiel",
-      "count_other": "{{count}} Spiele",
       "unknownName": "App {{appId}}",
       "carousels": {
         "recommended": "Empfohlen",
@@ -404,8 +398,6 @@
       }
     },
     "idling": {
-      "count_one": "{{count}} Spiel im Leerlauf",
-      "count_other": "{{count}} Spiele im Leerlauf",
       "stopAll": "Alle stoppen",
       "sections": {
         "manual": "Manuell im Leerlauf",
@@ -422,8 +414,6 @@
       }
     },
     "favorites": {
-      "count_one": "{{count}} Favorit",
-      "count_other": "{{count}} Favoriten",
       "confirmClear": {
         "title": "Alle Favoriten löschen?",
         "description": "Dadurch werden alle {{count}} Spiele aus Ihrer Favoritenliste entfernt."
@@ -439,8 +429,6 @@
       }
     },
     "freeGames": {
-      "count_one": "{{count}} Kostenloses Spiel verfügbar",
-      "count_other": "{{count}} Kostenlose Spiele verfügbar",
       "actions": {
         "claim": "Einfordern",
         "claimed": "Erhalten"
@@ -479,7 +467,6 @@
         "statistics": "Statistiken"
       },
       "header": {
-        "viewOnSteam": "Auf Steam anzeigen",
         "viewOnSteamDb": "Auf SteamDB anzeigen"
       },
       "protectedAlert": {
@@ -487,8 +474,6 @@
         "description": "Als geschützt gekennzeichnete Erfolge oder Statistiken werden vom Spielserver festgelegt und können von Clients nicht geändert werden."
       },
       "unlockedCount": "{{unlocked}} / {{total}} freigeschaltet",
-      "statCount_one": "{{count}} Statistik",
-      "statCount_other": "{{count}} Statistiken",
       "noDescription": "Keine Beschreibung",
       "protectedTooltip": "Wird vom Spielserver festgelegt und kann von Clients nicht geändert werden.",
       "statFlags": "Flaggen: {{flags}}",
@@ -553,16 +538,8 @@
       "toasts": {
         "achievementUnlocked": "\"{{name}}\" entsperrt",
         "achievementLocked": "\"{{name}}\" gesperrt",
-        "bulkUnlocked_one": "{{count}} Errungenschaft freigeschaltet",
-        "bulkUnlocked_other": "{{count}} Errungenschaften freigeschaltet",
-        "bulkLocked_one": "{{count}} Errungenschaft gesperrt",
-        "bulkLocked_other": "{{count}} Errungenschaften gesperrt",
         "bulkNoChanges": "Nichts zu ändern - befindet sich bereits im gewünschten Zustand oder ist geschützt.",
-        "changesApplied_one": "{{count}} Errungenschaft aktualisiert",
-        "changesApplied_other": "{{count}} Errungenschaften aktualisiert",
         "applyPartialFailure": "Einige inszenierte Errungenschaften konnten nicht aktualisiert werden. Bitte versuche es erneut.",
-        "statsSaved_one": "{{count}} Statistik aktualisiert",
-        "statsSaved_other": "{{count}} Statistiken aktualisiert",
         "statsReset": "Statistik zurückgesetzt"
       },
       "errors": {
@@ -591,10 +568,6 @@
       }
     },
     "achievementUnlocker": {
-      "status": {
-        "running_one": "Entsperre {{count}} Spiel",
-        "running_other": "Entsperre {{count}} Spiele"
-      },
       "addAllToQueue": "Alle zur Warteschlange hinzufügen",
       "confirmAddAllToQueue": {
         "title": "Alle {{count}} Spiele zur Warteschlange hinzufügen?",
@@ -650,8 +623,6 @@
         "description": "Holen Sie die tatsächlichen Freischaltzeiten der Erfolge anderer Spieler und verwenden Sie diese, um realistische Verzögerungen pro Erfolg abzuleiten.",
         "inputPlaceholder": "SteamID64, Profil-URL oder Vanity-URL",
         "importButton": "Importieren",
-        "success_one": "Importiertes Zeitangabe für {{count}} Errungenschaft",
-        "success_other": "Importierte Zeitangaben für {{count}} Errungenschaften",
         "errors": {
           "profilePrivate": "Dieses Profil ist Privat oder hat keine öffentlichen Errungenschafts daten.",
           "noTimestamps": "Dieser Spieler hat keine Errungenschaften mit dem Entsperrzeitstempel für dieses Spiel.",
@@ -662,8 +633,6 @@
       "progress": {
         "scanning": "Überprüfe Warteschlange auf Errungenschaften zum Entsperren",
         "scanningCount": "{{checked}} von {{total}} geprüft",
-        "remaining_one": "{{count}} verbleibende Errungenschaft",
-        "remaining_other": "{{count}} verbleibende Errungenschaften",
         "starting": "Startet…",
         "waitingForSchedule": "Warten auf das geplante Entsperrfenster",
         "currentGame": "Aktuelle Spiel",
@@ -716,21 +685,13 @@
         }
       },
       "toasts": {
-        "listed_one": "{{count}} Gegenstand aufgelistet",
-        "listed_other": "{{count}} Gegenstände aufgelistet",
-        "listFailed_one": "{{count}} Gegenstand konnte nicht aufgelistet werden",
-        "listFailed_other": "{{count}} Gegenstände konnten nicht aufgelistet werden",
         "noListings": "Sie haben keine aktiven Markteinträge.",
         "removedListings": "{{count}} der {{total}} Einträge entfernt",
         "removeFailed": "Es konnten keine Einträge entfernt werden.",
         "noneEligible": "Keine Gegenstände waren zum Verkauf berechtigt - überprüfen Sie die Verkaufsgrenzen Ihrer Inventareinstellungen.",
         "priceFetchCooldown": "Bitte warten Sie {{seconds}} Sekunden, bevor Sie weitere Gegenstandspreise abrufen",
         "itemLocked": "Dieser Gegenstand ist gesperrt und kann nicht angeboten werden.",
-        "priceOutOfRange": "{{price}} liegt außerhalb Ihres konfigurierten Verkaufslimits ({{min}}-{{max}}).",
-        "skippedLocked_one": "{{count}} gesperrter Gegenstand übersprungen",
-        "skippedLocked_other": "{{count}} gesperrte Gegenstände übersprungen",
-        "skippedOutOfRange_one": "{{count}} Gegenstand außerhalb Ihres Verkaufslimits übersprungen",
-        "skippedOutOfRange_other": "{{count}} Gegenstände außerhalb Ihres Verkaufslimits übersprungen"
+        "priceOutOfRange": "{{price}} liegt außerhalb Ihres konfigurierten Verkaufslimits ({{min}}-{{max}})."
       },
       "errors": {
         "title": "Ihr Inventar konnte nicht aktualisiert werden",
@@ -745,7 +706,6 @@
       }
     },
     "settings": {
-      "title": "Einstellungen",
       "general": {
         "title": "Allgemein",
         "account": {
