@@ -10,7 +10,7 @@ import { timeAgo, useNotifications } from '@/shared/hooks/useNotifications'
 // rewrite's other titlebar/sidebar dropdowns (see AccountSwitcher.tsx) - HeroUI v3's Popover
 // already handles its own enter/exit animation and outside-click dismissal.
 export const Notifications = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { notifications, unseen, markAllSeen, openNotification } = useNotifications()
 
   return (
@@ -39,7 +39,7 @@ export const Notifications = () => {
           <div className='flex h-10 shrink-0 items-center justify-end border-b border-border px-4'>
             {notifications.length > 0 && (
               <button
-                className='text-xs font-semibold text-muted outline-none transition-colors hover:text-foreground'
+                className='text-xs font-semibold text-muted outline-none transition-colors hover:text-foreground cursor-pointer'
                 type='button'
                 onClick={markAllSeen}
               >
@@ -73,12 +73,12 @@ export const Notifications = () => {
                       fontSize={14}
                     />
                     <div className='flex min-w-0 flex-1 flex-col gap-0.5'>
-                      <div className='flex items-center gap-2'>
-                        <span className='truncate text-xs font-semibold text-foreground'>
+                      <div className='flex items-start gap-2'>
+                        <span className='line-clamp-2 text-xs font-semibold text-foreground'>
                           {notification.title}
                         </span>
                         <span className='shrink-0 text-[11px] text-muted'>
-                          • {timeAgo(Number(notification.timestamp))}
+                          • {timeAgo(Number(notification.timestamp), i18n.language)}
                         </span>
                       </div>
                       <span className='text-xs text-wrap text-muted'>{notification.message}</span>

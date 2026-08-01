@@ -106,13 +106,20 @@ export const useNotifications = () => {
   return { notifications, unseen, markAllSeen, openNotification }
 }
 
-export function timeAgo(timestamp: number) {
+// `short` style + Intl.RelativeTimeFormat rather than hand-translated "m"/"h"/"d" units - CLDR
+// supplies each locale's own idiomatic relative-time phrasing (and correct pluralization)
+// natively, so this needs no i18next keys/Crowdin work at all. `narrow` style was tried first but
+// drops the relational word ("ago"/"назад") for some locales, e.g. Russian renders as a bare
+// signed duration ("-12 дн.") that isn't natural Russian - `short` keeps "ago"/its equivalent in
+// every locale at the cost of a couple extra characters.
+export function timeAgo(timestamp: number, locale: string) {
   const secondsPast = Math.floor(Date.now() / 1000 - timestamp)
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'always', style: 'short' })
 
-  if (secondsPast < 60) return `${secondsPast}s`
-  if (secondsPast < 3600) return `${Math.floor(secondsPast / 60)}m`
-  if (secondsPast < 86400) return `${Math.floor(secondsPast / 3600)}h`
-  if (secondsPast < 2592000) return `${Math.floor(secondsPast / 86400)}d`
-  if (secondsPast < 31536000) return `${Math.floor(secondsPast / 2592000)}mo`
-  return `${Math.floor(secondsPast / 31536000)}y`
+  if (secondsPast < 60) return rtf.format(-secondsPast, 'second')
+  if (secondsPast < 3600) return rtf.format(-Math.floor(secondsPast / 60), 'minute')
+  if (secondsPast < 86400) return rtf.format(-Math.floor(secondsPast / 3600), 'hour')
+  if (secondsPast < 2592000) return rtf.format(-Math.floor(secondsPast / 86400), 'day')
+  if (secondsPast < 31536000) return rtf.format(-Math.floor(secondsPast / 2592000), 'month')
+  return rtf.format(-Math.floor(secondsPast / 31536000), 'year')
 }
