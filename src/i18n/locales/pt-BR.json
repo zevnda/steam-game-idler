@@ -22,7 +22,6 @@
       "startIdling": "Iniciar idle",
       "stopIdling": "Parar idle",
       "manageAchievements": "Gerenciar Conquistas",
-      "viewOnSteam": "Ver na Steam",
       "addTo": "Adicionar a"
     },
     "minutes": "minutos",
@@ -100,8 +99,6 @@
       "nameDesc": "Nome (Z-A)"
     },
     "noGamesQueued": "Nenhum jogo na fila",
-    "gamesQueuedCount_one": "{{count}} jogo em fila",
-    "gamesQueuedCount_other": "{{count}} jogos na fila",
     "completedThisSessionCount": "Completos nessa sessão ({{count}})"
   },
   "update": {

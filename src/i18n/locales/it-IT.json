@@ -100,8 +100,6 @@
       "nameDesc": "Nome (Z-A)"
     },
     "noGamesQueued": "Nessun gioco in coda",
-    "gamesQueuedCount_one": "{{count}} gioco in coda",
-    "gamesQueuedCount_other": "{{count}} giochi in coda",
     "completedThisSessionCount": "Completati in questa sessione ({{count}})"
   },
   "update": {
@@ -353,8 +351,6 @@
         "steamRequired": "Steam deve essere in esecuzione per passare a questo account",
         "addAccount": {
           "trigger": "Aggiungi un altro account",
-          "capReached_one": "Il piano {{tier}} consente {{count}} account con accesso Steam alla volta. Esci da un account per aggiungerne un altro oppure fai l'upgrade per averne di più.",
-          "capReached_other": "Il piano {{tier}} consente {{count}} account con accesso Steam alla volta. Esci da un account per aggiungerne un altro oppure fai l'upgrade per averne di più.",
           "capReachedMax": "Hai raggiunto il numero massimo di account che possono aver effettuato l'accesso con Steam contemporaneamente.",
           "added": "{{name}} aggiunto"
         },
@@ -373,8 +369,6 @@
       }
     },
     "games": {
-      "count_one": "{{count}} gioco",
-      "count_other": "{{count}} giochi",
       "unknownName": "App {{appId}}",
       "carousels": {
         "recommended": "Consigliati",
@@ -404,8 +398,6 @@
       }
     },
     "idling": {
-      "count_one": "{{count}} gioco in idle",
-      "count_other": "{{count}} giochi in idle",
       "stopAll": "Ferma tutti",
       "sections": {
         "manual": "Messi in idle manualmente",
@@ -422,8 +414,6 @@
       }
     },
     "favorites": {
-      "count_one": "{{count}} preferito",
-      "count_other": "{{count}} preferiti",
       "confirmClear": {
         "title": "Cancellare tutti i preferiti?",
         "description": "Questo rimuoverà tutti i {{count}} giochi dalla lista dei preferiti."
@@ -439,8 +429,6 @@
       }
     },
     "freeGames": {
-      "count_one": "{{count}} gioco gratuito disponibile",
-      "count_other": "{{count}} giochi gratuiti disponibili",
       "actions": {
         "claim": "Riscatta",
         "claimed": "Riscattato"
@@ -479,7 +467,6 @@
         "statistics": "Statistiche"
       },
       "header": {
-        "viewOnSteam": "Visualizza su Steam",
         "viewOnSteamDb": "Visualizza su SteamDB"
       },
       "protectedAlert": {
@@ -487,8 +474,6 @@
         "description": "Gli obiettivi o le statistiche contrassegnati come protetti sono impostati dal server del gioco e non possono essere modificati dai client."
       },
       "unlockedCount": "{{unlocked}} / {{total}} sbloccati",
-      "statCount_one": "{{count}} statistica",
-      "statCount_other": "{{count}} statistiche",
       "noDescription": "Nessuna descrizione",
       "protectedTooltip": "Impostato dal server del gioco e non modificabile dai client.",
       "statFlags": "Flag: {{flags}}",
@@ -553,16 +538,8 @@
       "toasts": {
         "achievementUnlocked": "\"{{name}}\" sbloccato",
         "achievementLocked": "\"{{name}}\" bloccato",
-        "bulkUnlocked_one": "{{count}} obiettivo sbloccato",
-        "bulkUnlocked_other": "{{count}} obiettivi sbloccati",
-        "bulkLocked_one": "{{count}} obiettivo bloccato",
-        "bulkLocked_other": "{{count}} obiettivi bloccati",
         "bulkNoChanges": "Niente da modificare: già nello stato richiesto oppure protetto.",
-        "changesApplied_one": "{{count}} obiettivo aggiornato",
-        "changesApplied_other": "{{count}} obiettivi aggiornati",
         "applyPartialFailure": "Alcuni obiettivi preparati non sono stati aggiornati. Riprova.",
-        "statsSaved_one": "{{count}} statistica aggiornata",
-        "statsSaved_other": "{{count}} statistiche aggiornate",
         "statsReset": "Statistiche ripristinate"
       },
       "errors": {
@@ -580,9 +557,7 @@
       "status": {
         "idle": "Non in raccolta",
         "modeAllGames": "Modalità: tutti i giochi",
-        "modeQueue": "Modalità: giochi in coda",
-        "farming_one": "Raccolta carte da {{count}} gioco",
-        "farming_other": "Raccolta carte da {{count}} giochi"
+        "modeQueue": "Modalità: giochi in coda"
       },
       "actions": {
         "stop": "Ferma raccolta"
@@ -624,8 +599,6 @@
       "progress": {
         "activeTitle": "Raccolta ({{count}})",
         "queueTitle": "Prossimi ({{count}})",
-        "dropsRemaining_one": "{{count}} carta rimanente",
-        "dropsRemaining_other": "{{count}} carte rimanenti",
         "completedMaxCardDrops": "Numero massimo di carte raggiunto ({{remaining}} rimaste)",
         "completedMaxCardFarmingTime": "Tempo massimo di raccolta raggiunto ({{remaining}} rimaste)",
         "completedMaxPlaytime": "Tempo massimo di gioco raggiunto ({{remaining}} rimaste)",
@@ -684,10 +657,6 @@
       }
     },
     "achievementUnlocker": {
-      "status": {
-        "running_one": "Sblocco di {{count}} gioco",
-        "running_other": "Sblocco di {{count}} giochi"
-      },
       "addAllToQueue": "Aggiungi tutti alla coda",
       "confirmAddAllToQueue": {
         "title": "Aggiungere tutti i {{count}} giochi alla coda?",
@@ -743,8 +712,6 @@
         "description": "Recupera gli orari reali di sblocco obiettivi di un altro giocatore e usali per ricavare ritardi realistici per ogni obiettivo.",
         "inputPlaceholder": "SteamID64, URL del profilo o vanity URL",
         "importButton": "Importa",
-        "success_one": "Tempistica importata per {{count}} obiettivo",
-        "success_other": "Tempistiche importate per {{count}} obiettivi",
         "errors": {
           "profilePrivate": "Il profilo è privato oppure non ha dati pubblici sugli obiettivi.",
           "noTimestamps": "Questo giocatore non ha obiettivi con timestamp di sblocco per questo gioco.",
@@ -755,8 +722,6 @@
       "progress": {
         "scanning": "Controllo dei giochi in coda per trovare obiettivi da sbloccare",
         "scanningCount": "{{checked}} di {{total}} controllati",
-        "remaining_one": "{{count}} obiettivo rimanente",
-        "remaining_other": "{{count}} obiettivi rimanenti",
         "starting": "Avvio...",
         "waitingForSchedule": "In attesa della finestra di sblocco programmata",
         "currentGame": "Gioco attuale",
@@ -789,8 +754,6 @@
       }
     },
     "inventoryManager": {
-      "count_one": "{{count}} oggetto",
-      "count_other": "{{count}} oggetti",
       "fetchPrice": "Recupera prezzo",
       "fetchingPrice": "Recupero prezzo...",
       "badgeLevel": "Livello medaglia {{level}}",
@@ -879,21 +842,13 @@
         }
       },
       "toasts": {
-        "listed_one": "{{count}} oggetto messo in vendita",
-        "listed_other": "{{count}} oggetti messi in vendita",
-        "listFailed_one": "{{count}} oggetto non è stato messo in vendita",
-        "listFailed_other": "{{count}} oggetti non sono stati messi in vendita",
         "noListings": "Non hai inserzioni di mercato attive.",
         "removedListings": "Rimosse {{count}} di {{total}} inserzioni",
         "removeFailed": "Impossibile rimuovere inserzioni.",
         "noneEligible": "Nessun oggetto era idoneo alla vendita: controlla i limiti di vendita nelle impostazioni dell'inventario.",
         "priceFetchCooldown": "Attendi {{seconds}} secondi prima di recuperare altri prezzi",
         "itemLocked": "Questo oggetto è bloccato e non può essere messo in vendita.",
-        "priceOutOfRange": "{{price}} è fuori dal limite di vendita configurato ({{min}}-{{max}}).",
-        "skippedLocked_one": "{{count}} oggetto bloccato saltato",
-        "skippedLocked_other": "{{count}} oggetti bloccati saltati",
-        "skippedOutOfRange_one": "{{count}} oggetto fuori dal limite di vendita saltato",
-        "skippedOutOfRange_other": "{{count}} oggetti fuori dal limite di vendita saltati"
+        "priceOutOfRange": "{{price}} è fuori dal limite di vendita configurato ({{min}}-{{max}})."
       },
       "errors": {
         "title": "Impossibile aggiornare l'inventario",
@@ -908,7 +863,6 @@
       }
     },
     "settings": {
-      "title": "Impostazioni",
       "general": {
         "title": "Generale",
         "account": {

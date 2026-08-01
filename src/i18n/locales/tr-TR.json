@@ -100,8 +100,6 @@
       "nameDesc": "İsim (Z-A)"
     },
     "noGamesQueued": "Sıraya alınmış oyun yok",
-    "gamesQueuedCount_one": "{{count}} oyun kuyruğa eklendi",
-    "gamesQueuedCount_other": "{{count}} oyun kuyruğa eklendi",
     "completedThisSessionCount": "Bu oturumda tamamlanan ({{count}})"
   },
   "update": {
@@ -352,8 +350,6 @@
         "steamRequired": "Bu hesaba geçiş yapmak için Steam'in çalışıyor olması gerekiyor",
         "addAccount": {
           "trigger": "Başka bir hesap ekle",
-          "capReached_one": "{{tier}} planı, aynı anda Steam'de oturum açmış {{count}} hesaba izin verir. Yeni bir hesap eklemek için mevcut hesaplardan birinin oturumunu kapatın veya daha fazla hesap için planınızı yükseltin.",
-          "capReached_other": "{{tier}} planı, aynı anda Steam ile oturum açmış {{count}} hesabı destekler. Yeni bir hesap eklemek için mevcut hesaplardan birinin oturumunu kapatın veya daha fazlası için planınızı yükseltin.",
           "capReachedMax": "Steam ile aynı anda oturum açılabilecek maksimum hesap sayısına ulaştınız.",
           "added": "{{name}} eklendi"
         },
@@ -372,8 +368,6 @@
       }
     },
     "games": {
-      "count_one": "{{count}} oyun",
-      "count_other": "{{count}} oyunlar",
       "unknownName": "Uygulama {{appId}}",
       "carousels": {
         "recommended": "Önerilen",
@@ -403,8 +397,6 @@
       }
     },
     "idling": {
-      "count_one": "{{count}} oyun boşta çalıştırılıyor",
-      "count_other": "{{count}} oyunlar boşta çalıştırılıyor",
       "stopAll": "Hepsini durdur",
       "sections": {
         "manual": "Manuel olarak boşta çalışıyor",
@@ -421,8 +413,6 @@
       }
     },
     "favorites": {
-      "count_one": "{{count}} favori",
-      "count_other": "{{count}} favoriler",
       "confirmClear": {
         "title": "Tüm favoriler temizlensin mi?",
         "description": "Bu işlem, favori listenizdeki tüm {{count}} oyunu kaldıracaktır."
@@ -438,8 +428,6 @@
       }
     },
     "freeGames": {
-      "count_one": "{{count}} ücretsiz oyun mevcut",
-      "count_other": "{{count}} ücretsiz oyunlar mevcut",
       "actions": {
         "claim": "Al",
         "claimed": "Alındı"
@@ -477,7 +465,6 @@
         "statistics": "İstatistikler"
       },
       "header": {
-        "viewOnSteam": "Steam'de Görüntüle",
         "viewOnSteamDb": "SteamDB'de görüntüle"
       },
       "protectedAlert": {
@@ -485,7 +472,6 @@
         "description": "Korumalı olarak görünen başarımlar ve istatistikler oyunun sunucusu tarafından ayarlanmıştır ve müşteriler tarafından değiştirilemez."
       },
       "unlockedCount": "{{unlocked}} / {{total}} açılan",
-      "statCount_other": "{{count}} istatistikler",
       "noDescription": "Açıklama yok",
       "protectedTooltip": "Sunucu tarafından ayarlanmıştır ve değiştirilemez.",
       "statFlags": "Bayraklar: {{flags}}",
@@ -543,16 +529,8 @@
       "toasts": {
         "achievementUnlocked": "''{{name}}'' açıldı",
         "achievementLocked": "''{{name}}'' kitlendi",
-        "bulkUnlocked_one": "{{count}} başarım açıldı",
-        "bulkUnlocked_other": "{{count}} başarım açıldı",
-        "bulkLocked_one": "{{count}} başarım kilitlendi",
-        "bulkLocked_other": "{{count}} başarım kilitlendi",
         "bulkNoChanges": "Değiştirilecek bir şey yok — zaten istenen durumda veya koruma altında.",
-        "changesApplied_one": "{{count}} başarım güncellendi",
-        "changesApplied_other": "{{count}} başarım güncellendi",
         "applyPartialFailure": "Hazırlanan bazı başarımlar güncellenemedi. Lütfen tekrar deneyin.",
-        "statsSaved_one": "{{count}} istatistik güncellendi",
-        "statsSaved_other": "{{count}} istatistik güncellendi",
         "statsReset": "İstatistikler sıfırlandı"
       },
       "errors": {
@@ -569,9 +547,7 @@
       "status": {
         "idle": "Kasma etkin değil",
         "modeAllGames": "Kasma modu: Tüm oyunlar",
-        "modeQueue": "Kasma modu: Sıradaki oyunlar",
-        "farming_one": "{{count}} oyun kasılıyor",
-        "farming_other": "{{count}} oyun kasılıyor"
+        "modeQueue": "Kasma modu: Sıradaki oyunlar"
       },
       "actions": {
         "stop": "Kasmayı durdur"
@@ -613,8 +589,6 @@
       "progress": {
         "activeTitle": "Kasma ({{count}})",
         "queueTitle": "Sıradaki ({{count}})",
-        "dropsRemaining_one": "{{count}} kalan kart düşme sayısı",
-        "dropsRemaining_other": "{{count}} kalan kart düşme sayısı",
         "completedMaxCardDrops": "Maksimum kart düşüşü sınırına ulaşıldı ({{remaining}} kaldı)",
         "completedMaxCardFarmingTime": "Maksimum kart kasma süresine ulaşıldı ({{remaining}} kaldı)",
         "completedMaxPlaytime": "Maksimum oynama süresine ulaşıldı ({{remaining}} kaldı)",
@@ -672,10 +646,6 @@
       }
     },
     "achievementUnlocker": {
-      "status": {
-        "running_one": "{{count}} oyunun başarımı açılıyor",
-        "running_other": "{{count}} oyunun başarımları açılıyor"
-      },
       "addAllToQueue": "Hepsini sıraya ekle",
       "confirmAddAllToQueue": {
         "title": "Eklenen tüm oyunlar {{count}} sıraya eklensin mi?",
@@ -730,8 +700,6 @@
         "description": "Başka bir oyuncunun gerçek başarım açma zamanlarını alır ve bunları kullanarak her başarım için gerçekçi bekleme süreleri oluşturur.",
         "inputPlaceholder": "SteamID64, profil URL'si veya özel profil URL'si",
         "importButton": "İçe aktar",
-        "success_one": "{{count}} başarım için zamanlama içe aktarıldı",
-        "success_other": "{{count}} başarım için zamanlamalar içe aktarıldı",
         "errors": {
           "profilePrivate": "Bu profil gizli veya herkese açık başarım verisi bulunmuyor.",
           "noTimestamps": "Bu oyuncunun bu oyun için zaman damgasına sahip başarımı bulunmuyor.",
@@ -742,8 +710,6 @@
       "progress": {
         "scanning": "Kuyruktaki oyunlarda açılacak başarımlar kontrol ediliyor",
         "scanningCount": "{{total}} oyundan {{checked}} tanesi kontrol edildi",
-        "remaining_one": "{{count}} başarım kaldı",
-        "remaining_other": "{{count}} başarım kaldı",
         "starting": "Başlıyor…",
         "waitingForSchedule": "Planlanan başarım açma zaman aralığı bekleniyor",
         "currentGame": "Geçerli oyun",
@@ -776,8 +742,6 @@
       }
     },
     "inventoryManager": {
-      "count_one": "{{count}} öğe",
-      "count_other": "{{count}} öğe",
       "fetchPrice": "Fiyatı getir",
       "fetchingPrice": "Fiyat getiriliyor…",
       "badgeLevel": "Rozet seviyesi {{level}}",
@@ -806,20 +770,13 @@
         }
       },
       "toasts": {
-        "listed_one": "{{count}} adet öğe listelenmiş",
-        "listFailed_one": "{{count}} adet öğe listelenemiyor",
-        "listFailed_other": "{{count}} adet öğeler listelenemiyor",
         "noListings": "Aktif market listelemeniz bulunmamaktadır.",
         "removedListings": "{{total}} listelenmelerden {{count}} adet listeleme kaldırıldı",
         "removeFailed": "Listelenme silinemiyor.",
         "noneEligible": "Satılmaya elverişli öğe yoktu - envanter ayarlarınızdan satış limitini kontrol ediniz.",
         "priceFetchCooldown": "Lütfen daha fazla ürün fiyatı getirmeden önce {{seconds}} saniye kadar bekleyiniz",
         "itemLocked": "Bu öğe kilitlenmiş listelenemez.",
-        "priceOutOfRange": "Fiyat {{price}} kadar belirlenmiş satış limitinizin ({{min}}-{{max}}) dışında.",
-        "skippedLocked_one": "{{count}} kilitli öğe atlandı",
-        "skippedLocked_other": "{{count}} kilitli öğeler atlandı",
-        "skippedOutOfRange_one": "Satış limitinizin dışında olan {{count}} kilitli öğe atlandı",
-        "skippedOutOfRange_other": "Satış limitinizin dışında olan {{count}} kilitli öğeler atlandı"
+        "priceOutOfRange": "Fiyat {{price}} kadar belirlenmiş satış limitinizin ({{min}}-{{max}}) dışında."
       },
       "errors": {
         "title": "Envanteriniz güncellenemedi",
@@ -834,7 +791,6 @@
       }
     },
     "settings": {
-      "title": "Ayarlar",
       "general": {
         "title": "Genel",
         "account": {
