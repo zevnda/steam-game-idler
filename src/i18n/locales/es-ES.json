@@ -19,8 +19,8 @@
       "add": "Añadir"
     },
     "gameCardMenu": {
-      "startIdling": "Iniciar farmeo",
-      "stopIdling": "Detener farmeo",
+      "startIdling": "Iniciar Cultivo",
+      "stopIdling": "Detener Cultivo",
       "manageAchievements": "Gestionar Logros",
       "viewOnSteam": "Ver en Steam",
       "addTo": "Añadir a"
