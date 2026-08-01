@@ -101,7 +101,7 @@
       "nameDesc": "Название (Я-А)"
     },
     "noGamesQueued": "Нет игр в очереди",
-    "gamesQueuedCount_one": "Игры в очереди: {{count}}",
+    "gamesQueuedCount_one": "Игра в очереди: {{count}}",
     "gamesQueuedCount_other": "Игры в очереди: {{count}}",
     "completedThisSessionCount": "Выполнено за сессию ({{count}})"
   },
@@ -374,7 +374,7 @@
       }
     },
     "games": {
-      "count_one": "Игры: {{count}}",
+      "count_one": "Игра: {{count}}",
       "count_other": "Игры: {{count}}",
       "unknownName": "Приложение {{appId}}",
       "carousels": {
@@ -405,7 +405,7 @@
       }
     },
     "idling": {
-      "count_one": "Игры в режиме бездействия: {{count}}",
+      "count_one": "Игра в режиме бездействия: {{count}}",
       "count_other": "Игры в режиме бездействия: {{count}}",
       "stopAll": "Остановите всё",
       "sections": {
@@ -423,7 +423,7 @@
       }
     },
     "favorites": {
-      "count_one": "Избранное: {{count}}",
+      "count_one": "Избранная: {{count}}",
       "count_other": "Избранное: {{count}}",
       "confirmClear": {
         "title": "Удалить всё избранное?",
@@ -440,7 +440,7 @@
       }
     },
     "freeGames": {
-      "count_one": "Доступно бесплатных игр: {{count}}",
+      "count_one": "Доступна бесплатная игра: {{count}}",
       "count_other": "Доступно бесплатных игр: {{count}}",
       "actions": {
         "claim": "Забрать",
@@ -489,7 +489,7 @@
       },
       "unlockedCount": "{{unlocked}} / {{total}} получено",
       "statCount_one": "Статистика: {{count}}",
-      "statCount_other": "Статистика: {{count}}",
+      "statCount_other": "Статистики: {{count}}",
       "noDescription": "Нет описания",
       "protectedTooltip": "Устанавливается игровым сервером и не может быть изменено клиентами.",
       "statFlags": "Флаги: {{flags}}",
@@ -554,15 +554,15 @@
       "toasts": {
         "achievementUnlocked": "«{{name}}» получено",
         "achievementLocked": "«{{name}}» заблокировано",
-        "bulkUnlocked_one": "Достижений получено: {{count}}",
+        "bulkUnlocked_one": "Достижение получено: {{count}}",
         "bulkUnlocked_other": "Достижений получено: {{count}}",
-        "bulkLocked_one": "Достижений заблокировано: {{count}}",
+        "bulkLocked_one": "Достижение заблокировано: {{count}}",
         "bulkLocked_other": "Достижений заблокировано: {{count}}",
         "bulkNoChanges": "Изменять нечего — уже находится в требуемом состоянии или защищено.",
-        "changesApplied_one": "Достижений обновлено: {{count}}",
+        "changesApplied_one": "Достижение обновлено: {{count}}",
         "changesApplied_other": "Достижений обновлено: {{count}}",
         "applyPartialFailure": "Некоторые запланированные достижения не удалось обновить. Попробуйте снова.",
-        "statsSaved_one": "Статистики обновлено: {{count}}",
+        "statsSaved_one": "Статистика обновлена: {{count}}",
         "statsSaved_other": "Статистики обновлено: {{count}}",
         "statsReset": "Сброс статистики"
       },
@@ -625,8 +625,8 @@
       "progress": {
         "activeTitle": "Сбор ({{count}})",
         "queueTitle": "Далее ({{count}})",
-        "dropsRemaining_one": "Осталось предметов: {{count}}",
-        "dropsRemaining_other": "Осталось предметов: {{count}}",
+        "dropsRemaining_one": "Осталась карточка: {{count}}",
+        "dropsRemaining_other": "Осталось карточек: {{count}}",
         "completedMaxCardDrops": "Достигнут максимум выпавших карточек (осталось: {{remaining}})",
         "completedMaxCardFarmingTime": "Достигнут максимум времени сбора (осталось: {{remaining}})",
         "completedMaxPlaytime": "Достигнут максимум времени игры (осталось: {{remaining}})",
@@ -686,8 +686,8 @@
     },
     "achievementUnlocker": {
       "status": {
-        "running_one": "Идёт получение в играх: {{count}}",
-        "running_other": "Идёт получение в играх: {{count}}"
+        "running_one": "Идёт получение в {{count}} игре",
+        "running_other": "Идёт получение в {{count}} играх"
       },
       "addAllToQueue": "Добавить всё в очередь",
       "confirmAddAllToQueue": {
@@ -756,7 +756,7 @@
       "progress": {
         "scanning": "Проверка игр в очереди на получаемые достижения",
         "scanningCount": "{{checked}} из {{total}} проверено",
-        "remaining_one": "Осталось достижений: {{count}}",
+        "remaining_one": "Осталось достижение: {{count}}",
         "remaining_other": "Осталось достижений: {{count}}",
         "starting": "Запуск…",
         "waitingForSchedule": "Ожидание запланированного периода получения",
@@ -790,8 +790,8 @@
       }
     },
     "inventoryManager": {
-      "count_one": "Элементов: {{count}}",
-      "count_other": "Элементов: {{count}}",
+      "count_one": "Предмет: {{count}}",
+      "count_other": "Предметов: {{count}}",
       "fetchPrice": "Получить цену",
       "fetchingPrice": "Получение цены…",
       "badgeLevel": "Значок {{level}}-го уровня",
@@ -880,9 +880,9 @@
         }
       },
       "toasts": {
-        "listed_one": "Предметы выставлены на продажу: {{count}}",
+        "listed_one": "Предмет выставлен на продажу: {{count}}",
         "listed_other": "Предметы выставлены на продажу: {{count}}",
-        "listFailed_one": "Не удалось выставить на продажу предметы: {{count}}",
+        "listFailed_one": "Не удалось выставить на продажу предмет: {{count}}",
         "listFailed_other": "Не удалось выставить на продажу предметы: {{count}}",
         "noListings": "У вас нет активных лотов на торговой площадке.",
         "removedListings": "Удалено {{count}} из {{total}} лотов",
@@ -891,9 +891,9 @@
         "priceFetchCooldown": "Пожалуйста, подождите {{seconds}} сек., прежде чем снова запрашивать цены на предметы",
         "itemLocked": "Этот предмет заблокирован, и его нельзя выставить на продажу.",
         "priceOutOfRange": "{{price}} выходит за пределы установленного вами лимита продажи ({{min}}–{{max}}).",
-        "skippedLocked_one": "Пропущено заблокированных предметов: {{count}}",
+        "skippedLocked_one": "Пропущен заблокированный предмет: {{count}}",
         "skippedLocked_other": "Пропущено заблокированных предметов: {{count}}",
-        "skippedOutOfRange_one": "Пропущено товаров сверх лимита на продажу: {{count}}",
+        "skippedOutOfRange_one": "Пропущен товар сверх лимита на продажу: {{count}}",
         "skippedOutOfRange_other": "Пропущено товаров сверх лимита на продажу: {{count}}"
       },
       "errors": {
