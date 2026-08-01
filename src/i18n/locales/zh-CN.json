@@ -101,7 +101,8 @@
       "nameDesc": "名称（Z-A）"
     },
     "noGamesQueued": "队列中无游戏",
-    "completedThisSessionCount": "本次会话已完成（{{count}}）"
+    "completedThisSessionCount": "本次会话已完成（{{count}}）",
+    "gamesQueuedCount_other": "{{count}} 款游戏已加入队列"
   },
   "update": {
     "downloading": "正在下载更新……"
@@ -353,7 +354,8 @@
         "addAccount": {
           "trigger": "添加其他账号",
           "capReachedMax": "已达到同时登录 Steam 账号的上限",
-          "added": "已添加 {{name}}"
+          "added": "已添加 {{name}}",
+          "capReached_other": "{{tier}} 套餐允许同时有 {{count}} 个 Steam 账号保持登录，如需添加其他账号，请先退出一个，或升级套餐以获得更多名额。"
         },
         "reauth": {
           "badge": "已在其他设备登录",
@@ -396,7 +398,8 @@
         "description": "您的 Steam 个人资料或游戏详情似乎设置为私密，因此导致游戏时长、最近游玩记录及部分游戏显示不完整，请将您的个人资料设为公开，或在「设置」中添加您的 Steam Web API 密钥以解决此问题",
         "changeSettings": "更改隐私设置",
         "useOwnKey": "添加我的 API 密钥"
-      }
+      },
+      "count_other": "{{count}} 款游戏"
     },
     "idling": {
       "stopAll": "全部停止",
@@ -412,7 +415,8 @@
         "startFailed": "无法开始挂机该游戏",
         "maxPlaytimeCapReached": "该游戏已达到最大游戏时长上限",
         "generic": "更新挂机状态时出错，请重试，（{{code}}）"
-      }
+      },
+      "count_other": "{{count}} 款游戏正在挂机"
     },
     "favorites": {
       "confirmClear": {
@@ -427,7 +431,8 @@
         "title": "无法更新收藏",
         "cacheIoFailed": "无法获取收藏缓存",
         "generic": "更新收藏时出错，请重试，（{{code}}）"
-      }
+      },
+      "count_other": "{{count}} 款收藏"
     },
     "freeGames": {
       "actions": {
@@ -460,7 +465,8 @@
       },
       "correction": {
         "granted": "{{name}} 其实已成功领取——之前的通知有误"
-      }
+      },
+      "count_other": "{{count}} 款免费游戏可领取"
     },
     "achievements": {
       "tabs": {
@@ -468,6 +474,7 @@
         "statistics": "统计数据"
       },
       "header": {
+        "viewOnSteam": "在 Steam 上查看",
         "viewOnSteamDb": "在 SteamDB 上查看"
       },
       "protectedAlert": {
@@ -541,7 +548,11 @@
         "achievementLocked": "{{name}} 已锁定",
         "bulkNoChanges": "无需更改——目标状态已达成或项目受保护。",
         "applyPartialFailure": "部分暂存成就更新失败，请重试。",
-        "statsReset": "统计数据已重置"
+        "statsReset": "统计数据已重置",
+        "bulkUnlocked_other": "已解锁 {{count}} 项成就",
+        "bulkLocked_other": "已锁定 {{count}} 项成就",
+        "changesApplied_other": "{{count}} 项成就已更新",
+        "statsSaved_other": "{{count}} 项统计已保存"
       },
       "errors": {
         "title": "无法加载成就",
@@ -552,13 +563,15 @@
         "unsupportedGameCoordinator": "通过 Steam 登录时，该游戏不支持成就——请改用您的本地 Steam 客户端",
         "unsupportedGameCoordinatorLinux": "此游戏在通过 Steam 登录时不支持成就功能。",
         "generic": "加载成就时出错，请重试，（{{code}}）"
-      }
+      },
+      "statCount_other": "{{count}} 项统计数据"
     },
     "cardFarming": {
       "status": {
         "idle": "未在挂卡",
         "modeAllGames": "挂卡模式：全部游戏",
-        "modeQueue": "挂卡模式：队列游戏"
+        "modeQueue": "挂卡模式：队列游戏",
+        "farming_other": "正在为 {{count}} 款游戏挂卡"
       },
       "actions": {
         "stop": "停止挂卡"
@@ -604,7 +617,8 @@
         "completedMaxCardFarmingTime": "已达到最大挂卡时间（剩余 {{remaining}}）",
         "completedMaxPlaytime": "已达到最大游戏时长（剩余 {{remaining}}）",
         "completedNoDropsRemaining": "无剩余卡牌可挂",
-        "completedRefundWindow": "仍在退款期限内（{{date}}时可挂卡）"
+        "completedRefundWindow": "仍在退款期限内（{{date}}时可挂卡）",
+        "dropsRemaining_other": "剩余 {{count}} 张卡牌"
       },
       "errors": {
         "title": "无法更新挂卡状态",
@@ -658,6 +672,9 @@
       }
     },
     "achievementUnlocker": {
+      "status": {
+        "running_other": "正在为 {{count}} 款游戏解锁成就"
+      },
       "addAllToQueue": "全部加入队列",
       "confirmAddAllToQueue": {
         "title": "将全部 {{count}} 款游戏加入队列？",
@@ -718,7 +735,8 @@
           "noTimestamps": "该玩家无此游戏带有时间戳的成就解锁记录",
           "notFound": "无法解析该个人资料",
           "generic": "当前无法导入时间轴，请重试，（{{code}}）"
-        }
+        },
+        "success_other": "已导入 {{count}} 项成就的时间"
       },
       "progress": {
         "scanning": "正在检查队列中的游戏是否有可解锁的成就",
@@ -731,7 +749,8 @@
         "completedMaxUnlocksReached": "已解锁 {{unlocked}}/{{total}}（已达到最大解锁数）",
         "completedMaxPlaytimeWithCount": "已解锁 {{unlocked}}/{{total}}（已达到最大游戏时长）",
         "completedMaxPlaytime": "已达到最大游戏时长",
-        "completedNothingToUnlock": "无剩余成就可解锁"
+        "completedNothingToUnlock": "无剩余成就可解锁",
+        "remaining_other": "剩余 {{count}} 项成就"
       },
       "errors": {
         "title": "无法更新成就解锁器",
@@ -849,7 +868,11 @@
         "noneEligible": "没有符合条件的物品可出售——请检查您的库存设置中的出售限制",
         "priceFetchCooldown": "请等待 {{seconds}} 秒后再获取更多物品价格",
         "itemLocked": "此物品已锁定，无法上架",
-        "priceOutOfRange": "{{price}} 超出了您设置的出售限制（{{min}}-{{max}}）"
+        "priceOutOfRange": "{{price}} 超出了您设置的出售限制（{{min}}-{{max}}）",
+        "listed_other": "已上架 {{count}} 件物品",
+        "listFailed_other": "{{count}} 件物品无法上架",
+        "skippedLocked_other": "跳过了 {{count}} 件已锁定物品",
+        "skippedOutOfRange_other": "跳过了 {{count}} 件超出出售限制的物品"
       },
       "errors": {
         "title": "无法更新您的库存",
@@ -861,9 +884,11 @@
         "listingsFetchFailed": "无法读取您的活跃市场挂牌",
         "settingsIoFailed": "无法获取您的库存设置",
         "generic": "更新您的库存时出错，请重试，（{{code}}）"
-      }
+      },
+      "count_other": "{{count}} 件物品"
     },
     "settings": {
+      "title": "设置",
       "general": {
         "title": "常规",
         "account": {
