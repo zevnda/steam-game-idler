@@ -101,7 +101,9 @@
       "nameDesc": "Nombre (Z-A)"
     },
     "noGamesQueued": "No hay juegos en cola",
-    "completedThisSessionCount": "Completados en esta sesión ({{count}})"
+    "completedThisSessionCount": "Completados en esta sesión ({{count}})",
+    "gamesQueuedCount_one": "{{count}} juego en cola",
+    "gamesQueuedCount_other": "{{count}} juegos en cola"
   },
   "update": {
     "downloading": "Descargando actualización..."
@@ -353,7 +355,9 @@
         "addAccount": {
           "trigger": "Agregar otra cuenta",
           "capReachedMax": "Has alcanzado el número máximo de cuentas que pueden estar conectadas a Steam simultáneamente.",
-          "added": "Añadido: {{name}}"
+          "added": "Añadido: {{name}}",
+          "capReached_one": "El plan {{tier}} permite {{count}} cuenta con la sesión iniciada en Steam a la vez. Cierra sesión en una para añadir otra o mejora tu plan para añadir más.",
+          "capReached_other": "El plan {{tier}} permite {{count}} cuentas con la sesión iniciada en Steam a la vez. Cierra sesión en una para añadir otra o mejora tu plan para añadir más."
         },
         "reauth": {
           "badge": "Sesión iniciada en otro lugar",
@@ -396,7 +400,9 @@
         "description": "Tu perfil de Steam o los detalles de tus juegos parecen estar configurados como privados, por lo que el tiempo de juego, los juegos jugados recientemente y algunos juegos pueden estar incompletos. Haz tu perfil público o agrega tu clave de API web de Steam en Configuración para solucionar esto.",
         "changeSettings": "Cambiar ajustes de privacidad",
         "useOwnKey": "Agregar mi propia clave API"
-      }
+      },
+      "count_one": "{{count}} Juego",
+      "count_other": "{{count}} Juegos"
     },
     "idling": {
       "stopAll": "Detener todo",
@@ -427,7 +433,9 @@
         "title": "No se pudieron actualizar los favoritos",
         "cacheIoFailed": "No se pudo leer o escribir el caché de favoritos.",
         "generic": "Se produjo un error al actualizar los favoritos. Inténtalo de nuevo. ({{code}})"
-      }
+      },
+      "count_one": "{{count}} Favorito",
+      "count_other": "{{count}} Favoritos"
     },
     "freeGames": {
       "actions": {
@@ -460,7 +468,9 @@
       },
       "correction": {
         "granted": "{{name}} en realidad, la reclamación fue exitosa; el aviso de fallo anterior era erróneo."
-      }
+      },
+      "count_one": "{{count}} juego gratuito disponible",
+      "count_other": "{{count}} juegos gratuitos disponibles"
     },
     "achievements": {
       "tabs": {
@@ -468,6 +478,7 @@
         "statistics": "Estadísticas"
       },
       "header": {
+        "viewOnSteam": "Ver en Steam",
         "viewOnSteamDb": "Ver en SteamDB"
       },
       "protectedAlert": {
@@ -541,7 +552,15 @@
         "achievementLocked": "\"{{name}}\" bloqueado",
         "bulkNoChanges": "No hay nada que cambiar: ya se encuentra en el estado solicitado o está protegido.",
         "applyPartialFailure": "No se pudieron actualizar algunos logros por etapas. Inténtalo de nuevo.",
-        "statsReset": "Estadísticas reseteadas"
+        "statsReset": "Estadísticas reseteadas",
+        "bulkUnlocked_one": "{{count}} logro desbloqueado",
+        "bulkUnlocked_other": "{{count}} logros desbloqueados",
+        "bulkLocked_one": "{{count}} logro bloqueado",
+        "bulkLocked_other": "{{count}} logros bloqueados",
+        "changesApplied_one": "{{count}} logro actualizado",
+        "changesApplied_other": "{{count}} logros actualizados",
+        "statsSaved_one": "{{count}} estadística actualizada",
+        "statsSaved_other": "{{count}} estadísticas actualizadas"
       },
       "errors": {
         "title": "No se pudieron cargar los logros",
@@ -552,13 +571,17 @@
         "unsupportedGameCoordinator": "Este juego no es compatible con los logros cuando se inicia sesión con Steam; utilice su cliente local de Steam en su lugar.",
         "unsupportedGameCoordinatorLinux": "Este juego no es compatible con los logros cuando se inicia sesión con Steam.",
         "generic": "Se produjo un error al cargar los logros. Inténtalo de nuevo. ({{code}})"
-      }
+      },
+      "statCount_one": "{{count}} estadística",
+      "statCount_other": "{{count}} estadísticas"
     },
     "cardFarming": {
       "status": {
         "idle": "Nada Cultivando",
         "modeAllGames": "Modo de cultivo: Todos los juegos",
-        "modeQueue": "Modo de cultivo: Juegos en cola"
+        "modeQueue": "Modo de cultivo: Juegos en cola",
+        "farming_one": "Farmeando {{count}} juego",
+        "farming_other": "Farmeando {{count}} juegos"
       },
       "actions": {
         "stop": "Parar Cultivo"
@@ -604,7 +627,9 @@
         "completedMaxCardFarmingTime": "Tiempo máximo de cultivo alcanzado ({{remaining}} restante)",
         "completedMaxPlaytime": "Tiempo máximo de juego alcanzado ({{remaining}} restante)",
         "completedNoDropsRemaining": "Ya no queda nada que cultivar",
-        "completedRefundWindow": "Todavía dentro del plazo de reembolso (se puede volver a cultivar {{date}})"
+        "completedRefundWindow": "Todavía dentro del plazo de reembolso (se puede volver a cultivar {{date}})",
+        "dropsRemaining_one": "{{count}} drop restante",
+        "dropsRemaining_other": "{{count}} drops restantes"
       },
       "errors": {
         "title": "No se pudo actualizar la obtención de cartas",
@@ -658,6 +683,10 @@
       }
     },
     "achievementUnlocker": {
+      "status": {
+        "running_one": "Desbloqueando {{count}} juego",
+        "running_other": "Desbloqueando {{count}} juego"
+      },
       "addAllToQueue": "Agregar todo a la cola",
       "confirmAddAllToQueue": {
         "title": "¿Añadir todos los {{count}} juegos a la cola?",
@@ -718,7 +747,9 @@
           "noTimestamps": "Ese jugador no tiene logros con marcas de tiempo de desbloqueo para este juego.",
           "notFound": "No se pudo resolver ese perfil.",
           "generic": "No se pudieron importar los tiempos en este momento. Inténtalo de nuevo. ({{code}})"
-        }
+        },
+        "success_one": "Tiempos importados para {{count}} logro",
+        "success_other": "Tiempos importados para {{count}} logros"
       },
       "progress": {
         "scanning": "Comprobando los juegos en cola para desbloquear logros",
@@ -731,7 +762,9 @@
         "completedMaxUnlocksReached": "{{unlocked}}/{{total}} Desbloqueado (desbloqueo máximo alcanzado)",
         "completedMaxPlaytimeWithCount": "{{unlocked}}/{{total}} Desbloqueado (tiempo de juego máximo alcanzado)",
         "completedMaxPlaytime": "Tiempo máximo de juego alcanzado",
-        "completedNothingToUnlock": "No queda nada por desbloquear"
+        "completedNothingToUnlock": "No queda nada por desbloquear",
+        "remaining_one": "{{count}} logro restante",
+        "remaining_other": "{{count}} logros restantes"
       },
       "errors": {
         "title": "No se ha podido actualizar el desbloqueador de logros",
@@ -849,7 +882,15 @@
         "noneEligible": "Ningún artículo cumplía los requisitos para la venta. Compruebe los límites de venta en la configuración de su inventario.",
         "priceFetchCooldown": "Por favor, espere {{seconds}} segundos antes de obtener más precios de artículos",
         "itemLocked": "Este artículo está bloqueado y no se puede publicar.",
-        "priceOutOfRange": "{{price}} está fuera de su límite de venta configurado ({{min}}-{{max}})."
+        "priceOutOfRange": "{{price}} está fuera de su límite de venta configurado ({{min}}-{{max}}).",
+        "listed_one": "{{count}} artículo listado",
+        "listed_other": "{{count}} artículos listados",
+        "listFailed_one": "{{count}} artículo no pudo ser listado",
+        "listFailed_other": "{{count}} artículos no pudieron ser listados",
+        "skippedLocked_one": "Se ha omitido {{count}} artículo bloqueado",
+        "skippedLocked_other": "Se han omitido {{count}} artículos bloqueados",
+        "skippedOutOfRange_one": "Se ha omitido {{count}} artículo por estar fuera de tu límite de venta",
+        "skippedOutOfRange_other": "Se han omitido {{count}} artículos por estar fuera de tu límite de venta"
       },
       "errors": {
         "title": "No se pudo actualizar su inventario",
@@ -861,9 +902,12 @@
         "listingsFetchFailed": "No se pudieron leer sus listados de mercado activos.",
         "settingsIoFailed": "No se pudo leer ni escribir la configuración de su inventario.",
         "generic": "Se produjo un error al actualizar la configuración. Inténtalo de nuevo. ({{code}})"
-      }
+      },
+      "count_one": "{{count}} artículo",
+      "count_other": "{{count}} artículos"
     },
     "settings": {
+      "title": "Configuración",
       "general": {
         "title": "General",
         "account": {
