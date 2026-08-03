@@ -9,18 +9,7 @@ import { Step, Steps } from 'fumadocs-ui/components/steps';
 
 # How to Sign In
 
-SGI has two ways to sign in. They both give you access to the same features (with a couple of documented exceptions), the difference is purely in *how* SGI talks to Steam.
-
-| | **Steam Sign-in** *(recommended)* | **Legacy Sign-in** |
-|---|---|---|
-| Steam client required? | No | Yes, must be installed, running, and signed in |
-| Sign-in method | Your Steam username/password, or scan a QR code | Pick from accounts already signed in to the local Steam client |
-| Multiple accounts at once? | Yes, see [Multi-Account](/docs/get-started/multi-account) | No, one account at a time |
-| Play games normally while idling? | No, see [What's different](#whats-different-between-the-two) below | Yes |
-
-<Callout type='info'>
-    Not sure which to pick? Use [Steam Sign-in](/docs/get-started/how-to-sign-in#steam-sign-in) unless you specifically don't want to use your username/password; in that case, use [Legacy Sign-in](/docs/get-started/how-to-sign-in#legacy-sign-in)
-</Callout>
+SGI has two ways to sign in. They both give you access to the same features, with some [documented exceptions](#whats-different-between-the-two). Choose the one that works best for you.
 
 ## Steam Sign-in
 
@@ -58,11 +47,9 @@ This is the recommended method. SGI signs in directly to Steam's servers so it d
   </Step>
 </Steps>
 
-Once signed in, you can add further accounts without signing out of this one. See [Multi-Account](/docs/get-started/multi-account).
-
 ## Legacy Sign-in
 
-Use this if you'd rather not enter your Steam username/password into SGI at all. It requires the Steam client to already be installed, running, and signed in. SGI reads the account(s) that are already logged in through Steam itself.
+Use this if you'd rather not enter your Steam username/password into SGI at all. It requires the Steam client to already be installed, running, and signed in.
 
 <Callout type='warning'>
     You must have the [Steam client](https://store.steampowered.com/about) installed, running, and signed in to at least one account
@@ -101,12 +88,13 @@ Use this if you'd rather not enter your Steam username/password into SGI at all.
 
 ## What's different between the two
 
-A small number of features behave differently depending on which method you used to sign in. Each is called out on its own feature page, but the full list is:
+SGI behaves differently depending on which method you used to sign in. This is because each method talks to and interacts with Steam in a different way. The table below summarizes the differences:
 
-- **Playing games normally while idling**: **Steam Sign-in** talks to Steam using the same underlying protocol as the real Steam client, so if you launch and play a game yourself while SGI is idling that account, Steam treats it as a conflicting session. Idling stays uninterrupted with **Legacy Sign-in**, since it works alongside your already-running Steam client rather than opening a second session; if you want to idle and play at the same time, use **Legacy Sign-in**
-- **Idling many games at once**: The **Steam Sign-in** method can idle up to 32 games from one background session; Legacy Sign-in launches one helper process per game (same 32-game Steam-imposed ceiling either way)
-- **Game Coordinator titles** (TF2, Dota 2, CS2, Left 4 Dead 2, Portal 2): can only be idled and have their achievements managed correctly via **Legacy Sign-in**
-- **[Steam Credentials](/docs/steam-credentials)** for Card Farming/Inventory Manager: **Steam Sign-in** accounts can skip this step entirely (a gamer-tier perk); Legacy Sign-in accounts always need it
-- **[Free Games](/docs/features/free-games) auto-redeem**: works as a plain toggle for **Steam Sign-in** accounts; Legacy Sign-in accounts need a separate one-time store sign-in first
+| | **Steam Sign-in** | **Legacy Sign-in** |
+|---|---|---|
+| Steam client required? | No | Yes, must be installed, running, and signed in |
+| Sign-in method | Steam username/password, or QR code sign-in | Pick from accounts already signed in to the local Steam client |
+| Multiple accounts at once? | Yes, see [Multi-Account](/docs/get-started/multi-account) | No, one account at a time |
+| Play games while idling? | No | Yes |
 
-Everything else (Card Farming, Achievement Unlocker, Achievement Manager, Inventory Manager, Idling, Auto-Idle, Favorites) works the same regardless of which method you used.
+Everything else (Card Farming, Achievement Unlocker, Achievement Manager, Inventory Manager, Idling, Automatic Idler, Favorites) works the same regardless of which method you used.

@@ -2,7 +2,6 @@ import { FaCheck } from 'react-icons/fa'
 import { FaPaypal, FaSteam, FaStripe } from 'react-icons/fa6'
 import { GoGrabber } from 'react-icons/go'
 import {
-  TbArrowRight,
   TbArrowsSort,
   TbAward,
   TbBan,
@@ -334,7 +333,7 @@ export default function MockButton({ type, content }: MockButtonProps) {
   } else if (type === 'continue') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbArrowRight fontSize={16} className='inline' /> Continue
+        Continue
       </span>
     )
   } else if (type === 'account-switcher') {
