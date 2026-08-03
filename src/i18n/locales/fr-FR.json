@@ -339,7 +339,7 @@
         "error": "Le nettoyage de déconnexion n'est pas entièrement fini, mais vous avez été déconnecté."
       },
       "tier": {
-        "label": "Palier",
+        "label": "Offre",
         "free": "Gratuit"
       },
       "accountSwitcher": {
@@ -759,7 +759,7 @@
         "automaticDescription": "Se connecte automatiquement à Steam Community pour charger votre inventaire."
       },
       "actions": {
-        "listSelected": "Liste sélectionnée ({{count}})",
+        "listSelected": "Vendre la sélection ({{count}})",
         "sellAll": "Tout vendre ({{count}})",
         "sellDupes": "Vendre les doublons",
         "removeListings": "Supprimer les annonces",
