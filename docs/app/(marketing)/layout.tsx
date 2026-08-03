@@ -169,10 +169,10 @@ export default function Layout({ children }: LayoutProps) {
 
         <Script
           src='https://www.googletagmanager.com/gtag/js?id=G-W2GWCP59BN'
-          strategy='lazyOnload'
+          strategy='afterInteractive'
         />
 
-        <Script id='ga-init' strategy='lazyOnload'>
+        <Script id='ga-init' strategy='afterInteractive'>
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
