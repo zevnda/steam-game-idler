@@ -22,6 +22,7 @@
       "startIdling": "Iniciar idle",
       "stopIdling": "Parar idle",
       "manageAchievements": "Gerenciar Conquistas",
+      "viewOnSteam": "Ver na Steam",
       "addTo": "Adicionar a"
     },
     "minutes": "minutos",
@@ -35,6 +36,7 @@
       "slsLabel": "steamLoginSecure",
       "smaLabel": "steamMachineAuth",
       "smaDescription": "Opcional. Necessário apenas se sua conta tiver uma confirmação de máquina Steam Guard pendente.",
+      "getCookiesNote": "Você precisa pegar seus biscoitos",
       "savedFromSettingsNote": "Carregado a partir das credenciais do Steam salvas nas Configurações.",
       "savedToast": "Credenciais salvas",
       "clearedToast": "Credenciais apagadas",
@@ -99,7 +101,9 @@
       "nameDesc": "Nome (Z-A)"
     },
     "noGamesQueued": "Nenhum jogo na fila",
-    "completedThisSessionCount": "Completos nessa sessão ({{count}})"
+    "completedThisSessionCount": "Completos nessa sessão ({{count}})",
+    "gamesQueuedCount_one": "{{count}} jogos na fila",
+    "gamesQueuedCount_other": "{{count}} jogo em fila"
   },
   "update": {
     "downloading": "Baixando a atualização..."
@@ -232,7 +236,28 @@
         "a": "Após o pagamento, você receberá um email contendo sua chave de licença. Abra o aplicativo, vá em configurações → Assinaturas, copie sua chave no campo e clique ativar. Se ainda estiver tendo problemas, contate-nos através da central de ajuda no campo superior direito do aplicativo ou através do contact@steamgameidler.com."
       },
       "transferDevice": {
-        "q": "Como transferir minha chave para um dispositivo novo?"
+        "q": "Como transferir minha chave para um dispositivo novo?",
+        "a": "Sua chave de licença está vinculada a um dispositivo por vez. Para transferi-la, abra o aplicativo no seu novo dispositivo, acesse Configurações → Assinatura, insira sua chave de licença e clique em Ativar. Uma mensagem solicitará a confirmação da transferência. Após a confirmação, seu novo dispositivo estará ativo e o dispositivo anterior perderá o acesso ao aplicativo na próxima vez que for iniciado. Se você reinstalou o aplicativo no mesmo dispositivo, não é necessário fazer nenhuma transferência — ele será reconhecido pelo seu ID de hardware."
+      },
+      "cancel": {
+        "q": "Como faço para cancelar a minha assinatura?",
+        "a": "Acesse Configurações → Geral → Gerenciar assinatura PRO e siga as instruções de cancelamento. Você manterá o acesso PRO até o final do seu período de faturamento atual."
+      },
+      "switchTier": {
+        "q": "Posso alternar entre níveis?",
+        "a": "Sim. Cancele sua assinatura atual e, em seguida, assine novamente o plano desejado seguindo o processo de assinatura padrão."
+      },
+      "invoices": {
+        "q": "Onde posso encontrar faturas e recibos?",
+        "a": "Você receberá um recibo por e-mail após a assinatura. Para ver o histórico completo de faturamento, acesse Configurações → Geral → Gerenciar assinatura Pro."
+      },
+      "refund": {
+        "q": "Qual é a política de reembolso?",
+        "a": "As assinaturas PRO são consideradas doações e, geralmente, não são reembolsáveis. Os reembolsos são analisados caso a caso. Entre em contato conosco através da central de ajuda no canto superior direito do aplicativo ou pelo e-mail contact@steamgameidler.com."
+      },
+      "chargeback": {
+        "q": "O que acontece se eu solicitar um estorno?",
+        "a": "Estornos fraudulentos impactam significativamente este pequeno projeto independente. Abrir uma reclamação sem comunicação prévia pode resultar na revogação permanente do seu acesso ao aplicativo. Caso tenha ocorrido algum erro de cobrança, teremos prazer em ajudá-lo a resolvê-lo o mais rápido possível. Entre em contato conosco através da central de ajuda no canto superior direito do aplicativo ou pelo e-mail contact@steamgameidler.com."
       }
     },
     "modal": {
@@ -244,18 +269,149 @@
   },
   "auth": {
     "landing": {
-      "title": "Entrar no Steam Game Idler"
+      "title": "Entrar no Steam Game Idler",
+      "agentButton": "Entrar na Steam",
+      "localButton": "Login Legado",
+      "localAlreadySignedIn": "Uma conta local do Steam já está conectada — só é possível estar conectado com uma por vez",
+      "acknowledge": "Ao clicar em 'Continuar', você concorda com os <0>Termos de Serviço</0> e reconhece que leu nossa <1>Política de Privacidade</1>."
+    },
+    "signIn": {
+      "usernameLabel": "Nome de usuário",
+      "usernamePlaceholder": "Digite seu nome de usuário da Steam",
+      "passwordLabel": "Senha",
+      "passwordPlaceholder": "Digite sua senha da Steam",
+      "usernameRequired": "Digite seu nome de usuário da Steam.",
+      "passwordRequired": "Digite sua senha da Steam.",
+      "credentialsSectionLabel": "Entrar com o nome da conta",
+      "guardCode": {
+        "deviceTitle": "Verifique seu aplicativo Steam Mobile",
+        "deviceDescription": "Digite o código do app Steam Mobile.",
+        "emailTitle": "Verifique seu e-mail",
+        "emailDescription": "Nós enviamos um código para {{email}}. Digite-o abaixo.",
+        "confirmationTitle": "Confirme este login",
+        "confirmationDescription": "Aprove o pedido de login no seu app Steam Mobile para continuar.",
+        "codeLabel": "Código do Steam Guard",
+        "incorrectCode": "Esse código não estava correto. Por favor, tente novamente.",
+        "submitButton": "Verificar"
+      },
+      "qrCode": {
+        "sectionLabel": "Ou entrar com QR",
+        "instructions": "Use o app Steam Mobile para entrar via código QR."
+      },
+      "errors": {
+        "title": "Não foi possível iniciar a sessão",
+        "invalidCredentials": "Nome de usuário ou senha incorretos.",
+        "denied": "Solicitação de login negada no app Steam Mobile. Por favor, tente novamente.",
+        "generic": "Algo deu errado. Por favor, tente novamente. ({{code}})"
+      }
     },
     "localSignIn": {
+      "title": "Escolha uma conta",
+      "noAccounts": "Nenhuma conta da Steam foi encontrada neste dispositivo. Faça login no cliente da Steam pelo menos uma vez e depois atualize.",
       "errors": {
+        "steamNotFound": "Não foi possível encontrar uma instalação local do Steam.",
+        "loginVdfUnreadable": "Não foi possível ler as contas Steam salvas deste dispositivo.",
+        "accountNotFound": "Essa conta não pôde mais ser encontrada.",
+        "switchFailed": "Não consegui trocar de conta no Steam.",
+        "launchFailed": "Não foi possível iniciar o processo do agente Steam.",
         "summaryUnavailable": "Não deu para carregar os detalhes da conta agora."
       }
     },
     "hero": {
-      "title": "A única ferramenta de<1/>automação da Steam<1/>que você vai precisar"
+      "title": "A única ferramenta de<1/>automação da Steam<1/>que você vai precisar",
+      "subtitle": "Farme cartas colecionáveis, desbloqueie conquistas, aumente o tempo de jogo e automatize sua experiência na Steam — tudo em uma única ferramenta."
     }
   },
   "dashboard": {
+    "sidebar": {
+      "section": {
+        "automation": "Automatização",
+        "misc": "Outros"
+      },
+      "nav": {
+        "games": "Jogos",
+        "idling": "Ocioso",
+        "favorites": "Favoritos",
+        "freeGames": "Jogos Grátis",
+        "cardFarming": "Farm de Cartas",
+        "achievementUnlocker": "Desbloqueador de Conquistas",
+        "autoIdle": "Idle Automático",
+        "inventoryManager": "Gerenciador de Inventário"
+      },
+      "signOut": {
+        "confirmTitle": "Sair",
+        "confirmDescription": "Isso vai parar a automação que está rodando para {{name}} e desconectar essa conta.",
+        "error": "A limpeza após sair não terminou totalmente, mas você foi desconectado."
+      },
+      "tier": {
+        "label": "Planejamento",
+        "free": "Grátis"
+      },
+      "accountSwitcher": {
+        "modeAgent": "Entrar com Steam",
+        "modeLocal": "Cliente Steam local",
+        "switched": "Alternar para {{name}}",
+        "steamRequired": "O Steam precisa estar rodando para mudar para esta conta",
+        "addAccount": {
+          "trigger": "Adicionar outra conta",
+          "capReachedMax": "Você atingiu o número máximo de contas que podem estar logadas no Steam ao mesmo tempo.",
+          "added": "{{name}} adicionado",
+          "capReached_one": "O plano {{tier}} permite {{count}} contas conectadas ao Steam ao mesmo tempo. Saia de uma para adicionar outra ou faça um upgrade para ter mais.",
+          "capReached_other": "O plano {{tier}} permite {{count}} contas conectadas ao Steam ao mesmo tempo. Saia de uma para adicionar outra ou faça um upgrade para ter mais."
+        },
+        "reauth": {
+          "badge": "Conectado em outro lugar",
+          "tooltip": "Esta conta foi usada para entrar em outro dispositivo, então sua automação foi pausada. Faça login novamente para continuar.",
+          "modalTitle": "Conectado em outro dispositivo",
+          "modalDescription": "{{account}} foi usado para login em outro dispositivo, então sua automação foi pausada. Faça login novamente para continuar.",
+          "reconnect": "Reconectar",
+          "methodExplainer": "O login do Steam permite apenas uma sessão ativa por conta. Se você quiser continuar jogando enquanto o Steam Game Idler está rodando, use o login Legacy.",
+          "useDifferentMethod": "Use um método de login diferente"
+        }
+      },
+      "ads": {
+        "removeAdsWith": "Remover anúncios com"
+      }
+    },
+    "games": {
+      "unknownName": "App {{appId}}",
+      "carousels": {
+        "recommended": "Recomendados",
+        "recent": "Jogados recentemente"
+      },
+      "sort": {
+        "playtimeDesc": "Tempo de jogo (Maior-Menor)",
+        "playtimeAsc": "Tempo de jogo (Menor-Maior)",
+        "recentlyPlayedDesc": "Tocado Recentemente (Mais Novo Primeiro)",
+        "recentlyPlayedAsc": "Tocado Recentemente (Mais Antigo Primeiro)"
+      },
+      "empty": {
+        "title": "Nenhum jogo encontrado",
+        "description": "Essa conta ainda não possui nenhum jogo."
+      },
+      "errors": {
+        "title": "Não foi possível carregar os jogos",
+        "webApiUnavailable": "Não foi possível carregar os dados de tempo de jogo do Steam agora.",
+        "cacheIoFailed": "Não foi possível ler ou escrever o cache dos jogos.",
+        "generic": "Algo deu errado. Por favor, tente novamente. ({{code}})"
+      },
+      "privacyWarning": {
+        "title": "Alguns dados do jogo podem estar faltando",
+        "description": "Seu perfil do Steam ou os detalhes dos jogos parecem estar definidos como privados, então o tempo de jogo, os jogos jogados recentemente e alguns jogos podem estar incompletos. Torne seu perfil público ou adicione sua própria chave da Steam Web API nas Configurações para resolver isso.",
+        "changeSettings": "Alterar suas configurações de privacidade",
+        "useOwnKey": "Adicionar minha própria chave de API"
+      },
+      "count_one": "{{count}} jogo",
+      "count_other": "{{count}} jogos"
+    },
+    "idling": {
+      "stopAll": "Parar Tudo",
+      "sections": {
+        "manual": "Ocioso manualmente"
+      },
+      "count_one": "{{count}} jogos na fila",
+      "count_other": "{{count}} jogo em fila"
+    },
     "settings": {
       "debug": {
         "system": {
