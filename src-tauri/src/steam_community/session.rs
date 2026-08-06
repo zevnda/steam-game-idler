@@ -190,9 +190,9 @@ pub async fn acquire(
 /// actually issues (confirmed against other SteamKit2-based bots, which mint
 /// their own the same way rather than obtaining one from Steam), 24 lowercase hex chars matching
 /// the length/shape of a real browser-issued one. `pub(crate)` (not just this module's own
-/// `derive_from_agent_session`) so `local_steam::free_game_claim::claim_via_agent_session` can
-/// mint one too - a free-game claim's cookie priming needs the exact same shape, for the store
-/// domain instead of the community one.
+/// `derive_from_agent_session`) so `steam_agent::AgentManager::claim_free_game` can mint one too -
+/// a free-game claim's cookie header needs the exact same shape, for the store domain instead of
+/// the community one.
 pub(crate) fn generate_session_id() -> String {
     let mut bytes = [0u8; 12];
     rand::thread_rng().fill_bytes(&mut bytes);

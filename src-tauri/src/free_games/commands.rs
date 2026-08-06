@@ -26,7 +26,6 @@ pub async fn claim_free_game(
     agent_manager: State<'_, AgentManager>,
     account: GamesAccount,
     app_id: u32,
-    api_key: Option<String>,
 ) -> AppResult<FreeGameClaimOutcome> {
     // Cloned before the match consumes `account` by value - kept only so the log lines below can
     // identify which account a claim outcome belongs to (there was previously no account
@@ -36,22 +35,27 @@ pub async fn claim_free_game(
     let outcome = match account {
         GamesAccount::Agent { username } => {
             agent_manager
-                .request_free_license(&app_handle, &username, app_id, api_key)
+                .claim_free_game(&app_handle, &username, app_id)
                 .await
         }
         GamesAccount::Local { steam_id } => {
-            local_steam::free_game_claim::claim(&app_handle, &steam_id, app_id, api_key).await
+            local_steam::free_game_claim::claim(&app_handle, &steam_id, app_id).await
         }
     };
-    // Agent mode's `request_free_license` has no logging of its own (SteamKit2's grant is a single
-    // IPC round trip, not a multi-attempt poll worth narrating step by step the way CLI mode's
-    // `claim` is) - logging the resolved outcome here covers both modes uniformly in one place.
+    // Both modes' claim methods already log their own step-by-step detail (session
+    // resolution, the direct claim POST, ownership confirmation) - logging the resolved outcome
+    // here covers both modes uniformly in one place, at the shared command surface.
     match &outcome {
         Ok(result) => {
             tracing::info!(account = ?account_for_log, app_id, outcome = ?result, "free games: claim resolved")
         }
         Err(e) => {
-            tracing::warn!(account = ?account_for_log, app_id, error = %e.code(), "free games: claim errored")
+            // Both the short code (`e.code()`, what the frontend matches on for
+            // `errorDocsHref`/toast copy) and the full `Display` detail (`%e`, the actual
+            // descriptive reason - e.g. which stage of sub-id resolution/the claim POST failed and
+            // why) - the code alone doesn't say enough to diagnose a failure the first time this
+            // path runs against a real live promo.
+            tracing::warn!(account = ?account_for_log, app_id, code = %e.code(), error = %e, "free games: claim errored")
         }
     }
     outcome
@@ -80,12 +84,13 @@ pub async fn set_free_games_settings(
 }
 
 /// Establishes (or refreshes) this account's persisted Steam store session - a no-op for agent
-/// mode, which needs no cookies at all to claim a free game (`AgentManager::request_free_license`,
-/// see `mod.rs`'s doc comment). For a CLI-mode account, this is what the frontend calls the moment
-/// the user turns free-games auto-redeem *on*, so any real, interactive sign-in happens right then
-/// (visible, expected) rather than mid-background-poll later (invisible, confusing) - every claim
-/// after the first reuses the same persisted `local_steam::free_game_claim` webview profile
-/// silently. Also used for the settings tab's "Reauthenticate" action.
+/// mode, which derives fresh claim cookies on demand from its live daemon session instead
+/// (`AgentManager::claim_free_game`, see `mod.rs`'s doc comment). For a CLI-mode account, this is
+/// what the frontend calls the moment the user turns free-games auto-redeem *on*, so any real,
+/// interactive sign-in happens right then (visible, expected) rather than mid-background-poll
+/// later (invisible, confusing) - every claim after the first reuses the same persisted
+/// `local_steam::free_game_claim` webview profile silently. Also used for the settings tab's
+/// "Reauthenticate" action.
 #[tauri::command]
 pub async fn ensure_free_games_store_session(
     app_handle: AppHandle,

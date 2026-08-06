@@ -1,15 +1,22 @@
 //! Steam "free games" discovery + claiming. Discovery is mode-agnostic (an anonymous store-page
-//! scrape, no account concept at all - see `discovery.rs`); claiming genuinely differs per sign-in
-//! mode:
+//! scrape, no account concept at all - see `discovery.rs`), and by construction only ever surfaces
+//! ordinary paid games temporarily discounted to 100% off (`discovery.rs`'s scrape filters on
+//! `specials=1`), never a genuine evergreen "Free on Demand" title.
 //!
-//! - Agent mode claims via SteamKit2's `SteamApps.RequestFreeLicense` first (a real Steam-network
-//!   license grant, no cookies needed at all - see `steam_agent::AgentManager::request_free_license`
-//!   and `libs/SteamUtility/Daemon/Bot/FreeLicenseManager.cs`), falling back to the same store-page
-//!   claim CLI mode uses (below) - cookie-primed from the live SteamKit2 session, no interactive
-//!   login - for the promo packages that opcode can't grant directly.
-//! - CLI mode has no `RequestFreeLicense` equivalent in the Steamworks.NET SDK surface at all, so it
-//!   always uses a cookie-authenticated hidden-webview click against the store page itself - see
-//!   `local_steam::free_game_claim`.
+//! Both sign-in modes claim the same way: a direct authenticated POST to
+//! `store.steampowered.com/freelicense/addfreelicense/{subId}` - the same endpoint the store
+//! website's own "Add to Cart"/claim button drives - via `store_claim::claim_via_direct_post`.
+//! SteamKit2's `SteamApps.RequestFreeLicense` opcode is deliberately never attempted for this
+//! feature: it only grants genuine Free-on-Demand packages, which - per this module's own scrape
+//! filter above - is never what gets claimed here; see
+//! `steam_agent::AgentManager::claim_free_game`'s doc comment for the confirmation behind that.
+//!
+//! - Agent mode derives fresh session cookies on demand from the live SteamKit2 connection, no
+//!   webview or interactive login ever needed - see `steam_agent::AgentManager::get_web_session`.
+//! - CLI mode has no way to derive a web session other than a real interactive login (Steamworks.NET
+//!   has no such API surface) - `local_steam::free_game_claim::ensure_store_session` shows this
+//!   once per account, persisting cookies for every claim after that. See that module's doc comment
+//!   for how the persisted session is kept fresh without ever re-showing that window.
 //!
 //! One command surface (`commands::claim_free_game`) branches internally on `GamesAccount`, not a
 //! pair of mode-specific commands.
@@ -17,6 +24,7 @@
 pub mod commands;
 mod discovery;
 pub mod settings;
+pub mod store_claim;
 
 use serde::{Deserialize, Serialize};
 
@@ -27,10 +35,11 @@ pub struct FreeGameEntry {
     pub name: String,
 }
 
-/// Outcome of a claim attempt, shared by both sign-in modes despite their different mechanics.
-/// CLI mode has no reliable way to distinguish `AlreadyOwned` from a successful click (the "Add to
-/// Account" button simply isn't present either way) - it only ever reports `Granted` or `Failed`,
-/// an accepted, documented gap rather than something faked to look symmetric with agent mode.
+/// Outcome of a claim attempt, shared by both sign-in modes. Both modes now resolve `AlreadyOwned`
+/// via an upfront authenticated ownership check (`store_claim::claim_via_direct_post`'s pre-check)
+/// before ever attempting the claim POST - CLI mode's former webview-click flow had no reliable way
+/// to distinguish this from a successful click and only ever reported `Granted`/`Failed`; that gap
+/// is closed now that claiming no longer depends on reading anything back from a rendered page.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(
     rename_all = "camelCase",
@@ -43,13 +52,11 @@ pub enum FreeGameClaimOutcome {
     Failed { reason: String },
 }
 
-/// Emitted when a store-page claim's background tail recheck (see
-/// `local_steam::free_game_claim::claim_via_store_page`'s doc comment) later confirms a game was
-/// actually granted after its synchronous polling window had already given up and reported
-/// `Failed`. Fires for both sign-in modes - agent mode's `RequestFreeLicense` fast path itself
-/// never needs one (a single synchronous SteamKit2 round trip, no propagation lag), but its
-/// store-page fallback (`AgentManager::request_free_license`, `claim_via_agent_session`) has the
-/// exact same propagation-lag ambiguity CLI mode's claim always has.
+/// Emitted when a claim's background tail recheck (see
+/// `store_claim::claim_via_direct_post`'s doc comment) later confirms a game was actually granted
+/// after its synchronous confirmation window had already given up and reported `Failed` - the
+/// direct claim POST's own response is known to be unreliable (see `store_claim`'s module doc
+/// comment), so this stays the safety net for both sign-in modes.
 pub const FREE_GAME_CLAIM_CORRECTED_EVENT: &str = "free-game-claim-corrected";
 
 /// Tagged the same way as `games::commands::GamesAccount` so the frontend can match a correction
