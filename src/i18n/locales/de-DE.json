@@ -555,12 +555,6 @@
     },
     "cardFarming": {
       "settings": {
-        "dropSortOrder": {
-          "options": {
-            "highestFirst": "Höchster Drop zuerst",
-            "lowestFirst": "Niedrigster Drop zuerst"
-          }
-        },
         "nextTask": {
           "title": "Eine weitere Aufgabe starten, wenn erledigt",
           "description": "Sobald das sammeln beendet ist, starten Sie automatisch eine weitere Automatisierung."
