@@ -1,11 +1,12 @@
 ﻿import type { OwnedGame } from '@/features/games-list/types'
 import type { SignedInAccount } from '@/shared/stores/sessionStore'
 import type { IdleOwner, IdleSetResult } from '../types'
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { errorMessageKey } from '../utils/errorMessageKey'
 import { syncClaims } from './useIdlingSync'
 import { toast } from '@heroui/react'
+import { useCardFarmingStore } from '@/shared/stores/cardFarmingStore'
 import { useIdlingStore } from '@/shared/stores/idlingStore'
 import { getAccountKey, useSessionStore } from '@/shared/stores/sessionStore'
 import { invoke } from '@/shared/utils/invoke'
@@ -58,11 +59,33 @@ function stopOwnerCommand(owner: IdleOwner, account: SignedInAccount) {
 // silently dropping the only update that would reflect this action. A fetch taken after the
 // command resolves always reflects backend truth at that point, so it can't go stale the way a
 // push-event race can.
+//
+// `startTimes` merges in `cardFarmingStore`'s own `activeSince` for any app id currently in card
+// farming's `active` list, overriding `idlingStore`'s raw physical-state-derived timestamp for
+// those games specifically. This matters because card farming's restart-cycle deliberately stops
+// and restarts idling every few minutes (see `card_farming::manager::run_restart_cycle`'s doc
+// comment) - `idlingStore.setAppIds` has no backend timestamp of its own and resets an app id's
+// clock the instant any single observed `IDLE_STATE_EVENT`/poll shows it briefly absent, so without
+// this merge the on-card elapsed-idling timer would visibly reset every restart-cycle iteration for
+// every card-farming-managed game. `card_farming::FarmingProgress::active_since` is specifically
+// designed to stay stable across those internal blips (only resetting if the game genuinely leaves
+// `active`), which is exactly the value this needs instead. Every other game (idling via manual/
+// auto-idle/achievement-unlocker, or a card-farming game merely sitting in `queue` rather than
+// `active`) is untouched, still sourced from `idlingStore` exactly as before.
 export const useIdling = (games: OwnedGame[]) => {
   const { t } = useTranslation()
   const account = useSessionStore(state => state.account)
   const appIds = useIdlingStore(state => state.appIds)
-  const startTimes = useIdlingStore(state => state.startTimes)
+  const rawStartTimes = useIdlingStore(state => state.startTimes)
+  const cardFarmingActive = useCardFarmingStore(state => state.state.active)
+  const startTimes = useMemo(() => {
+    if (cardFarmingActive.length === 0) return rawStartTimes
+    const merged = { ...rawStartTimes }
+    for (const progress of cardFarmingActive) {
+      merged[progress.appId] = progress.activeSince
+    }
+    return merged
+  }, [rawStartTimes, cardFarmingActive])
   const claimsByOwner = useIdlingStore(state => state.claimsByOwner)
   const setAppIds = useIdlingStore(state => state.setAppIds)
   const setClaimsByOwner = useIdlingStore(state => state.setClaimsByOwner)

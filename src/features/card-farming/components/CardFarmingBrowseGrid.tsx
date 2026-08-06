@@ -3,10 +3,10 @@ import { CardFarmingBrowseCard } from './CardFarmingBrowseCard'
 
 interface CardFarmingBrowseGridProps {
   games: GameWithDrops[]
-  queuedAppIds: Set<number>
+  whitelistedAppIds: Set<number>
   pendingAppIds: Set<number>
   pendingBlacklistAppIds: Set<number>
-  onToggle: (game: GameWithDrops) => void
+  onToggleWhitelist: (game: GameWithDrops) => void
   onBlacklist: (game: GameWithDrops) => void
 }
 
@@ -16,10 +16,10 @@ interface CardFarmingBrowseGridProps {
 // AchievementUnlockerListGrid's identical choice for the same reason).
 export const CardFarmingBrowseGrid = ({
   games,
-  queuedAppIds,
+  whitelistedAppIds,
   pendingAppIds,
   pendingBlacklistAppIds,
-  onToggle,
+  onToggleWhitelist,
   onBlacklist,
 }: CardFarmingBrowseGridProps) => {
   return (
@@ -30,9 +30,9 @@ export const CardFarmingBrowseGrid = ({
           game={game}
           isBlacklistPending={pendingBlacklistAppIds.has(game.appId)}
           isPending={pendingAppIds.has(game.appId)}
-          isQueued={queuedAppIds.has(game.appId)}
+          isWhitelisted={whitelistedAppIds.has(game.appId)}
           onBlacklist={() => onBlacklist(game)}
-          onToggle={() => onToggle(game)}
+          onToggleWhitelist={() => onToggleWhitelist(game)}
         />
       ))}
     </div>

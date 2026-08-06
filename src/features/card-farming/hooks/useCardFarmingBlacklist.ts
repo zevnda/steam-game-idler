@@ -3,10 +3,10 @@ import { useCallback, useEffect, useState } from 'react'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 import { invoke } from '@/shared/utils/invoke'
 
-// Mirrors useCardFarmingQueue.ts's shape (fetch-on-mount, per-account) minus reorder/toggle - a
+// Mirrors useCardFarmingWhitelist.ts's shape (fetch-on-mount, per-account) minus the toggle - a
 // game only ever enters the blacklist from a "Games With Drops" browse card (`add`) and only ever
 // leaves it from the "Blacklisted" tab (`remove`), so there's no single-button toggle to wrap the
-// way `toggleQueued` wraps add/remove for the queue.
+// way `toggleWhitelisted` wraps add/remove for the whitelist.
 export const useCardFarmingBlacklist = () => {
   const account = useSessionStore(state => state.account)
   const [blacklist, setBlacklist] = useState<CardFarmingBlacklistEntry[]>([])

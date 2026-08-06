@@ -88,8 +88,8 @@ pub enum AppError {
     #[error("failed to read/write the achievement-unlocker queue cache: {0}")]
     AchievementUnlockerQueueCacheIo(String),
 
-    #[error("failed to read/write the card-farming queue cache: {0}")]
-    CardFarmingQueueCacheIo(String),
+    #[error("failed to read/write the card-farming whitelist cache: {0}")]
+    CardFarmingWhitelistCacheIo(String),
 
     #[error("failed to read/write the card-farming blacklist cache: {0}")]
     CardFarmingBlacklistCacheIo(String),
@@ -249,8 +249,8 @@ impl AppError {
             AppError::AchievementUnlockerQueueCacheIo(_) => {
                 "achievement_unlocker_queue_cache_io_failed".to_string()
             }
-            AppError::CardFarmingQueueCacheIo(_) => {
-                "card_farming_queue_cache_io_failed".to_string()
+            AppError::CardFarmingWhitelistCacheIo(_) => {
+                "card_farming_whitelist_cache_io_failed".to_string()
             }
             AppError::CardFarmingBlacklistCacheIo(_) => {
                 "card_farming_blacklist_cache_io_failed".to_string()

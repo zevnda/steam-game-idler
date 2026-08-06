@@ -580,21 +580,19 @@
     "cardFarming": {
       "status": {
         "idle": "Not farming",
-        "modeAllGames": "Farming mode: All games",
-        "modeQueue": "Farming mode: Games in queue",
         "farming_one": "Farming {{count}} game",
         "farming_other": "Farming {{count}} games"
       },
       "actions": {
         "stop": "Stop farming"
       },
-      "confirmClearQueue": {
-        "title": "Clear the card farming queue?",
-        "description": "This will remove all {{count}} games from the card farming queue."
+      "confirmClearWhitelist": {
+        "title": "Clear the card farming whitelist?",
+        "description": "This will remove all {{count}} games from the card farming whitelist. Farming will go back to considering every owned game with drops."
       },
       "multiGameNotice": {
         "title": "Farming multiple games at once?",
-        "description": "Farming multiple games at the same time can slow down how quickly cards drop per game. If you don't see any cards drop for a while, try enabling 'Single farming mode' in Settings → Card Farming."
+        "description": "Farming multiple games at the same time can slow down how quickly cards drop per game. If you don't see any cards drop for a while, try turning this back off."
       },
       "confirmClearBlacklist": {
         "title": "Clear the card farming blacklist?",
@@ -602,6 +600,7 @@
       },
       "tabs": {
         "gamesWithDrops": "Games With Drops",
+        "whitelisted": "Whitelisted",
         "blacklisted": "Blacklisted"
       },
       "sort": {
@@ -612,8 +611,9 @@
         "title": "No card drops remaining",
         "description": "Every owned game's card drops are either fully farmed or none are available right now."
       },
-      "empty": {
-        "description": "Add games from the Games With Drops tab to queue them for card farming."
+      "whitelistEmpty": {
+        "title": "No games whitelisted",
+        "description": "Add games from the Games With Drops tab to restrict farming to just those games. Leave it empty to farm all game with drops."
       },
       "blacklistEmpty": {
         "title": "No blacklisted games",
@@ -623,15 +623,17 @@
         "automaticDescription": "Signs in to Steam Community automatically to check for drops."
       },
       "progress": {
-        "activeTitle": "Farming ({{count}})",
+        "activeTitleReadyFarm": "Farming ({{count}})",
+        "activeTitleBulkIdle": "Building playtime ({{count}})",
         "queueTitle": "Up next ({{count}})",
         "dropsRemaining_one": "{{count}} drop remaining",
         "dropsRemaining_other": "{{count}} drops remaining",
-        "completedMaxCardDrops": "Max card drops reached ({{remaining}} left)",
-        "completedMaxCardFarmingTime": "Max farming time reached ({{remaining}} left)",
-        "completedMaxPlaytime": "Max playtime reached ({{remaining}} left)",
+        "accumulatingPlaytime": "{{hours}}h / {{threshold}}h until farmable",
+        "waitingTurn": "Waiting its turn",
         "completedNoDropsRemaining": "Nothing left to farm",
-        "completedRefundWindow": "Still inside the refund window (farmable again {{date}})"
+        "completedRefundWindow": "Still inside the refund window (farmable again {{date}})",
+        "completedSkippedUnplayed": "Removed from whitelist: has no recorded playtime",
+        "completedSkippedPlayed": "Removed from whitelist: already has playtime"
       },
       "errors": {
         "title": "Couldn't update card farming",
@@ -641,9 +643,13 @@
         "generic": "Something went wrong updating card farming. Please try again. ({{code}})"
       },
       "settings": {
-        "singleFarmingMode": {
-          "title": "Single farming mode",
-          "description": "Farm one game in your queue at a time instead of multiple at once, which can help cards drop faster per game."
+        "hoursUntilFarmable": {
+          "title": "Hours until farmable",
+          "description": "How many hours of playtime games need before they are considered farmable. Set to 0 to skip straight to farming."
+        },
+        "allowMultiGameFarming": {
+          "title": "Farm multiple games at once",
+          "description": "Farm up to 32 games concurrently instead of one at a time. In some cases this can cause cards to drop significantly slower."
         },
         "skipRefundableGames": {
           "title": "Skip refundable games",
@@ -653,14 +659,6 @@
           "title": "Automatically farm cards",
           "description": "Periodically check for owned games with card drops remaining and automatically start farming them."
         },
-        "listGames": {
-          "title": "Farm games in queue",
-          "description": "Only farm games that are in your Card Farming queue."
-        },
-        "allGames": {
-          "title": "Farm all games",
-          "description": "Farm cards for every owned game with card drops remaining."
-        },
         "skipNoPlaytime": {
           "title": "Skip unplayed games",
           "description": "Don't farm games that have zero recorded playtime."
@@ -668,15 +666,6 @@
         "farmUnplayedOnly": {
           "title": "Unplayed games only",
           "description": "Only farm games that have zero recorded playtime."
-        },
-        "dropSortOrder": {
-          "title": "Farming order",
-          "description": "Choose which order games in the queue should be farmed in.",
-          "options": {
-            "queueOrder": "Queue order",
-            "highestFirst": "Highest drops first",
-            "lowestFirst": "Lowest drops first"
-          }
         },
         "nextTask": {
           "title": "Start another task when done",
@@ -1077,8 +1066,7 @@
         "title": "Game Settings",
         "maxPlaytimeSection": "Playtime",
         "maxPlaytimeScopeNote": "Applies everywhere a game can be idled - manual and automatic idling, achievement unlocker, and card farming.",
-        "idlingScopeNote": "Only applies to manually and automatically idled games - card farming and achievement unlocker have their own separate caps below.",
-        "cardFarmingScopeNote": "Only applies to card farming sessions.",
+        "idlingScopeNote": "Only applies to manually and automatically idled games - achievement unlocker has its own separate cap below.",
         "globalMaxPlaytime": {
           "label": "Max playtime (all games)",
           "description": "Automatically stop a game, and remove it from queues, once its total playtime reaches this many minutes."
@@ -1094,19 +1082,6 @@
         "maxIdleTime": {
           "label": "Max idle time",
           "description": "Automatically stop idling this game after this many minutes. Overrides the value above, if set."
-        },
-        "globalMaxCardFarmingTime": {
-          "label": "Max card farming time (all games)",
-          "description": "Automatically stop card farming a game after this many minutes."
-        },
-        "maxCardFarmingTime": {
-          "label": "Max card farming time",
-          "description": "Automatically stop card farming this game after this many minutes. Overrides the value above, if set."
-        },
-        "maxCardDrops": {
-          "label": "Max card drops",
-          "description": "Stop farming this game once this many drops have been farmed this session.",
-          "hint": "0 = farm until finished"
         },
         "maxAchievementUnlocks": {
           "label": "Max achievement unlocks",

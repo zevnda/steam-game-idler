@@ -7,10 +7,10 @@ import { gameCardContextAttrs } from '@/shared/utils/gameCardContext'
 
 interface CardFarmingBrowseCardProps {
   game: GameWithDrops
-  isQueued: boolean
+  isWhitelisted: boolean
   isPending: boolean
   isBlacklistPending: boolean
-  onToggle: () => void
+  onToggleWhitelist: () => void
   onBlacklist: () => void
 }
 
@@ -18,13 +18,15 @@ interface CardFarmingBrowseCardProps {
 // name + icon-only action buttons), swapping the award icon for a cards icon and adding a
 // drops-remaining count. A blacklisted game never appears here at all (filtered out server-side
 // by `get_games_with_drops` - see `card_farming::blacklist`'s doc comment), so the ban button only
-// ever needs to add, never toggle/undo - un-blacklisting happens from the "Blacklisted" tab.
+// ever needs to add, never toggle/undo - un-blacklisting happens from the "Blacklisted" tab. The
+// whitelist button toggles both ways from here, though - it's a scope list the user can freely add
+// to and remove from (see `card_farming::whitelist`'s doc comment).
 export const CardFarmingBrowseCard = ({
   game,
-  isQueued,
+  isWhitelisted,
   isPending,
   isBlacklistPending,
-  onToggle,
+  onToggleWhitelist,
   onBlacklist,
 }: CardFarmingBrowseCardProps) => {
   const { t } = useTranslation()
@@ -61,13 +63,15 @@ export const CardFarmingBrowseCard = ({
           </Button>
           <Button
             isIconOnly
-            aria-label={isQueued ? `Remove ${game.name}` : `Add ${game.name}`}
+            aria-label={
+              isWhitelisted ? `Remove ${game.name} from whitelist` : `Add ${game.name} to whitelist`
+            }
             isPending={isPending}
             size='sm'
             variant='ghost'
-            onPress={onToggle}
+            onPress={onToggleWhitelist}
           >
-            {isQueued ? <TbCheck fontSize={16} /> : <TbPlus fontSize={16} />}
+            {isWhitelisted ? <TbCheck fontSize={16} /> : <TbPlus fontSize={16} />}
           </Button>
         </div>
       </div>

@@ -33,12 +33,10 @@ async function toggleIdling(appId: number, name: string, account: SignedInAccoun
   }
 }
 
-// Idempotent on the backend (each `add_*`/`add_to_*_queue` command dedupes by appId - see
-// favorites/achievement_unlocker/auto_idle/card_farming's own `cache.rs`/`queue.rs`), so this can
-// fire unconditionally without checking current membership first - checking would mean 4 extra
-// round trips before the menu could even open. No card-farming drops-eligibility check either,
-// mirroring the existing "Manual Add" button (CardFarmingPageHeader.tsx), which already allows
-// queuing any app id regardless of drops.
+// Idempotent on the backend (each `add_*`/`add_to_*_queue`/`add_to_card_farming_whitelist` command
+// dedupes by appId - see favorites/achievement_unlocker/auto_idle/card_farming's own `cache.rs`/
+// `queue.rs`/`whitelist.rs`), so this can fire unconditionally without checking current membership
+// first - checking would mean 4 extra round trips before the menu could even open.
 async function addToList(
   command: string,
   list: GameListName,
@@ -69,7 +67,10 @@ export async function buildGameCardMenu({ appId, name, account, t }: BuildGameCa
         id: 'game-card-add-to-card-farming',
         text: t('dashboard.sidebar.nav.cardFarming'),
         action: () =>
-          addToList('add_to_card_farming_queue', 'cardFarmingQueue', account, { appId, name }),
+          addToList('add_to_card_farming_whitelist', 'cardFarmingWhitelist', account, {
+            appId,
+            name,
+          }),
       }),
       await MenuItem.new({
         id: 'game-card-add-to-achievement-unlocker',

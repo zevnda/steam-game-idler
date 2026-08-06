@@ -1,11 +1,23 @@
-//! Card farming: idles up to 32 games with drops remaining concurrently (a real Steam protocol
-//! limit, see `idling::MAX_CONCURRENT_GAMES`), polls each one's remaining count, drops finished
-//! games out of the active set and backfills more from the queue as slots free up, repeating until
-//! none are left. Calls `idling::claims::IdleClaimsRegistry::replace_owner_claim`/
-//! `idling::commands::get_idle_state` directly rather than duplicating process-management logic.
+//! Card farming: an automatic two-phase cycle. Every outer-loop iteration re-scrapes the account's
+//! games-with-drops list, classifies each into "ready" (playtime past
+//! `settings::CardFarmingSettings::hours_until_farmable`) or "accumulating" (not yet), and picks
+//! exactly one phase to run - never both at once, since idling anything else alongside a
+//! drops-eligible game collapses its drop rate. Ready games are solo-farmed one at a time (fewest
+//! drops remaining first) unless `allow_multi_game_farming` is on; accumulating games are bulk-idled
+//! together, prioritizing whichever are closest to the threshold when there are more than
+//! `manager::MAX_CONCURRENT_FARMING` of them. Both phases run through the same restart-cycle helper
+//! (`manager::run_restart_cycle`): idle the target(s), stop, a short pause, an individual sweep of
+//! every target, stop, then the outer loop reclassifies. Calls
+//! `idling::claims::IdleClaimsRegistry::replace_owner_claim` directly rather than duplicating
+//! process-management logic - this module owns no process/spawn logic of its own.
 //!
-//! **Blacklist** ([`blacklist`]) is wired into both `commands::get_games_with_drops`'s browse
-//! results and `commands::start_farming`'s queued set, so a blacklisted game can never be farmed.
+//! **Blacklist** ([`blacklist`]) permanently excludes a game from ever being farmed. **Whitelist**
+//! ([`whitelist`]) is the opposite kind of lever, and a different kind of control entirely: when
+//! non-empty, it *restricts scope* to just its members (nothing else is considered while any member
+//! remains) but never affects *ordering* - the phase/tie-break rules above still decide what
+//! happens within that restricted pool, exactly as they do for the full library. The app prunes the
+//! whitelist automatically (any member that becomes ineligible for any reason is removed and
+//! reported with a precise reason) - the user only ever adds to it.
 //!
 //! **Separate infrastructure from `steam_agent`/`local_steam`, but not capability-uniform between
 //! them.** Card drops are detected via cookie-authenticated Steam Community scraping
@@ -28,40 +40,25 @@
 pub mod blacklist;
 pub mod commands;
 pub mod manager;
-pub mod queue;
 mod refund_window;
 mod scraper;
 pub mod settings;
+pub mod whitelist;
 
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
 pub use crate::steam_community::{session, SteamCookies};
 pub use blacklist::CardFarmingBlacklistEntry;
 pub use manager::CardFarmingManager;
+pub use whitelist::CardFarmingWhitelistEntry;
 
-/// Emitted whenever a farming cycle's tracked state changes (started, moved to the next game,
+/// Emitted whenever a farming cycle's tracked state changes (started, moved to the next phase,
 /// remaining-drops count updated, stopped) - mirrors `idling::IDLE_STATE_EVENT`'s "one event, no
 /// per-mode variant" shape, even though card farming itself has no per-backend split (see this
 /// module's doc comment above). Payload is `{"steamId": "...", "state": FarmingState}`.
 pub const FARMING_STATE_EVENT: &str = "card-farming-state-changed";
 
-/// How often the farming cycle re-checks the currently-idling game's remaining drop count. A real
-/// card drop happens roughly once per ~30 min of accumulated playtime, not on a tight schedule, so
-/// this is deliberately conservative - short enough a user isn't left wondering why nothing moved
-/// for a long time, long enough not to hammer `steamcommunity.com` with per-account scrape
-/// requests. Also the unit `manager::wait_ticking` breaks into 1s checks against, so a `stop_farming`
-/// call takes effect within ~1s rather than waiting out the full interval.
-const DROPS_POLL_INTERVAL: std::time::Duration = std::time::Duration::from_secs(5 * 60);
-
-/// Card drops remaining for one game, from that game's own badge page.
-#[derive(Debug, Clone, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct DropsRemaining {
-    pub remaining: u32,
-    pub playtime_hours: f32,
-}
-
-/// One owned game with at least one card drop remaining, from the account's badge overview pages.
+/// Card drops remaining for one game, scraped from that game's own badge page overview entry.
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GameWithDrops {
@@ -71,92 +68,85 @@ pub struct GameWithDrops {
     pub playtime_hours: f32,
 }
 
-/// Why a game left the cycle without the frontend ever seeing it in `active` for long (or at all) -
-/// surfaced on [`CompletedFarm`] so the "session finished" summary can explain a fast-ending cycle
-/// (every queued game already over its max-playtime cap before the first poll, the most common way a
-/// cycle ends in well under a second) instead of it just looking like nothing happened. Mirrors
-/// `achievement_unlocker::CompletedUnlockReason`'s identical role for that feature.
+/// Which phase the cycle is currently running - see this module's doc comment. Never both at once.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub enum Phase {
+    /// Solo- (or, with `allow_multi_game_farming` on, multi-) farming one or more games that have
+    /// already crossed `hours_until_farmable` and have real card drops remaining.
+    ReadyFarm,
+    /// Bulk-idling a batch of games that haven't crossed `hours_until_farmable` yet, purely to
+    /// accrue playtime toward it.
+    BulkIdle,
+}
+
+/// Why a game left the cycle's tracking - surfaced on [`CompletedFarm`] so the "session finished"
+/// summary can explain what happened to a game that's no longer being farmed, whether or not it was
+/// ever actually a whitelist member. A manual per-game stop (Idling page) never produces one of
+/// these - that's a deliberate user action, not something that needs explaining.
 #[derive(Debug, Clone, Copy, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub enum CompletedFarmReason {
-    /// Card drops remaining hit zero - the game is genuinely done, nothing left to farm.
+    /// Card drops remaining hit zero after being actively farmed this session - a genuine finish.
     DropsExhausted,
-    /// Hit its per-game max-card-drops-farmed cap this session.
-    MaxCardDrops,
-    /// Hit its max-card-farming-time cap this session.
-    MaxCardFarmingTime,
-    /// Hit its max-playtime cap - either detected before it ever started farming (`manager::
-    /// fetch_queued_games`'s own pre-check) or partway through (`manager::poll_active`'s check).
-    MaxPlaytime,
-    /// Was already queued with zero card drops remaining before this cycle ever started (e.g.
-    /// queued via the game card's context menu without checking first) - `manager::
-    /// fetch_queued_games`'s own pre-check, mirroring `achievement_unlocker::
-    /// CompletedUnlockReason::NothingToUnlock`'s identical role for that feature.
+    /// Never had any real card drops to begin with (only reachable for a whitelist member that
+    /// turns out ineligible immediately, since the general candidate pool is built directly from
+    /// games that already have drops).
     NoDropsRemaining,
-    /// Still inside Steam's refund window per `settings::CardFarmingSettings::skip_refundable_games`
-    /// (`refund_window::farmable_at_if_in_refund_window`) - detected before it ever started farming
-    /// (`manager::fetch_queued_games`'s pre-check) or partway through (`manager::poll_active`'s
-    /// re-check). **Deliberately does not dequeue from the persisted `queue`** unlike every other
-    /// reason below - see [`CompletedFarm::farmable_at`]'s doc comment.
+    /// Still inside Steam's refund window per
+    /// `settings::CardFarmingSettings::skip_refundable_games`
+    /// (`refund_window::farmable_at_if_in_refund_window`) - only reported (and pruned from the
+    /// whitelist) for a whitelist member; a general-pool game hitting this just quietly isn't
+    /// considered, since it was never something the user explicitly opted into.
     RefundWindow,
+    /// Hit `settings::CardFarmingSettings::skip_no_playtime` - has zero recorded playtime while
+    /// that setting is on. Whitelist-only reporting, same reasoning as `RefundWindow`.
+    SkippedUnplayed,
+    /// Hit `settings::CardFarmingSettings::farm_unplayed_only` - has real recorded playtime while
+    /// that setting restricts farming to unplayed games only. Whitelist-only reporting, same
+    /// reasoning as `RefundWindow`.
+    SkippedPlayed,
 }
 
-/// One game a farming cycle fully finished with this pass, tagged with why - every reason except
-/// [`CompletedFarmReason::RefundWindow`] also dequeues the game from the account's *persisted*
-/// `queue` (see `manager::poll_active`'s doc comment for why this used to only apply to
-/// `DropsExhausted`, and why that was changed for parity with `achievement_unlocker`, which always
-/// dequeues on any cap). Mirrors `achievement_unlocker::CompletedUnlock`'s identical role in
-/// `AchievementUnlockerState::completed`. Not populated for a user-initiated stop - matches
-/// achievement-unlocker's same distinction (a manual stop isn't "this game is done").
+/// One game a farming cycle stopped tracking this session, tagged with why.
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CompletedFarm {
     pub app_id: u32,
     pub name: String,
-    /// Real remaining count, not hardcoded 0 - a cap-based stop can leave drops genuinely
-    /// remaining, unlike `DropsExhausted` where 0 is always accurate.
+    /// Real remaining count at the time this was reported - `0` for `DropsExhausted`/
+    /// `NoDropsRemaining`, the actual remaining count for every other reason (a filter-based
+    /// exclusion doesn't mean the drops are gone, just that this session won't chase them).
     pub remaining: u32,
     pub reason: CompletedFarmReason,
     /// Only `Some` when `reason` is [`CompletedFarmReason::RefundWindow`] - unix seconds after
     /// which this game is expected to exit Steam's refund window based on its purchase date, so the
-    /// frontend can tell the user *when* it'll resume rather than just that it's paused. Every other
-    /// reason requires a deliberate user action (raise a cap, re-add the game) to become farmable
-    /// again, so there's no equivalent "resumes at" moment worth reporting for them.
+    /// frontend can tell the user *when* it'll resume rather than just that it's paused.
     pub farmable_at: Option<i64>,
-}
-
-/// One queued game as persisted to disk by [`queue`] - mirrors
-/// `achievement_unlocker::AchievementUnlockerEntry`'s shape/reasoning exactly (`name` stored
-/// alongside `app_id` so the queue tab can render an entry before a fresh `get_games_with_drops`
-/// call resolves, and survives a game transiently missing from that response).
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct CardFarmingQueueEntry {
-    pub app_id: u32,
-    pub name: String,
 }
 
 /// One farming cycle's full state - what `get_farming_state`/[`FARMING_STATE_EVENT`] return.
 /// `active`/`queue`/`completed` only ever reflect *this* cycle's own bookkeeping, not a persisted
-/// list - once a cycle ends (stopped or drops genuinely exhausted) its session is dropped entirely,
-/// so a later `get_farming_state` call for the same account reads back `FarmingState::default()`.
+/// list - once a cycle ends (stopped or nothing left eligible) its session is dropped entirely, so a
+/// later `get_farming_state` call for the same account reads back `FarmingState::default()`.
 #[derive(Debug, Clone, Serialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct FarmingState {
     pub is_farming: bool,
-    /// Games currently being idled for their drops - up to `manager::MAX_CONCURRENT_FARMING` (32,
-    /// mirroring `idling`'s own cap) at once.
+    /// Which phase produced `active` - `None` only when the cycle isn't running at all.
+    pub phase: Option<Phase>,
+    /// The current phase's target(s) - one game (solo ready-farm), several (multi-game ready-farm
+    /// or bulk-idle), republished once per outer-loop iteration. The restart-cycle's own internal
+    /// stop/pause/restart choreography deliberately never surfaces here - see
+    /// `manager::run_restart_cycle`'s doc comment.
     pub active: Vec<FarmingProgress>,
-    /// Games with drops remaining that haven't started idling yet - backfilled into `active` as
-    /// slots free up.
+    /// Every other currently-eligible game not selected as a target this iteration - either still
+    /// accumulating playtime, or a ready game that lost the fewest-remaining tie-break.
     pub queue: Vec<GameWithDrops>,
     pub completed: Vec<CompletedFarm>,
-    /// Set once by `manager::run_cycle`/`manager::poll_active` on a definitive mid-cycle Steam
-    /// Community session expiry (see `AppError::SteamCommunitySessionExpired`) - a hard stop, not
-    /// the per-item warn-and-continue pattern the rest of this loop uses for other poll failures,
-    /// since every active game shares the same cookies: one expiring means all of them are dead.
-    /// Defaults to `false` via `#[derive(Default)]`, so every freshly-built `FarmingState` (a new
-    /// cycle starting) picks it up for free with no extra code.
+    /// Set once by `manager::run_cycle` on a definitive mid-cycle Steam Community session expiry
+    /// (see `AppError::SteamCommunitySessionExpired`) - a hard stop, since every active game shares
+    /// the same cookies: one expiring means all of them are dead.
     pub session_expired: bool,
 }
 
@@ -171,15 +161,12 @@ pub struct FarmingProgress {
     pub initial_remaining: u32,
     pub remaining: u32,
     pub playtime_hours: f32,
-    /// When this game entered `active` - drives `settings::FarmingCaps`'s `maxCardFarmingTime`
-    /// auto-stop check (`manager::is_capped`). Not reported to the frontend (this struct only
-    /// derives `Serialize`, never `Deserialize`, so `#[serde(skip)]` needs no `Default`).
-    #[serde(skip)]
-    pub started_at: std::time::Instant,
-    /// This game's real total playtime (`games::OwnedGame::playtime_forever_minutes`), read once
-    /// when it entered `active` - the baseline `manager::poll_active`'s max-playtime auto-stop
-    /// estimates forward from via `baseline_playtime_minutes + started_at.elapsed()`, avoiding a
-    /// live re-fetch every poll. Not reported to the frontend - an internal auto-stop input only.
-    #[serde(skip)]
-    pub baseline_playtime_minutes: u64,
+    /// Unix millis when this game most recently entered `active` and has stayed continuously
+    /// present there since - deliberately untouched by the restart-cycle's own internal stop/pause/
+    /// restart (that choreography happens entirely below the once-per-outer-iteration granularity
+    /// this field is stamped at), only reset if the game genuinely leaves `active` (drops back to
+    /// `queue`) and later re-enters. Exists specifically so the frontend's on-card idling timer -
+    /// which has no backend timestamp of its own and resets on any observed gap in the raw idle
+    /// state - can stay accurate despite this feature's real, repeated stop/restarts under the hood.
+    pub active_since: i64,
 }

@@ -12,6 +12,10 @@ import { Step, Steps } from 'fumadocs-ui/components/steps';
 
 The Card Farming feature allows you to automatically farm trading cards from your Steam games without needing to download or play them. This is ideal for users looking to collect cards for badge crafting or marketplace sales efficiently.
 
+<Callout type="warn">
+    Because Card Farming is a bit more complex than other features, it is recommended to read the [How It Works](/docs/features/card-farming/how-it-works) page first.
+</Callout>
+
 <Callout type="info">
     You must add your [Steam Credentials](/docs/steam-credentials) before you can use this feature.
     
@@ -22,38 +26,34 @@ The Card Farming feature allows you to automatically farm trading cards from you
 
 <Steps>
   <Step>
-    Go to <MockButton type='context-cog' content='Settings → Card Farming' /> and enabled <MockButton type='content' content='Farm all games' />
-  </Step>
-
-  <Step>
     Click <MockButton type='card-farming' /> in the sidebar, then click <MockButton type='card-farming-action' />
+
+    Card Farming will automatically work through all games with card drops remaining in an optimized order, with no extra setup needed
   </Step>
 </Steps>
 
-### Farm Specific Games
+### Farm Specific Games Only
+
+If you'd rather farm specific games instead, add those games to your whitelist. While any games are in the whitelist, only those games will be farmed, ignoring all other games.
 
 <Steps>
-  <Step>
-    Go to <MockButton type='context-cog' content='Settings → Card Farming' /> and enabled <MockButton type='content' content='Farm games in queue' />
-  </Step>
-
   <Step>
     Click <MockButton type='card-farming' /> in the sidebar
   </Step>
 
   <Step>
-    Go to the <MockButton type='all-games' /> tab and click the <MockButton type='context-add' /> button on individual games to add them to your queue
+    Go to the <MockButton type='content' content='Games With Drops' /> tab and click the <MockButton type='context-add' /> button on individual games to add them to your whitelist
   </Step>
 
   <Step>
-    Switch to the <MockButton type='content' content='Queue' /> tab to review what you've added, then click <MockButton type='card-farming-action' />
+    Switch to the <MockButton type='content' content='Whitelist' /> tab to review what you've added, then click <MockButton type='card-farming-action' />
   </Step>
 </Steps>
 
 ### Card Farming Tabs
 
 * **Games With Drops**: shows all games in your account with card drops remaining
-* **Queue**: games you've specifically chosen to farm
+* **Whitelisted**: games you've chosen to farming specifically — leave empty to automatically farm all game with drops
 * **Blacklisted**: games excluded from farming entirely, [read more](/docs/features/card-farming/blacklisting-games)
 
 <DocsCTA />

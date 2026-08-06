@@ -1,4 +1,4 @@
-import type { CardFarmingSettings, SteamCookies } from '../types'
+import type { SteamCookies } from '../types'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useGamesWithDrops } from './useGamesWithDrops'
 import { useCardFarmingStore } from '@/shared/stores/cardFarmingStore'
@@ -17,19 +17,20 @@ import { canResolveCookiesAutomatically } from '@/shared/utils/subscriptionAcces
 // comment for why): `connect` only validates+resolves cookies (via `useGamesWithDrops`, which
 // doubles as the "Games With Drops" browse tab's own data source) and remembers which cookies
 // worked in `manualCookiesRef` - it never starts a farming cycle. `start` reuses whatever cookies
-// `connect` already proved work, so it only needs `account`; it farms whatever this account's
-// `card_farming::queue` currently holds (Rust-side, not passed from here - see `commands.rs`'s
-// `start_farming` doc comment).
+// `connect` already proved work, so it only needs `account`; the backend resolves everything else
+// itself every outer-loop iteration (whitelist scope, filters, phase) - see
+// `card_farming::manager`'s module doc comment - so there's no queue/mode to build or read here
+// before calling it.
 //
 // `start` deliberately does NOT apply `start_farming`'s own return value to the store (an earlier
 // version of this hook did) - see `useAchievementUnlockerRun.start`'s identical doc comment for why:
 // that return value is only a spawn-time snapshot, and for a cycle that ends within a couple of
-// milliseconds (every queued game already over its max-playtime cap or already out of drops, so
-// `card_farming::manager`'s very first poll finds nothing to farm), the backend's real, final
-// `FARMING_STATE_EVENT` could land and get applied by `useCardFarmingSync` before this command's own
-// promise resolves back here - applying the stale snapshot afterward would clobber the correct
-// "finished" state with a phantom "still farming" one nothing could clear. `stop` already relies
-// purely on the event stream - `start` now matches it instead of double-sourcing state.
+// milliseconds (nothing eligible to farm at all, so `card_farming::manager`'s very first pass finds
+// nothing), the backend's real, final `FARMING_STATE_EVENT` could land and get applied by
+// `useCardFarmingSync` before this command's own promise resolves back here - applying the stale
+// snapshot afterward would clobber the correct "finished" state with a phantom "still farming" one
+// nothing could clear. `stop` already relies purely on the event stream - `start` now matches it
+// instead of double-sourcing state.
 export const useCardFarming = () => {
   const account = useSessionStore(state => state.account)
   const subscriptionTier = useSubscriptionStore(state => state.subscriptionTier)
@@ -42,16 +43,6 @@ export const useCardFarming = () => {
   const [connectErrorCode, setConnectErrorCode] = useState<string | null>(null)
   const manualCookiesRef = useRef<SteamCookies | undefined>(undefined)
   const browse = useGamesWithDrops()
-  // Own copy of just the `allGames` field, for CardFarmingPageHeader's "Farming mode: ..." label
-  // while idle - not the tab-gated `useCardFarmingSettings` copy (that only loads while the
-  // Settings modal's card-farming tab is open). `refreshSettingsMode` lets CardFarmingPage re-read
-  // it on the modal's close transition, same pattern as useInventory's `refreshSettings`.
-  const [allGames, setAllGames] = useState<boolean | null>(null)
-  // Whether the one-time "farming multiple games at once" notice has already been dismissed for
-  // this account - read alongside `allGames` for the same reason (needed at Start-click time,
-  // outside the Settings modal). `null` until the first fetch resolves, so CardFarmingPage can
-  // avoid showing (or wrongly skipping) the notice before the real value is known.
-  const [multiGameFarmingNoticeSeen, setMultiGameFarmingNoticeSeen] = useState<boolean | null>(null)
 
   // Both outcomes mean the Steam Community session itself couldn't be confirmed (as opposed to
   // some other card-farming-specific failure) - a confirmed `expired` and a merely
@@ -66,38 +57,6 @@ export const useCardFarming = () => {
   // resets what the frontend displays/reuses.
   const isSessionCode = (code: string) =>
     code === 'steam_community_session_expired' || code === 'steam_community_session_failed'
-
-  const refreshSettingsMode = useCallback(async () => {
-    if (!account) return
-    try {
-      const settings = await invoke<CardFarmingSettings>('get_card_farming_settings', { account })
-      setAllGames(settings.allGames)
-      setMultiGameFarmingNoticeSeen(settings.multiGameFarmingNoticeSeen)
-    } catch (error) {
-      console.error('Error in (get_card_farming_settings):', error)
-    }
-  }, [account])
-
-  useEffect(() => {
-    refreshSettingsMode()
-  }, [refreshSettingsMode])
-
-  // Persists the multi-game notice as dismissed so it never shows again for this account -
-  // read-then-write the whole settings object since `set_card_farming_settings` is a full
-  // replace, not a per-field patch (mirrors `useCardFarmingSettings.ts`'s `save`).
-  const markMultiGameNoticeSeen = useCallback(async () => {
-    if (!account) return
-    setMultiGameFarmingNoticeSeen(true)
-    try {
-      const current = await invoke<CardFarmingSettings>('get_card_farming_settings', { account })
-      await invoke('set_card_farming_settings', {
-        account,
-        settings: { ...current, multiGameFarmingNoticeSeen: true },
-      })
-    } catch (error) {
-      console.error('Error in (set_card_farming_settings):', error)
-    }
-  }, [account])
 
   // A cycle that was already running when its session expired mid-farm (as opposed to `start`'s
   // own catch block below, which only covers a fresh connect/start attempt failing) - reached via
@@ -250,10 +209,6 @@ export const useCardFarming = () => {
     isBrowseLoading: browse.isLoading,
     removeBrowseGame: browse.removeGame,
     refreshBrowse,
-    allGames,
-    multiGameFarmingNoticeSeen,
-    refreshSettingsMode,
-    markMultiGameNoticeSeen,
     connect,
     start,
     stop,

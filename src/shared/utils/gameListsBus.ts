@@ -6,7 +6,7 @@
 // premise, so a mounted hook needs a way to hear about a change made from elsewhere without a
 // bigger rework into a shared store.
 export type GameListName =
-  'favorites' | 'achievementUnlockerQueue' | 'autoIdleList' | 'cardFarmingQueue'
+  'favorites' | 'achievementUnlockerQueue' | 'autoIdleList' | 'cardFarmingWhitelist'
 
 const bus = new EventTarget()
 
