@@ -1,20 +1,23 @@
-import type { CardFarmingQueueEntry } from '../types'
+import type { CardFarmingWhitelistEntry } from '../types'
 import { TbX } from 'react-icons/tb'
 import { Button, Typography } from '@heroui/react'
 import { GameThumbnail } from '@/shared/components/GameThumbnail'
 import { gameCardContextAttrs } from '@/shared/utils/gameCardContext'
 
-interface CardFarmingQueueCardProps {
-  game: CardFarmingQueueEntry
-  isPending?: boolean
+interface CardFarmingWhitelistCardProps {
+  game: CardFarmingWhitelistEntry
+  isPending: boolean
   onRemove: () => void
 }
 
-// Used in the "Queue" tab - mirrors AchievementUnlockerListCard's shape (thumbnail + name + remove
-// button, the whole card draggable to reorder via SortableCardFarmingQueueCard), minus the
-// achievement-specific "edit order" button - card farming has no per-game ordering concept, only
-// which games are queued at all.
-export const CardFarmingListCard = ({ game, isPending, onRemove }: CardFarmingQueueCardProps) => {
+// Used in the "Whitelist" tab - mirrors CardFarmingBlacklistCard's shape exactly (thumbnail + name
+// + a single remove button, no drag-to-reorder): the whitelist has no ordering concept either, only
+// membership - see `card_farming::whitelist`'s doc comment.
+export const CardFarmingWhitelistCard = ({
+  game,
+  isPending,
+  onRemove,
+}: CardFarmingWhitelistCardProps) => {
   return (
     <div className='group flex flex-col gap-2' {...gameCardContextAttrs(game.appId, game.name)}>
       <GameThumbnail appId={game.appId} name={game.name} />
@@ -31,7 +34,7 @@ export const CardFarmingListCard = ({ game, isPending, onRemove }: CardFarmingQu
         </Typography>
         <Button
           isIconOnly
-          aria-label={`Remove ${game.name}`}
+          aria-label={`Remove ${game.name} from whitelist`}
           className='shrink-0'
           isPending={isPending}
           size='sm'

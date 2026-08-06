@@ -13,10 +13,11 @@ export interface GameWithDrops {
   playtimeHours: number
 }
 
-// Mirrors `card_farming::CardFarmingQueueEntry` - one entry in the account's curated card-farming
-// queue (see `card_farming::queue`'s doc comment). `start_farming` only ever farms games with
-// drops remaining that are also in this queue.
-export interface CardFarmingQueueEntry {
+// Mirrors `card_farming::CardFarmingWhitelistEntry` - one entry in the account's card-farming
+// whitelist (see `card_farming::whitelist`'s doc comment). When non-empty, `start_farming` only
+// ever farms games with drops remaining that are also on this list - it has no ordering of its own,
+// only scope.
+export interface CardFarmingWhitelistEntry {
   appId: number
   name: string
 }
@@ -35,16 +36,19 @@ export interface FarmingProgress {
   initialRemaining: number
   remaining: number
   playtimeHours: number
+  // Unix millis when this game most recently entered `active` and has stayed continuously present
+  // there since - see `FarmingProgress::active_since`'s doc comment (Rust side). Consumed by
+  // `useCardFarmingActiveSince`/the on-card idling timer merge, not by anything in this feature's
+  // own UI directly.
+  activeSince: number
 }
+
+// Mirrors src-tauri/src/card_farming/mod.rs::Phase.
+export type FarmingPhase = 'readyFarm' | 'bulkIdle'
 
 // Mirrors src-tauri/src/card_farming/mod.rs::CompletedFarmReason.
 export type CompletedFarmReason =
-  | 'dropsExhausted'
-  | 'maxCardDrops'
-  | 'maxCardFarmingTime'
-  | 'maxPlaytime'
-  | 'noDropsRemaining'
-  | 'refundWindow'
+  'dropsExhausted' | 'noDropsRemaining' | 'refundWindow' | 'skippedUnplayed' | 'skippedPlayed'
 
 // Mirrors src-tauri/src/card_farming/mod.rs::CompletedFarm.
 export interface CompletedFarm {
@@ -53,12 +57,14 @@ export interface CompletedFarm {
   remaining: number
   reason: CompletedFarmReason
   // Only set when `reason` is `'refundWindow'` - unix seconds after which this game is expected
-  // to exit Steam's refund window and resume farming automatically.
+  // to exit Steam's refund window and become eligible again.
   farmableAt: number | null
 }
 
 export interface FarmingState {
   isFarming: boolean
+  // Which phase produced `active` - `null` only when the cycle isn't running at all.
+  phase: FarmingPhase | null
   active: FarmingProgress[]
   queue: GameWithDrops[]
   completed: CompletedFarm[]
@@ -70,33 +76,35 @@ export interface FarmingState {
 
 export const DEFAULT_FARMING_STATE: FarmingState = {
   isFarming: false,
+  phase: null,
   active: [],
   queue: [],
   completed: [],
   sessionExpired: false,
 }
 
-// Mirrors src-tauri/src/card_farming/settings.rs::DropSortOrder - a multi-option preference (like
-// inventory-manager's PricePreference), not independent booleans. `queueOrder` (the default) farms
-// games in the order they appear in the account's curated card-farming queue (drag-reorderable on
-// the Queue tab); `highestFirst`/`lowestFirst` ignore the queue's order and resort by drop count.
-export type DropSortOrder = 'queueOrder' | 'highestFirst' | 'lowestFirst'
-
-// Mirrors src-tauri/src/card_farming/settings.rs::CardFarmingSettings. Blacklisting now lives in
-// its own list (`CardFarmingBlacklistEntry`/`useCardFarmingBlacklist`, backed by its own file) -
-// see that Rust struct's doc comment for why it's not a field here.
+// Mirrors src-tauri/src/card_farming/settings.rs::CardFarmingSettings. Blacklisting/whitelisting
+// each live in their own list (own file, own commands) - see those Rust structs' doc comments for
+// why they're not fields here. Ordering is never user-configurable - the app always picks
+// automatically (fewest drops remaining first while farming, closest to `hoursUntilFarmable` first
+// while accumulating playtime).
 export interface CardFarmingSettings {
-  listGames: boolean
-  allGames: boolean
   skipNoPlaytime: boolean
   farmUnplayedOnly: boolean
-  dropSortOrder: DropSortOrder
   nextTaskCheckbox: boolean
   nextTask: string | null
   autoFarmCards: boolean
+  // Whether the user has dismissed the one-time "farming multiple games at once can slow down
+  // drops" notice shown from the `allowMultiGameFarming` settings toggle.
   multiGameFarmingNoticeSeen: boolean
-  singleFarmingMode: boolean
   // Agent-mode only - see `card_farming::settings::CardFarmingSettings::skip_refundable_games`'s
   // doc comment. A no-op for CLI-mode accounts (no purchase-date data exists for them).
   skipRefundableGames: boolean
+  // Opt-in: idle every currently-ready game simultaneously instead of solo-targeting just the one
+  // with the fewest drops remaining. Off by default and gated behind the one-time warning above -
+  // idling more than one game with real card drops remaining at once measurably collapses each
+  // one's drop rate.
+  allowMultiGameFarming: boolean
+  // Hours of playtime a game needs before its card drops are considered reachable.
+  hoursUntilFarmable: number
 }

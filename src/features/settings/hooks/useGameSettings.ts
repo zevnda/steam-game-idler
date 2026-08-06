@@ -6,26 +6,25 @@ import { invoke } from '@/shared/utils/invoke'
 
 interface PerGameSettings {
   maxIdleTime: number | null
-  maxCardDrops: number | null
-  maxCardFarmingTime: number | null
   maxAchievementUnlocks: number | null
   maxPlaytime: number | null
 }
 
 const EMPTY_PER_GAME: PerGameSettings = {
   maxIdleTime: null,
-  maxCardDrops: null,
-  maxCardFarmingTime: null,
   maxAchievementUnlocks: null,
   maxPlaytime: null,
 }
 
-// Backs the Game Settings tab - a cross-cutting screen spanning idling/card-farming/
-// achievement-unlocker's own per-account settings modules (see each module's own doc comment for
-// why the auto-stop caps live as sibling fields there rather than in one shared blob), plus
-// `max_playtime`'s own settings module (not owned by any one feature - see its module doc
-// comment). Both the global fields and the `appId`-keyed per-game fields re-fetch every time this
-// tab becomes active (not just once) - see the per-game load effect's own doc comment for why that
+// Backs the Game Settings tab - a cross-cutting screen spanning idling/achievement-unlocker's own
+// per-account settings modules (see each module's own doc comment for why the auto-stop caps live
+// as sibling fields there rather than in one shared blob), plus `max_playtime`'s own settings
+// module (not owned by any one feature - see its module doc comment). Card farming has no caps of
+// its own anymore (removed in its rewrite - their "elapsed since this game entered `active`"
+// semantics stopped meaning anything coherent once farming started stopping/restarting a game every
+// few minutes, see `card_farming::settings`'s doc comment) so it no longer contributes any fields
+// here. Both the global fields and the `appId`-keyed per-game fields re-fetch every time this tab
+// becomes active (not just once) - see the per-game load effect's own doc comment for why that
 // matters more here than in `useCardFarmingSettings`'s simpler "load once" gating.
 export const useGameSettings = () => {
   const isOpen = useSettingsModalStore(state => state.isOpen)
@@ -34,7 +33,6 @@ export const useGameSettings = () => {
   const account = useSessionStore(state => state.account)
 
   const [globalMaxIdleTime, setGlobalMaxIdleTimeState] = useState(0)
-  const [globalMaxCardFarmingTime, setGlobalMaxCardFarmingTimeState] = useState(0)
   const [globalMaxPlaytime, setGlobalMaxPlaytimeState] = useState(0)
   const [isLoadingGlobal, setIsLoadingGlobal] = useState(false)
   const [loadErrorCode, setLoadErrorCode] = useState<string | null>(null)
@@ -57,33 +55,18 @@ export const useGameSettings = () => {
     setIsLoadingGlobal(true)
     setLoadErrorCode(null)
     try {
-      const [
-        idle,
-        farming,
-        playtime,
-        idlingCustomized,
-        cardFarmingCustomized,
-        achievementCustomized,
-        playtimeCustomized,
-      ] = await Promise.all([
-        invoke<number>('get_idling_global_max_idle_time', { account }),
-        invoke<number>('get_card_farming_global_max_farming_time', { account }),
-        invoke<number>('get_global_max_playtime', { account }),
-        invoke<number[]>('get_idling_customized_app_ids', { account }),
-        invoke<number[]>('get_card_farming_customized_app_ids', { account }),
-        invoke<number[]>('get_achievement_unlocker_customized_app_ids', { account }),
-        invoke<number[]>('get_max_playtime_customized_app_ids', { account }),
-      ])
+      const [idle, playtime, idlingCustomized, achievementCustomized, playtimeCustomized] =
+        await Promise.all([
+          invoke<number>('get_idling_global_max_idle_time', { account }),
+          invoke<number>('get_global_max_playtime', { account }),
+          invoke<number[]>('get_idling_customized_app_ids', { account }),
+          invoke<number[]>('get_achievement_unlocker_customized_app_ids', { account }),
+          invoke<number[]>('get_max_playtime_customized_app_ids', { account }),
+        ])
       setGlobalMaxIdleTimeState(idle)
-      setGlobalMaxCardFarmingTimeState(farming)
       setGlobalMaxPlaytimeState(playtime)
       setCustomizedAppIds(
-        new Set([
-          ...idlingCustomized,
-          ...cardFarmingCustomized,
-          ...achievementCustomized,
-          ...playtimeCustomized,
-        ]),
+        new Set([...idlingCustomized, ...achievementCustomized, ...playtimeCustomized]),
       )
     } catch (error) {
       console.error('Error loading global game settings:', error)
@@ -103,13 +86,7 @@ export const useGameSettings = () => {
   // - shared by the per-game load effect below (fresh from the fetch) and every per-game setter
   // further down (fresh from merging the save result into the previous per-game state).
   const syncCustomizedAppId = useCallback((appId: number, next: PerGameSettings) => {
-    const isCustomized = Boolean(
-      next.maxIdleTime ||
-      next.maxCardDrops ||
-      next.maxCardFarmingTime ||
-      next.maxAchievementUnlocks ||
-      next.maxPlaytime,
-    )
+    const isCustomized = Boolean(next.maxIdleTime || next.maxAchievementUnlocks || next.maxPlaytime)
     setCustomizedAppIds(prev => {
       if (prev.has(appId) === isCustomized) return prev
       const nextSet = new Set(prev)
@@ -138,28 +115,17 @@ export const useGameSettings = () => {
     setLoadErrorCode(null)
     ;(async () => {
       try {
-        const [maxIdleTime, maxCardDrops, maxCardFarmingTime, maxAchievementUnlocks, maxPlaytime] =
-          await Promise.all([
-            invoke<number | null>('get_idling_max_idle_time', { account, appId: selectedAppId }),
-            invoke<number | null>('get_card_farming_max_card_drops', {
-              account,
-              appId: selectedAppId,
-            }),
-            invoke<number | null>('get_card_farming_max_card_farming_time', {
-              account,
-              appId: selectedAppId,
-            }),
-            invoke<number | null>('get_achievement_unlocker_max_unlocks', {
-              account,
-              appId: selectedAppId,
-            }),
-            invoke<number | null>('get_max_playtime', { account, appId: selectedAppId }),
-          ])
+        const [maxIdleTime, maxAchievementUnlocks, maxPlaytime] = await Promise.all([
+          invoke<number | null>('get_idling_max_idle_time', { account, appId: selectedAppId }),
+          invoke<number | null>('get_achievement_unlocker_max_unlocks', {
+            account,
+            appId: selectedAppId,
+          }),
+          invoke<number | null>('get_max_playtime', { account, appId: selectedAppId }),
+        ])
         if (cancelled) return
         const next = {
           maxIdleTime,
-          maxCardDrops,
-          maxCardFarmingTime,
           maxAchievementUnlocks,
           maxPlaytime,
         }
@@ -225,20 +191,6 @@ export const useGameSettings = () => {
     [account, runSave],
   )
 
-  const setGlobalMaxCardFarmingTime = useCallback(
-    async (minutes: number) => {
-      if (!account) return false
-      const result = await runSave<number>('set_card_farming_global_max_farming_time', {
-        account,
-        minutes,
-      })
-      if (!result.ok) return false
-      setGlobalMaxCardFarmingTimeState(result.value)
-      return true
-    },
-    [account, runSave],
-  )
-
   const setMaxIdleTime = useCallback(
     async (value: number) => {
       if (!account || selectedAppId === null) return false
@@ -250,44 +202,6 @@ export const useGameSettings = () => {
       if (!result.ok) return false
       setPerGame(prev => {
         const next = { ...prev, maxIdleTime: result.value }
-        syncCustomizedAppId(selectedAppId, next)
-        return next
-      })
-      return true
-    },
-    [account, selectedAppId, runSave, syncCustomizedAppId],
-  )
-
-  const setMaxCardDrops = useCallback(
-    async (value: number) => {
-      if (!account || selectedAppId === null) return false
-      const result = await runSave<number | null>('set_card_farming_max_card_drops', {
-        account,
-        appId: selectedAppId,
-        maxCardDrops: asOverride(value),
-      })
-      if (!result.ok) return false
-      setPerGame(prev => {
-        const next = { ...prev, maxCardDrops: result.value }
-        syncCustomizedAppId(selectedAppId, next)
-        return next
-      })
-      return true
-    },
-    [account, selectedAppId, runSave, syncCustomizedAppId],
-  )
-
-  const setMaxCardFarmingTime = useCallback(
-    async (value: number) => {
-      if (!account || selectedAppId === null) return false
-      const result = await runSave<number | null>('set_card_farming_max_card_farming_time', {
-        account,
-        appId: selectedAppId,
-        maxCardFarmingTime: asOverride(value),
-      })
-      if (!result.ok) return false
-      setPerGame(prev => {
-        const next = { ...prev, maxCardFarmingTime: result.value }
         syncCustomizedAppId(selectedAppId, next)
         return next
       })
@@ -353,7 +267,6 @@ export const useGameSettings = () => {
     selectGame: setSelectedAppId,
     customizedAppIds,
     globalMaxIdleTime,
-    globalMaxCardFarmingTime,
     globalMaxPlaytime,
     perGame,
     isLoading: isLoadingGlobal || isLoadingGame,
@@ -362,10 +275,7 @@ export const useGameSettings = () => {
     actionErrorCode,
     refresh: loadGlobal,
     setGlobalMaxIdleTime,
-    setGlobalMaxCardFarmingTime,
     setMaxIdleTime,
-    setMaxCardDrops,
-    setMaxCardFarmingTime,
     setMaxAchievementUnlocks,
     setGlobalMaxPlaytime,
     setMaxPlaytime,

@@ -11,23 +11,23 @@ import { useGamesList } from '@/features/games-list/hooks/useGamesList'
 import { InputField } from '@/shared/components/InputField'
 import { SettingsRow } from '@/shared/components/SettingsRow'
 
-// The Game Settings tab - a cross-cutting screen over idling/card-farming/achievement-unlocker's
-// own auto-stop caps, plus `max_playtime`'s own cross-feature cap (see `useGameSettings.ts`'s doc
-// comment). Layout mirrors `main`'s own GameSettings.tsx (a searchable game list on the left,
-// account-wide + per-game fields on the right) - kept since it's genuinely unambiguous UX (global
-// fields disabled while a game is selected and vice versa), not because it needs to match
-// pixel-for-pixel.
+// The Game Settings tab - a cross-cutting screen over idling/achievement-unlocker's own auto-stop
+// caps, plus `max_playtime`'s own cross-feature cap (see `useGameSettings.ts`'s doc comment). Card
+// farming has no caps of its own anymore - removed in its rewrite, see
+// `card_farming::settings`'s doc comment. Layout mirrors `main`'s own GameSettings.tsx (a
+// searchable game list on the left, account-wide + per-game fields on the right) - kept since it's
+// genuinely unambiguous UX (global fields disabled while a game is selected and vice versa), not
+// because it needs to match pixel-for-pixel.
 //
-// Fields render as four bordered `SettingsSection`s (Max Playtime / Idling / Card Farming /
-// Achievement Unlocker), reusing `KeybindsSettingsTab.tsx`'s established `rounded-lg
-// border border-border` grouped-box convention - the fields otherwise read as one undifferentiated,
-// cramped list despite governing architecturally separate auto-stop mechanisms
-// (`max_playtime::enforcement`, `idling::auto_stop`, `card_farming::manager`,
-// `achievement_unlocker::manager`), which was a real source of user confusion: nothing signalled
-// that "max idle time" never applies to a game being card-farmed or achievement-unlocked. Max
-// Playtime gets the top section (rather than a fourth per-feature one, or a note repeated in each
-// of the other three) since it's the one cap that genuinely applies everywhere - manual idling,
-// auto-idle, achievement unlocking, and card farming alike.
+// Fields render as three bordered `SettingsSection`s (Max Playtime / Idling / Achievement
+// Unlocker), reusing `KeybindsSettingsTab.tsx`'s established `rounded-lg border border-border`
+// grouped-box convention - the fields otherwise read as one undifferentiated, cramped list despite
+// governing architecturally separate auto-stop mechanisms (`max_playtime::enforcement`,
+// `idling::auto_stop`, `achievement_unlocker::manager`), which was a real source of user confusion:
+// nothing signalled that "max idle time" never applies to a game being achievement-unlocked. Max
+// Playtime gets the top section (rather than a note repeated in each of the other two) since it's
+// the one cap that genuinely applies everywhere - manual idling, auto-idle, achievement unlocking,
+// and card farming alike.
 export const GameSettingsTab = () => {
   const { t } = useTranslation()
   const { games } = useGamesList()
@@ -38,7 +38,6 @@ export const GameSettingsTab = () => {
     selectGame,
     customizedAppIds,
     globalMaxIdleTime,
-    globalMaxCardFarmingTime,
     globalMaxPlaytime,
     perGame,
     isLoading,
@@ -46,10 +45,7 @@ export const GameSettingsTab = () => {
     actionErrorCode,
     refresh,
     setGlobalMaxIdleTime,
-    setGlobalMaxCardFarmingTime,
     setMaxIdleTime,
-    setMaxCardDrops,
-    setMaxCardFarmingTime,
     setMaxAchievementUnlocks,
     setGlobalMaxPlaytime,
     setMaxPlaytime,
@@ -186,10 +182,6 @@ export const GameSettingsTab = () => {
               {[
                 { section: 'maxPlaytime', rows: ['globalMaxPlaytime', 'maxPlaytime'] },
                 { section: 'idling', rows: ['globalMaxIdleTime', 'maxIdleTime'] },
-                {
-                  section: 'cardFarming',
-                  rows: ['globalMaxCardFarmingTime', 'maxCardFarmingTime', 'maxCardDrops'],
-                },
                 { section: 'achievementUnlocker', rows: ['maxAchievementUnlocks'] },
               ].map(({ section, rows }) => (
                 <div className='flex flex-col gap-2' key={section}>
@@ -271,61 +263,6 @@ export const GameSettingsTab = () => {
                       minValue={0}
                       value={perGame.maxIdleTime ?? 0}
                       onCommit={withFailureToast(setMaxIdleTime)}
-                    />
-                  </InputWithHint>
-                </SettingsRow>
-              </SettingsSection>
-
-              <SettingsSection
-                label={t('dashboard.sidebar.nav.cardFarming')}
-                note={t('dashboard.settings.gameSettings.cardFarmingScopeNote')}
-              >
-                <SettingsRow
-                  description={t(
-                    'dashboard.settings.gameSettings.globalMaxCardFarmingTime.description',
-                  )}
-                  title={t('dashboard.settings.gameSettings.globalMaxCardFarmingTime.label')}
-                >
-                  <InputWithHint hint={t('common.zeroUnlimitedHint')}>
-                    <InputField
-                      ariaLabel={t(
-                        'dashboard.settings.gameSettings.globalMaxCardFarmingTime.label',
-                      )}
-                      isDisabled={selectedAppId !== null}
-                      minValue={0}
-                      value={globalMaxCardFarmingTime}
-                      onCommit={withFailureToast(setGlobalMaxCardFarmingTime)}
-                    />
-                  </InputWithHint>
-                </SettingsRow>
-
-                <SettingsRow
-                  description={t('dashboard.settings.gameSettings.maxCardFarmingTime.description')}
-                  title={t('dashboard.settings.gameSettings.maxCardFarmingTime.label')}
-                >
-                  <InputWithHint hint={t('common.zeroUnlimitedHint')}>
-                    <InputField
-                      ariaLabel={t('dashboard.settings.gameSettings.maxCardFarmingTime.label')}
-                      isDisabled={selectedAppId === null}
-                      minValue={0}
-                      value={perGame.maxCardFarmingTime ?? 0}
-                      onCommit={withFailureToast(setMaxCardFarmingTime)}
-                    />
-                  </InputWithHint>
-                </SettingsRow>
-
-                <SettingsRow
-                  description={t('dashboard.settings.gameSettings.maxCardDrops.description')}
-                  showDivider={false}
-                  title={t('dashboard.settings.gameSettings.maxCardDrops.label')}
-                >
-                  <InputWithHint hint={t('dashboard.settings.gameSettings.maxCardDrops.hint')}>
-                    <InputField
-                      ariaLabel={t('dashboard.settings.gameSettings.maxCardDrops.label')}
-                      isDisabled={selectedAppId === null}
-                      minValue={0}
-                      value={perGame.maxCardDrops ?? 0}
-                      onCommit={withFailureToast(setMaxCardDrops)}
                     />
                   </InputWithHint>
                 </SettingsRow>

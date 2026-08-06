@@ -1,15 +1,15 @@
 //! Persists one account's card-farming blacklist (app IDs the user has explicitly excluded from
-//! ever being farmed), keyed by resolved SteamID64 - same layout/locking pattern as [`super::queue`]
-//! (its own file, one process-wide lock across each read-modify-write cycle, mutations from
-//! independent interactive clicks rather than a whole-list replace). Kept as its own module/file
-//! rather than a field on `CardFarmingSettings` for the same reason `queue` already is: entries need
-//! a `name` for display (a "Blacklisted" tab lists them the same way the Queue tab lists queue
-//! entries) and get added/removed one at a time, not saved as part of a settings-tab form.
+//! ever being farmed), keyed by resolved SteamID64 - same layout/locking pattern as
+//! [`super::whitelist`] (its own file, one process-wide lock across each read-modify-write cycle,
+//! mutations from independent interactive clicks rather than a whole-list replace). Kept as its own
+//! module/file rather than a field on `CardFarmingSettings` for the same reason `whitelist` already
+//! is: entries need a `name` for display (a "Blacklisted" tab lists them the same way the Whitelist
+//! tab lists its own entries) and get added/removed one at a time, not saved as part of a
+//! settings-tab form.
 //!
-//! Enforced in two places (see `commands.rs`): `get_games_with_drops` filters blacklisted app IDs
-//! out of the browse list entirely, and `start_farming` filters them out of the queued set before
-//! a cycle ever starts, so a game can never be farmed while blacklisted regardless of stale queue
-//! data.
+//! Enforced in two places: `commands::get_games_with_drops` filters blacklisted app IDs out of the
+//! browse list entirely, and `manager::resolve_candidates` filters them out of every outer-loop
+//! iteration's eligible pool, so a game can never be farmed while blacklisted.
 
 use std::fs;
 use std::path::PathBuf;
@@ -27,7 +27,7 @@ const CACHE_FILE_NAME: &str = "card_farming_blacklist.json";
 
 static WRITE_LOCK: LazyLock<Mutex<()>> = LazyLock::new(|| Mutex::new(()));
 
-/// One blacklisted game - mirrors [`super::CardFarmingQueueEntry`]'s shape/reasoning exactly
+/// One blacklisted game - mirrors [`super::CardFarmingWhitelistEntry`]'s shape/reasoning exactly
 /// (`name` stored alongside `app_id` so the Blacklisted tab can render an entry without a fresh
 /// `get_games_with_drops` call resolving it).
 #[derive(Debug, Clone, Serialize, Deserialize)]

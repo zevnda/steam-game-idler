@@ -1,18 +1,24 @@
-import type { CardFarmingSettings, DropSortOrder } from '../types'
+import type { CardFarmingSettings } from '../types'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { TbExternalLink } from 'react-icons/tb'
 import { errorMessageKey } from '../utils/errorMessageKey'
-import { Alert, Button, Separator, Skeleton, toast, Typography } from '@heroui/react'
+import { Alert, Button, Modal, Separator, Skeleton, toast, Typography } from '@heroui/react'
 import { BetaBadge } from '@/shared/components/BetaBadge'
+import { InputField } from '@/shared/components/InputField'
 import { SettingsRow } from '@/shared/components/SettingsRow'
 import { TierBadge } from '@/shared/components/TierBadge'
 import { ToggleSwitch } from '@/shared/components/ToggleSwitch'
 import { useProModalStore } from '@/shared/stores/proModalStore'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
+import { openExternalLink } from '@/shared/utils/links'
 import { hasGamerAccess } from '@/shared/utils/subscriptionAccess'
 
-const DROP_SORT_ORDERS: DropSortOrder[] = ['queueOrder', 'highestFirst', 'lowestFirst']
+// Where the "Hours until farmable" description's "Learn more" link goes - the docs page explaining
+// card drop timing, so users curious about the setting land somewhere with a real explanation.
+const CARD_DROP_TIMES_DOCS_URL =
+  'https://steamgameidler.com/docs/features/card-farming/how-it-works'
 
 interface CardFarmingSettingsTabProps {
   settings: CardFarmingSettings | null
@@ -31,10 +37,14 @@ interface CardFarmingSettingsTabProps {
 // (real ToggleSwitch, never `isDisabled`, `TierBadge` + `onChange` rerouted to
 // `openWithTier('gamer')` when ungated) - the actual periodic check/farm loop it enables lives in
 // `useAutoFarmCards.ts` (mounted in DashboardShell), not here; this tab only persists the flag.
-// Blacklisting itself lives in its own "Blacklisted" tab on `CardFarmingPage` now, not this
-// settings tab - see `card_farming::blacklist`'s doc comment. `nextTask` reuses the sidebar's own
-// nav labels (`dashboard.sidebar.nav.achievementUnlocker`/`autoIdle`) rather than duplicating the
-// same English strings under new settings-specific keys.
+// Blacklisting/whitelisting each live in their own tab on `CardFarmingPage` now, not this settings
+// tab - see `card_farming::blacklist`/`card_farming::whitelist`'s doc comments. `nextTask` reuses
+// the sidebar's own nav labels (`dashboard.sidebar.nav.achievementUnlocker`/`autoIdle`) rather than
+// duplicating the same English strings under new settings-specific keys.
+//
+// There is no ordering setting here at all (no more "farming order"/queue-mode toggle) - ordering
+// is always automatic now (fewest drops remaining first while farming, closest to
+// `hoursUntilFarmable` first while accumulating playtime), never user-configurable.
 export const CardFarmingSettingsTab = ({
   settings,
   isLoading,
@@ -50,6 +60,11 @@ export const CardFarmingSettingsTab = ({
   const account = useSessionStore(state => state.account)
   const isAgentMode = account?.mode === 'agent'
   const [draft, setDraft] = useState<CardFarmingSettings | null>(null)
+  // Shown when turning `allowMultiGameFarming` on for the first time ever (per account) - see the
+  // toggle's own `onChange` below. Not shown for anything else, since ordinary bulk-idling
+  // (accumulating playtime) never risks the drop-rate collapse this warns about - only farming more
+  // than one game with real card drops remaining at once does.
+  const [showMultiGameNotice, setShowMultiGameNotice] = useState(false)
 
   // Syncs the draft from the loaded setting once per load, not on every `settings` identity
   // change - see AchievementUnlockerSettingsTab.tsx's identical effect for why.
@@ -71,6 +86,24 @@ export const CardFarmingSettingsTab = ({
       }
     }
     return ok
+  }
+
+  const handleAllowMultiGameFarmingChange = (value: boolean) => {
+    if (!draft) return
+    if (value && !draft.multiGameFarmingNoticeSeen) {
+      setShowMultiGameNotice(true)
+      return
+    }
+    commit({ ...draft, allowMultiGameFarming: value })
+  }
+
+  // Dismissing (backdrop/escape/close button) always marks the notice seen so it never reappears,
+  // same as clicking through it - only the explicit "Continue" action also turns the setting on, so
+  // an accidental outside click or Escape press can't silently opt the account into simultaneous
+  // multi-game farming nobody asked to actually enable yet.
+  const dismissMultiGameNotice = () => {
+    setShowMultiGameNotice(false)
+    if (draft) commit({ ...draft, multiGameFarmingNoticeSeen: true })
   }
 
   if (loadErrorCode) {
@@ -98,7 +131,7 @@ export const CardFarmingSettingsTab = ({
         <Typography type='h3' className='font-bold mb-4'>
           {t('dashboard.sidebar.nav.cardFarming')}
         </Typography>
-        {Array.from({ length: 7 }, (_, index) => (
+        {Array.from({ length: 6 }, (_, index) => (
           <Skeleton key={index} className='h-10 w-full rounded-lg' />
         ))}
       </div>
@@ -111,42 +144,44 @@ export const CardFarmingSettingsTab = ({
         {t('dashboard.sidebar.nav.cardFarming')}
       </Typography>
 
-      {/* listGames/allGames are mutually exclusive and exactly one must always be on - farming
-          needs one unambiguous game source, so toggling one forces the other to the opposite
-          state rather than allowing both on or both off (mirrors `main`'s
-          handleCheckboxChange.ts). */}
       <SettingsRow
-        description={t('dashboard.cardFarming.settings.listGames.description')}
-        title={t('dashboard.cardFarming.settings.listGames.title')}
+        description={
+          <>
+            {t('dashboard.cardFarming.settings.hoursUntilFarmable.description')}
+            <button
+              type='button'
+              className='mt-1 flex cursor-pointer items-center gap-1 text-accent hover:text-accent/80 duration-150'
+              onClick={() => openExternalLink(CARD_DROP_TIMES_DOCS_URL)}
+            >
+              {t('common.learnMore')}
+              <TbExternalLink fontSize={12} />
+            </button>
+          </>
+        }
+        title={t('dashboard.cardFarming.settings.hoursUntilFarmable.title')}
       >
-        <ToggleSwitch
-          isSelected={draft.listGames}
-          onChange={value => commit({ ...draft, listGames: value, allGames: !value })}
+        <InputField
+          ariaLabel={t('dashboard.cardFarming.settings.hoursUntilFarmable.title')}
+          className='w-20'
+          maxValue={24}
+          minValue={0}
+          value={draft.hoursUntilFarmable}
+          onCommit={hours => commit({ ...draft, hoursUntilFarmable: hours })}
         />
       </SettingsRow>
 
       <SettingsRow
-        description={t('dashboard.cardFarming.settings.allGames.description')}
-        title={t('dashboard.cardFarming.settings.allGames.title')}
-      >
-        <ToggleSwitch
-          isSelected={draft.allGames}
-          onChange={value => commit({ ...draft, allGames: value, listGames: !value })}
-        />
-      </SettingsRow>
-
-      <SettingsRow
-        description={t('dashboard.cardFarming.settings.singleFarmingMode.description')}
+        description={t('dashboard.cardFarming.settings.allowMultiGameFarming.description')}
         title={
           <span className='flex items-center gap-2'>
-            {t('dashboard.cardFarming.settings.singleFarmingMode.title')}
+            {t('dashboard.cardFarming.settings.allowMultiGameFarming.title')}
             <BetaBadge />
           </span>
         }
       >
         <ToggleSwitch
-          isSelected={draft.singleFarmingMode}
-          onChange={value => commit({ ...draft, singleFarmingMode: value })}
+          isSelected={draft.allowMultiGameFarming}
+          onChange={handleAllowMultiGameFarmingChange}
         />
       </SettingsRow>
 
@@ -211,6 +246,7 @@ export const CardFarmingSettingsTab = ({
 
       <SettingsRow
         description={t('dashboard.cardFarming.settings.farmUnplayedOnly.description')}
+        showDivider={false}
         title={t('dashboard.cardFarming.settings.farmUnplayedOnly.title')}
       >
         <ToggleSwitch
@@ -223,25 +259,6 @@ export const CardFarmingSettingsTab = ({
             })
           }
         />
-      </SettingsRow>
-
-      <SettingsRow
-        description={t('dashboard.cardFarming.settings.dropSortOrder.description')}
-        showDivider={false}
-        title={t('dashboard.cardFarming.settings.dropSortOrder.title')}
-      >
-        <div className='flex items-center gap-2'>
-          {DROP_SORT_ORDERS.map(option => (
-            <Button
-              key={option}
-              size='sm'
-              variant={draft.dropSortOrder === option ? 'primary' : 'secondary'}
-              onPress={() => commit({ ...draft, dropSortOrder: option })}
-            >
-              {t(`dashboard.cardFarming.settings.dropSortOrder.options.${option}`)}
-            </Button>
-          ))}
-        </div>
       </SettingsRow>
       <Separator className='border-t border-border my-2' />
 
@@ -269,6 +286,41 @@ export const CardFarmingSettingsTab = ({
           ))}
         </div>
       )}
+
+      <Modal
+        isOpen={showMultiGameNotice}
+        onOpenChange={open => {
+          if (!open) dismissMultiGameNotice()
+        }}
+      >
+        <Modal.Backdrop>
+          <Modal.Container size='sm'>
+            <Modal.Dialog>
+              <Modal.Header>
+                <Modal.Heading>{t('dashboard.cardFarming.multiGameNotice.title')}</Modal.Heading>
+                <Modal.CloseTrigger />
+              </Modal.Header>
+              <Modal.Body>
+                <p>{t('dashboard.cardFarming.multiGameNotice.description')}</p>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  onPress={() => {
+                    setShowMultiGameNotice(false)
+                    commit({
+                      ...draft,
+                      allowMultiGameFarming: true,
+                      multiGameFarmingNoticeSeen: true,
+                    })
+                  }}
+                >
+                  {t('common.actions.continue')}
+                </Button>
+              </Modal.Footer>
+            </Modal.Dialog>
+          </Modal.Container>
+        </Modal.Backdrop>
+      </Modal>
     </div>
   )
 }

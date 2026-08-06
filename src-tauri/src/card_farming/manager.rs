@@ -1,21 +1,18 @@
-//! The farming-cycle background task: idles up to [`MAX_CONCURRENT_FARMING`] games with card drops
-//! remaining *concurrently* - or exactly one at a time if `single_farming_mode` is on (see
-//! `settings::CardFarmingSettings::single_farming_mode`'s doc comment) - polls each active game's
-//! remaining count, drops finished games out of the active set and backfills more from the queue
-//! as slots free up, repeats until the account has none left - see `mod.rs`'s doc comment for why
-//! this matches `main`'s concurrency but not its toggle-timing design. Calls
-//! `idling::claims::IdleClaimsRegistry::replace_owner_claim` (owner `OWNER_CARD_FARMING`) for the
-//! actual idling mechanics - not `idling::commands::set_idle_games` directly, since that would
-//! full-replace the real announced set and stomp whatever manual/auto-idle/achievement-unlocker
-//! idling is also currently claimed (see `idling::claims`'s module doc comment). This module owns
-//! no process/spawn logic of its own.
+//! The farming-cycle background task. Every outer-loop iteration: re-scrape the account's
+//! games-with-drops list, scope it to the whitelist when non-empty, filter through blacklist/skip
+//! settings, classify the survivors into ready/accumulating, pick exactly one phase (never both -
+//! see `mod.rs`'s module doc comment), run the shared restart-cycle helper against that phase's
+//! target(s), then repeat. Calls `idling::claims::IdleClaimsRegistry::replace_owner_claim` (owner
+//! `OWNER_CARD_FARMING`) for the actual idling mechanics - not `idling::commands::set_idle_games`
+//! directly, since that would full-replace the real announced set and stomp whatever manual/
+//! auto-idle/achievement-unlocker idling is also currently claimed (see `idling::claims`'s module
+//! doc comment). This module owns no process/spawn logic of its own.
 
 use std::collections::{HashMap, HashSet};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
-use std::time::{Duration, Instant};
+use std::time::Duration;
 
-use futures::future::join_all;
 use tauri::{AppHandle, Emitter, Manager};
 use tokio::sync::{Mutex, Notify};
 use tokio::task::JoinHandle;
@@ -26,27 +23,17 @@ use crate::auto_idle;
 use crate::error::{AppError, AppResult};
 use crate::games::{self, commands::GamesAccount};
 use crate::idling::{self, IdleTarget, IdlingManager};
-use crate::max_playtime;
 use crate::steam_agent::AgentManager;
 use crate::steam_community::credentials;
 
 use super::refund_window;
-use super::settings::FarmingCaps;
+use super::settings;
+use super::whitelist;
 use super::{
-    queue, scraper, settings, CompletedFarm, CompletedFarmReason, FarmingProgress, FarmingState,
-    GameWithDrops, SteamCookies,
+    blacklist, scraper, CompletedFarm, CompletedFarmReason, FarmingProgress, FarmingState,
+    GameWithDrops, Phase, SteamCookies,
 };
-use super::{DROPS_POLL_INTERVAL, FARMING_STATE_EVENT};
-
-/// One owned-games-cache entry's worth of data this module's checks care about - bundles
-/// playtime (max-playtime cap, refund-window playtime threshold) and purchase recency
-/// (refund-window date threshold) so [`fetch_queued_games`] and [`poll_active`] each only need one
-/// cache read/lookup instead of a separate one per check.
-#[derive(Debug, Clone, Copy, Default)]
-struct CachedGameInfo {
-    playtime_forever_minutes: u64,
-    last_refund_eligible_purchase_unix_seconds: Option<i64>,
-}
+use super::FARMING_STATE_EVENT;
 
 /// Mirrors `idling`'s own concurrent-games cap (a real Steam protocol limit - see that module's doc
 /// comment on `MAX_CONCURRENT_GAMES`), defined again here (rather than reaching into `idling`'s
@@ -54,148 +41,26 @@ struct CachedGameInfo {
 /// idling claims registry will actually accept.
 const MAX_CONCURRENT_FARMING: usize = 32;
 
-/// Fetches this account's current games-with-drops list, restricted to `queued_games` and
-/// ordered per the account's `drop_sort_order` preference (`main`'s `sortByHighestDrops`/
-/// `sortByLowestDrops`, collapsed into one enum - see `settings::DropSortOrder`'s doc comment).
-/// Shared by [`CardFarmingManager::start`] (the initial queue) and `run_cycle`'s mid-session
-/// refetch so both apply the same ordering rather than one honoring the setting and the other not.
-///
-/// Also dequeues and returns (as the second element) any game already over its max-playtime cap, or
-/// any queued game the scraper didn't return at all - `scraper::get_games_with_drops`'s doc comment
-/// explains why a game with zero remaining card drops never produces a badge-page row, so a queued
-/// game in that state simply isn't in `games` to begin with. Both cases mirror
-/// `achievement_unlocker::manager::run_scan_phase`'s identical pre-check/dequeue, so a game that's
-/// over cap - or already fully farmed - before it's ever (re-)farmed doesn't just silently vanish
-/// from the queue with nothing to show for it in the "session finished" summary the caller builds
-/// from this. `queued_games` carries names (not just app ids) precisely so this zero-drops case has
-/// a name to report without a second lookup.
-async fn fetch_queued_games(
-    app_handle: &AppHandle,
-    steam_id: &str,
-    cookies: &SteamCookies,
-    queued_games: &HashMap<u32, String>,
-) -> AppResult<(Vec<GameWithDrops>, Vec<CompletedFarm>)> {
-    let farming_settings = settings::get(app_handle, steam_id).await?;
+/// How long the restart-cycle idles its target(s) before the first stop of each iteration.
+const FULL_IDLE_DURATION: Duration = Duration::from_secs(5 * 60);
+/// How long the restart-cycle pauses between the main idle window and the individual sweep.
+const MICRO_PAUSE: Duration = Duration::from_secs(5);
+/// How long each target gets idled, alone, during the restart-cycle's individual sweep.
+const MICRO_IDLE_DURATION: Duration = Duration::from_secs(5);
 
-    let mut games = scraper::get_games_with_drops(steam_id, cookies).await?;
-    games.retain(|g| queued_games.contains_key(&g.app_id));
-
-    // Exclude games that have already reached their max-playtime cap - `playtime_hours` above is
-    // a different, badge-page-scraped display value, not real playtime, so this needs its own
-    // owned-games-cache lookup rather than reusing it. Best-effort: a read failure degrades to
-    // "no known playtime/purchase data" for every game rather than failing the whole candidate
-    // fetch.
-    let game_cache = owned_game_cache_lookup(app_handle, steam_id);
-    let mut kept = Vec::with_capacity(games.len());
-    let mut excluded = Vec::new();
-    let mut found_app_ids = HashSet::with_capacity(games.len());
-    for game in games {
-        found_app_ids.insert(game.app_id);
-        let cached = game_cache.get(&game.app_id).copied().unwrap_or_default();
-        if max_playtime::settings::is_over_cap(
-            app_handle,
-            steam_id,
-            game.app_id,
-            cached.playtime_forever_minutes,
-        )
-        .await?
-        {
-            if let Err(e) = queue::remove(app_handle, steam_id, game.app_id).await {
-                tracing::warn!(app_id = game.app_id, error = %e.code(), "card farming: failed to remove over-max-playtime game from queue");
-            } else {
-                tracing::info!(
-                    app_id = game.app_id,
-                    "card farming: removed over-max-playtime game from queue"
-                );
-            }
-            excluded.push(CompletedFarm {
-                app_id: game.app_id,
-                name: game.name,
-                remaining: game.remaining,
-                reason: CompletedFarmReason::MaxPlaytime,
-                farmable_at: None,
-            });
-            continue;
-        }
-        kept.push(game);
-    }
-
-    // Refund-window exclusion - see `settings::CardFarmingSettings::skip_refundable_games`'s doc
-    // comment. Deliberately doesn't dequeue from the persisted queue (unlike the max-playtime
-    // exclusion above): this reason resolves itself as time passes or playtime accrues elsewhere,
-    // so the game should still be there next time this account's queue is read.
-    let kept = if farming_settings.skip_refundable_games {
-        let now = chrono::Utc::now().timestamp();
-        let mut still_kept = Vec::with_capacity(kept.len());
-        for game in kept {
-            let cached = game_cache.get(&game.app_id).copied().unwrap_or_default();
-            if let Some(farmable_at) = refund_window::farmable_at_if_in_refund_window(
-                cached.last_refund_eligible_purchase_unix_seconds,
-                cached.playtime_forever_minutes,
-                now,
-            ) {
-                tracing::info!(
-                    app_id = game.app_id,
-                    name = %game.name,
-                    farmable_at,
-                    "card farming: skipped game still inside refund window"
-                );
-                excluded.push(CompletedFarm {
-                    app_id: game.app_id,
-                    name: game.name,
-                    remaining: game.remaining,
-                    reason: CompletedFarmReason::RefundWindow,
-                    farmable_at: Some(farmable_at),
-                });
-                continue;
-            }
-            still_kept.push(game);
-        }
-        still_kept
-    } else {
-        kept
-    };
-    let mut games = kept;
-
-    for (&app_id, name) in queued_games {
-        if found_app_ids.contains(&app_id) {
-            continue;
-        }
-        if let Err(e) = queue::remove(app_handle, steam_id, app_id).await {
-            tracing::warn!(app_id, error = %e.code(), "card farming: failed to remove drops-exhausted game from queue");
-        } else {
-            tracing::info!(app_id, name, "card farming: removed game with no card drops remaining from queue");
-        }
-        excluded.push(CompletedFarm {
-            app_id,
-            name: name.clone(),
-            remaining: 0,
-            reason: CompletedFarmReason::NoDropsRemaining,
-            farmable_at: None,
-        });
-    }
-
-    let drop_sort_order = farming_settings.drop_sort_order;
-    // Only read the persisted queue's order when it's actually going to be used - `all_games`
-    // mode farms games that were never added to this queue at all, so a read here would just be
-    // wasted I/O for a position lookup `sort_by_drop_order` will never find a match for anyway.
-    let queue_order: Vec<u32> = if drop_sort_order == settings::DropSortOrder::QueueOrder {
-        queue::read(app_handle, steam_id)
-            .await?
-            .into_iter()
-            .map(|entry| entry.app_id)
-            .collect()
-    } else {
-        Vec::new()
-    };
-    sort_by_drop_order(&mut games, drop_sort_order, &queue_order);
-    Ok((games, excluded))
+/// One owned-games-cache entry's worth of data this module's checks care about - bundles real
+/// playtime (skip-settings, refund-window playtime threshold) and purchase recency (refund-window
+/// date threshold) so [`resolve_candidates`] only needs one cache read/lookup per game instead of a
+/// separate one per check.
+#[derive(Debug, Clone, Copy, Default)]
+struct CachedGameInfo {
+    playtime_forever_minutes: u64,
+    last_refund_eligible_purchase_unix_seconds: Option<i64>,
 }
 
-/// Best-effort `app_id -> `[`CachedGameInfo`]` lookup from the owned-games cache - shared by
-/// [`fetch_queued_games`]'s candidate filter, [`poll_active`]'s live re-checks, and
-/// [`backfill_active`]'s per-game playtime baseline. A read failure degrades to an empty map
-/// (every game reads as "nothing known") rather than failing the caller outright.
+/// Best-effort `app_id -> `[`CachedGameInfo`]` lookup from the owned-games cache. A read failure
+/// degrades to an empty map (every game reads as "nothing known") rather than failing the caller
+/// outright.
 fn owned_game_cache_lookup(app_handle: &AppHandle, steam_id: &str) -> HashMap<u32, CachedGameInfo> {
     games::commands::get_owned_games_cache(app_handle.clone(), steam_id.to_string())
         .unwrap_or_default()
@@ -213,533 +78,277 @@ fn owned_game_cache_lookup(app_handle: &AppHandle, steam_id: &str) -> HashMap<u3
         .collect()
 }
 
-/// Pure sort step split out of [`fetch_queued_games`] so it's unit-testable without the
-/// network/settings-file I/O around it - mirrors `is_capped`'s split for the same reason.
-/// `queue_order` is the account's persisted queue, app-id-only, in the user's drag-reordered
-/// sequence - only consulted for [`settings::DropSortOrder::QueueOrder`]; empty otherwise. Uses
-/// `sort_by_key` (a stable sort) rather than `sort_by`, so a game with no entry in `queue_order`
-/// (e.g. `all_games` mode, which never populates the queue at all) falls back to whatever relative
-/// order the scraper returned it in rather than being reshuffled against every other such game.
-fn sort_by_drop_order(
-    games: &mut [GameWithDrops],
-    order: settings::DropSortOrder,
-    queue_order: &[u32],
-) {
-    match order {
-        settings::DropSortOrder::HighestFirst => {
-            games.sort_by(|a, b| b.remaining.cmp(&a.remaining))
-        }
-        settings::DropSortOrder::LowestFirst => games.sort_by(|a, b| a.remaining.cmp(&b.remaining)),
-        settings::DropSortOrder::QueueOrder => games.sort_by_key(|g| {
-            queue_order
-                .iter()
-                .position(|&app_id| app_id == g.app_id)
-                .unwrap_or(usize::MAX)
-        }),
+/// Pure filter check, split out so it's unit-testable without network/settings-file I/O - checks
+/// `skip_no_playtime`/`farm_unplayed_only`/`skip_refundable_games` against a game's cached real
+/// playtime/purchase data. Returns the specific reason it should be excluded, or `None` if it passes
+/// every check.
+fn filter_reason(
+    cached: CachedGameInfo,
+    farming_settings: &settings::CardFarmingSettings,
+    now_unix_seconds: i64,
+) -> Option<CompletedFarmReason> {
+    if farming_settings.skip_no_playtime && cached.playtime_forever_minutes == 0 {
+        return Some(CompletedFarmReason::SkippedUnplayed);
     }
-}
-
-struct FarmingSession {
-    handle: JoinHandle<()>,
-    stopped: Arc<AtomicBool>,
-    state: Arc<Mutex<FarmingState>>,
-    /// Shared with the spawned `run_cycle` task so [`CardFarmingManager::remove_active_game`] can
-    /// permanently exclude a game from this session's own mid-cycle refetch filter, not just from
-    /// `state.active`/`state.queue` - see that method's doc comment for why both are needed.
-    queued_games: Arc<Mutex<HashMap<u32, String>>>,
-    /// Lets [`CardFarmingManager::remove_active_game`] interrupt `run_cycle`'s current
-    /// [`DROPS_POLL_INTERVAL`] sleep immediately instead of leaving the session sitting idle
-    /// (still reporting `is_farming: true` with a now-stale `active` list) for up to 5 minutes
-    /// before it next re-checks whether anything is left to farm.
-    wake: Arc<Notify>,
-}
-
-/// Tracks at most one farming cycle per account (keyed by resolved SteamID64, matching
-/// `favorites`/`games`'s cache-keying convention), each running as its own background task.
-#[derive(Default)]
-pub struct CardFarmingManager {
-    sessions: Mutex<HashMap<String, FarmingSession>>,
-}
-
-impl CardFarmingManager {
-    pub fn new() -> Self {
-        Self::default()
+    if farming_settings.farm_unplayed_only && cached.playtime_forever_minutes > 0 {
+        return Some(CompletedFarmReason::SkippedPlayed);
     }
-
-    /// Starts a farming cycle for `steam_id` if one isn't already running - idempotent, mirroring
-    /// `favorites::add_favorite`'s "calling it again is a no-op" convention: a second `start` call
-    /// while one is already in flight just returns its current state rather than restarting
-    /// anything. `queued_games` is the account's curated card-farming queue (see `queue.rs`), app id
-    /// to name - only games with drops remaining that are also in this map are farmed; everything
-    /// else `get_games_with_drops` returns is left alone. Returns an empty/not-farming `FarmingState`
-    /// (no task spawned) only if `queued_games` itself is empty - mirrors
-    /// `achievement_unlocker::manager::start`'s identical "nothing was ever queued" check. Unlike an
-    /// earlier version of this method, a *non-empty* queue that comes back with nothing farmable
-    /// (every game already over its max-playtime cap, or already fully farmed) still spawns
-    /// [`run_cycle`] rather than returning early: only the spawned task ever emits
-    /// [`FARMING_STATE_EVENT`], so skipping the spawn meant the "session finished" summary for that
-    /// case (`fetch_queued_games`'s own dequeue-with-reason below) had no way to ever reach the
-    /// frontend.
-    pub async fn start(
-        &self,
-        app_handle: &AppHandle,
-        steam_id: String,
-        account: GamesAccount,
-        cookies: SteamCookies,
-        mut queued_games: HashMap<u32, String>,
-    ) -> AppResult<FarmingState> {
-        {
-            let sessions = self.sessions.lock().await;
-            if let Some(session) = sessions.get(&steam_id) {
-                return Ok(session.state.lock().await.clone());
-            }
-        }
-
-        if queued_games.is_empty() {
-            return Ok(FarmingState::default());
-        }
-
-        let (games, excluded) =
-            fetch_queued_games(app_handle, &steam_id, &cookies, &queued_games).await?;
-        tracing::info!(
-            steam_id,
-            queue_len = games.len(),
-            excluded_len = excluded.len(),
-            "card farming: session started"
-        );
-
-        // `run_cycle`'s own mid-session refetch (once `active`/`queue` both empty) filters the
-        // scraper's response through this same `queued_games` map - a game excluded above (over its
-        // max-playtime cap) can easily still have real drops remaining, so it would otherwise still
-        // pass that filter and get pre-checked/excluded a second time, duplicating this exact
-        // `CompletedFarm` entry in the summary the user sees. Pruning here keeps the map in sync
-        // with what's actually still eligible.
-        for excluded_game in &excluded {
-            queued_games.remove(&excluded_game.app_id);
-        }
-
-        let state = Arc::new(Mutex::new(FarmingState {
-            is_farming: true,
-            queue: games,
-            completed: excluded,
-            ..Default::default()
-        }));
-        let stopped = Arc::new(AtomicBool::new(false));
-        let queued_games = Arc::new(Mutex::new(queued_games));
-        let wake = Arc::new(Notify::new());
-
-        let handle = tokio::spawn(run_cycle(
-            app_handle.clone(),
-            steam_id.clone(),
-            account,
-            cookies,
-            state.clone(),
-            stopped.clone(),
-            queued_games.clone(),
-            wake.clone(),
-        ));
-
-        let snapshot = state.lock().await.clone();
-        self.sessions.lock().await.insert(
-            steam_id,
-            FarmingSession {
-                handle,
-                stopped,
-                state,
-                queued_games,
-                wake,
-            },
-        );
-        Ok(snapshot)
+    if farming_settings.skip_refundable_games
+        && refund_window::farmable_at_if_in_refund_window(
+            cached.last_refund_eligible_purchase_unix_seconds,
+            cached.playtime_forever_minutes,
+            now_unix_seconds,
+        )
+        .is_some()
+    {
+        return Some(CompletedFarmReason::RefundWindow);
     }
-
-    /// Stops `steam_id`'s farming cycle if one is running - idempotent (a no-op if nothing is
-    /// tracked). Sets a flag rather than aborting the task outright, so the task always reaches
-    /// its own cleanup (stop idling, clear state) instead of being killed mid-`set_idle_games`
-    /// call and potentially leaving games idling with nothing left to stop them.
-    pub async fn stop(&self, steam_id: &str) -> AppResult<()> {
-        let session = self.sessions.lock().await.remove(steam_id);
-        let Some(session) = session else {
-            return Ok(());
-        };
-        session.stopped.store(true, Ordering::SeqCst);
-        let _ = session.handle.await;
-        Ok(())
-    }
-
-    pub async fn state(&self, steam_id: &str) -> FarmingState {
-        match self.sessions.lock().await.get(steam_id) {
-            Some(session) => session.state.lock().await.clone(),
-            None => FarmingState::default(),
-        }
-    }
-
-    /// Permanently excludes `app_id` from a running session for `steam_id` - the Idling page's
-    /// per-card "stop" toggle already releases the idling claim itself via
-    /// `idling::claims::IdleClaimsRegistry::release_app_id` (this session finds out its game
-    /// stopped idling from that, not from here), but this manager tracks its own `active`/`queue`
-    /// independently and would otherwise never learn a specific game was pulled out from under
-    /// it - the next unrelated state change (another game finishing, a queue backfill) calls
-    /// `announce_idle_set` with this session's *entire* current `active` list, silently
-    /// resurrecting the game the user just stopped. Removing it from `state.active`/`state.queue`
-    /// here isn't enough by itself either: `run_cycle`'s own mid-session refetch re-discovers
-    /// anything still present in the session's `queued_games` filter once `active`/`queue` both
-    /// empty out, so that shared map needs the same removal to keep the exclusion durable for the
-    /// rest of this session.
-    ///
-    /// Deliberately doesn't add a [`CompletedFarm`] entry - mirrors that struct's own doc comment
-    /// ("not populated for a user-initiated stop... a manual stop isn't 'this game is done'"), the
-    /// same distinction a whole-session [`Self::stop`] already makes. Leaves the account's
-    /// *persisted* queue (`queue.rs`) untouched, same as `stop()` - a fresh session started later
-    /// still considers this game. A no-op (`false`) if no session is running for `steam_id`, or
-    /// the game isn't part of this session's `active`/`queue` at all.
-    pub async fn remove_active_game(
-        &self,
-        app_handle: &AppHandle,
-        steam_id: &str,
-        app_id: u32,
-    ) -> bool {
-        // Clones the three Arcs and drops the manager-wide `sessions` lock immediately - matches
-        // `start`/`stop`/`state`'s existing convention of never holding it across a subsequent
-        // `.await`, which would otherwise block every other account's session lookups for the
-        // duration of the locks/`emit_state` call below.
-        let (queued_games, state, wake) = {
-            let sessions = self.sessions.lock().await;
-            let Some(session) = sessions.get(steam_id) else {
-                return false;
-            };
-            (
-                session.queued_games.clone(),
-                session.state.clone(),
-                session.wake.clone(),
-            )
-        };
-
-        queued_games.lock().await.remove(&app_id);
-
-        let removed = {
-            let mut s = state.lock().await;
-            let before = s.active.len() + s.queue.len();
-            s.active.retain(|p| p.app_id != app_id);
-            s.queue.retain(|g| g.app_id != app_id);
-            before != s.active.len() + s.queue.len()
-        };
-
-        if removed {
-            tracing::info!(
-                steam_id,
-                app_id,
-                "card farming: game removed from session (manually stopped via idling page)"
-            );
-            emit_state(app_handle, steam_id, &state).await;
-            // Nudges `run_cycle` out of its current `DROPS_POLL_INTERVAL` sleep so it re-checks
-            // `active`/`queue` right away instead of sitting idle (still `is_farming: true`, but
-            // with nothing actually being farmed) for up to 5 minutes - see `wake`'s doc comment.
-            wake.notify_one();
-        }
-        removed
-    }
-
-    async fn remove(&self, steam_id: &str) {
-        self.sessions.lock().await.remove(steam_id);
-    }
-}
-
-/// Moves games from `queue` into `active` until `active` reaches `cap` (normally
-/// [`MAX_CONCURRENT_FARMING`], or `1` when `single_farming_mode` is on - see
-/// `settings::CardFarmingSettings::single_farming_mode`'s doc comment) or `queue` runs out -
-/// returns `true` if anything was added (the caller uses this to decide whether the idling set
-/// needs to be re-announced). `game_cache` seeds each newly-active game's
-/// [`FarmingProgress::baseline_playtime_minutes`] - see that field's doc comment.
-fn backfill_active(
-    farming: &mut FarmingState,
-    game_cache: &HashMap<u32, CachedGameInfo>,
-    cap: usize,
-) -> bool {
-    let mut added = false;
-    while farming.active.len() < cap {
-        let Some(game) = (!farming.queue.is_empty()).then(|| farming.queue.remove(0)) else {
-            break;
-        };
-        tracing::info!(
-            app_id = game.app_id,
-            name = %game.name,
-            remaining = game.remaining,
-            "card farming: started farming"
-        );
-        farming.active.push(FarmingProgress {
-            app_id: game.app_id,
-            name: game.name,
-            initial_remaining: game.remaining,
-            remaining: game.remaining,
-            playtime_hours: game.playtime_hours,
-            started_at: Instant::now(),
-            baseline_playtime_minutes: game_cache
-                .get(&game.app_id)
-                .map(|c| c.playtime_forever_minutes)
-                .unwrap_or(0),
-        });
-        added = true;
-    }
-    added
-}
-
-/// Effective per-game cap check, pure and unit-testable (no network/lock access) - mirrors
-/// `idling::settings::effective_max_idle_time`'s per-game-wins-if-set-else-global precedence for
-/// `maxCardFarmingTime`; `maxCardDrops` has no global override in `main` either, so it's per-game
-/// only. Returns `None` when neither cap is hit.
-fn is_capped(progress: &FarmingProgress, caps: &FarmingCaps) -> Option<CompletedFarmReason> {
-    let drops_farmed = progress
-        .initial_remaining
-        .saturating_sub(progress.remaining);
-    let max_drops = caps
-        .per_game_max_card_drops
-        .get(&progress.app_id)
-        .copied()
-        .filter(|&v| v > 0);
-    if max_drops.is_some_and(|max| drops_farmed >= max) {
-        return Some(CompletedFarmReason::MaxCardDrops);
-    }
-
-    let max_minutes = caps
-        .per_game_max_card_farming_time
-        .get(&progress.app_id)
-        .copied()
-        .filter(|&v| v > 0)
-        .or(Some(caps.global_max_card_farming_time).filter(|&v| v > 0));
-    if let Some(minutes) = max_minutes {
-        if progress.started_at.elapsed() >= Duration::from_secs(u64::from(minutes) * 60) {
-            return Some(CompletedFarmReason::MaxCardFarmingTime);
-        }
-    }
-
     None
 }
 
-/// Polls every currently-active game's remaining drop count concurrently (mirrors `scraper`'s own
-/// `join_all` shape for badge-page pagination), updates `state`, and moves any game whose drops hit
-/// zero *or* whose `caps` auto-stop condition is met into `completed` - returns `true` if anything
-/// finished, since a finished game must stop idling immediately, not just get requeued next poll.
-///
-/// Every reason except [`CompletedFarmReason::RefundWindow`] also dequeues the game from the
-/// account's *persisted* `queue` (mirrors `achievement_unlocker::manager`'s identical
-/// dequeue-on-any-terminal-outcome behavior) - an earlier version of this function only dequeued on
-/// a genuine `DropsExhausted`, reasoning that a cap-based stop could leave real drops remaining and
-/// so should stay queued for next time. That asymmetry with achievement-unlocker (which always
-/// dequeues) was a source of user confusion, so both features now behave the same way for every cap:
-/// a cap-based stop is just as final as a genuine finish for *this account's queue* - raising the cap
-/// and re-adding the game is an explicit, deliberate action rather than something that silently
-/// resumes on its own. `RefundWindow` is the one deliberate exception - see
-/// [`CompletedFarm::farmable_at`]'s doc comment for why.
-///
-/// Returns `Err(SteamCommunitySessionExpired)` instead of a per-game warn-and-continue if *any*
-/// game's poll confirms the session itself is dead - every active game shares the same cookies, so
-/// this is a hard-stop-the-cycle condition, not a per-item transient failure like every other poll
-/// error this function tolerates.
-async fn poll_active(
-    app_handle: &AppHandle,
-    state: &Arc<Mutex<FarmingState>>,
-    steam_id: &str,
-    cookies: &SteamCookies,
-    caps: &FarmingCaps,
-    skip_refundable_games: bool,
-    queued_games: &mut HashMap<u32, String>,
-) -> AppResult<bool> {
-    let app_ids: Vec<u32> = state.lock().await.active.iter().map(|p| p.app_id).collect();
-    if app_ids.is_empty() {
-        return Ok(false);
-    }
-
-    let results = join_all(app_ids.iter().map(|&app_id| async move {
-        (
-            app_id,
-            scraper::get_drops_remaining(steam_id, app_id, cookies).await,
-        )
-    }))
-    .await;
-
-    let mut s = state.lock().await;
-    for (app_id, result) in results {
-        match result {
-            Ok(drops) => {
-                if let Some(progress) = s.active.iter_mut().find(|p| p.app_id == app_id) {
-                    // Only a real state change is worth a log line - this fires at most once per
-                    // actual card, not once per poll, so it stays useful signal even with a large
-                    // batch (unlike logging every game on every 5-minute tick regardless of
-                    // whether anything happened).
-                    if drops.remaining < progress.remaining {
-                        tracing::info!(
-                            app_id,
-                            name = %progress.name,
-                            previous_remaining = progress.remaining,
-                            remaining = drops.remaining,
-                            "card farming: card dropped"
-                        );
-                    }
-                    progress.remaining = drops.remaining;
-                }
-            }
-            Err(AppError::SteamCommunitySessionExpired(id)) => {
-                tracing::warn!(
-                    app_id,
-                    steam_id = %id,
-                    "card farming: steam community session expired, stopping cycle"
-                );
-                return Err(AppError::SteamCommunitySessionExpired(id));
-            }
-            Err(e) => {
-                tracing::warn!(
-                    app_id,
-                    error = %e.code(),
-                    "card farming: failed to check drops remaining, retrying next poll"
-                );
-            }
-        }
-    }
-
-    let mut finished = Vec::new();
-    let mut i = 0;
-    while i < s.active.len() {
-        let reason = if s.active[i].remaining == 0 {
-            Some(CompletedFarmReason::DropsExhausted)
-        } else {
-            is_capped(&s.active[i], caps)
-        };
-        let Some(reason) = reason else {
-            i += 1;
-            continue;
-        };
-        finished.push((s.active.remove(i), reason, None));
-    }
-    drop(s);
-
-    // Max-playtime auto-stop - a separate async pass (needs an I/O read `is_capped` above
-    // deliberately avoids) rather than folded into `is_capped` itself, checking every game that
-    // *didn't* already stop for another reason this poll.
-    let mut i = 0;
-    let mut still_active = state.lock().await;
-    while i < still_active.active.len() {
-        let progress = &still_active.active[i];
-        let estimated_minutes =
-            progress.baseline_playtime_minutes + progress.started_at.elapsed().as_secs() / 60;
-        let over_cap = max_playtime::settings::is_over_cap(
-            app_handle,
-            steam_id,
-            progress.app_id,
-            estimated_minutes,
-        )
-        .await
-        .unwrap_or(false);
-        if over_cap {
-            finished.push((
-                still_active.active.remove(i),
-                CompletedFarmReason::MaxPlaytime,
-                None,
-            ));
-        } else {
-            i += 1;
-        }
-    }
-    drop(still_active);
-
-    // Refund-window re-check - live, not decided once when the game entered `active`, since the
-    // 14-day purchase window keeps elapsing and this same idling session is what's accruing the
-    // playtime that will eventually clear it. Only re-derives `farmable_at` for games not already
-    // caught above this poll (mirrors the max-playtime pass's own "didn't already stop" scoping).
-    if skip_refundable_games {
-        let game_cache = owned_game_cache_lookup(app_handle, steam_id);
-        let now = chrono::Utc::now().timestamp();
-        let mut i = 0;
-        let mut still_active = state.lock().await;
-        while i < still_active.active.len() {
-            let progress = &still_active.active[i];
-            let estimated_minutes =
-                progress.baseline_playtime_minutes + progress.started_at.elapsed().as_secs() / 60;
-            let purchase = game_cache
-                .get(&progress.app_id)
-                .and_then(|c| c.last_refund_eligible_purchase_unix_seconds);
-            if let Some(farmable_at) =
-                refund_window::farmable_at_if_in_refund_window(purchase, estimated_minutes, now)
-            {
-                finished.push((
-                    still_active.active.remove(i),
-                    CompletedFarmReason::RefundWindow,
-                    Some(farmable_at),
-                ));
-            } else {
-                i += 1;
-            }
-        }
-        drop(still_active);
-    }
-
-    let finished_any = !finished.is_empty();
-    for (done, reason, farmable_at) in finished {
-        match reason {
-            CompletedFarmReason::DropsExhausted => {
-                tracing::info!(app_id = done.app_id, name = %done.name, "card farming: drops exhausted");
-            }
-            CompletedFarmReason::MaxCardDrops => {
-                tracing::info!(app_id = done.app_id, name = %done.name, "card farming: max card drops cap reached");
-            }
-            CompletedFarmReason::MaxCardFarmingTime => {
-                tracing::info!(app_id = done.app_id, name = %done.name, "card farming: max card farming time cap reached");
-            }
-            CompletedFarmReason::MaxPlaytime => {
-                tracing::info!(app_id = done.app_id, name = %done.name, "card farming: max playtime cap reached");
-            }
-            CompletedFarmReason::RefundWindow => {
-                tracing::info!(app_id = done.app_id, name = %done.name, farmable_at, "card farming: skipped game still inside refund window");
-            }
-            // Never actually reached from here - `NoDropsRemaining` is only ever assigned by
-            // `fetch_queued_games`'s pre-check, before a game ever enters `active` for `poll_active`
-            // to find. Matched explicitly anyway so this stays exhaustive if that ever changes.
-            CompletedFarmReason::NoDropsRemaining => {
-                tracing::info!(app_id = done.app_id, name = %done.name, "card farming: no card drops remaining");
-            }
-        }
-        // `RefundWindow` deliberately skips the persisted-queue removal every other reason gets -
-        // see `CompletedFarm::farmable_at`'s doc comment: this reason resolves itself, the others
-        // need a deliberate user action before the game is farmable again.
-        if !matches!(reason, CompletedFarmReason::RefundWindow) {
-            if let Err(e) = queue::remove(app_handle, steam_id, done.app_id).await {
-                tracing::warn!(app_id = done.app_id, error = %e.code(), "card farming: failed to remove finished game from queue");
-            }
-        }
-        // See `CardFarmingManager::start`'s identical prune - without this, a cap-based stop whose
-        // game still has real drops remaining would reappear in the next `active`/`queue`-both-empty
-        // refetch and get pushed into `completed` a second time.
-        queued_games.remove(&done.app_id);
-        state.lock().await.completed.push(CompletedFarm {
-            app_id: done.app_id,
-            name: done.name,
-            remaining: done.remaining,
-            reason,
-            farmable_at,
-        });
-    }
-    Ok(finished_any)
+struct ResolvedCandidates {
+    ready: Vec<GameWithDrops>,
+    accumulating: Vec<GameWithDrops>,
 }
 
-/// Replaces card farming's own owner claim with exactly `active` - also how the cycle releases its
-/// claim at the end (`active: &[]`), so this is the only place `run_cycle` talks to `idling`. The
-/// registry unions this with every other owner's claim before announcing, so this can never drop a
-/// game manual idling/auto-idle/achievement-unlocker still wants.
+/// Scrapes the current games-with-drops list, scopes it to the whitelist when non-empty, filters
+/// through blacklist/`excluded_app_ids`/skip-settings, and classifies the survivors into
+/// ready/accumulating. Read-only against `progress` (every game this session currently has
+/// `active`) - only consulted to decide *which* completion reason applies, never mutated here;
+/// `run_cycle` owns all `progress` mutation in one place after this returns.
+///
+/// A game can drop out of eligibility two distinct ways, reported differently:
+/// - **Not found in the fresh scrape at all** - its remaining drops hit zero. `DropsExhausted` if
+///   `progress` shows it was actively being farmed (a genuine finish), `NoDropsRemaining` otherwise
+///   (only reachable for a whitelist member that turns out to have never had real drops - the
+///   general pool is built directly from the scrape, so a zero-drops game can never enter it, and
+///   therefore never enters `progress`, in the first place).
+/// - **Found, but excluded by blacklist/`excluded_app_ids`/a skip setting** - only reported (with
+///   the precise reason, and pruned from the whitelist) when the game is a current whitelist
+///   member; a general-pool game hitting this case (only possible if a setting changed mid-session,
+///   since the general pool is pre-filtered before a game ever enters `progress`) is dropped
+///   silently - filters exclude quietly everywhere except an explicit whitelist membership, which
+///   warrants an explanation since the user opted it in deliberately.
+async fn resolve_candidates(
+    app_handle: &AppHandle,
+    steam_id: &str,
+    cookies: &SteamCookies,
+    farming_settings: &settings::CardFarmingSettings,
+    progress: &HashMap<u32, FarmingProgress>,
+    excluded_app_ids: &HashSet<u32>,
+    completed: &mut Vec<CompletedFarm>,
+) -> AppResult<ResolvedCandidates> {
+    let games = scraper::get_games_with_drops(steam_id, cookies).await?;
+    let games_by_app_id: HashMap<u32, GameWithDrops> =
+        games.into_iter().map(|g| (g.app_id, g)).collect();
+
+    let blacklisted: HashSet<u32> = blacklist::read(app_handle, steam_id)
+        .await?
+        .into_iter()
+        .map(|entry| entry.app_id)
+        .collect();
+    let whitelist_entries = whitelist::read(app_handle, steam_id).await?;
+    let game_cache = owned_game_cache_lookup(app_handle, steam_id);
+    let now = chrono::Utc::now().timestamp();
+
+    let mut ready = Vec::new();
+    let mut accumulating = Vec::new();
+    let classify = |game: GameWithDrops, ready: &mut Vec<GameWithDrops>, accumulating: &mut Vec<GameWithDrops>| {
+        if game.playtime_hours >= farming_settings.hours_until_farmable as f32 {
+            ready.push(game);
+        } else {
+            accumulating.push(game);
+        }
+    };
+
+    if !whitelist_entries.is_empty() {
+        for entry in &whitelist_entries {
+            if excluded_app_ids.contains(&entry.app_id) {
+                continue;
+            }
+            let Some(game) = games_by_app_id.get(&entry.app_id).cloned() else {
+                let reason = if progress.contains_key(&entry.app_id) {
+                    CompletedFarmReason::DropsExhausted
+                } else {
+                    CompletedFarmReason::NoDropsRemaining
+                };
+                prune_whitelist_member(
+                    app_handle,
+                    steam_id,
+                    entry.app_id,
+                    entry.name.clone(),
+                    0,
+                    reason,
+                    None,
+                    completed,
+                )
+                .await;
+                continue;
+            };
+            if blacklisted.contains(&game.app_id) {
+                // Defensive only - the browse tab's mutually-exclusive toggle shouldn't let a game
+                // land on both lists, but if it somehow does, it must not farm. No completion
+                // report - blacklisting already has its own, separate semantics.
+                if let Err(e) = whitelist::remove(app_handle, steam_id, game.app_id).await {
+                    tracing::warn!(app_id = game.app_id, error = %e.code(), "card farming: failed to remove blacklisted game from whitelist");
+                }
+                continue;
+            }
+            let cached = game_cache.get(&game.app_id).copied().unwrap_or_default();
+            if let Some(reason) = filter_reason(cached, farming_settings, now) {
+                let farmable_at = if matches!(reason, CompletedFarmReason::RefundWindow) {
+                    refund_window::farmable_at_if_in_refund_window(
+                        cached.last_refund_eligible_purchase_unix_seconds,
+                        cached.playtime_forever_minutes,
+                        now,
+                    )
+                } else {
+                    None
+                };
+                prune_whitelist_member(
+                    app_handle,
+                    steam_id,
+                    game.app_id,
+                    game.name.clone(),
+                    game.remaining,
+                    reason,
+                    farmable_at,
+                    completed,
+                )
+                .await;
+                continue;
+            }
+            classify(game, &mut ready, &mut accumulating);
+        }
+    } else {
+        for (app_id, game) in &games_by_app_id {
+            if excluded_app_ids.contains(app_id) || blacklisted.contains(app_id) {
+                continue;
+            }
+            let cached = game_cache.get(app_id).copied().unwrap_or_default();
+            if filter_reason(cached, farming_settings, now).is_some() {
+                continue;
+            }
+            classify(game.clone(), &mut ready, &mut accumulating);
+        }
+
+        // Anything still tracked in `progress` that the loop above didn't re-admit either
+        // genuinely finished (not in the raw scrape at all) or was excluded by a filter that
+        // changed mid-session (still in the raw scrape, just no longer eligible) - only the former
+        // is reported, see this fn's doc comment.
+        let still_eligible: HashSet<u32> = ready
+            .iter()
+            .chain(accumulating.iter())
+            .map(|g| g.app_id)
+            .collect();
+        for (app_id, prog) in progress {
+            if still_eligible.contains(app_id) || games_by_app_id.contains_key(app_id) {
+                continue;
+            }
+            tracing::info!(app_id, name = %prog.name, "card farming: drops exhausted");
+            completed.push(CompletedFarm {
+                app_id: *app_id,
+                name: prog.name.clone(),
+                remaining: 0,
+                reason: CompletedFarmReason::DropsExhausted,
+                farmable_at: None,
+            });
+        }
+    }
+
+    Ok(ResolvedCandidates { ready, accumulating })
+}
+
+#[allow(clippy::too_many_arguments)]
+async fn prune_whitelist_member(
+    app_handle: &AppHandle,
+    steam_id: &str,
+    app_id: u32,
+    name: String,
+    remaining: u32,
+    reason: CompletedFarmReason,
+    farmable_at: Option<i64>,
+    completed: &mut Vec<CompletedFarm>,
+) {
+    if let Err(e) = whitelist::remove(app_handle, steam_id, app_id).await {
+        tracing::warn!(app_id, error = %e.code(), "card farming: failed to remove game from whitelist");
+    }
+    tracing::info!(app_id, name = %name, reason = ?reason, "card farming: removed game from whitelist");
+    completed.push(CompletedFarm {
+        app_id,
+        name,
+        remaining,
+        reason,
+        farmable_at,
+    });
+}
+
+/// Picks exactly one phase from `candidates` and its target(s) - pure and unit-testable, no
+/// network/lock access. `None` means nothing is eligible at all (the cycle should end).
+fn select_phase(
+    candidates: &ResolvedCandidates,
+    allow_multi_game_farming: bool,
+) -> Option<(Phase, Vec<GameWithDrops>)> {
+    if !candidates.ready.is_empty() {
+        if allow_multi_game_farming {
+            let mut ready = candidates.ready.clone();
+            // Fewest remaining drops first - same tie-break the solo case uses below, now
+            // deciding who gets priority for the limited concurrent-farm slots when there are
+            // more than MAX_CONCURRENT_FARMING games ready at once. Capping here (not just
+            // relying on `idling::claims`'s own downstream cap) matters because this list also
+            // drives `state.active`/`progress` - without it, games beyond the cap would show as
+            // "farming" while actually only getting a few seconds of real idle time per cycle
+            // (during the restart-cycle's individual sweep), never the full main window.
+            ready.sort_by_key(|g| g.remaining);
+            ready.truncate(MAX_CONCURRENT_FARMING);
+            Some((Phase::ReadyFarm, ready))
+        } else {
+            let target = candidates
+                .ready
+                .iter()
+                .min_by_key(|g| g.remaining)?
+                .clone();
+            Some((Phase::ReadyFarm, vec![target]))
+        }
+    } else if !candidates.accumulating.is_empty() {
+        let mut accumulating = candidates.accumulating.clone();
+        // Highest playtime_hours first - closest to `hours_until_farmable` gets priority for the
+        // limited slots when there are more than MAX_CONCURRENT_FARMING accumulating at once.
+        accumulating.sort_by(|a, b| {
+            b.playtime_hours
+                .partial_cmp(&a.playtime_hours)
+                .unwrap_or(std::cmp::Ordering::Equal)
+        });
+        accumulating.truncate(MAX_CONCURRENT_FARMING);
+        Some((Phase::BulkIdle, accumulating))
+    } else {
+        None
+    }
+}
+
+enum CycleOutcome {
+    Completed,
+    Stopped,
+    Woken,
+}
+
+async fn race_wait(duration: Duration, stopped: &AtomicBool, wake: &Notify) -> Option<CycleOutcome> {
+    tokio::select! {
+        stop_requested = wait_ticking(duration, stopped) => {
+            stop_requested.then_some(CycleOutcome::Stopped)
+        }
+        _ = wake.notified() => Some(CycleOutcome::Woken),
+    }
+}
+
 async fn announce_idle_set(
     app_handle: &AppHandle,
     account: GamesAccount,
-    active: &[FarmingProgress],
+    targets: &[IdleTarget],
 ) -> AppResult<()> {
     let agent_manager = app_handle.state::<AgentManager>();
     let idling_manager = app_handle.state::<IdlingManager>();
     let claims = app_handle.state::<idling::claims::IdleClaimsRegistry>();
-    let targets = active
-        .iter()
-        .map(|p| IdleTarget {
-            app_id: p.app_id,
-            name: p.name.clone(),
-        })
-        .collect();
     claims
         .replace_owner_claim(
             app_handle,
@@ -747,10 +356,65 @@ async fn announce_idle_set(
             idling_manager,
             account,
             idling::claims::OWNER_CARD_FARMING,
-            targets,
+            targets.to_vec(),
         )
         .await
         .map(|_| ())
+}
+
+/// Runs one full stop/pause/restart micro-cycle against `targets` - the same sequence whether
+/// `targets.len()` is 1 (a solo ready-farm pick) or more (a bulk-idle batch, or a multi-game
+/// ready-farm batch when `allow_multi_game_farming` is on): idle everything together for
+/// [`FULL_IDLE_DURATION`], stop, pause [`MICRO_PAUSE`], then sweep every target individually
+/// ([`MICRO_IDLE_DURATION`] each, stopped between each - exactly one target physically idling at any
+/// instant during this step) before returning control to the caller for a fresh
+/// re-scrape/reclassify. Every stop and start here is a real `IdleClaimsRegistry::
+/// replace_owner_claim` call - cheap for agent mode (a single local IPC round trip to the daemon,
+/// no Steam-side rate limit in this codebase) and for CLI mode (`IdlingManager::set_games` diffs
+/// kill/spawn per process, fast even for a full batch) alike; the real wall-clock cost of the
+/// individual sweep is the deliberate per-target dwell time itself, identical for both modes.
+async fn run_restart_cycle(
+    app_handle: &AppHandle,
+    account: &GamesAccount,
+    targets: &[IdleTarget],
+    stopped: &AtomicBool,
+    wake: &Notify,
+) -> CycleOutcome {
+    if targets.is_empty() {
+        return CycleOutcome::Completed;
+    }
+
+    if let Err(e) = announce_idle_set(app_handle, account.clone(), targets).await {
+        tracing::warn!(error = %e.code(), "card farming: failed to start idling this cycle's targets");
+    }
+    if let Some(outcome) = race_wait(FULL_IDLE_DURATION, stopped, wake).await {
+        let _ = announce_idle_set(app_handle, account.clone(), &[]).await;
+        return outcome;
+    }
+    let _ = announce_idle_set(app_handle, account.clone(), &[]).await;
+
+    if let Some(outcome) = race_wait(MICRO_PAUSE, stopped, wake).await {
+        return outcome;
+    }
+
+    for target in targets {
+        if let Err(e) = announce_idle_set(
+            app_handle,
+            account.clone(),
+            std::slice::from_ref(target),
+        )
+        .await
+        {
+            tracing::warn!(app_id = target.app_id, error = %e.code(), "card farming: failed to start idling during the individual sweep");
+        }
+        if let Some(outcome) = race_wait(MICRO_IDLE_DURATION, stopped, wake).await {
+            let _ = announce_idle_set(app_handle, account.clone(), &[]).await;
+            return outcome;
+        }
+        let _ = announce_idle_set(app_handle, account.clone(), &[]).await;
+    }
+
+    CycleOutcome::Completed
 }
 
 async fn emit_state(app_handle: &AppHandle, steam_id: &str, state: &Arc<Mutex<FarmingState>>) {
@@ -761,7 +425,7 @@ async fn emit_state(app_handle: &AppHandle, steam_id: &str, state: &Arc<Mutex<Fa
     );
 }
 
-/// Once the queue is genuinely empty (see `run_cycle`'s `queue_genuinely_empty`), starts whatever
+/// Once nothing is eligible at all (see `run_cycle`'s `queue_genuinely_empty`), starts whatever
 /// `settings.next_task` names, if `next_task_checkbox` is on: `"achievementUnlocker"` or
 /// `"autoIdle"` (`auto_idle::commands::start_auto_idle_games`) - mirrors
 /// `achievement_unlocker::manager::maybe_start_next_task` exactly, chaining in the other direction.
@@ -805,7 +469,7 @@ fn maybe_start_next_task<'a>(
                     Ok(_) => {
                         tracing::info!(
                             steam_id,
-                            "card farming: queue empty, starting achievement unlocker next task"
+                            "card farming: nothing left eligible, starting achievement unlocker next task"
                         )
                     }
                     Err(e) => {
@@ -831,7 +495,7 @@ fn maybe_start_next_task<'a>(
                     Ok(_) => {
                         tracing::info!(
                             steam_id,
-                            "card farming: queue empty, starting auto-idle next task"
+                            "card farming: nothing left eligible, starting auto-idle next task"
                         )
                     }
                     Err(e) => {
@@ -844,18 +508,170 @@ fn maybe_start_next_task<'a>(
     })
 }
 
-/// The cycle itself: backfill the active set from the queue (up to [`MAX_CONCURRENT_FARMING`]),
-/// announce it to `idling` if it changed, wait out one poll interval (interruptible early via
-/// `wake` - see that field's doc comment), poll every active game's remaining count concurrently,
-/// drop finished games and re-announce immediately if any did, repeat - refetching the drops list
-/// once both `active` and `queue` are empty in case a still-queued game (`queued_games`) picked up
-/// new drops mid-session, and stopping for good once that filtered refetch also comes back empty.
-///
-/// Reached the bottom because there's genuinely nothing left to farm, [`stop`] set `stopped`, or a
-/// mid-cycle Steam Community session expiry was confirmed (see [`FarmingState::session_expired`])
-/// - all converge on the same cleanup below, which is safe to run twice (`stop` awaits this very
-/// task before returning, so there's no concurrent double-run, but `set_idle_games([])`/removing an
-/// already-removed map entry are idempotent regardless).
+struct FarmingSession {
+    handle: JoinHandle<()>,
+    stopped: Arc<AtomicBool>,
+    state: Arc<Mutex<FarmingState>>,
+    /// Session-scoped manual exclusions (Idling page's per-game "stop" toggle) - see
+    /// [`CardFarmingManager::remove_active_game`]'s doc comment. Checked by [`resolve_candidates`]
+    /// alongside the persisted blacklist, but never persisted itself and never survives past this
+    /// session.
+    excluded_app_ids: Arc<Mutex<HashSet<u32>>>,
+    /// Lets [`CardFarmingManager::remove_active_game`] interrupt the current restart-cycle wait
+    /// immediately instead of leaving a manually-stopped game showing as idling for up to the rest
+    /// of that wait.
+    wake: Arc<Notify>,
+}
+
+/// Tracks at most one farming cycle per account (keyed by resolved SteamID64, matching
+/// `favorites`/`games`'s cache-keying convention), each running as its own background task.
+#[derive(Default)]
+pub struct CardFarmingManager {
+    sessions: Mutex<HashMap<String, FarmingSession>>,
+}
+
+impl CardFarmingManager {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Starts a farming cycle for `steam_id` if one isn't already running - idempotent, mirroring
+    /// `favorites::add_favorite`'s "calling it again is a no-op" convention: a second `start` call
+    /// while one is already in flight just returns its current state rather than restarting
+    /// anything. Always spawns [`run_cycle`], even if nothing turns out to be eligible - only the
+    /// spawned task ever emits [`FARMING_STATE_EVENT`], so a would-be early return here would leave
+    /// the "nothing to farm" outcome with no way to ever reach the frontend.
+    pub async fn start(
+        &self,
+        app_handle: &AppHandle,
+        steam_id: String,
+        account: GamesAccount,
+        cookies: SteamCookies,
+    ) -> AppResult<FarmingState> {
+        {
+            let sessions = self.sessions.lock().await;
+            if let Some(session) = sessions.get(&steam_id) {
+                return Ok(session.state.lock().await.clone());
+            }
+        }
+
+        tracing::info!(steam_id, "card farming: session started");
+
+        let state = Arc::new(Mutex::new(FarmingState {
+            is_farming: true,
+            ..Default::default()
+        }));
+        let stopped = Arc::new(AtomicBool::new(false));
+        let excluded_app_ids = Arc::new(Mutex::new(HashSet::new()));
+        let wake = Arc::new(Notify::new());
+
+        let handle = tokio::spawn(run_cycle(
+            app_handle.clone(),
+            steam_id.clone(),
+            account,
+            cookies,
+            state.clone(),
+            stopped.clone(),
+            excluded_app_ids.clone(),
+            wake.clone(),
+        ));
+
+        let snapshot = state.lock().await.clone();
+        self.sessions.lock().await.insert(
+            steam_id,
+            FarmingSession {
+                handle,
+                stopped,
+                state,
+                excluded_app_ids,
+                wake,
+            },
+        );
+        Ok(snapshot)
+    }
+
+    /// Stops `steam_id`'s farming cycle if one is running - idempotent (a no-op if nothing is
+    /// tracked). Sets a flag rather than aborting the task outright, so the task always reaches
+    /// its own cleanup (stop idling, clear state) instead of being killed mid-`replace_owner_claim`
+    /// call and potentially leaving games idling with nothing left to stop them.
+    pub async fn stop(&self, steam_id: &str) -> AppResult<()> {
+        let session = self.sessions.lock().await.remove(steam_id);
+        let Some(session) = session else {
+            return Ok(());
+        };
+        session.stopped.store(true, Ordering::SeqCst);
+        let _ = session.handle.await;
+        Ok(())
+    }
+
+    pub async fn state(&self, steam_id: &str) -> FarmingState {
+        match self.sessions.lock().await.get(steam_id) {
+            Some(session) => session.state.lock().await.clone(),
+            None => FarmingState::default(),
+        }
+    }
+
+    /// Permanently excludes `app_id` from a running session for `steam_id` - the Idling page's
+    /// per-card "stop" toggle already releases the idling claim itself via
+    /// `idling::claims::IdleClaimsRegistry::release_app_id` (this session finds out its game
+    /// stopped idling from that, not from here), but this manager tracks its own `active`/`queue`
+    /// independently and would otherwise never learn a specific game was pulled out from under
+    /// it - the next unrelated state change would silently resurrect it via the next
+    /// `resolve_candidates`/`select_phase` pass. Deliberately doesn't add a [`CompletedFarm`] entry
+    /// - a manual stop isn't "this game is done." Leaves the whitelist/blacklist untouched - a
+    /// fresh session started later still considers this game. A no-op (`false`) if no session is
+    /// running for `steam_id`, or the game isn't part of this session's `active`/`queue` at all.
+    pub async fn remove_active_game(
+        &self,
+        app_handle: &AppHandle,
+        steam_id: &str,
+        app_id: u32,
+    ) -> bool {
+        let (excluded_app_ids, state, wake) = {
+            let sessions = self.sessions.lock().await;
+            let Some(session) = sessions.get(steam_id) else {
+                return false;
+            };
+            (
+                session.excluded_app_ids.clone(),
+                session.state.clone(),
+                session.wake.clone(),
+            )
+        };
+
+        excluded_app_ids.lock().await.insert(app_id);
+
+        let removed = {
+            let mut s = state.lock().await;
+            let before = s.active.len() + s.queue.len();
+            s.active.retain(|p| p.app_id != app_id);
+            s.queue.retain(|g| g.app_id != app_id);
+            before != s.active.len() + s.queue.len()
+        };
+
+        if removed {
+            tracing::info!(
+                steam_id,
+                app_id,
+                "card farming: game removed from session (manually stopped via idling page)"
+            );
+            emit_state(app_handle, steam_id, &state).await;
+            wake.notify_one();
+        }
+        removed
+    }
+
+    async fn remove(&self, steam_id: &str) {
+        self.sessions.lock().await.remove(steam_id);
+    }
+}
+
+/// The cycle itself: resolve this iteration's eligible pool, pick a phase, run the restart-cycle
+/// against its target(s), repeat - ending once nothing is eligible at all, [`CardFarmingManager::
+/// stop`] set `stopped`, or a mid-cycle Steam Community session expiry was confirmed (see
+/// [`FarmingState::session_expired`]). All three converge on the same cleanup below, safe to run
+/// once (`stop` awaits this very task before returning, so there's no concurrent double-run, but
+/// `replace_owner_claim([])`/removing an already-removed session entry are idempotent regardless).
 #[allow(clippy::too_many_arguments)]
 async fn run_cycle(
     app_handle: AppHandle,
@@ -864,145 +680,119 @@ async fn run_cycle(
     cookies: SteamCookies,
     state: Arc<Mutex<FarmingState>>,
     stopped: Arc<AtomicBool>,
-    queued_games: Arc<Mutex<HashMap<u32, String>>>,
+    excluded_app_ids: Arc<Mutex<HashSet<u32>>>,
     wake: Arc<Notify>,
 ) {
-    // Only set at the one break site below where the refetch itself comes back with nothing left
-    // to farm - stays `false` for every other way this loop can end (a manual `stop`, mid-wait
-    // `stopped` firing, or a refetch error), so `maybe_start_next_task` only ever chains on a
-    // genuine finish, mirroring `achievement_unlocker::manager::run_loop`'s `EndReason::QueueEmpty`
-    // check.
+    // Session-scoped, survives across outer-loop iterations - see `FarmingProgress::active_since`'s
+    // doc comment for why entries persist only while a game stays continuously selected as a
+    // target, and `resolve_candidates`'s doc comment for how a dropped-out entry gets reconciled.
+    let mut progress: HashMap<u32, FarmingProgress> = HashMap::new();
+    // Only set at the one break site below where nothing is eligible at all - stays `false` for
+    // every other way this loop can end (a manual stop, mid-wait `stopped` firing, or a resolve
+    // error), so `maybe_start_next_task` only ever chains on a genuine "nothing left" finish.
     let mut queue_genuinely_empty = false;
 
     while !stopped.load(Ordering::SeqCst) {
-        let game_cache = owned_game_cache_lookup(&app_handle, &steam_id);
-        // Read fresh every iteration (not just once at cycle start) so toggling either setting
-        // mid-session takes effect on the very next poll - same reasoning as `caps` below.
         let farming_settings = settings::get(&app_handle, &steam_id).await.unwrap_or_default();
-        let cap = if farming_settings.single_farming_mode {
-            1
-        } else {
-            MAX_CONCURRENT_FARMING
-        };
-        let added = {
-            let mut s = state.lock().await;
-            backfill_active(&mut s, &game_cache, cap)
-        };
+        let excluded_snapshot = excluded_app_ids.lock().await.clone();
 
-        let active_empty = state.lock().await.active.is_empty();
-        if active_empty {
-            let queued_snapshot = queued_games.lock().await.clone();
-            match fetch_queued_games(&app_handle, &steam_id, &cookies, &queued_snapshot).await {
-                Ok((games, excluded)) => {
-                    if !excluded.is_empty() {
-                        // Same prune as `CardFarmingManager::start` - this refetch reuses
-                        // `queued_games` to filter the scraper's response, so an id excluded just
-                        // now must come out before the next iteration reaches this branch again,
-                        // or it would be rediscovered and duplicated in `completed` forever.
-                        let mut qg = queued_games.lock().await;
-                        for excluded_game in &excluded {
-                            qg.remove(&excluded_game.app_id);
-                        }
-                        drop(qg);
-                        state.lock().await.completed.extend(excluded);
-                    }
-                    if games.is_empty() {
-                        queue_genuinely_empty = true;
-                        break;
-                    }
-                    tracing::info!(
-                        steam_id,
-                        count = games.len(),
-                        "card farming: refetched, found more queued games with drops"
-                    );
-                    state.lock().await.queue = games;
-                    continue;
-                }
-                Err(AppError::SteamCommunitySessionExpired(id)) => {
-                    let _ = credentials::clear(&id);
-                    state.lock().await.session_expired = true;
-                    tracing::warn!(
-                        steam_id,
-                        "card farming: steam community session expired mid-cycle, stopping"
-                    );
-                    break;
-                }
-                Err(e) => {
-                    tracing::warn!(
-                        steam_id,
-                        error = %e.code(),
-                        "card farming: failed to refetch games with drops, ending cycle"
-                    );
-                    break;
-                }
-            }
-        }
-
-        if added {
-            let active = state.lock().await.active.clone();
-            if let Err(e) = announce_idle_set(&app_handle, account.clone(), &active).await {
-                tracing::warn!(steam_id, error = %e.code(), "card farming: failed to update the idling set");
-            }
-            tracing::info!(
-                steam_id,
-                count = active.len(),
-                "card farming: idling set updated"
-            );
-            emit_state(&app_handle, &steam_id, &state).await;
-        }
-
-        // Races the normal poll-interval sleep against `wake` - `CardFarmingManager::
-        // remove_active_game` fires it after externally pulling a game out of `active`/`queue`,
-        // so this loop re-checks `active_empty` on its very next iteration instead of sitting on
-        // a stale `active` list (still reporting `is_farming: true`) for up to the full interval.
-        // `continue`s straight back to the top rather than falling into this iteration's
-        // `poll_active` call, which would just find the already-known-current `active` set anyway.
-        tokio::select! {
-            stop_requested = wait_ticking(DROPS_POLL_INTERVAL, &stopped) => {
-                if stop_requested {
-                    break;
-                }
-            }
-            _ = wake.notified() => continue,
-        }
-
-        let caps = settings::get_caps(&app_handle, &steam_id).await.unwrap_or_else(|e| {
-            tracing::warn!(steam_id, error = %e.code(), "card farming: failed to read auto-stop caps, treating as uncapped this poll");
-            FarmingCaps::default()
-        });
-        let poll_result = {
-            let mut qg = queued_games.lock().await;
-            poll_active(
-                &app_handle,
-                &state,
-                &steam_id,
-                &cookies,
-                &caps,
-                farming_settings.skip_refundable_games,
-                &mut qg,
-            )
-            .await
-        };
-
-        let finished = match poll_result {
-            Ok(finished) => finished,
+        let mut new_completed = Vec::new();
+        let candidates = match resolve_candidates(
+            &app_handle,
+            &steam_id,
+            &cookies,
+            &farming_settings,
+            &progress,
+            &excluded_snapshot,
+            &mut new_completed,
+        )
+        .await
+        {
+            Ok(c) => c,
             Err(AppError::SteamCommunitySessionExpired(id)) => {
                 let _ = credentials::clear(&id);
-                state.lock().await.session_expired = true;
+                let mut s = state.lock().await;
+                s.session_expired = true;
+                s.completed.extend(new_completed);
+                drop(s);
+                emit_state(&app_handle, &steam_id, &state).await;
+                tracing::warn!(
+                    steam_id,
+                    "card farming: steam community session expired mid-cycle, stopping"
+                );
+                break;
+            }
+            Err(e) => {
+                tracing::warn!(steam_id, error = %e.code(), "card farming: failed to resolve candidates, ending cycle");
+                let mut s = state.lock().await;
+                s.completed.extend(new_completed);
+                drop(s);
                 emit_state(&app_handle, &steam_id, &state).await;
                 break;
             }
-            // `poll_active` never actually returns any other error variant today - matched
-            // explicitly anyway so this stays exhaustive if that ever changes.
-            Err(_) => false,
         };
+
+        if !new_completed.is_empty() {
+            let mut s = state.lock().await;
+            s.completed.extend(new_completed);
+            drop(s);
+            emit_state(&app_handle, &steam_id, &state).await;
+        }
+
+        let Some((phase, targets)) =
+            select_phase(&candidates, farming_settings.allow_multi_game_farming)
+        else {
+            queue_genuinely_empty = true;
+            break;
+        };
+
+        let target_ids: HashSet<u32> = targets.iter().map(|g| g.app_id).collect();
+        let queue_list: Vec<GameWithDrops> = candidates
+            .ready
+            .into_iter()
+            .chain(candidates.accumulating)
+            .filter(|g| !target_ids.contains(&g.app_id))
+            .collect();
+
+        // Only entries still selected as a target survive - see `FarmingProgress::active_since`'s
+        // doc comment for why dropping to `queue` (even briefly) resets the clock, and why the
+        // restart-cycle's own internal blips (below) never reach this point at all.
+        progress.retain(|app_id, _| target_ids.contains(app_id));
+        let now_ms = chrono::Utc::now().timestamp_millis();
+        let mut active_progress = Vec::with_capacity(targets.len());
+        for game in &targets {
+            let entry = progress.entry(game.app_id).or_insert_with(|| FarmingProgress {
+                app_id: game.app_id,
+                name: game.name.clone(),
+                initial_remaining: game.remaining,
+                remaining: game.remaining,
+                playtime_hours: game.playtime_hours,
+                active_since: now_ms,
+            });
+            entry.remaining = game.remaining;
+            entry.playtime_hours = game.playtime_hours;
+            active_progress.push(entry.clone());
+        }
+
+        {
+            let mut s = state.lock().await;
+            s.phase = Some(phase);
+            s.active = active_progress;
+            s.queue = queue_list;
+        }
         emit_state(&app_handle, &steam_id, &state).await;
 
-        if finished {
-            let active = state.lock().await.active.clone();
-            if let Err(e) = announce_idle_set(&app_handle, account.clone(), &active).await {
-                tracing::warn!(steam_id, error = %e.code(), "card farming: failed to update the idling set");
-            }
+        let idle_targets: Vec<IdleTarget> = targets
+            .iter()
+            .map(|g| IdleTarget {
+                app_id: g.app_id,
+                name: g.name.clone(),
+            })
+            .collect();
+
+        match run_restart_cycle(&app_handle, &account, &idle_targets, &stopped, &wake).await {
+            CycleOutcome::Stopped => break,
+            CycleOutcome::Completed | CycleOutcome::Woken => continue,
         }
     }
 
@@ -1010,7 +800,9 @@ async fn run_cycle(
     {
         let mut s = state.lock().await;
         s.is_farming = false;
+        s.phase = None;
         s.active.clear();
+        s.queue.clear();
     }
     emit_state(&app_handle, &steam_id, &state).await;
 
@@ -1029,228 +821,162 @@ async fn run_cycle(
 mod tests {
     use super::*;
 
-    // Most of this module's logic (the actual cycle: idle, poll `steamcommunity.com`, advance)
-    // isn't unit-testable without network access or introducing a scraper trait purely for mocking.
-    // `backfill_active` is the one piece of non-trivial logic that's both network-free and worth
-    // locking down here.
-
-    fn game(app_id: u32, remaining: u32) -> GameWithDrops {
+    fn game(app_id: u32, remaining: u32, playtime_hours: f32) -> GameWithDrops {
         GameWithDrops {
             app_id,
             name: format!("Game {app_id}"),
             remaining,
-            playtime_hours: 0.0,
+            playtime_hours,
         }
     }
 
     #[test]
-    fn sort_by_drop_order_highest_first_orders_by_descending_remaining() {
-        let mut games = vec![game(1, 3), game(2, 10), game(3, 1)];
-        sort_by_drop_order(&mut games, settings::DropSortOrder::HighestFirst, &[]);
-        assert_eq!(
-            games.iter().map(|g| g.app_id).collect::<Vec<_>>(),
-            vec![2, 1, 3]
-        );
-    }
-
-    #[test]
-    fn sort_by_drop_order_lowest_first_orders_by_ascending_remaining() {
-        let mut games = vec![game(1, 3), game(2, 10), game(3, 1)];
-        sort_by_drop_order(&mut games, settings::DropSortOrder::LowestFirst, &[]);
-        assert_eq!(
-            games.iter().map(|g| g.app_id).collect::<Vec<_>>(),
-            vec![3, 1, 2]
-        );
-    }
-
-    #[test]
-    fn sort_by_drop_order_queue_order_orders_by_queue_position() {
-        let mut games = vec![game(1, 3), game(2, 10), game(3, 1)];
-        sort_by_drop_order(
-            &mut games,
-            settings::DropSortOrder::QueueOrder,
-            &[3, 1, 2],
-        );
-        assert_eq!(
-            games.iter().map(|g| g.app_id).collect::<Vec<_>>(),
-            vec![3, 1, 2]
-        );
-    }
-
-    #[test]
-    fn sort_by_drop_order_queue_order_appends_unqueued_games_in_original_order() {
-        let mut games = vec![game(1, 3), game(2, 10), game(3, 1)];
-        // Only app 2 has a known queue position - the rest (1, 3) aren't in `queue_order` at all
-        // (mirrors `all_games` mode, which never populates the queue) and should keep their
-        // original relative order rather than being reshuffled against each other.
-        sort_by_drop_order(&mut games, settings::DropSortOrder::QueueOrder, &[2]);
-        assert_eq!(
-            games.iter().map(|g| g.app_id).collect::<Vec<_>>(),
-            vec![2, 1, 3]
-        );
-    }
-
-    #[test]
-    fn backfill_fills_up_to_the_concurrent_cap_and_leaves_the_rest_queued() {
-        let mut farming = FarmingState {
-            queue: (0..40).map(|i| game(i, 1)).collect(),
-            ..Default::default()
+    fn select_phase_prefers_ready_farm_over_bulk_idle() {
+        let candidates = ResolvedCandidates {
+            ready: vec![game(1, 3, 5.0)],
+            accumulating: vec![game(2, 5, 1.0)],
         };
-
-        let added = backfill_active(&mut farming, &HashMap::new(), MAX_CONCURRENT_FARMING);
-
-        assert!(added);
-        assert_eq!(farming.active.len(), MAX_CONCURRENT_FARMING);
-        assert_eq!(farming.queue.len(), 40 - MAX_CONCURRENT_FARMING);
+        let (phase, targets) = select_phase(&candidates, false).unwrap();
+        assert_eq!(phase, Phase::ReadyFarm);
+        assert_eq!(targets.iter().map(|g| g.app_id).collect::<Vec<_>>(), vec![1]);
     }
 
     #[test]
-    fn backfill_is_a_no_op_and_reports_unchanged_when_already_full() {
-        let mut farming = FarmingState {
-            active: (0..MAX_CONCURRENT_FARMING as u32)
-                .map(|i| FarmingProgress {
-                    app_id: i,
-                    name: format!("Game {i}"),
-                    initial_remaining: 1,
-                    remaining: 1,
-                    playtime_hours: 0.0,
-                    started_at: Instant::now(),
-                    baseline_playtime_minutes: 0,
-                })
-                .collect(),
-            queue: vec![game(999, 1)],
-            ..Default::default()
+    fn select_phase_solo_picks_fewest_remaining_first() {
+        let candidates = ResolvedCandidates {
+            ready: vec![game(1, 5, 5.0), game(2, 2, 5.0), game(3, 8, 5.0)],
+            accumulating: vec![],
         };
-
-        let added = backfill_active(&mut farming, &HashMap::new(), MAX_CONCURRENT_FARMING);
-
-        assert!(!added);
-        assert_eq!(farming.active.len(), MAX_CONCURRENT_FARMING);
-        assert_eq!(farming.queue.len(), 1);
+        let (phase, targets) = select_phase(&candidates, false).unwrap();
+        assert_eq!(phase, Phase::ReadyFarm);
+        assert_eq!(targets.len(), 1);
+        assert_eq!(targets[0].app_id, 2);
     }
 
     #[test]
-    fn backfill_reports_unchanged_when_the_queue_is_already_empty() {
-        let mut farming = FarmingState::default();
-        assert!(!backfill_active(
-            &mut farming,
-            &HashMap::new(),
-            MAX_CONCURRENT_FARMING
-        ));
-    }
-
-    #[test]
-    fn backfill_caps_to_one_when_single_farming_mode_is_on() {
-        let mut farming = FarmingState {
-            queue: (0..5).map(|i| game(i, 1)).collect(),
-            ..Default::default()
+    fn select_phase_multi_game_farming_targets_every_ready_game() {
+        let candidates = ResolvedCandidates {
+            ready: vec![game(1, 5, 5.0), game(2, 2, 5.0)],
+            accumulating: vec![],
         };
-
-        let added = backfill_active(&mut farming, &HashMap::new(), 1);
-
-        assert!(added);
-        assert_eq!(farming.active.len(), 1);
-        assert_eq!(farming.queue.len(), 4);
-
-        // A second backfill at the same cap is a no-op while that one game is still active -
-        // mirrors run_cycle only ever calling this once per poll, with the cap re-derived fresh
-        // from the live setting each time.
-        assert!(!backfill_active(&mut farming, &HashMap::new(), 1));
-        assert_eq!(farming.active.len(), 1);
+        let (phase, targets) = select_phase(&candidates, true).unwrap();
+        assert_eq!(phase, Phase::ReadyFarm);
+        assert_eq!(targets.len(), 2);
     }
 
-    fn progress(
-        app_id: u32,
-        initial_remaining: u32,
-        remaining: u32,
-        started_at: Instant,
-    ) -> FarmingProgress {
-        FarmingProgress {
-            app_id,
-            name: format!("Game {app_id}"),
-            initial_remaining,
-            remaining,
-            playtime_hours: 0.0,
-            started_at,
-            baseline_playtime_minutes: 0,
+    #[test]
+    fn select_phase_multi_game_farming_caps_at_max_concurrent_and_prioritizes_fewest_remaining() {
+        // 40 ready games, remaining count equal to app_id (so app_id 0 has the fewest remaining,
+        // app_id 39 the most) - only the 32 with the fewest remaining should be selected.
+        let ready: Vec<GameWithDrops> = (0..40).map(|i| game(i, i, 5.0)).collect();
+        let candidates = ResolvedCandidates {
+            ready,
+            accumulating: vec![],
+        };
+        let (phase, targets) = select_phase(&candidates, true).unwrap();
+        assert_eq!(phase, Phase::ReadyFarm);
+        assert_eq!(targets.len(), MAX_CONCURRENT_FARMING);
+        assert!(targets.iter().any(|g| g.app_id == 0));
+        assert!(targets.iter().any(|g| g.app_id == 31));
+        assert!(!targets.iter().any(|g| g.app_id == 32));
+        assert!(!targets.iter().any(|g| g.app_id == 39));
+    }
+
+    #[test]
+    fn select_phase_bulk_idle_when_nothing_ready() {
+        let candidates = ResolvedCandidates {
+            ready: vec![],
+            accumulating: vec![game(1, 5, 1.0), game(2, 5, 2.5)],
+        };
+        let (phase, targets) = select_phase(&candidates, false).unwrap();
+        assert_eq!(phase, Phase::BulkIdle);
+        assert_eq!(targets.len(), 2);
+    }
+
+    #[test]
+    fn select_phase_bulk_idle_prioritizes_closest_to_threshold_when_over_cap() {
+        let accumulating: Vec<GameWithDrops> =
+            (0..40).map(|i| game(i, 1, i as f32 * 0.1)).collect();
+        let candidates = ResolvedCandidates {
+            ready: vec![],
+            accumulating,
+        };
+        let (phase, targets) = select_phase(&candidates, false).unwrap();
+        assert_eq!(phase, Phase::BulkIdle);
+        assert_eq!(targets.len(), MAX_CONCURRENT_FARMING);
+        // Highest playtime_hours (closest to threshold) must be included - id 39 has the highest,
+        // id 0 the lowest and must be excluded once there are more than the cap.
+        assert!(targets.iter().any(|g| g.app_id == 39));
+        assert!(!targets.iter().any(|g| g.app_id == 0));
+    }
+
+    #[test]
+    fn select_phase_none_when_nothing_eligible() {
+        let candidates = ResolvedCandidates {
+            ready: vec![],
+            accumulating: vec![],
+        };
+        assert!(select_phase(&candidates, false).is_none());
+    }
+
+    fn cached(playtime_minutes: u64, purchase: Option<i64>) -> CachedGameInfo {
+        CachedGameInfo {
+            playtime_forever_minutes: playtime_minutes,
+            last_refund_eligible_purchase_unix_seconds: purchase,
+        }
+    }
+
+    fn settings_with(
+        skip_no_playtime: bool,
+        farm_unplayed_only: bool,
+        skip_refundable_games: bool,
+    ) -> settings::CardFarmingSettings {
+        settings::CardFarmingSettings {
+            skip_no_playtime,
+            farm_unplayed_only,
+            skip_refundable_games,
+            ..Default::default()
         }
     }
 
     #[test]
-    fn is_capped_none_when_neither_cap_is_set() {
-        let p = progress(440, 5, 3, Instant::now());
-        assert!(is_capped(&p, &FarmingCaps::default()).is_none());
-    }
-
-    #[test]
-    fn is_capped_reports_max_card_drops_reached() {
-        let p = progress(440, 5, 2, Instant::now()); // 3 drops farmed so far
-        let caps = FarmingCaps {
-            per_game_max_card_drops: HashMap::from([(440, 3)]),
-            ..Default::default()
-        };
+    fn filter_reason_skips_unplayed_when_requested() {
+        let s = settings_with(true, false, false);
         assert!(matches!(
-            is_capped(&p, &caps),
-            Some(CompletedFarmReason::MaxCardDrops)
+            filter_reason(cached(0, None), &s, 0),
+            Some(CompletedFarmReason::SkippedUnplayed)
         ));
     }
 
     #[test]
-    fn is_capped_not_reached_while_under_the_max_card_drops() {
-        let p = progress(440, 5, 4, Instant::now()); // only 1 drop farmed so far
-        let caps = FarmingCaps {
-            per_game_max_card_drops: HashMap::from([(440, 3)]),
-            ..Default::default()
-        };
-        assert!(is_capped(&p, &caps).is_none());
-    }
-
-    #[test]
-    fn is_capped_reports_max_card_farming_time_reached_via_per_game_cap() {
-        let p = progress(440, 5, 5, Instant::now() - Duration::from_secs(120));
-        let caps = FarmingCaps {
-            per_game_max_card_farming_time: HashMap::from([(440, 1)]), // 1 minute
-            ..Default::default()
-        };
+    fn filter_reason_skips_played_when_farm_unplayed_only() {
+        let s = settings_with(false, true, false);
         assert!(matches!(
-            is_capped(&p, &caps),
-            Some(CompletedFarmReason::MaxCardFarmingTime)
+            filter_reason(cached(60, None), &s, 0),
+            Some(CompletedFarmReason::SkippedPlayed)
         ));
     }
 
     #[test]
-    fn is_capped_per_game_max_card_farming_time_wins_over_global() {
-        // Per-game cap (99 minutes, not yet elapsed) wins even though the global value (1 minute)
-        // has - a specific override always takes precedence over the account-wide blanket value.
-        let p = progress(440, 5, 5, Instant::now() - Duration::from_secs(120));
-        let caps = FarmingCaps {
-            global_max_card_farming_time: 1,
-            per_game_max_card_farming_time: HashMap::from([(440, 99)]),
-            ..Default::default()
-        };
-        assert!(is_capped(&p, &caps).is_none());
+    fn filter_reason_none_when_no_filters_apply() {
+        let s = settings_with(false, false, false);
+        assert!(filter_reason(cached(0, None), &s, 0).is_none());
     }
 
     #[test]
-    fn is_capped_global_used_when_per_game_is_unset() {
-        let p = progress(440, 5, 5, Instant::now() - Duration::from_secs(120));
-        let caps = FarmingCaps {
-            global_max_card_farming_time: 1,
-            ..Default::default()
-        };
+    fn filter_reason_skips_refundable_when_inside_window() {
+        let s = settings_with(false, false, true);
+        let now = 1_000_000;
         assert!(matches!(
-            is_capped(&p, &caps),
-            Some(CompletedFarmReason::MaxCardFarmingTime)
+            filter_reason(cached(0, Some(now)), &s, now),
+            Some(CompletedFarmReason::RefundWindow)
         ));
     }
 
     #[test]
-    fn is_capped_not_reached_before_the_max_card_farming_time_elapses() {
-        let p = progress(440, 5, 5, Instant::now());
-        let caps = FarmingCaps {
-            per_game_max_card_farming_time: HashMap::from([(440, 30)]),
-            ..Default::default()
-        };
-        assert!(is_capped(&p, &caps).is_none());
+    fn filter_reason_refund_window_ignored_when_setting_off() {
+        let s = settings_with(false, false, false);
+        let now = 1_000_000;
+        assert!(filter_reason(cached(0, Some(now)), &s, now).is_none());
     }
 }

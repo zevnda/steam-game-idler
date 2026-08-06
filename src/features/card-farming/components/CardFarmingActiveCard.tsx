@@ -1,4 +1,4 @@
-import type { FarmingProgress } from '../types'
+import type { FarmingPhase, FarmingProgress } from '../types'
 import { useTranslation } from 'react-i18next'
 import { ProgressBar, Typography } from '@heroui/react'
 import { GameThumbnail } from '@/shared/components/GameThumbnail'
@@ -6,17 +6,34 @@ import { gameCardContextAttrs } from '@/shared/utils/gameCardContext'
 
 interface CardFarmingActiveCardProps {
   game: FarmingProgress
+  // Which phase produced this card - decides what the progress bar/label below actually measure.
+  // See `card_farming::mod::Phase`'s doc comment.
+  phase: FarmingPhase | null
+  // Only needed while `phase === 'bulkIdle'` - the threshold `game.playtimeHours` is progressing
+  // toward. Omitted (or still loading) falls back to the drops-remaining display, same as the
+  // ready-farm phase, rather than showing a bar with no real maximum.
+  hoursUntilFarmable?: number
 }
 
-// One currently-farming game within CardFarmingProgressView's "active" grid - cover art + a drops-
-// remaining progress bar, the card-farming analog of AchievementUnlockerCurrentGamePanel (this
-// feature has no "up next" concept to pair it with - `card_farming::manager` idles every active
-// game concurrently rather than working through them one at a time with delays, see
-// MAX_CONCURRENT_FARMING's doc comment - so active games get a grid of these instead of that
-// feature's stacked two-panel rows).
-export const CardFarmingActiveCard = ({ game }: CardFarmingActiveCardProps) => {
+// One currently-active game within CardFarmingProgressView's "active" grid - cover art plus a
+// progress bar whose meaning follows the current phase, not a fixed metric: while bulk-idling
+// (`phase === 'bulkIdle'`), the game isn't being farmed for cards at all yet, so a drops-remaining
+// bar there would be actively misleading (implying progress toward something that isn't
+// happening) - it shows progress toward `hoursUntilFarmable` instead. Once actually farming
+// (`phase === 'readyFarm'`), the bar reverts to the familiar drops-remaining progress. This value
+// refreshes at the same cadence as the rest of this view (once per outer-loop iteration, every
+// ~5-8 minutes depending on batch size) - deliberately not ticked forward client-side between
+// updates, so it stays consistent with every other value on this screen rather than being the one
+// thing that appears to update faster than reality.
+export const CardFarmingActiveCard = ({
+  game,
+  phase,
+  hoursUntilFarmable,
+}: CardFarmingActiveCardProps) => {
   const { t } = useTranslation()
-  const { appId, name, initialRemaining, remaining } = game
+  const { appId, name, initialRemaining, remaining, playtimeHours } = game
+
+  const showBuildingPlaytime = phase === 'bulkIdle' && hoursUntilFarmable !== undefined
 
   return (
     <div
@@ -27,20 +44,38 @@ export const CardFarmingActiveCard = ({ game }: CardFarmingActiveCardProps) => {
       <Typography title={name} truncate type='body-sm' weight='semibold'>
         {name}
       </Typography>
-      {initialRemaining > 0 && (
+      {showBuildingPlaytime ? (
         <ProgressBar
-          aria-label={`Card farming progress for ${name}`}
-          maxValue={initialRemaining}
+          aria-label={`Playtime progress for ${name}`}
+          maxValue={hoursUntilFarmable}
           minValue={0}
-          value={initialRemaining - remaining}
+          value={Math.min(playtimeHours, hoursUntilFarmable)}
         >
           <ProgressBar.Track>
             <ProgressBar.Fill />
           </ProgressBar.Track>
         </ProgressBar>
+      ) : (
+        initialRemaining > 0 && (
+          <ProgressBar
+            aria-label={`Card farming progress for ${name}`}
+            maxValue={initialRemaining}
+            minValue={0}
+            value={initialRemaining - remaining}
+          >
+            <ProgressBar.Track>
+              <ProgressBar.Fill />
+            </ProgressBar.Track>
+          </ProgressBar>
+        )
       )}
       <Typography className='text-accent' type='body-xs' weight='semibold'>
-        {t('dashboard.cardFarming.progress.dropsRemaining', { count: remaining })}
+        {showBuildingPlaytime
+          ? t('dashboard.cardFarming.progress.accumulatingPlaytime', {
+              hours: playtimeHours.toFixed(1),
+              threshold: hoursUntilFarmable,
+            })
+          : t('dashboard.cardFarming.progress.dropsRemaining', { count: remaining })}
       </Typography>
     </div>
   )

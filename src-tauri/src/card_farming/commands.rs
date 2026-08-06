@@ -1,46 +1,24 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 
 use tauri::{AppHandle, State};
 
 use crate::error::AppResult;
-use crate::games::commands::{get_owned_games_cache, resolve_steam_id, GamesAccount};
+use crate::games::commands::{resolve_steam_id, GamesAccount};
 use crate::local_steam::commands::require_steam_running;
 use crate::steam_agent::AgentManager;
 
 use super::{
-    blacklist, queue, scraper, session, settings, CardFarmingBlacklistEntry, CardFarmingManager,
-    CardFarmingQueueEntry, DropsRemaining, FarmingState, GameWithDrops, SteamCookies,
+    blacklist, scraper, session, settings, whitelist, CardFarmingBlacklistEntry,
+    CardFarmingManager, CardFarmingWhitelistEntry, FarmingState, GameWithDrops, SteamCookies,
 };
 use settings::CardFarmingSettings;
 
-/// Card drops remaining for one game, for `account`'s Steam Community session. `manual_cookies`
-/// lets the caller skip automatic hidden-webview session acquisition entirely - the casual/
-/// free-tier fallback (see `mod.rs`'s doc comment); omit it to use the automatic path, which is
-/// expected to be gated behind `hasGamerAccess` once a frontend exists for this feature.
-#[tauri::command]
-pub async fn get_drops_remaining(
-    app_handle: AppHandle,
-    agent_manager: State<'_, AgentManager>,
-    account: GamesAccount,
-    app_id: u32,
-    manual_cookies: Option<SteamCookies>,
-) -> AppResult<DropsRemaining> {
-    let steam_id = resolve_steam_id(&account, &agent_manager).await?;
-    let cookies = session::resolve(
-        &app_handle,
-        &agent_manager,
-        &account,
-        &steam_id,
-        manual_cookies,
-    )
-    .await?;
-    scraper::get_drops_remaining(&steam_id, app_id, &cookies).await
-}
-
 /// Every owned game with at least one card drop remaining, for `account`'s Steam Community
 /// session - excludes any game the account has blacklisted (see [`blacklist`]'s doc comment), so a
-/// blacklisted game never reappears in the browse list to begin with. See [`get_drops_remaining`]'s
-/// doc comment for `manual_cookies`.
+/// blacklisted game never reappears in the browse list to begin with. `manual_cookies` lets the
+/// caller skip automatic hidden-webview session acquisition entirely - the casual/free-tier
+/// fallback (see `mod.rs`'s doc comment); omit it to use the automatic path, gated behind
+/// `hasGamerAccess` on the frontend.
 #[tauri::command]
 pub async fn get_games_with_drops(
     app_handle: AppHandle,
@@ -75,60 +53,13 @@ pub async fn get_games_with_drops(
     Ok(games)
 }
 
-/// Resolves the games to farm when `CardFarmingSettings::all_games` is on: every currently scraped
-/// game with drops remaining, minus blacklisted games, further filtered by `skip_no_playtime`/
-/// `farm_unplayed_only` against the owned-games cache's real playtime (the same source `manager::
-/// owned_game_cache_lookup` uses) - the persisted queue is bypassed entirely in this mode, matching
-/// `main`'s "all games" behavior. Best-effort on the playtime lookup: a cache-read failure degrades
-/// to "0 minutes known" for every game (mirrors `manager::owned_game_cache_lookup`) rather than
-/// failing the whole start attempt over an unrelated cache miss. Returns app id -> name (not just
-/// app ids) to match
-/// `manager::CardFarmingManager::start`'s `queued_games` shape - every candidate here already came
-/// from a drops-remaining scrape, so (unlike the persisted-queue path below) this mode can never
-/// itself surface a zero-drops game.
-fn resolve_all_games(
-    app_handle: &AppHandle,
-    steam_id: &str,
-    games: Vec<GameWithDrops>,
-    blacklisted: &HashSet<u32>,
-    farming_settings: &CardFarmingSettings,
-) -> HashMap<u32, String> {
-    let playtime_by_app_id: HashMap<u32, u64> =
-        get_owned_games_cache(app_handle.clone(), steam_id.to_string())
-            .unwrap_or_default()
-            .into_iter()
-            .map(|g| (g.app_id, g.playtime_forever_minutes))
-            .collect();
-    games
-        .into_iter()
-        .filter(|g| !blacklisted.contains(&g.app_id))
-        .filter(|g| {
-            let playtime = playtime_by_app_id.get(&g.app_id).copied().unwrap_or(0);
-            if farming_settings.skip_no_playtime && playtime == 0 {
-                return false;
-            }
-            if farming_settings.farm_unplayed_only && playtime > 0 {
-                return false;
-            }
-            true
-        })
-        .map(|g| (g.app_id, g.name))
-        .collect()
-}
-
-/// Starts a farming cycle for `account`. Normally idles this account's currently-*queued* games
-/// with card drops remaining (see [`queue`]) concurrently, up to 32 at once, polling each until its
-/// drops hit zero and backfilling more from the queue as slots free up, until none are left - but
-/// when `CardFarmingSettings::all_games` is on, the persisted queue is bypassed entirely and every
-/// owned game with drops remaining is farmed instead (see [`resolve_all_games`]), since
-/// "all games" mode has no queue for the user to have populated in the first place. Idempotent -
-/// calling this while a cycle is already running for the account just returns its current state
-/// rather than starting a second one. `manual_cookies` behaves exactly as in
-/// [`get_drops_remaining`]/[`get_games_with_drops`] - resolved once here and reused for the whole
-/// cycle's repeated polling, not re-resolved per poll. See `manager.rs`'s module doc comment for
-/// how this matches `main`'s concurrency without its toggle-timing design. Blacklisted app IDs are
-/// filtered out of the farmed set here too - defense in depth alongside the frontend removing a
-/// newly-blacklisted game from the persisted queue directly (see [`blacklist`]'s doc comment).
+/// Starts a farming cycle for `account` - automatic from here on, see `mod.rs`'s module doc
+/// comment: every outer-loop iteration resolves its own eligible pool (scoped to the whitelist when
+/// non-empty) fresh, so there's no queue/whitelist-building step for this command to do itself.
+/// Idempotent - calling this while a cycle is already running for the account just returns its
+/// current state rather than starting a second one. `manual_cookies` behaves exactly as in
+/// [`get_games_with_drops`] - resolved once here and reused for the whole cycle's repeated polling,
+/// not re-resolved per iteration.
 #[tauri::command]
 pub async fn start_farming(
     app_handle: AppHandle,
@@ -150,25 +81,8 @@ pub async fn start_farming(
         manual_cookies,
     )
     .await?;
-    let blacklisted: HashSet<u32> = blacklist::read(&app_handle, &steam_id)
-        .await?
-        .into_iter()
-        .map(|entry| entry.app_id)
-        .collect();
-    let farming_settings = settings::get(&app_handle, &steam_id).await?;
-    let queued_games: HashMap<u32, String> = if farming_settings.all_games {
-        let games = scraper::get_games_with_drops(&steam_id, &cookies).await?;
-        resolve_all_games(&app_handle, &steam_id, games, &blacklisted, &farming_settings)
-    } else {
-        queue::read(&app_handle, &steam_id)
-            .await?
-            .into_iter()
-            .filter(|entry| !blacklisted.contains(&entry.app_id))
-            .map(|entry| (entry.app_id, entry.name))
-            .collect()
-    };
     card_farming_manager
-        .start(&app_handle, steam_id, account, cookies, queued_games)
+        .start(&app_handle, steam_id, account, cookies)
         .await
 }
 
@@ -215,139 +129,52 @@ pub async fn set_card_farming_settings(
     settings: CardFarmingSettings,
 ) -> AppResult<CardFarmingSettings> {
     let steam_id = resolve_steam_id(&account, &agent_manager).await?;
-    super::settings::set(&app_handle, &steam_id, settings).await
+    settings::set(&app_handle, &steam_id, settings).await
 }
 
-/// The account-wide "max card farming time" override, in minutes - `0` means unlimited. Wins over
-/// any per-game override when set (see `settings::FarmingCaps`'s doc comment / `manager::is_capped`).
+/// This account's card-farming whitelist - when non-empty, [`start_farming`] only ever farms these
+/// games. See [`whitelist`]'s doc comment.
 #[tauri::command]
-pub async fn get_card_farming_global_max_farming_time(
+pub async fn get_card_farming_whitelist(
     app_handle: AppHandle,
     agent_manager: State<'_, AgentManager>,
     account: GamesAccount,
-) -> AppResult<u32> {
+) -> AppResult<Vec<CardFarmingWhitelistEntry>> {
     let steam_id = resolve_steam_id(&account, &agent_manager).await?;
-    settings::get_global_max_card_farming_time(&app_handle, &steam_id).await
+    whitelist::read(&app_handle, &steam_id).await
 }
 
 #[tauri::command]
-pub async fn set_card_farming_global_max_farming_time(
+pub async fn add_to_card_farming_whitelist(
     app_handle: AppHandle,
     agent_manager: State<'_, AgentManager>,
     account: GamesAccount,
-    minutes: u32,
-) -> AppResult<u32> {
+    game: CardFarmingWhitelistEntry,
+) -> AppResult<Vec<CardFarmingWhitelistEntry>> {
     let steam_id = resolve_steam_id(&account, &agent_manager).await?;
-    settings::set_global_max_card_farming_time(&app_handle, &steam_id, minutes).await
-}
-
-/// Per-game "max card drops" override - `None` clears it. No global override exists for this one
-/// (matches `main`, which has no `globalMaxCardDrops`).
-#[tauri::command]
-pub async fn get_card_farming_max_card_drops(
-    app_handle: AppHandle,
-    agent_manager: State<'_, AgentManager>,
-    account: GamesAccount,
-    app_id: u32,
-) -> AppResult<Option<u32>> {
-    let steam_id = resolve_steam_id(&account, &agent_manager).await?;
-    settings::get_max_card_drops(&app_handle, &steam_id, app_id).await
+    whitelist::add(&app_handle, &steam_id, game).await
 }
 
 #[tauri::command]
-pub async fn set_card_farming_max_card_drops(
+pub async fn remove_from_card_farming_whitelist(
     app_handle: AppHandle,
     agent_manager: State<'_, AgentManager>,
     account: GamesAccount,
     app_id: u32,
-    max_card_drops: Option<u32>,
-) -> AppResult<Option<u32>> {
+) -> AppResult<Vec<CardFarmingWhitelistEntry>> {
     let steam_id = resolve_steam_id(&account, &agent_manager).await?;
-    settings::set_max_card_drops(&app_handle, &steam_id, app_id, max_card_drops).await
+    whitelist::remove(&app_handle, &steam_id, app_id).await
 }
 
-/// Per-game "max card farming time" override, in minutes - `None` clears it. Only takes effect
-/// when no account-wide override is set (see `settings::FarmingCaps`'s doc comment).
+/// Empties the whole whitelist - used by the Whitelist tab's "Clear" action.
 #[tauri::command]
-pub async fn get_card_farming_max_card_farming_time(
+pub async fn clear_card_farming_whitelist(
     app_handle: AppHandle,
     agent_manager: State<'_, AgentManager>,
     account: GamesAccount,
-    app_id: u32,
-) -> AppResult<Option<u32>> {
+) -> AppResult<Vec<CardFarmingWhitelistEntry>> {
     let steam_id = resolve_steam_id(&account, &agent_manager).await?;
-    settings::get_max_card_farming_time(&app_handle, &steam_id, app_id).await
-}
-
-#[tauri::command]
-pub async fn set_card_farming_max_card_farming_time(
-    app_handle: AppHandle,
-    agent_manager: State<'_, AgentManager>,
-    account: GamesAccount,
-    app_id: u32,
-    max_card_farming_time: Option<u32>,
-) -> AppResult<Option<u32>> {
-    let steam_id = resolve_steam_id(&account, &agent_manager).await?;
-    settings::set_max_card_farming_time(&app_handle, &steam_id, app_id, max_card_farming_time).await
-}
-
-/// App IDs with an active `maxCardDrops`/`maxCardFarmingTime` override (either counts) - backs the
-/// Game Settings tab's "customized" list indicator.
-#[tauri::command]
-pub async fn get_card_farming_customized_app_ids(
-    app_handle: AppHandle,
-    agent_manager: State<'_, AgentManager>,
-    account: GamesAccount,
-) -> AppResult<Vec<u32>> {
-    let steam_id = resolve_steam_id(&account, &agent_manager).await?;
-    settings::customized_app_ids(&app_handle, &steam_id).await
-}
-
-/// This account's curated card-farming queue - what [`start_farming`] actually farms. Mirrors
-/// `achievement_unlocker::commands::get_achievement_unlocker_queue` exactly.
-#[tauri::command]
-pub async fn get_card_farming_queue(
-    app_handle: AppHandle,
-    agent_manager: State<'_, AgentManager>,
-    account: GamesAccount,
-) -> AppResult<Vec<CardFarmingQueueEntry>> {
-    let steam_id = resolve_steam_id(&account, &agent_manager).await?;
-    queue::read(&app_handle, &steam_id).await
-}
-
-#[tauri::command]
-pub async fn add_to_card_farming_queue(
-    app_handle: AppHandle,
-    agent_manager: State<'_, AgentManager>,
-    account: GamesAccount,
-    game: CardFarmingQueueEntry,
-) -> AppResult<Vec<CardFarmingQueueEntry>> {
-    let steam_id = resolve_steam_id(&account, &agent_manager).await?;
-    queue::add(&app_handle, &steam_id, game).await
-}
-
-#[tauri::command]
-pub async fn remove_from_card_farming_queue(
-    app_handle: AppHandle,
-    agent_manager: State<'_, AgentManager>,
-    account: GamesAccount,
-    app_id: u32,
-) -> AppResult<Vec<CardFarmingQueueEntry>> {
-    let steam_id = resolve_steam_id(&account, &agent_manager).await?;
-    queue::remove(&app_handle, &steam_id, app_id).await
-}
-
-/// Bulk-replaces the queue order - used after drag-reorder on the queue tab. Mirrors
-/// `achievement_unlocker::commands::set_achievement_unlocker_queue_order`.
-#[tauri::command]
-pub async fn set_card_farming_queue_order(
-    app_handle: AppHandle,
-    agent_manager: State<'_, AgentManager>,
-    account: GamesAccount,
-    queue: Vec<CardFarmingQueueEntry>,
-) -> AppResult<Vec<CardFarmingQueueEntry>> {
-    let steam_id = resolve_steam_id(&account, &agent_manager).await?;
-    super::queue::set_order(&app_handle, &steam_id, queue).await
+    whitelist::clear(&app_handle, &steam_id).await
 }
 
 /// This account's card-farming blacklist - games [`start_farming`]/[`get_games_with_drops`] will
@@ -384,8 +211,7 @@ pub async fn remove_from_card_farming_blacklist(
     blacklist::remove(&app_handle, &steam_id, app_id).await
 }
 
-/// Empties the whole blacklist - used by the Blacklisted tab's "Clear" action. Mirrors
-/// `set_card_farming_queue_order`'s bulk-replace shape, minus the ordering (a blacklist has none).
+/// Empties the whole blacklist - used by the Blacklisted tab's "Clear" action.
 #[tauri::command]
 pub async fn clear_card_farming_blacklist(
     app_handle: AppHandle,

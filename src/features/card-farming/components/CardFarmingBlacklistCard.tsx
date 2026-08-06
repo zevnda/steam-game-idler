@@ -10,9 +10,8 @@ interface CardFarmingBlacklistCardProps {
   onRemove: () => void
 }
 
-// Used in the "Blacklisted" tab - mirrors CardFarmingListCard's shape (thumbnail + name + a single
-// remove button) minus drag-to-reorder, since the blacklist has no ordering concept, only
-// membership.
+// Used in the "Blacklisted" tab - mirrors CardFarmingWhitelistCard's shape (thumbnail + name + a
+// single remove button) - neither list has any ordering concept, only membership.
 export const CardFarmingBlacklistCard = ({
   game,
   isPending,

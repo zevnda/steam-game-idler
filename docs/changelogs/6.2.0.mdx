@@ -1,0 +1,24 @@
+---
+title: 6.2.0
+date: 2026-08-03
+tags: ['New', 'Improved', 'Fixed']
+---
+
+## Card Farming Feature Overhaul
+
+The Card Farming feature has been completely overhauled to make it easier to use, more efficient, and more reliable. The old drag-and-drop queue has been replaced by a new Whitelist tab, and the farming process is now *mostly* fully automated with only minor configuration needed to get started.
+
+See the [new Card Farming guide](https://steamgameidler.com/docs/features/card-farming/) for a complete breakdown of how everything works.
+
+### New 🎉
+- Added a **Whitelist** tab to replace the old **Queue** tab — if you'd rather only farm a handful of specific games instead of your whole library, add them here. Leave this empty to farm all games with card drops remaining
+- Added an **Hours Until Farmable** setting to **Settings → Card Farming** — controls how much playtime a game needs before Card Farming considers it ready to be farmed. Some Steam accounts don't need to wait at all — see the [How It Works](https://steamgameidler.com/docs/features/card-farming/how-it-works#how-to-check-if-your-account-is-restricted) page for a more in-depth explanation
+- Added the **Farm Multiple Games At Once** setting to **Settings → Card Farming** — off by default, since farming more than one game with card drops remaining at the same time can significantly slow down how fast cards drop for each one
+
+### Improved 🚀
+- Games that haven't built up enough playtime yet are idled together first, then Card Farming automatically switches over to actively farming whichever games are ready, one at a time by default
+- Removed the **Farm Games In Queue**, **Farm All Games**, **Single Farming Mode**, and **Farming Order** settings — Card Farming now handles all of this automatically
+
+### Fixed 🐛
+- Fixed an issue that caused pluralization to not work correctly in some languages, resulting in incorrect text being displayed in the app
+- Fixed an issue where the **Notifications** panel was not localizing relative timestamps

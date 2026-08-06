@@ -1,21 +1,20 @@
 import { useTranslation } from 'react-i18next'
-import { TbPlayerPlayFilled, TbPlayerStopFilled, TbPlus, TbSettings } from 'react-icons/tb'
+import { TbPlayerPlayFilled, TbPlayerStopFilled, TbSettings } from 'react-icons/tb'
 import { Button, Typography } from '@heroui/react'
 import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
 
 interface CardFarmingPageHeaderProps {
   connected: boolean
-  queueCount: number
   isFarming: boolean
   activeCount: number
-  // Null until useCardFarming's own settings copy has loaded (see its `refreshSettingsMode` doc
-  // comment) - falls back to the generic idle copy for that brief window rather than guessing.
-  allGames: boolean | null
+  // Whether there's anything at all in the account's "games with drops" browse list - the only
+  // thing that gates the Start button now (see this component's doc comment). `true` while the
+  // browse list is still loading, so Start doesn't flash disabled before that resolves.
+  hasEligibleGames: boolean
   isStarting: boolean
   isStopping: boolean
   onStart: () => void
   onStop: () => void
-  onManualAdd: () => void
 }
 
 // Mirrors AchievementUnlockerPageHeader's shape (title/status, start/stop, settings) - shown once
@@ -25,31 +24,25 @@ interface CardFarmingPageHeaderProps {
 // only flips back to true once `useAutoConnectSteamCookies` re-resolves cookies and re-scrapes
 // browse data - but a farming cycle already running is proof the account was connected, and
 // `state.isFarming` reflects that instantly via the account-scoped `cardFarmingStore` (kept live
-// by `useCardFarmingSync` regardless of which page is mounted), so Stop/Manual Add/Settings
-// shouldn't wait on a fresh reconnect just to reappear. While idle, the status line shows the
-// current farming mode (all games vs. games in queue) instead of a generic "not farming" - the
-// mode is otherwise only visible inside the Settings modal.
+// by `useCardFarmingSync` regardless of which page is mounted), so Stop/Settings shouldn't wait on
+// a fresh reconnect just to reappear.
+//
+// There is no "farming mode" status line anymore (all games / games in queue) - scope is entirely
+// automatic now (see `card_farming::manager`'s module doc comment), so the idle status collapses to
+// the generic "not farming" copy; a whitelist, when the user has one, is visible on its own tab
+// instead of being summarized here.
 export const CardFarmingPageHeader = ({
   connected,
-  queueCount,
   isFarming,
   activeCount,
-  allGames,
+  hasEligibleGames,
   isStarting,
   isStopping,
   onStart,
   onStop,
-  onManualAdd,
 }: CardFarmingPageHeaderProps) => {
   const { t } = useTranslation()
   const openSettings = useSettingsModalStore(state => state.open)
-
-  const idleStatus =
-    allGames === null
-      ? t('dashboard.cardFarming.status.idle')
-      : allGames
-        ? t('dashboard.cardFarming.status.modeAllGames')
-        : t('dashboard.cardFarming.status.modeQueue')
 
   return (
     <div className='flex shrink-0 items-center justify-between gap-4 px-6 py-2'>
@@ -60,7 +53,7 @@ export const CardFarmingPageHeader = ({
         <Typography color='muted' type='body-sm'>
           {isFarming
             ? t('dashboard.cardFarming.status.farming', { count: activeCount })
-            : idleStatus}
+            : t('dashboard.cardFarming.status.idle')}
         </Typography>
       </div>
       {(connected || isFarming) && (
@@ -71,11 +64,8 @@ export const CardFarmingPageHeader = ({
               {t('dashboard.cardFarming.actions.stop')}
             </Button>
           ) : (
-            // An empty queue only blocks starting in queue mode - "all games" mode farms every
-            // owned game with drops directly (see `start_farming`'s doc comment) and never reads
-            // the persisted queue at all, so it must stay startable regardless of `queueCount`.
             <Button
-              isDisabled={!allGames && queueCount === 0}
+              isDisabled={!hasEligibleGames}
               isPending={isStarting}
               variant='primary'
               onPress={onStart}
@@ -84,9 +74,6 @@ export const CardFarmingPageHeader = ({
               {t('common.actions.start')}
             </Button>
           )}
-          <Button isIconOnly aria-label={t('common.manualAdd.title')} onPress={onManualAdd}>
-            <TbPlus fontSize={18} />
-          </Button>
           <Button
             isIconOnly
             aria-label={t('common.actions.settings')}

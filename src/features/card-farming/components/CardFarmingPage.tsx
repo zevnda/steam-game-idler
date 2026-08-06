@@ -1,11 +1,11 @@
-import type { GameWithDrops } from '../types'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import type { CardFarmingSettings, GameWithDrops } from '../types'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
 import { TbBan, TbCards } from 'react-icons/tb'
 import { useCardFarming } from '../hooks/useCardFarming'
 import { useCardFarmingBlacklist } from '../hooks/useCardFarmingBlacklist'
-import { useCardFarmingQueue } from '../hooks/useCardFarmingQueue'
+import { useCardFarmingWhitelist } from '../hooks/useCardFarmingWhitelist'
 import { errorMessageKey } from '../utils/errorMessageKey'
 import {
   CARD_FARMING_SORT_LABEL_KEYS,
@@ -14,16 +14,15 @@ import {
 } from '../utils/sortGamesWithDrops'
 import { CardFarmingBlacklistGrid } from './CardFarmingBlacklistGrid'
 import { CardFarmingBrowseGrid } from './CardFarmingBrowseGrid'
-import { CardFarmingListGrid } from './CardFarmingListGrid'
 import { CardFarmingPageHeader } from './CardFarmingPageHeader'
 import { CardFarmingProgressView } from './CardFarmingProgressView'
 import { CardFarmingStartPanel } from './CardFarmingStartPanel'
+import { CardFarmingWhitelistGrid } from './CardFarmingWhitelistGrid'
 import {
   Alert,
   AlertDialog,
   Button,
   EmptyState,
-  Modal,
   Tab,
   TabIndicator,
   TabList,
@@ -35,7 +34,6 @@ import { useRouter } from 'next/router'
 import { GameGridSkeleton } from '@/shared/components/GameGridSkeleton'
 import { GameListTabPanel } from '@/shared/components/GameListTabPanel'
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
-import { ManualAddGameModal } from '@/shared/components/ManualAddGameModal'
 import { useAutoConnectSteamCookies } from '@/shared/hooks/useAutoConnectSteamCookies'
 import { searchGames } from '@/shared/search/fuzzySearch'
 import { useCardFarmingStore } from '@/shared/stores/cardFarmingStore'
@@ -43,18 +41,20 @@ import { useSearchStore } from '@/shared/stores/searchStore'
 import { getAccountKey, useSessionStore } from '@/shared/stores/sessionStore'
 import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
 import { useSortPreferencesStore } from '@/shared/stores/sortPreferencesStore'
+import { invoke } from '@/shared/utils/invoke'
 
-type CardFarmingTab = 'browse' | 'queue' | 'blacklist'
+type CardFarmingTab = 'browse' | 'whitelist' | 'blacklist'
 
 // Card drops remaining are detected via cookie-authenticated Steam Community scraping, unrelated
 // to either sign-in backend's own session - both agent and local mode farm identically once a
-// SteamID64 is resolved. Mirrors AchievementUnlockerPage's browse/queue two-tab shape. The progress
-// view stays up past `isFarming` flipping false whenever the just-ended cycle left a `completed`
-// summary worth showing (`showFinishedSummary` below) - dismissed explicitly via
-// `CardFarmingProgressView`'s "Done" button, or implicitly by starting a new cycle
-// (`cardFarmingStore`'s `dismissedFinished` resets on the next `isFarming: true` update) - rather
-// than yanked away the instant `isFarming` flips, which would make actual results (cards farmed,
-// games maxed out) flash by unseen.
+// SteamID64 is resolved. Mirrors AchievementUnlockerPage's browse/queue two-tab shape, extended to
+// three (browse/whitelist/blacklist - see `card_farming::whitelist`'s doc comment for why the
+// whitelist is a scope list, not an ordered queue). The progress view stays up past `isFarming`
+// flipping false whenever the just-ended cycle left a `completed` summary worth showing
+// (`showFinishedSummary` below) - dismissed explicitly via `CardFarmingProgressView`'s "Done"
+// button, or implicitly by starting a new cycle (`cardFarmingStore`'s `dismissedFinished` resets on
+// the next `isFarming: true` update) - rather than yanked away the instant `isFarming` flips, which
+// would make actual results (cards farmed, games maxed out) flash by unseen.
 //
 // `useCardFarmingSync` (mounted in DashboardShell, not here) is what makes a running cycle survive
 // navigating away from this page and back - this component only reads the store it keeps current.
@@ -62,9 +62,10 @@ type CardFarmingTab = 'browse' | 'queue' | 'blacklist'
 // A third "Blacklisted" tab (`useCardFarmingBlacklist`) replaces `main`'s custom-lists-based
 // blacklist management screen - blacklisting happens via a ban button on each browse card, and only
 // un-blacklisting happens from this tab. `handleBlacklist` removes the game from both `browseGames`
-// (optimistic) and the queue; the backend's own commands also filter blacklisted app IDs as a
-// defense-in-depth backstop. `handleUnblacklist` re-scrapes via `refreshBrowse` instead of an
-// optimistic local add, since a blacklist entry doesn't carry the fields a browse card needs.
+// (optimistic) and the whitelist if it happened to be a member; the backend's own commands also
+// filter blacklisted app IDs as a defense-in-depth backstop. `handleUnblacklist` re-scrapes via
+// `refreshBrowse` instead of an optimistic local add, since a blacklist entry doesn't carry the
+// fields a browse card needs.
 //
 // The connect-panel-vs-tabs branch depends on `useSteamCookiesSync` having already checked this
 // account's saved cookies - `isChecking`/`isAutoConnecting` cover the window before that settles,
@@ -88,24 +89,19 @@ export const CardFarmingPage = () => {
     isBrowseLoading,
     removeBrowseGame,
     refreshBrowse,
-    allGames,
-    multiGameFarmingNoticeSeen,
-    refreshSettingsMode,
-    markMultiGameNoticeSeen,
     connect,
     start,
     stop,
   } = useCardFarming()
   const {
-    queue,
-    isLoading: queueLoading,
+    whitelist,
+    isLoading: whitelistLoading,
     pendingAppIds,
-    addToQueue,
-    removeFromQueue,
-    reorder,
-    toggleQueued,
-    refresh: refreshQueue,
-  } = useCardFarmingQueue()
+    removeFromWhitelist,
+    clearWhitelist,
+    toggleWhitelisted,
+    refresh: refreshWhitelist,
+  } = useCardFarmingWhitelist()
   const {
     blacklist,
     isLoading: blacklistLoading,
@@ -122,16 +118,17 @@ export const CardFarmingPage = () => {
   const accountKey = account ? getAccountKey(account) : null
   const dismissedFinished = useCardFarmingStore(state => state.dismissedFinishedForActive)
   const dismissFinished = useCardFarmingStore(state => state.dismissFinished)
-  // Shared by the queue and blacklist tabs' "Clear" actions - each tab clears a different list, so
-  // this tracks which one the open dialog is confirming rather than duplicating the dialog itself.
-  const [confirmClearTarget, setConfirmClearTarget] = useState<'queue' | 'blacklist' | null>(null)
-  const [isManualAddOpen, setIsManualAddOpen] = useState(false)
-  const [showMultiGameNotice, setShowMultiGameNotice] = useState(false)
+  // Shared by the whitelist and blacklist tabs' "Clear" actions - each tab clears a different list,
+  // so this tracks which one the open dialog is confirming rather than duplicating the dialog itself.
+  const [confirmClearTarget, setConfirmClearTarget] = useState<'whitelist' | 'blacklist' | null>(
+    null,
+  )
+  // Only used to label CardFarmingProgressView's queue rows ("accumulating" vs "waiting its turn")
+  // - a passive display concern, not something Start/farming logic needs, since scope/phase
+  // resolution is entirely backend-internal now (see `card_farming::manager`'s module doc comment).
+  const [hoursUntilFarmable, setHoursUntilFarmable] = useState<number | undefined>(undefined)
   // Global search filters only the "browse" tab's `browseGames` array - mirrors FavoritesPage's/
-  // AchievementUnlockerPage's browse-tab-only wiring. The queue/blacklist tabs stay unfiltered for
-  // the same reorder-data-loss reason those pages document: `CardFarmingListGrid`'s `onReorder`
-  // replaces the *entire* persisted queue order, so filtering it during an active search would let
-  // a drag silently drop every filtered-out queued game.
+  // AchievementUnlockerPage's browse-tab-only wiring.
   const searchQuery = useSearchStore(state => state.queries.cardFarming ?? '')
   const setActiveTabSearchable = useSearchStore(state => state.setActiveTabSearchable)
   const filteredBrowseGames = useMemo(
@@ -146,7 +143,7 @@ export const CardFarmingPage = () => {
     () => sortGamesWithDrops(filteredBrowseGames, sortStyle),
     [filteredBrowseGames, sortStyle],
   )
-  const queuedAppIds = useMemo(() => new Set(queue.map(game => game.appId)), [queue])
+  const whitelistedAppIds = useMemo(() => new Set(whitelist.map(game => game.appId)), [whitelist])
   // Connect-time failures (a bad cookie paste, or the connect panel's own automatic-path failure)
   // render inline inside CardFarmingStartPanel's errorSlot instead - see that component's doc
   // comment - so this page-level banner only needs to cover errors reachable while already
@@ -163,26 +160,40 @@ export const CardFarmingPage = () => {
     }
   }, [account, router])
 
+  const refreshHoursUntilFarmable = useCallback(async () => {
+    if (!account) return
+    try {
+      const settings = await invoke<CardFarmingSettings>('get_card_farming_settings', { account })
+      setHoursUntilFarmable(settings.hoursUntilFarmable)
+    } catch (error) {
+      console.error('Error in (get_card_farming_settings):', error)
+    }
+  }, [account])
+
+  useEffect(() => {
+    refreshHoursUntilFarmable()
+  }, [refreshHoursUntilFarmable])
+
   // The Settings modal is an overlay (see useSettingsModalStore's doc comment), not a route change,
-  // so this page never remounts while it's open - re-read the header's "Farming mode: ..." copy on
-  // the falling edge (modal just closed), mirroring InventoryManagerPage's identical wiring, so a
-  // listGames/allGames toggle saved from the modal is reflected immediately.
+  // so this page never remounts while it's open - re-read the threshold on the falling edge (modal
+  // just closed), mirroring InventoryManagerPage's identical wiring, so a change saved from the
+  // modal is reflected immediately in the queue-row labels.
   const isSettingsModalOpen = useSettingsModalStore(state => state.isOpen)
   const wasSettingsModalOpenRef = useRef(false)
   useEffect(() => {
     if (wasSettingsModalOpenRef.current && !isSettingsModalOpen) {
-      refreshSettingsMode()
+      refreshHoursUntilFarmable()
     }
     wasSettingsModalOpenRef.current = isSettingsModalOpen
-  }, [isSettingsModalOpen, refreshSettingsMode])
+  }, [isSettingsModalOpen, refreshHoursUntilFarmable])
 
-  // See this component's doc comment for why blacklisting also cleans up `browseGames`/`queue`
+  // See this component's doc comment for why blacklisting also cleans up `browseGames`/`whitelist`
   // locally rather than waiting on a refetch.
   const handleBlacklist = async (game: GameWithDrops) => {
     await addToBlacklist({ appId: game.appId, name: game.name })
     removeBrowseGame(game.appId)
-    if (queuedAppIds.has(game.appId)) {
-      await removeFromQueue(game.appId)
+    if (whitelistedAppIds.has(game.appId)) {
+      await removeFromWhitelist(game.appId)
     }
   }
 
@@ -198,39 +209,15 @@ export const CardFarmingPage = () => {
     await stop()
   }
 
-  // One-time (ever, per account) heads-up shown the first time Start would farm more than one
-  // game at once - `allGames` mode can also idle many games concurrently, not just a queue with
-  // more than one entry (see CardFarmingPageHeader's own doc comment on that distinction), so both
-  // count. `multiGameFarmingNoticeSeen === false` specifically (not just falsy) - `null` means
-  // useCardFarming's fetch hasn't resolved yet, and this must never block Start over that, only
-  // over a confirmed not-yet-seen value.
-  const isMultiGameStart = allGames === true || queue.length > 1
-  const handleStart = () => {
-    if (isMultiGameStart && multiGameFarmingNoticeSeen === false) {
-      setShowMultiGameNotice(true)
-      return
-    }
-    start()
-  }
-
-  // Dismissing (backdrop/escape/close button) always marks the notice seen so it never reappears,
-  // same as clicking through it - only the explicit "Continue" action also starts farming, so an
-  // accidental outside click or Escape press can't silently kick off a farming cycle nobody asked
-  // to actually start yet.
-  const dismissMultiGameNotice = () => {
-    setShowMultiGameNotice(false)
-    markMultiGameNoticeSeen()
-  }
-
-  // A farming cycle auto-dequeues each game as its drops are exhausted, but `FarmingState`'s change
-  // event doesn't carry the persisted queue (see useCardFarmingQueue's `refresh` doc comment) - so
-  // the queue tab/header count otherwise stay stale until the page remounts. Refetch on the
-  // farming->stopped edge (covers both a full cycle completing and a manual stop) - but that edge
-  // alone misses a cycle that starts and fully resolves (every queued game already over its
-  // max-playtime cap) before the backend ever emits an intermediate `isFarming: true` state: the
-  // frontend then only ever observes the single terminal event, so `isFarming` goes false->false
-  // and no edge fires. `state.completed` growing is the more reliable signal (it's exactly what a
-  // dequeue produces), so either condition triggers a refetch. Mirrors AchievementUnlockerPage's
+  // A farming cycle auto-prunes the whitelist as games become ineligible (see
+  // `card_farming::manager::resolve_candidates`'s doc comment), but `FarmingState`'s change event
+  // doesn't carry the persisted whitelist - so this local copy otherwise goes stale mid-run/at
+  // run-end. Refetch on the farming->stopped edge (covers both a full cycle completing and a manual
+  // stop) - but that edge alone misses a cycle that starts and fully resolves (nothing eligible at
+  // all) before the backend ever emits an intermediate `isFarming: true` state: the frontend then
+  // only ever observes the single terminal event, so `isFarming` goes false->false and no edge
+  // fires. `state.completed` growing is the more reliable signal (it's exactly what a prune
+  // produces), so either condition triggers a refetch. Mirrors AchievementUnlockerPage's
   // `wasRunning` transition effect, extended for this fast-cycle case.
   const wasFarming = useRef(state.isFarming)
   const prevCompletedCount = useRef(state.completed.length)
@@ -239,14 +226,14 @@ export const CardFarmingPage = () => {
       (wasFarming.current && !state.isFarming) ||
       state.completed.length > prevCompletedCount.current
     ) {
-      refreshQueue()
+      refreshWhitelist()
     }
     wasFarming.current = state.isFarming
     prevCompletedCount.current = state.completed.length
-  }, [state.isFarming, state.completed.length, refreshQueue])
+  }, [state.isFarming, state.completed.length, refreshWhitelist])
 
   // Search only filters the "browse" tab (see the wiring comment above) - hide the titlebar
-  // affordance entirely while on the unfiltered queue/blacklist tabs, while a farming cycle is
+  // affordance entirely while on the unfiltered whitelist/blacklist tabs, while a farming cycle is
   // active, while the finished summary is showing, or before the tabs are even showing, rather than
   // leave it visibly present but silently inert. Resets back to `true` on unmount so navigating away
   // doesn't leave search hidden elsewhere.
@@ -265,14 +252,12 @@ export const CardFarmingPage = () => {
     <div className='flex h-full flex-col'>
       <CardFarmingPageHeader
         activeCount={state.active.length}
-        allGames={allGames}
         connected={connected}
+        hasEligibleGames={isBrowseLoading || browseGames.length > 0}
         isFarming={state.isFarming}
         isStarting={isStarting}
         isStopping={isStopping}
-        queueCount={queue.length}
-        onManualAdd={() => setIsManualAddOpen(true)}
-        onStart={handleStart}
+        onStart={start}
         onStop={handleStop}
       />
 
@@ -293,6 +278,7 @@ export const CardFarmingPage = () => {
       {state.isFarming || showFinishedSummary ? (
         <div className='min-h-0 flex-1 overflow-y-auto'>
           <CardFarmingProgressView
+            hoursUntilFarmable={hoursUntilFarmable}
             state={state}
             onDismissFinished={
               showFinishedSummary && accountKey ? () => dismissFinished(accountKey) : undefined
@@ -326,8 +312,8 @@ export const CardFarmingPage = () => {
                   {t('dashboard.cardFarming.tabs.gamesWithDrops')}
                   <TabIndicator />
                 </Tab>
-                <Tab className='whitespace-nowrap' id='queue'>
-                  {t('common.tabs.queue')}
+                <Tab className='whitespace-nowrap' id='whitelist'>
+                  {t('dashboard.cardFarming.tabs.whitelisted')}
                   <TabIndicator />
                 </Tab>
                 <Tab className='whitespace-nowrap' id='blacklist'>
@@ -347,11 +333,11 @@ export const CardFarmingPage = () => {
                 onChange={style => setSortStyle('cardFarming', style)}
               />
             )}
-            {activeTab === 'queue' && queue.length > 0 && (
+            {activeTab === 'whitelist' && whitelist.length > 0 && (
               <Button
                 className='shrink-0'
                 variant='danger'
-                onPress={() => setConfirmClearTarget('queue')}
+                onPress={() => setConfirmClearTarget('whitelist')}
               >
                 {t('common.actions.clear')}
               </Button>
@@ -391,30 +377,29 @@ export const CardFarmingPage = () => {
                 games={sortedBrowseGames}
                 pendingAppIds={pendingAppIds}
                 pendingBlacklistAppIds={pendingBlacklistAppIds}
-                queuedAppIds={queuedAppIds}
+                whitelistedAppIds={whitelistedAppIds}
                 onBlacklist={handleBlacklist}
-                onToggle={game => toggleQueued(game.appId, game.name)}
+                onToggleWhitelist={game => toggleWhitelisted(game.appId, game.name)}
               />
             )}
           </GameListTabPanel>
 
-          <GameListTabPanel id='queue'>
-            {queueLoading ? (
+          <GameListTabPanel id='whitelist'>
+            {whitelistLoading ? (
               <GameGridSkeleton />
-            ) : queue.length === 0 ? (
+            ) : whitelist.length === 0 ? (
               <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
                 <TbCards fontSize={40} />
-                <Typography type='h3'>{t('common.noGamesQueued')}</Typography>
+                <Typography type='h3'>{t('dashboard.cardFarming.whitelistEmpty.title')}</Typography>
                 <Typography color='muted' type='body-sm'>
-                  {t('dashboard.cardFarming.empty.description')}
+                  {t('dashboard.cardFarming.whitelistEmpty.description')}
                 </Typography>
               </EmptyState>
             ) : (
-              <CardFarmingListGrid
-                queue={queue}
+              <CardFarmingWhitelistGrid
                 pendingAppIds={pendingAppIds}
-                onRemove={removeFromQueue}
-                onReorder={reorder}
+                whitelist={whitelist}
+                onRemove={removeFromWhitelist}
               />
             )}
           </GameListTabPanel>
@@ -452,7 +437,7 @@ export const CardFarmingPage = () => {
                 <AlertDialog.Heading>
                   {confirmClearTarget === 'blacklist'
                     ? t('dashboard.cardFarming.confirmClearBlacklist.title')
-                    : t('dashboard.cardFarming.confirmClearQueue.title')}
+                    : t('dashboard.cardFarming.confirmClearWhitelist.title')}
                 </AlertDialog.Heading>
               </AlertDialog.Header>
               <AlertDialog.Body>
@@ -460,8 +445,8 @@ export const CardFarmingPage = () => {
                   ? t('dashboard.cardFarming.confirmClearBlacklist.description', {
                       count: blacklist.length,
                     })
-                  : t('dashboard.cardFarming.confirmClearQueue.description', {
-                      count: queue.length,
+                  : t('dashboard.cardFarming.confirmClearWhitelist.description', {
+                      count: whitelist.length,
                     })}
               </AlertDialog.Body>
               <AlertDialog.Footer>
@@ -474,7 +459,7 @@ export const CardFarmingPage = () => {
                     if (confirmClearTarget === 'blacklist') {
                       clearBlacklist()
                     } else {
-                      reorder([])
+                      clearWhitelist()
                     }
                     setConfirmClearTarget(null)
                   }}
@@ -486,45 +471,6 @@ export const CardFarmingPage = () => {
           </AlertDialog.Container>
         </AlertDialog.Backdrop>
       </AlertDialog>
-
-      <Modal
-        isOpen={showMultiGameNotice}
-        onOpenChange={open => {
-          if (!open) dismissMultiGameNotice()
-        }}
-      >
-        <Modal.Backdrop>
-          <Modal.Container size='sm'>
-            <Modal.Dialog>
-              <Modal.Header>
-                <Modal.Heading>{t('dashboard.cardFarming.multiGameNotice.title')}</Modal.Heading>
-                <Modal.CloseTrigger />
-              </Modal.Header>
-              <Modal.Body>
-                <p>{t('dashboard.cardFarming.multiGameNotice.description')}</p>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button
-                  onPress={() => {
-                    setShowMultiGameNotice(false)
-                    markMultiGameNoticeSeen()
-                    start()
-                  }}
-                >
-                  {t('common.actions.continue')}
-                </Button>
-              </Modal.Footer>
-            </Modal.Dialog>
-          </Modal.Container>
-        </Modal.Backdrop>
-      </Modal>
-
-      <ManualAddGameModal
-        existingAppIds={queue.map(game => game.appId)}
-        isOpen={isManualAddOpen}
-        onAdd={addToQueue}
-        onOpenChange={setIsManualAddOpen}
-      />
     </div>
   )
 }
