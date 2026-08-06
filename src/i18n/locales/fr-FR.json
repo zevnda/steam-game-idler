@@ -586,8 +586,13 @@
       "actions": {
         "stop": "Arrêter de farmer"
       },
+      "confirmClearWhitelist": {
+        "title": "Effacer la liste blanche de farming de cartes ?",
+        "description": "Ceci supprimera tous les {{count}} jeux de la liste blanche de farming de cartes. Le farming recommencera à considérer tous les jeux possédés avec des drops."
+      },
       "multiGameNotice": {
-        "title": "Farmer plusieurs jeux en même temps ?"
+        "title": "Farmer plusieurs jeux en même temps ?",
+        "description": "Farmer plusieurs jeux en même temps peu ralentir la vitesse d'apparition des cartes par jeu. Si vous ne voyez aucune carte cadeau pendant un moment, essayez de désactiver cette fonctionnalité."
       },
       "confirmClearBlacklist": {
         "title": "Effacer la liste noire de farming de cartes ?",
@@ -595,6 +600,7 @@
       },
       "tabs": {
         "gamesWithDrops": "Jeux avec drops",
+        "whitelisted": "En liste blanche",
         "blacklisted": "Blacklisté"
       },
       "sort": {
@@ -605,6 +611,10 @@
         "title": "Aucun drop de carte restant",
         "description": "Pour tous les jeux possédés, soit toutes les cartes ont déjà été récupérées, soit il n'y en a aucune de disponible pour le moment."
       },
+      "whitelistEmpty": {
+        "title": "Aucun jeu en liste blanche",
+        "description": "Ajouter des jeux depuis l'onglet Jeux avec des Drops pour restreindre le farming à ces jeux uniquement. Laissez le vide pour farmer tous les jeux avec des drops."
+      },
       "blacklistEmpty": {
         "title": "Aucun jeu blacklisté",
         "description": "Les jeux blacklistés de l'onglet Jeux avec Drops ne seront jamais farmés et apparaissent ici."
@@ -613,9 +623,15 @@
         "automaticDescription": "Se connecte automatiquement à Steam Community pour rechercher des drops."
       },
       "progress": {
+        "activeTitleReadyFarm": "Farming ({{count}})",
+        "activeTitleBulkIdle": "Construction de temps de jeu ({{count}})",
         "queueTitle": "À suivre ({{count}})",
+        "accumulatingPlaytime": "{{hours}}h / {{threshold}}h jusqu'à être farmable",
+        "waitingTurn": "En attente de son tour",
         "completedNoDropsRemaining": "Il n'y a plus rien à farmer",
         "completedRefundWindow": "Encore dans la fenêtre de remboursement (farmable à nouveau le {{date}})",
+        "completedSkippedUnplayed": "Supprimé de la liste blanche : aucun temps de jeu enregistré",
+        "completedSkippedPlayed": "Supprimé de la liste blanche : a déjà du temps de jeu",
         "dropsRemaining_one": "{{count}} drop restant",
         "dropsRemaining_other": "{{count}} drops restants"
       },
@@ -627,6 +643,14 @@
         "generic": "Une erreur s'est produite lors de la mise à jour du farming de cartes. Veuillez réessayer. ({{code}})"
       },
       "settings": {
+        "hoursUntilFarmable": {
+          "title": "Heures jusqu'à être farmable",
+          "description": "Combien d'heures de jeu sont nécessaires sur les jeux pour qu'ils soient considérés comme farmable. Définir à 0 pour commencer le farming immédiatement."
+        },
+        "allowMultiGameFarming": {
+          "title": "Farmer plusieurs jeux en même temps",
+          "description": "Farmer jusqu'à 32 jeux en parallèle à la place de un à la fois. Dans certains cas, le drop de cartes peut devenir significativement plus bas."
+        },
         "skipRefundableGames": {
           "title": "Passer les jeux remboursables",
           "description": "Ne pas farmer un jeu tant qu'il est dans la fenêtre de remboursement de Steam (acheté durant les 14 derniers jours avec moins de 2 heures de jeu)."
@@ -1042,6 +1066,7 @@
         "title": "Paramètres de Jeux",
         "maxPlaytimeSection": "Temps de jeu",
         "maxPlaytimeScopeNote": "S'applique partout où un jeu peut être idle - idling manuel et automatique, débloquer de succès et farming de cartes.",
+        "idlingScopeNote": "S'applique uniquement aux jeux manuellement ou automatiquement idled - le débloqueur de succès a ses propres limites ci-dessous.",
         "globalMaxPlaytime": {
           "label": "Temps de jeu maximum (tous les jeux)",
           "description": "Arrête automatiquement un jeu et le supprime des listes d'attente lorsque son temps de jeu total atteint ce nombre de minutes."
