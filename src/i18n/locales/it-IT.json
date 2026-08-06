@@ -36,6 +36,7 @@
       "slsLabel": "steamLoginSecure",
       "smaLabel": "steamMachineAuth",
       "smaDescription": "Facoltativo. Necessario solo se il tuo account ha una conferma macchina Steam Guard in sospeso.",
+      "getCookiesNote": "Devi ottenere i cookie da",
       "savedFromSettingsNote": "Caricate dalle credenziali di Steam salvate nelle Impostazioni.",
       "savedToast": "Credenziali salvate",
       "clearedToast": "Credenziali cancellate",
@@ -100,7 +101,9 @@
       "nameDesc": "Nome (Z-A)"
     },
     "noGamesQueued": "Nessun gioco in coda",
-    "completedThisSessionCount": "Completati in questa sessione ({{count}})"
+    "completedThisSessionCount": "Completati in questa sessione ({{count}})",
+    "gamesQueuedCount_one": "{{count}} gioco in coda",
+    "gamesQueuedCount_other": "{{count}} giochi in coda"
   },
   "update": {
     "downloading": "Download dell'aggiornamento..."
@@ -352,7 +355,9 @@
         "addAccount": {
           "trigger": "Aggiungi un altro account",
           "capReachedMax": "Hai raggiunto il numero massimo di account che possono aver effettuato l'accesso con Steam contemporaneamente.",
-          "added": "{{name}} aggiunto"
+          "added": "{{name}} aggiunto",
+          "capReached_one": "Il piano {{tier}} consente {{count}} account con accesso Steam alla volta. Esci da un account per aggiungerne un altro oppure fai l'upgrade per averne di più.",
+          "capReached_other": "Il piano {{tier}} consente {{count}} account con accesso Steam alla volta. Esci da un account per aggiungerne un altro oppure fai l'upgrade per averne di più."
         },
         "reauth": {
           "badge": "Accesso effettuato altrove",
@@ -395,7 +400,9 @@
         "description": "Il tuo profilo Steam o i dettagli dei giochi sembrano impostati su privati, quindi tempo di gioco, giochi recenti e alcuni giochi potrebbero risultare incompleti. Rendi pubblico il profilo oppure aggiungi la tua chiave Steam Web API nelle Impostazioni per risolvere.",
         "changeSettings": "Modifica impostazioni privacy",
         "useOwnKey": "Aggiungi la mia chiave API"
-      }
+      },
+      "count_one": "{{count}} gioco",
+      "count_other": "{{count}} giochi"
     },
     "idling": {
       "stopAll": "Ferma tutti",
@@ -411,7 +418,9 @@
         "startFailed": "Impossibile avviare l'idle di questo gioco.",
         "maxPlaytimeCapReached": "Questo gioco ha già raggiunto il limite massimo di tempo di gioco.",
         "generic": "Qualcosa è andato storto durante l'aggiornamento dell'idle. Riprova. ({{code}})"
-      }
+      },
+      "count_one": "{{count}} gioco in idle",
+      "count_other": "{{count}} giochi in idle"
     },
     "favorites": {
       "confirmClear": {
@@ -426,7 +435,9 @@
         "title": "Impossibile aggiornare i preferiti",
         "cacheIoFailed": "Impossibile leggere o scrivere la cache dei preferiti.",
         "generic": "Qualcosa è andato storto durante l'aggiornamento dei preferiti. Riprova. ({{code}})"
-      }
+      },
+      "count_one": "{{count}} preferito",
+      "count_other": "{{count}} preferiti"
     },
     "freeGames": {
       "actions": {
@@ -459,7 +470,9 @@
       },
       "correction": {
         "granted": "{{name}} è stato effettivamente riscattato con successo: l'avviso di errore precedente era sbagliato."
-      }
+      },
+      "count_one": "{{count}} gioco gratuito disponibile",
+      "count_other": "{{count}} giochi gratuiti disponibili"
     },
     "achievements": {
       "tabs": {
@@ -467,6 +480,7 @@
         "statistics": "Statistiche"
       },
       "header": {
+        "viewOnSteam": "Visualizza su Steam",
         "viewOnSteamDb": "Visualizza su SteamDB"
       },
       "protectedAlert": {
@@ -540,7 +554,15 @@
         "achievementLocked": "\"{{name}}\" bloccato",
         "bulkNoChanges": "Niente da modificare: già nello stato richiesto oppure protetto.",
         "applyPartialFailure": "Alcuni obiettivi preparati non sono stati aggiornati. Riprova.",
-        "statsReset": "Statistiche ripristinate"
+        "statsReset": "Statistiche ripristinate",
+        "bulkUnlocked_one": "{{count}} obiettivo sbloccato",
+        "bulkUnlocked_other": "{{count}} obiettivi sbloccati",
+        "bulkLocked_one": "{{count}} obiettivo bloccato",
+        "bulkLocked_other": "{{count}} obiettivi bloccati",
+        "changesApplied_one": "{{count}} obiettivo aggiornato",
+        "changesApplied_other": "{{count}} obiettivi aggiornati",
+        "statsSaved_one": "{{count}} statistica aggiornata",
+        "statsSaved_other": "{{count}} statistiche aggiornate"
       },
       "errors": {
         "title": "Impossibile caricare gli obiettivi",
@@ -551,13 +573,17 @@
         "unsupportedGameCoordinator": "Questo gioco non è supportato per gli obiettivi quando l'accesso è effettuato con Steam: usa invece il client Steam locale.",
         "unsupportedGameCoordinatorLinux": "Questo gioco non è supportato per gli obiettivi quando l'accesso è effettuato con Steam.",
         "generic": "Qualcosa è andato storto durante il caricamento degli obiettivi. Riprova. ({{code}})"
-      }
+      },
+      "statCount_one": "{{count}} statistica",
+      "statCount_other": "{{count}} statistiche"
     },
     "cardFarming": {
       "status": {
         "idle": "Non in raccolta",
         "modeAllGames": "Modalità: tutti i giochi",
-        "modeQueue": "Modalità: giochi in coda"
+        "modeQueue": "Modalità: giochi in coda",
+        "farming_one": "Raccolta carte da {{count}} gioco",
+        "farming_other": "Raccolta carte da {{count}} giochi"
       },
       "actions": {
         "stop": "Ferma raccolta"
@@ -603,7 +629,9 @@
         "completedMaxCardFarmingTime": "Tempo massimo di raccolta raggiunto ({{remaining}} rimaste)",
         "completedMaxPlaytime": "Tempo massimo di gioco raggiunto ({{remaining}} rimaste)",
         "completedNoDropsRemaining": "Niente più da raccogliere",
-        "completedRefundWindow": "Ancora nel periodo di rimborso (raccoglibile di nuovo il {{date}})"
+        "completedRefundWindow": "Ancora nel periodo di rimborso (raccoglibile di nuovo il {{date}})",
+        "dropsRemaining_one": "{{count}} carta rimanente",
+        "dropsRemaining_other": "{{count}} carte rimanenti"
       },
       "errors": {
         "title": "Impossibile aggiornare Raccolta carte",
@@ -657,6 +685,10 @@
       }
     },
     "achievementUnlocker": {
+      "status": {
+        "running_one": "Sblocco di {{count}} gioco",
+        "running_other": "Sblocco di {{count}} giochi"
+      },
       "addAllToQueue": "Aggiungi tutti alla coda",
       "confirmAddAllToQueue": {
         "title": "Aggiungere tutti i {{count}} giochi alla coda?",
@@ -717,7 +749,9 @@
           "noTimestamps": "Questo giocatore non ha obiettivi con timestamp di sblocco per questo gioco.",
           "notFound": "Impossibile risolvere il profilo.",
           "generic": "Impossibile importare le tempistiche al momento. Riprova. ({{code}})"
-        }
+        },
+        "success_one": "Tempistica importata per {{count}} obiettivo",
+        "success_other": "Tempistiche importate per {{count}} obiettivi"
       },
       "progress": {
         "scanning": "Controllo dei giochi in coda per trovare obiettivi da sbloccare",
@@ -730,7 +764,9 @@
         "completedMaxUnlocksReached": "{{unlocked}}/{{total}} sbloccati (limite massimo di sblocchi raggiunto)",
         "completedMaxPlaytimeWithCount": "{{unlocked}}/{{total}} sbloccati (tempo massimo di gioco raggiunto)",
         "completedMaxPlaytime": "Tempo massimo di gioco raggiunto",
-        "completedNothingToUnlock": "Niente più da sbloccare"
+        "completedNothingToUnlock": "Niente più da sbloccare",
+        "remaining_one": "{{count}} obiettivo rimanente",
+        "remaining_other": "{{count}} obiettivi rimanenti"
       },
       "errors": {
         "title": "Impossibile aggiornare Sblocco obiettivi",
@@ -830,7 +866,7 @@
         },
         "priceAdjustment": {
           "title": "Regolazione prezzo",
-          "description": "Aggiunge {{value}} a ogni prezzo di inserzione, sia compilato automaticamente sia inserito manualmente."
+          "description": "Aggiunge {{value}} al prezzo di ogni inserzione, sia compilato automaticamente che inserito manualmente."
         },
         "sellLimit": {
           "title": "Limite di vendita",
@@ -848,7 +884,15 @@
         "noneEligible": "Nessun oggetto era idoneo alla vendita: controlla i limiti di vendita nelle impostazioni dell'inventario.",
         "priceFetchCooldown": "Attendi {{seconds}} secondi prima di recuperare altri prezzi",
         "itemLocked": "Questo oggetto è bloccato e non può essere messo in vendita.",
-        "priceOutOfRange": "{{price}} è fuori dal limite di vendita configurato ({{min}}-{{max}})."
+        "priceOutOfRange": "{{price}} è fuori dal limite di vendita configurato ({{min}}-{{max}}).",
+        "listed_one": "{{count}} oggetto messo in vendita",
+        "listed_other": "{{count}} oggetti messi in vendita",
+        "listFailed_one": "{{count}} oggetto non è stato messo in vendita",
+        "listFailed_other": "{{count}} oggetti non sono stati messi in vendita",
+        "skippedLocked_one": "{{count}} oggetto bloccato saltato",
+        "skippedLocked_other": "{{count}} oggetti bloccati saltati",
+        "skippedOutOfRange_one": "{{count}} oggetto fuori dal limite di vendita saltato",
+        "skippedOutOfRange_other": "{{count}} oggetti fuori dal limite di vendita saltati"
       },
       "errors": {
         "title": "Impossibile aggiornare l'inventario",
@@ -860,9 +904,12 @@
         "listingsFetchFailed": "Impossibile leggere le inserzioni di mercato attive.",
         "settingsIoFailed": "Impossibile leggere o scrivere le impostazioni dell'inventario.",
         "generic": "Qualcosa è andato storto durante l'aggiornamento dell'inventario. Riprova. ({{code}})"
-      }
+      },
+      "count_one": "{{count}} oggetto",
+      "count_other": "{{count}} oggetti"
     },
     "settings": {
+      "title": "Impostazioni",
       "general": {
         "title": "Generale",
         "account": {

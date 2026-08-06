@@ -36,6 +36,7 @@
       "slsLabel": "steamLoginSecure",
       "smaLabel": "steamMachineAuth",
       "smaDescription": "Optionnel. Nécessaire uniquement si votre compte fait l'objet d'une confirmation en attente Steam Guard.",
+      "getCookiesNote": "Vous devez obtenir vos cookies de",
       "savedFromSettingsNote": "Chargé depuis les Indetifiants Steam enregistrés dans les Paramètres.",
       "savedToast": "Identifiants enregistrés",
       "clearedToast": "Identifiants effacés",
@@ -100,7 +101,9 @@
       "nameDesc": "Nom (Z-A)"
     },
     "noGamesQueued": "Aucun jeu en attente",
-    "completedThisSessionCount": "Cette session est terminée ({{count}})"
+    "completedThisSessionCount": "Cette session est terminée ({{count}})",
+    "gamesQueuedCount_one": "{{count}} jeu en attente",
+    "gamesQueuedCount_other": "{{count}} jeux en attente"
   },
   "update": {
     "downloading": "Téléchargement de la mise à jour..."
@@ -267,6 +270,8 @@
   "auth": {
     "landing": {
       "title": "Se connecter à Steam Game Idler",
+      "agentButton": "Connexion Steam",
+      "localButton": "Connexion legacy",
       "localAlreadySignedIn": "Un compte Steam local est déjà connecté - un seul peut être connecté en même temps.",
       "acknowledge": "En continuant, vous acceptez les <0>Conditions d'Utilisations</0> et confirmez avoir lu notre <1>Politique de Confidentialité</1>."
     },
@@ -350,7 +355,9 @@
         "addAccount": {
           "trigger": "Ajouter un autre compte",
           "capReachedMax": "Vous avez atteint le nombre maximum de comptes connecté avec Steam en même temps.",
-          "added": "{{name}} ajouté"
+          "added": "{{name}} ajouté",
+          "capReached_one": "Le palier {{tier}} permet {{count}} compte connecté avec Steam en même temps. Déconnectez-vous d'un compte pour en ajouter un, ou mettez à niveau pour en avoir plus.",
+          "capReached_other": "Le palier {{tier}} permet {{count}} comptes connectés avec Steam en même temps. Déconnectez-vous d'un compte pour en ajouter un, ou mettez à niveau pour en avoir plus."
         },
         "reauth": {
           "badge": "Connecté ailleurs",
@@ -358,6 +365,7 @@
           "modalTitle": "Connecté sur un autre appareil",
           "modalDescription": "{{account}} a été connecté sur un autre appareil, son automatisation a donc été mise en pause. Connectez-vous à nouveau pour continuer.",
           "reconnect": "Reconnexion",
+          "methodExplainer": "La connexion Steam autorise une seule session active par compte. Si vous voulez continuer à jouer à des jeux lorsque Steam Game Idler est en cours d'exécution, utilisé la connexion legacy à la place.",
           "useDifferentMethod": "Utiliser une autre méthode de connexion"
         }
       },
@@ -392,7 +400,9 @@
         "description": "Votre profil Steam ou information de jeu semblent être définies comme privés. Le temps de jeu, les jeux récemment joués et certains jeux peuvent donc être incomplets. Rendez votre profil public ou ajoutez votre propre clé API Steam Web dans les Paramètres pour corriger cela.",
         "changeSettings": "Modifier les paramètres de confidentialité",
         "useOwnKey": "Ajouter ma propre clé API"
-      }
+      },
+      "count_one": "{{count}} jeu",
+      "count_other": "{{count}} jeux"
     },
     "idling": {
       "stopAll": "Tout arrêter",
@@ -408,7 +418,9 @@
         "startFailed": "Impossible de commencer à idle ce jeu.",
         "maxPlaytimeCapReached": "Ce jeu a déjà atteint sa limite de temps de jeu.",
         "generic": "Une erreur s'est produite lors de la mise à jour des jeux idle. Veuillez réessayer. ({{code}})"
-      }
+      },
+      "count_one": "{{count}} jeu idle en cours",
+      "count_other": "{{count}} jeux idle en cours"
     },
     "favorites": {
       "confirmClear": {
@@ -423,7 +435,9 @@
         "title": "Impossible de mettre à jour les favoris",
         "cacheIoFailed": "Impossible de lire ou écrire le cache de favoris.",
         "generic": "Une erreur s'est produite lors de la mise à jour des favoris. Veuillez réessayer. ({{code}})"
-      }
+      },
+      "count_one": "{{count}} favoris",
+      "count_other": "{{count}} favoris"
     },
     "freeGames": {
       "actions": {
@@ -456,7 +470,9 @@
       },
       "correction": {
         "granted": "{{name}} a finalement été réclamé avec succès - l'avis précédent était erroné."
-      }
+      },
+      "count_one": "{{count}} jeu gratuit disponible",
+      "count_other": "{{count}} jeux gratuits disponibles"
     },
     "achievements": {
       "tabs": {
@@ -464,6 +480,7 @@
         "statistics": "Statistiques"
       },
       "header": {
+        "viewOnSteam": "Voir sur Steam",
         "viewOnSteamDb": "Voir sur SteamDB"
       },
       "protectedAlert": {
@@ -537,7 +554,15 @@
         "achievementLocked": "\"{{name}}\" verrouillé",
         "bulkNoChanges": "Rien à changer - déjà dans l'état demandé, ou protégé.",
         "applyPartialFailure": "Certains succès en attente n'ont pas pu être mis à jour. Veuillez réessayer.",
-        "statsReset": "Remise à zéro des statistiques"
+        "statsReset": "Remise à zéro des statistiques",
+        "bulkUnlocked_one": "{{count}} succès débloqué",
+        "bulkUnlocked_other": "{{count}} succès débloqués",
+        "bulkLocked_one": "{{count}} succès verrouillé",
+        "bulkLocked_other": "{{count}} succès verrouillés",
+        "changesApplied_one": "{{count}} succès mis à jour",
+        "changesApplied_other": "{{count}} succès mis à jour",
+        "statsSaved_one": "{{count}} statistique mise à jour",
+        "statsSaved_other": "{{count}} statistiques mises à jour"
       },
       "errors": {
         "title": "Impossible de charger les succès",
@@ -546,14 +571,19 @@
         "statNotFound": "Cette statistique est introuvable.",
         "protected": "Cette valeur est définie par le serveur du jeu et ne peut pas être modifiée.",
         "unsupportedGameCoordinator": "Ce jeu n'est pas pris en charge pour les succès lorsque vous êtes connectés avec Steam - utilisez votre client Steam local à la place.",
+        "unsupportedGameCoordinatorLinux": "Ce jeu n'est pas pris en charge pour les succès via la connexion Steam.",
         "generic": "Une erreur s'est produite lors du chargement des succès. Veuillez réessayer. ({{code}})"
-      }
+      },
+      "statCount_one": "{{count}} statistique",
+      "statCount_other": "{{count}} statistiques"
     },
     "cardFarming": {
       "status": {
         "idle": "Aucun farm en cours",
         "modeAllGames": "Mode de farming : Tous les jeux",
-        "modeQueue": "Mode farming : jeux en attente"
+        "modeQueue": "Mode farming : jeux en attente",
+        "farming_one": "{{count}} jeu en farming",
+        "farming_other": "{{count}} jeux en farming"
       },
       "actions": {
         "stop": "Arrêter de farmer"
@@ -599,7 +629,9 @@
         "completedMaxCardFarmingTime": "Maximum de temps de farm atteint ({{remaining}} restant)",
         "completedMaxPlaytime": "Maximum de temps de jeu atteint ({{remaining}} restant)",
         "completedNoDropsRemaining": "Il n'y a plus rien à farmer",
-        "completedRefundWindow": "Encore dans la fenêtre de remboursement (farmable à nouveau le {{date}})"
+        "completedRefundWindow": "Encore dans la fenêtre de remboursement (farmable à nouveau le {{date}})",
+        "dropsRemaining_one": "{{count}} drop restant",
+        "dropsRemaining_other": "{{count}} drops restants"
       },
       "errors": {
         "title": "Impossible de mettre à jour le farming de cartes",
@@ -653,6 +685,10 @@
       }
     },
     "achievementUnlocker": {
+      "status": {
+        "running_one": "Déblocage de {{count}} jeu",
+        "running_other": "Déblocage de {{count}} jeux"
+      },
       "addAllToQueue": "Tout ajouter dans la file d'attente",
       "confirmAddAllToQueue": {
         "title": "Ajouter les {{count}} jeux dans la file d'attente ?",
@@ -713,7 +749,9 @@
           "noTimestamps": "Ce joueur n'a pas de succès avec des horodatages pour ce jeu.",
           "notFound": "Impossible de résoudre ce profil.",
           "generic": "Impossible d'importer les timings pour le moment. Veuillez réessayer. ({{code}})"
-        }
+        },
+        "success_one": "Timing importé pour {{count}} succès",
+        "success_other": "Timings importés pour {{count}} succès"
       },
       "progress": {
         "scanning": "Vérification des jeux en attente pour le déblocage de succès",
@@ -726,7 +764,9 @@
         "completedMaxUnlocksReached": "{{unlocked}} / {{total}} débloqué (déblocage maximum atteint)",
         "completedMaxPlaytimeWithCount": "{{unlocked}} / {{total}} débloqué (temps de jeu maximum atteint)",
         "completedMaxPlaytime": "Temps de jeu maximum atteint",
-        "completedNothingToUnlock": "Il n'y a plus rien à débloquer"
+        "completedNothingToUnlock": "Il n'y a plus rien à débloquer",
+        "remaining_one": "{{count}} succès restant",
+        "remaining_other": "{{count}} succès restants"
       },
       "errors": {
         "title": "Impossible de mettre à jour le débloqueur de succès",
@@ -844,7 +884,15 @@
         "noneEligible": "Aucun élément ne satisfait les condition requises pour la vente - vérifiez les limites de vente dans les paramètres de votre inventaire.",
         "priceFetchCooldown": "Veuillez patienter {{seconds}} secondes avant de récupérer plus de prix d'objets",
         "itemLocked": "Cet élément est verrouillé et ne peut pas être listé.",
-        "priceOutOfRange": "{{price}} est en dehors de vos limites de ventes configurées ({{min}} - {{max}})."
+        "priceOutOfRange": "{{price}} est en dehors de vos limites de ventes configurées ({{min}} - {{max}}).",
+        "listed_one": "{{count}} élément listé",
+        "listed_other": "{{count}} éléments listés",
+        "listFailed_one": "{{count}} élément n'a pas pu être listé",
+        "listFailed_other": "{{count}} éléments n'ont pas pu être listés",
+        "skippedLocked_one": "Ignoré {{count}} élément verrouillé",
+        "skippedLocked_other": "Ignoré {{count}} éléments verrouillés",
+        "skippedOutOfRange_one": "Ignoré {{count}} élément en dehors des limites de vente",
+        "skippedOutOfRange_other": "Ignoré {{count}} éléments en dehors des limites de vente"
       },
       "errors": {
         "title": "Impossible de mettre à jour votre inventaire",
@@ -856,9 +904,12 @@
         "listingsFetchFailed": "Impossible de lire vos annonces active du marché.",
         "settingsIoFailed": "Impossible de lire ou écrire les paramètres de votre inventaire.",
         "generic": "Une erreur s'est produite lors de la mise à jour de votre inventaire. Veuillez réessayer. ({{code}})"
-      }
+      },
+      "count_one": "{{count}} élément",
+      "count_other": "{{count}} éléments"
     },
     "settings": {
+      "title": "Paramètres",
       "general": {
         "title": "Général",
         "account": {
