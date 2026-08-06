@@ -586,8 +586,13 @@
       "actions": {
         "stop": "Ferma raccolta"
       },
+      "confirmClearWhitelist": {
+        "title": "Cancellare la lista bianca di Raccolta carte?",
+        "description": "Questo rimuoverà tutti i {{count}} giochi dalla lista bianca di Raccolta carte. La raccolta tornerà a considerare tutti i giochi posseduti con carte rimanenti."
+      },
       "multiGameNotice": {
-        "title": "Raccogliere carte da più giochi contemporaneamente?"
+        "title": "Raccogliere carte da più giochi contemporaneamente?",
+        "description": "Raccogliere carte da più giochi contemporaneamente può rallentare la velocità con cui vengono ottenute per ciascun gioco. Se per un po' non ottieni carte, prova a disattivare di nuovo questa opzione."
       },
       "confirmClearBlacklist": {
         "title": "Cancellare la lista nera di Raccolta carte?",
@@ -595,6 +600,7 @@
       },
       "tabs": {
         "gamesWithDrops": "Giochi con carte",
+        "whitelisted": "In lista bianca",
         "blacklisted": "In lista nera"
       },
       "sort": {
@@ -605,6 +611,10 @@
         "title": "Nessuna carta rimanente",
         "description": "Le carte di tutti i giochi posseduti sono già state raccolte oppure non sono disponibili al momento."
       },
+      "whitelistEmpty": {
+        "title": "Nessun gioco in lista bianca",
+        "description": "Aggiungi giochi dalla scheda Giochi con carte per limitare la raccolta a quei giochi. Lascia la lista vuota per raccogliere carte da tutti i giochi che ne hanno ancora disponibili."
+      },
       "blacklistEmpty": {
         "title": "Nessun gioco in lista nera",
         "description": "I giochi che aggiungi alla lista nera dalla scheda Giochi con carte non verranno mai usati per la raccolta e appariranno qui."
@@ -613,9 +623,15 @@
         "automaticDescription": "Accede automaticamente a Steam Community per controllare le carte."
       },
       "progress": {
+        "activeTitleReadyFarm": "Raccolta ({{count}})",
+        "activeTitleBulkIdle": "Accumulo del tempo di gioco ({{count}})",
         "queueTitle": "Prossimi ({{count}})",
+        "accumulatingPlaytime": "{{hours}}h / {{threshold}}h prima della raccolta",
+        "waitingTurn": "In attesa del turno",
         "completedNoDropsRemaining": "Niente più da raccogliere",
         "completedRefundWindow": "Ancora nel periodo di rimborso (raccoglibile di nuovo il {{date}})",
+        "completedSkippedUnplayed": "Rimosso dalla lista bianca: nessun tempo di gioco registrato",
+        "completedSkippedPlayed": "Rimosso dalla lista bianca: ha già tempo di gioco registrato",
         "dropsRemaining_one": "{{count}} carta rimanente",
         "dropsRemaining_other": "{{count}} carte rimanenti"
       },
@@ -627,6 +643,14 @@
         "generic": "Qualcosa è andato storto durante l'aggiornamento di Raccolta carte. Riprova. ({{code}})"
       },
       "settings": {
+        "hoursUntilFarmable": {
+          "title": "Ore prima della raccolta",
+          "description": "Quante ore di gioco devono accumulare i giochi prima di essere idonei alla raccolta. Imposta su 0 per passare direttamente alla raccolta."
+        },
+        "allowMultiGameFarming": {
+          "title": "Raccogli carte da più giochi",
+          "description": "Raccogli carte da un massimo di 32 giochi contemporaneamente invece che da uno alla volta. In alcuni casi, le carte potrebbero essere ottenute molto più lentamente."
+        },
         "skipRefundableGames": {
           "title": "Salta i giochi rimborsabili",
           "description": "Non raccogliere carte da un gioco finché si trova ancora nel periodo di rimborso di Steam (acquistato negli ultimi 14 giorni con meno di 2 ore di gioco)."
@@ -1042,6 +1066,7 @@
         "title": "Impostazioni gioco",
         "maxPlaytimeSection": "Tempo di gioco",
         "maxPlaytimeScopeNote": "Si applica ovunque un gioco possa essere messo in idle: idle manuale e automatico, Sblocco obiettivi e Raccolta carte.",
+        "idlingScopeNote": "Si applica solo ai giochi messi in idle manualmente e automaticamente: Sblocco obiettivi ha un limite separato qui sotto.",
         "globalMaxPlaytime": {
           "label": "Tempo massimo di gioco (tutti)",
           "description": "Ferma automaticamente un gioco e rimuovilo dalle code quando il suo tempo di gioco totale raggiunge questo numero di minuti."
