@@ -3,7 +3,7 @@ use std::sync::Arc;
 
 use base64::Engine;
 use serde::{Deserialize, Serialize};
-use tauri::AppHandle;
+use tauri::{AppHandle, Manager};
 use tokio::sync::Mutex;
 
 use crate::credential_store;
@@ -496,9 +496,7 @@ impl AgentManager {
         let key = Self::key_for(username);
         let process = self.existing(&key).await?;
         let response = process
-            .send_request(move |id| {
-                IpcRequest::set_persona_state(id, persona_state.as_wire_str())
-            })
+            .send_request(move |id| IpcRequest::set_persona_state(id, persona_state.as_wire_str()))
             .await?;
         ok_or_agent_error(response)
     }
@@ -511,103 +509,72 @@ impl AgentManager {
         Ok(self.existing(&key).await?.idle_app_ids())
     }
 
-    /// Claims a free game via the daemon's `request_free_license` command (SteamKit2's
-    /// `SteamApps.RequestFreeLicense` - see `libs/SteamUtility/Daemon/Bot/FreeLicenseManager.cs`).
-    /// No cookies/webview needed for the common case - the live, already-authenticated SteamKit2
-    /// session covers it in one IPC round trip. Maps the daemon's
-    /// `{granted, grantedApps, grantedPackages, result}` DTO into `FreeGameClaimOutcome`.
+    /// Claims a free game via `free_games::store_claim`'s direct authenticated POST to Steam's own
+    /// store checkout endpoint - no webview needed at all for agent mode, since [`get_web_session`]
+    /// already mints fresh cookies on demand from the live SteamKit2 connection.
     ///
-    /// **Checks real ownership (`get_owned_apps`) up front, before ever calling
-    /// `RequestFreeLicense`** - Steam has been observed echoing `granted=true` (a non-empty
-    /// `GrantedApps`/`GrantedPackages`) for a package the account already owns, rather than the
-    /// empty-list response `FreeLicenseManager.cs`'s own doc comment assumes. Trusting
-    /// `granted=true` unconditionally reported an already-owned game as freshly `Granted` on
-    /// every single auto-redeem poll, forever - confirmed via `claim_free_game`'s logged outcome
-    /// repeating `Granted` for a title one account had owned for a while. A failed ownership
-    /// check here is treated as "not owned" so a transient `get_owned_apps` error still gets a
-    /// real claim attempt below, rather than silently reporting a false `AlreadyOwned`.
+    /// **Deliberately never attempts SteamKit2's `RequestFreeLicense` opcode
+    /// (`libs/SteamUtility/Daemon/Bot/FreeLicenseManager.cs`).** That opcode only grants genuine
+    /// "Free on Demand" packages - and `free_games::discovery`'s scrape (see that module's doc
+    /// comment) only ever surfaces ordinary paid games temporarily discounted to 100% off, never
+    /// an evergreen Free-on-Demand title. So for every app id this feature can ever pass in here,
+    /// `RequestFreeLicense` is a guaranteed no-op, confirmed against a real captured claim
+    /// (`Result: OK`, both grant lists empty, in well under a second) - attempting it first would
+    /// only add a wasted round trip to every claim and every hourly auto-redeem retry, never a real
+    /// chance of success. The daemon's `request_free_license` IPC command itself is left in place
+    /// (unused by this path) in case a genuinely distinct future feature needs real Free-on-Demand
+    /// redemption.
     ///
-    /// If the pre-check confirms the app isn't owned yet and `RequestFreeLicense` still comes
-    /// back `Result == OK` with nothing granted, the only remaining explanation is that its promo
-    /// package simply isn't a `FreeOnDemand` package this opcode can grant at all (some
-    /// limited-time free promos go through Steam's normal cart/checkout flow instead - exactly
-    /// what CLI mode's `local_steam::free_game_claim` already targets). That falls back to
-    /// `local_steam::free_game_claim::claim_via_agent_session`, the same store-page webview-claim
-    /// mechanism CLI mode uses, cookie-primed from this account's live session (`get_web_session`)
-    /// instead of an interactive login.
-    pub async fn request_free_license(
+    /// [`get_web_session`]: Self::get_web_session
+    pub async fn claim_free_game(
         &self,
         app_handle: &AppHandle,
         username: &str,
         app_id: u32,
-        api_key: Option<String>,
     ) -> AppResult<crate::free_games::FreeGameClaimOutcome> {
-        use crate::free_games::FreeGameClaimOutcome;
+        use crate::free_games::{store_claim, FreeGameClaimCorrection};
 
+        let app_handle_for_check = app_handle.clone();
+        let username_for_check = username.to_string();
         // Always unfiltered (games_only: false) here regardless of the user's display-scope
         // setting - this is a real-ownership correctness check for an arbitrary promo app id
         // (which may not be a curated "real game"), not the owned-games list shown to the user.
-        let already_owned = self
-            .get_owned_apps(username, false)
-            .await
-            .map(|games| games.iter().any(|game| game.app_id == app_id))
-            .unwrap_or(false);
-        if already_owned {
-            return Ok(FreeGameClaimOutcome::AlreadyOwned);
-        }
+        // Re-derives `AgentManager` from `app_handle` rather than capturing `self` directly so this
+        // closure stays `'static` - it's reused for the pre-check, the post-claim confirmation, and
+        // a potential detached background recheck (see `store_claim::claim_via_direct_post`).
+        let check_owned: store_claim::OwnershipCheck = Arc::new(move || {
+            let app_handle = app_handle_for_check.clone();
+            let username = username_for_check.clone();
+            Box::pin(async move {
+                app_handle
+                    .state::<AgentManager>()
+                    .get_owned_apps(&username, false)
+                    .await
+                    .map(|games| games.iter().any(|game| game.app_id == app_id))
+            })
+        });
 
-        let key = Self::key_for(username);
-        let process = self.existing(&key).await?;
-        let response = process
-            .send_request(move |id| IpcRequest::request_free_license(id, app_id))
-            .await?;
-
-        if !response.ok {
-            return Err(AppError::Agent(
-                response
-                    .error
-                    .unwrap_or_else(|| "unknown_error".to_string()),
-            ));
-        }
-
-        let result = response.result.unwrap_or(serde_json::Value::Null);
-        let granted = result
-            .get("granted")
-            .and_then(|v| v.as_bool())
-            .unwrap_or(false);
-
-        if granted {
-            return Ok(FreeGameClaimOutcome::Granted);
-        }
-
-        let steam_result = result
-            .get("result")
-            .and_then(|v| v.as_str())
-            .unwrap_or("unknown")
-            .to_string();
-
-        if steam_result != "OK" {
-            return Ok(FreeGameClaimOutcome::Failed {
-                reason: steam_result,
-            });
-        }
-
-        tracing::info!(
-            username,
-            app_id,
-            "free games: RequestFreeLicense granted nothing for an app that isn't actually owned \
-             - falling back to the store-page claim"
-        );
-
-        let steam_id = self.steam_id(username).await?;
         let web_session = self.get_web_session(username).await?;
-        crate::local_steam::free_game_claim::claim_via_agent_session(
+        let cookies = crate::steam_community::SteamCookies {
+            sid: crate::steam_community::session::generate_session_id(),
+            sls: web_session.steam_login_secure,
+            sma: None,
+        };
+        let cookie_header = crate::steam_community::cookie_header("", &cookies);
+
+        let correction = FreeGameClaimCorrection::Agent {
+            username: username.to_string(),
+            app_id,
+        };
+
+        store_claim::claim_via_direct_post(
             app_handle,
-            &steam_id,
             username,
             app_id,
-            api_key,
-            &web_session.steam_login_secure,
+            &cookie_header,
+            &cookies.sid,
+            correction,
+            check_owned,
         )
         .await
     }

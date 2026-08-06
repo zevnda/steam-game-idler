@@ -265,30 +265,6 @@ impl IpcRequest {
         }
     }
 
-    /// Requests a free-license grant for `app_id` via the daemon's `request_free_license` command
-    /// (SteamKit2's `SteamApps.RequestFreeLicense` - see
-    /// `libs/SteamUtility/Daemon/Bot/FreeLicenseManager.cs`).
-    pub fn request_free_license(id: String, app_id: u32) -> Self {
-        Self {
-            id,
-            cmd: "request_free_license",
-            user: None,
-            pass_b64: None,
-            refresh_token_b64: None,
-            code: None,
-            app_ids: None,
-            app_id: Some(app_id),
-            achievement_id: None,
-            unlock: None,
-            stats: None,
-            achievement_changes: None,
-            persona_state: None,
-            game_extra_info: None,
-            language: None,
-            games_only: None,
-        }
-    }
-
     /// Fetches this account's achievement/stat data for `app_id` via the daemon's
     /// `achievements_get` command - see `Daemon/Bot/AchievementHandler.cs`. Throws
     /// `unsupported_game_coordinator` for GC titles (440/570/730/550/620), a daemon-only
@@ -490,9 +466,10 @@ mod tests {
     // matching JSON key there - see `classify`'s doc comment.
     #[test]
     fn event_payload_recovers_error_field() {
-        let message: IpcMessage =
-            serde_json::from_str(r#"{"event":"login_failed","error":"Failed to poll status with result Expired."}"#)
-                .unwrap();
+        let message: IpcMessage = serde_json::from_str(
+            r#"{"event":"login_failed","error":"Failed to poll status with result Expired."}"#,
+        )
+        .unwrap();
         let IpcLine::Event { name, payload } = message.classify() else {
             panic!("expected an event line");
         };
@@ -513,7 +490,10 @@ mod tests {
             panic!("expected an event line");
         };
         assert_eq!(name, "status_changed");
-        assert_eq!(payload.get("result").and_then(|v| v.as_str()), Some("Reconnecting"));
+        assert_eq!(
+            payload.get("result").and_then(|v| v.as_str()),
+            Some("Reconnecting")
+        );
     }
 
     #[test]
