@@ -578,21 +578,14 @@
     "cardFarming": {
       "status": {
         "idle": "Nada Cultivando",
-        "modeAllGames": "Modo de cultivo: Todos los juegos",
-        "modeQueue": "Modo de cultivo: Juegos en cola",
         "farming_one": "Farmeando {{count}} juego",
         "farming_other": "Farmeando {{count}} juegos"
       },
       "actions": {
         "stop": "Parar Cultivo"
       },
-      "confirmClearQueue": {
-        "title": "¿Vaciar la cola de Cultivo de cartas?",
-        "description": "Esto eliminará todos los {{count}} juegos de la cola de obtención de cartas."
-      },
       "multiGameNotice": {
-        "title": "¿Estás cultivando varios juegos a la vez?",
-        "description": "Jugar varias partidas a la vez puede ralentizar la obtención de cartas por partida. Si no ves que te salgan cartas durante un tiempo, prueba a activar el modo \"Jugar una sola partida\" en Ajustes → Obtención de cartas."
+        "title": "¿Estás cultivando varios juegos a la vez?"
       },
       "confirmClearBlacklist": {
         "title": "¿Eliminar la lista negra de granjas de tarjetas?",
@@ -610,9 +603,6 @@
         "title": "No te quedan más cromos por obtener",
         "description": "En todos los juegos que poseo, las cartas que se pueden obtener mediante cultivo ya se han conseguido todas o no hay ninguna disponible en este momento."
       },
-      "empty": {
-        "description": "Agrega juegos desde la pestaña \"Juegos con Drops\" para ponerlos en cola para la obtención de cartas."
-      },
       "blacklistEmpty": {
         "title": "No hay juegos en la lista negra",
         "description": "Los juegos que añadas a la lista negra desde la pestaña «Juegos con drops» nunca se farmearán y aparecerán aquí."
@@ -621,11 +611,7 @@
         "automaticDescription": "Inicia sesión automáticamente en la Comunidad de Steam para comprobar si hay novedades."
       },
       "progress": {
-        "activeTitle": "Cultivando ({{count}})",
         "queueTitle": "A continuación ({{count}})",
-        "completedMaxCardDrops": "Se ha alcanzado el número máximo de cartas que se pueden soltar (quedan {{remaining}})",
-        "completedMaxCardFarmingTime": "Tiempo máximo de cultivo alcanzado ({{remaining}} restante)",
-        "completedMaxPlaytime": "Tiempo máximo de juego alcanzado ({{remaining}} restante)",
         "completedNoDropsRemaining": "Ya no queda nada que cultivar",
         "completedRefundWindow": "Todavía dentro del plazo de reembolso (se puede volver a cultivar {{date}})",
         "dropsRemaining_one": "{{count}} drop restante",
@@ -639,10 +625,6 @@
         "generic": "Se produjo un error al actualizar la configuración. Inténtalo de nuevo. ({{code}})"
       },
       "settings": {
-        "singleFarmingMode": {
-          "title": "Modo de cultivo único",
-          "description": "Juega una partida a la vez en tu cola, en lugar de varias simultáneamente, lo que puede ayudarte a conseguir cartas más rápido por partida."
-        },
         "skipRefundableGames": {
           "title": "Saltar los juegos reembolsables",
           "description": "No intentes conseguir un juego mientras aún esté dentro del plazo de reembolso de Steam (comprado en los últimos 14 días con menos de 2 horas de juego)."
@@ -651,14 +633,6 @@
           "title": "Cultiva automáticamente tarjetas",
           "description": "Revisa periódicamente los juegos que posees con cartas que aún te quedan y comienza a conseguirlas automáticamente."
         },
-        "listGames": {
-          "title": "Juegos de granja en cola",
-          "description": "Solo cultivar juegos que están en la lista de Cultivo de Cromos."
-        },
-        "allGames": {
-          "title": "Farmear todos los juegos",
-          "description": "Cartas de granja para todos los juegos con cartas restantes."
-        },
         "skipNoPlaytime": {
           "title": "Saltar juegos no jugados",
           "description": "No intentes jugar partidas que no tengan ningún tiempo de juego registrado."
@@ -666,15 +640,6 @@
         "farmUnplayedOnly": {
           "title": "Solo juegos no jugados",
           "description": "Solo juegos de granja que no tengan tiempo de juego registrado."
-        },
-        "dropSortOrder": {
-          "title": "Orden de Cultivar",
-          "description": "Elige el orden en que se deben jugar las partidas de la cola.",
-          "options": {
-            "queueOrder": "Orden en Cola",
-            "highestFirst": "Las caídas más altas primero",
-            "lowestFirst": "Las caídas más bajas primero"
-          }
         },
         "nextTask": {
           "title": "Cuando termines, comienza otra tarea",
@@ -1075,8 +1040,6 @@
         "title": "Ajustes del juego",
         "maxPlaytimeSection": "Tiempo de juego",
         "maxPlaytimeScopeNote": "Se aplica en cualquier situación en la que un juego pueda dejarse en modo inactivo: inactividad manual y automática, desbloqueo de logros y obtención de cartas.",
-        "idlingScopeNote": "Solo se aplica a juegos en modo inactivo manual y automático; la obtención de cartas y el desbloqueo de logros tienen sus propios límites separados que se detallan a continuación.",
-        "cardFarmingScopeNote": "Solo se aplica a sesiones de cultivos de cartas.",
         "globalMaxPlaytime": {
           "label": "Tiempo máximo de juego (todos los juegos)",
           "description": "Detener automáticamente una partida y eliminarla de las colas una vez que su tiempo total de juego alcance esta cantidad de minutos."
@@ -1092,19 +1055,6 @@
         "maxIdleTime": {
           "label": "Tiempo máximo de inactividad",
           "description": "Detener automáticamente el juego en modo inactivo después de esta cantidad de minutos. Si se ha configurado, anula el valor anterior."
-        },
-        "globalMaxCardFarmingTime": {
-          "label": "Tiempo máximo para conseguir cartas (en todos los juegos)",
-          "description": "Detener automáticamente la obtención de cartas en una partida después de esta cantidad de minutos."
-        },
-        "maxCardFarmingTime": {
-          "label": "Tiempo máximo de cultivo de cartas",
-          "description": "Detener automáticamente la obtención de cartas en este juego después de esta cantidad de minutos. Anula el valor anterior, si está configurado."
-        },
-        "maxCardDrops": {
-          "label": "Botines de tarjeta máximos",
-          "description": "Deja de jugar a este juego una vez que hayas conseguido esta cantidad de objetos en esta sesión.",
-          "hint": "0 = granja hasta que esté terminada"
         },
         "maxAchievementUnlocks": {
           "label": "Máximo logro desbloqueado",

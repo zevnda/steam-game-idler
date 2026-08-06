@@ -569,20 +569,13 @@
     "cardFarming": {
       "status": {
         "idle": "未在挂卡",
-        "modeAllGames": "挂卡模式：全部游戏",
-        "modeQueue": "挂卡模式：队列游戏",
         "farming_other": "正在为 {{count}} 款游戏挂卡"
       },
       "actions": {
         "stop": "停止挂卡"
       },
-      "confirmClearQueue": {
-        "title": "清空挂卡队列？",
-        "description": "这将从挂卡队列中移除 {{count}} 款游戏"
-      },
       "multiGameNotice": {
-        "title": "想要一次挂取多个游戏？",
-        "description": "同时挂取多个游戏可能会降低每个游戏的卡牌掉落速度。如果在一段时间内没有任何卡牌掉落，尝试在 设置 → 挂卡 中开启“挂取单一游戏”。"
+        "title": "想要一次挂取多个游戏？"
       },
       "confirmClearBlacklist": {
         "title": "清空挂卡黑名单？",
@@ -600,9 +593,6 @@
         "title": "没有可掉落的卡牌",
         "description": "所有拥有游戏的卡牌均已挂完，或无可用掉落"
       },
-      "empty": {
-        "description": "从「仍可掉落卡牌的游戏」标签页添加游戏，将其加入挂卡队列"
-      },
       "blacklistEmpty": {
         "title": "暂无黑名单游戏",
         "description": "您在「仍可掉落卡牌的游戏」中拉黑的游戏将永远不会被挂卡，并会显示在此处"
@@ -611,11 +601,7 @@
         "automaticDescription": "自动登录 Steam 社区以检查卡牌掉落"
       },
       "progress": {
-        "activeTitle": "挂卡中（{{count}}）",
         "queueTitle": "即将挂卡（{{count}}）",
-        "completedMaxCardDrops": "已达到最大卡牌掉落数（剩余 {{remaining}}）",
-        "completedMaxCardFarmingTime": "已达到最大挂卡时间（剩余 {{remaining}}）",
-        "completedMaxPlaytime": "已达到最大游戏时长（剩余 {{remaining}}）",
         "completedNoDropsRemaining": "无剩余卡牌可挂",
         "completedRefundWindow": "仍在退款期限内（{{date}}时可挂卡）",
         "dropsRemaining_other": "剩余 {{count}} 张卡牌"
@@ -628,10 +614,6 @@
         "generic": "更新挂卡状态时出错，请重试，（{{code}}）"
       },
       "settings": {
-        "singleFarmingMode": {
-          "title": "挂取单一游戏",
-          "description": "每次仅挂取队列中的一个游戏，而非多个。这可以加快单个游戏的掉落。"
-        },
         "skipRefundableGames": {
           "title": "跳过可退款游戏",
           "description": "跳过仍在 Steam 退款期限内的游戏（购买后14天、游戏时间不超过2小时）。"
@@ -640,14 +622,6 @@
           "title": "自动挂卡",
           "description": "定期检查已拥有游戏中仍有卡牌掉落的游戏，并自动开始挂卡"
         },
-        "listGames": {
-          "title": "挂取队列游戏",
-          "description": "仅挂取「挂卡队列」中的游戏"
-        },
-        "allGames": {
-          "title": "挂取所有游戏",
-          "description": "为所有仍有卡牌掉落的已拥有游戏挂卡"
-        },
         "skipNoPlaytime": {
           "title": "跳过未游玩的游戏",
           "description": "不挂取游戏时长为零的游戏"
@@ -655,15 +629,6 @@
         "farmUnplayedOnly": {
           "title": "仅挂取未游玩的游戏",
           "description": "仅挂取游戏时长为零的游戏"
-        },
-        "dropSortOrder": {
-          "title": "挂卡顺序",
-          "description": "选择队列中游戏的挂卡顺序。",
-          "options": {
-            "queueOrder": "按队列顺序",
-            "highestFirst": "剩余卡牌多优先",
-            "lowestFirst": "剩余卡牌少优先"
-          }
         },
         "nextTask": {
           "title": "完成后启动另一项任务",
@@ -1056,8 +1021,6 @@
         "title": "游戏设置",
         "maxPlaytimeSection": "游戏时长",
         "maxPlaytimeScopeNote": "适用于所有挂机场景——手动和自动挂机、成就解锁器以及挂卡",
-        "idlingScopeNote": "仅适用于手动和自动挂机的游戏——挂卡与成就解锁器另有独立的上限",
-        "cardFarmingScopeNote": "仅适用于挂卡会话",
         "globalMaxPlaytime": {
           "label": "最大游戏时长（所有游戏）",
           "description": "当游戏总时长达到此分钟数时，自动停止该游戏并将其从队列中移除"
@@ -1073,19 +1036,6 @@
         "maxIdleTime": {
           "label": "最大挂机时间",
           "description": "挂机该游戏达到此分钟数后自动停止，若已设置，则覆盖上方的所有游戏值"
-        },
-        "globalMaxCardFarmingTime": {
-          "label": "最大挂卡时间（所有游戏）",
-          "description": "为游戏挂卡达到此分钟数后自动停止"
-        },
-        "maxCardFarmingTime": {
-          "label": "最大挂卡时间",
-          "description": "为该游戏挂卡达到此分钟数后自动停止，若已设置，则覆盖上方的所有游戏值"
-        },
-        "maxCardDrops": {
-          "label": "最大卡牌掉落数",
-          "description": "本次会话中该游戏掉落达到此数量后停止挂卡",
-          "hint": "0 为 挂至完成"
         },
         "maxAchievementUnlocks": {
           "label": "最大成就解锁数",

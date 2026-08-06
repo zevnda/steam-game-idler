@@ -545,20 +545,13 @@
     },
     "cardFarming": {
       "status": {
-        "idle": "Kasma etkin değil",
-        "modeAllGames": "Kasma modu: Tüm oyunlar",
-        "modeQueue": "Kasma modu: Sıradaki oyunlar"
+        "idle": "Kasma etkin değil"
       },
       "actions": {
         "stop": "Kasmayı durdur"
       },
-      "confirmClearQueue": {
-        "title": "Kart kasma sırasını temizlemek istiyor musun?",
-        "description": "Bu tüm oyunları {{count}} kart kasma sırasından temizliycek."
-      },
       "multiGameNotice": {
-        "title": "Tek seferde birden fazla oyun kasılsın mı?",
-        "description": "Aynı anda birden fazla oyunu kasmak, her oyun için kartların düşme hızını yavaşlatabilir. Bir süre kart düşmezse, Ayarlar → Kart Kasma bölümünden \"Tekli Kasma Modu\"nu etkinleştirmeyi deneyin."
+        "title": "Tek seferde birden fazla oyun kasılsın mı?"
       },
       "confirmClearBlacklist": {
         "title": "Kart kasma kara listesi temizlensin mi?",
@@ -576,9 +569,6 @@
         "title": "Kalan kart düşüşü yok",
         "description": "Sahip olduğunuz tüm oyunlardaki kartlar ya tamamen kasıldı ya da şu anda düşürülebilecek kart bulunmuyor."
       },
-      "empty": {
-        "description": "Kart kasma kuyruğuna eklemek için Oyun Kartları sekmesinden oyun ekleyin."
-      },
       "blacklistEmpty": {
         "title": "Kara listede oyun yok",
         "description": "Oyun Kartları sekmesinden kara listeye eklediğiniz oyunlar hiçbir zaman kart kasılmaz ve burada görünür."
@@ -587,11 +577,7 @@
         "automaticDescription": "Kart düşüşlerini kontrol etmek için Steam Topluluğu'nda otomatik olarak oturum açar."
       },
       "progress": {
-        "activeTitle": "Kasma ({{count}})",
         "queueTitle": "Sıradaki ({{count}})",
-        "completedMaxCardDrops": "Maksimum kart düşüşü sınırına ulaşıldı ({{remaining}} kaldı)",
-        "completedMaxCardFarmingTime": "Maksimum kart kasma süresine ulaşıldı ({{remaining}} kaldı)",
-        "completedMaxPlaytime": "Maksimum oynama süresine ulaşıldı ({{remaining}} kaldı)",
         "completedNoDropsRemaining": "Kasılacak kart kalmadı",
         "completedRefundWindow": "İade süresi hâlâ devam ediyor ({{date}} tarihinde tekrar kasılabilir)"
       },
@@ -603,24 +589,12 @@
         "generic": "Kart kasma güncellenirken bir sorun oluştu. Lütfen tekrar deneyin. ({{code}})"
       },
       "settings": {
-        "singleFarmingMode": {
-          "title": "Tekli kart kasma modu",
-          "description": "Aynı anda birden fazla oyun yerine, kuyruğunuzdaki oyunları tek tek kasar. Bu, her oyun için kartların daha hızlı düşmesine yardımcı olabilir."
-        },
         "skipRefundableGames": {
           "title": "İade edilebilir oyunları atla"
         },
         "autoFarmCards": {
           "title": "Kartları otomatik kas",
           "description": "Kart düşüşü kalan sahip olduğunuz oyunları düzenli olarak kontrol eder ve bunların kartlarını otomatik olarak kasmaya başlar."
-        },
-        "listGames": {
-          "title": "Sıradaki oyunları kas",
-          "description": "Yalnızca Kart Kasma kuyruğunuzdaki oyunların kartlarını kasar."
-        },
-        "allGames": {
-          "title": "Tüm oyunları kas",
-          "description": "Kart düşüşü kalan sahip olduğunuz tüm oyunların kartlarını kasar."
         },
         "skipNoPlaytime": {
           "title": "Oynanmamış oyunları atla",
@@ -629,15 +603,6 @@
         "farmUnplayedOnly": {
           "title": "Sadece oynanmayan oyunlar",
           "description": "Sadece oyun süresi sıfır olan oyunları kas"
-        },
-        "dropSortOrder": {
-          "title": "Kasma sırası",
-          "description": "Kuyruktaki oyunların hangi sırayla kasılacağını seçin.",
-          "options": {
-            "queueOrder": "Kuyruk sırası",
-            "highestFirst": "En fazla kart düşüşü olandan başla",
-            "lowestFirst": "En az kart düşüşü olandan başla"
-          }
         },
         "nextTask": {
           "title": "İş bitince başka bir göreve başla",

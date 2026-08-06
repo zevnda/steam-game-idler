@@ -580,21 +580,14 @@
     "cardFarming": {
       "status": {
         "idle": "Aucun farm en cours",
-        "modeAllGames": "Mode de farming : Tous les jeux",
-        "modeQueue": "Mode farming : jeux en attente",
         "farming_one": "{{count}} jeu en farming",
         "farming_other": "{{count}} jeux en farming"
       },
       "actions": {
         "stop": "Arrêter de farmer"
       },
-      "confirmClearQueue": {
-        "title": "Effacer la liste d'attente de farming ?",
-        "description": "Cette action va supprimer les {{count}} jeux de votre liste d'attente de farming."
-      },
       "multiGameNotice": {
-        "title": "Farmer plusieurs jeux en même temps ?",
-        "description": "Farmer plusieurs jeux en même temps peu ralentir la vitesse d'apparition des cartes par jeu. Si vous ne voyez aucune carte cadeau pendant un moment, essayez d'activer le 'mode farming unique' dans Paramètre → Farming de Cartes."
+        "title": "Farmer plusieurs jeux en même temps ?"
       },
       "confirmClearBlacklist": {
         "title": "Effacer la liste noire de farming de cartes ?",
@@ -612,9 +605,6 @@
         "title": "Aucun drop de carte restant",
         "description": "Pour tous les jeux possédés, soit toutes les cartes ont déjà été récupérées, soit il n'y en a aucune de disponible pour le moment."
       },
-      "empty": {
-        "description": "Ajouter des jeux de l'onglet Jeux avec Drops pour les ajouter à la liste d'attente du farming de cartes."
-      },
       "blacklistEmpty": {
         "title": "Aucun jeu blacklisté",
         "description": "Les jeux blacklistés de l'onglet Jeux avec Drops ne seront jamais farmés et apparaissent ici."
@@ -623,11 +613,7 @@
         "automaticDescription": "Se connecte automatiquement à Steam Community pour rechercher des drops."
       },
       "progress": {
-        "activeTitle": "Farming ({{count}})",
         "queueTitle": "À suivre ({{count}})",
-        "completedMaxCardDrops": "Maximum de drops de cartes atteint ({{remaining}} restant)",
-        "completedMaxCardFarmingTime": "Maximum de temps de farm atteint ({{remaining}} restant)",
-        "completedMaxPlaytime": "Maximum de temps de jeu atteint ({{remaining}} restant)",
         "completedNoDropsRemaining": "Il n'y a plus rien à farmer",
         "completedRefundWindow": "Encore dans la fenêtre de remboursement (farmable à nouveau le {{date}})",
         "dropsRemaining_one": "{{count}} drop restant",
@@ -641,10 +627,6 @@
         "generic": "Une erreur s'est produite lors de la mise à jour du farming de cartes. Veuillez réessayer. ({{code}})"
       },
       "settings": {
-        "singleFarmingMode": {
-          "title": "Mode de farm unique",
-          "description": "Farmer un jeu de la liste d'attente à la fois à la place de plusieurs en même temps, ce qui peut aider à accélérer les drops de cartes par jeu."
-        },
         "skipRefundableGames": {
           "title": "Passer les jeux remboursables",
           "description": "Ne pas farmer un jeu tant qu'il est dans la fenêtre de remboursement de Steam (acheté durant les 14 derniers jours avec moins de 2 heures de jeu)."
@@ -653,14 +635,6 @@
           "title": "Farmer les cartes automatiquement",
           "description": "Vérifier régulièrement quels jeux de votre collection disposent encore de drops de cartes et lancer automatiquement le farming."
         },
-        "listGames": {
-          "title": "Jeu de farm en attente",
-          "description": "Uniquement les jeux de farm présents dans votre liste d'attente de farming."
-        },
-        "allGames": {
-          "title": "Farmer tous les jeux",
-          "description": "Farmer les cartes pour tous les jeux de la collection avec de drops restants."
-        },
         "skipNoPlaytime": {
           "title": "Passer les jeux non joués",
           "description": "Ne pas farmer les jeux qui n'ont aucun temps de jeu enregistré."
@@ -668,15 +642,6 @@
         "farmUnplayedOnly": {
           "title": "Uniquement les jeux non joués",
           "description": "Farmer uniquement les jeux qui n'ont aucun temps de jeu enregistré."
-        },
-        "dropSortOrder": {
-          "title": "Ordre de farm",
-          "description": "Choisissez dans quel ordre les jeux de la liste d'attente doivent être farmés.",
-          "options": {
-            "queueOrder": "Ordre de la file d'attente",
-            "highestFirst": "Drops les plus importants en premier",
-            "lowestFirst": "Drops les plus faibles en premier"
-          }
         },
         "nextTask": {
           "title": "Commencer une nouvelle tâche lors de la complétion",
@@ -1077,8 +1042,6 @@
         "title": "Paramètres de Jeux",
         "maxPlaytimeSection": "Temps de jeu",
         "maxPlaytimeScopeNote": "S'applique partout où un jeu peut être idle - idling manuel et automatique, débloquer de succès et farming de cartes.",
-        "idlingScopeNote": "S'applique uniquement aux jeux manuellement ou automatiquement idled - le farming de cartes et le débloqueur de succès ont leurs propres limites ci-dessous.",
-        "cardFarmingScopeNote": "S'applique uniquement aux sessions de farming de cartes.",
         "globalMaxPlaytime": {
           "label": "Temps de jeu maximum (tous les jeux)",
           "description": "Arrête automatiquement un jeu et le supprime des listes d'attente lorsque son temps de jeu total atteint ce nombre de minutes."
@@ -1094,19 +1057,6 @@
         "maxIdleTime": {
           "label": "Temps d'idle maximum",
           "description": "Arrêter automatiquement l'idling de ce jeu après ce nombre de minutes. Remplace la valeur ci-dessus, si défini."
-        },
-        "globalMaxCardFarmingTime": {
-          "label": "Temps de farming de cartes maximum (tous les jeux)",
-          "description": "Arrête automatiquement le farming de cartes après ce nombre de minutes."
-        },
-        "maxCardFarmingTime": {
-          "label": "Temps de farming de cartes maximum",
-          "description": "Arrêter automatiquement le farming de cartes de ce jeu après ce nombre de minutes. Remplace la valeur ci-dessus, si défini."
-        },
-        "maxCardDrops": {
-          "label": "Nombre maximum de drops de cartes",
-          "description": "Arrête de farmer ce jeu lorsque ce nombre de drops est atteint durant cette session.",
-          "hint": "0 = farmer jusqu'à la fin"
         },
         "maxAchievementUnlocks": {
           "label": "Nombre maximum de déblocages de succès",
