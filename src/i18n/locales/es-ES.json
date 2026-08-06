@@ -418,7 +418,9 @@
         "startFailed": "No se ha podido iniciar el farmeo de este juego.",
         "maxPlaytimeCapReached": "Este juego ya ha alcanzado su límite máximo de tiempo de juego.",
         "generic": "Se produjo un error al actualizar el estado inactivo. Inténtalo de nuevo. ({{code}})"
-      }
+      },
+      "count_one": "{{count}} cultivando juego",
+      "count_other": "{{count}} cultivando Juegos"
     },
     "favorites": {
       "confirmClear": {
@@ -584,8 +586,13 @@
       "actions": {
         "stop": "Parar Cultivo"
       },
+      "confirmClearWhitelist": {
+        "title": "¿Eliminar la lista blanca de Cultivo de Cartas?",
+        "description": "Esto eliminará todos los {{count}} juegos de la lista blanca de Cultivos de cartas. El Cultivo volverá a considerar cada juego que se posea con drops."
+      },
       "multiGameNotice": {
-        "title": "¿Estás cultivando varios juegos a la vez?"
+        "title": "¿Estás cultivando varios juegos a la vez?",
+        "description": "Jugar varias partidas a la vez puede ralentizar la obtención de cartas por partida. Si no ves que aparezcan cartas durante un tiempo, prueba a desactivar esta opción."
       },
       "confirmClearBlacklist": {
         "title": "¿Eliminar la lista negra de granjas de tarjetas?",
@@ -593,6 +600,7 @@
       },
       "tabs": {
         "gamesWithDrops": "Juegos con drops",
+        "whitelisted": "Lista blanca",
         "blacklisted": "En la lista negra"
       },
       "sort": {
@@ -603,6 +611,10 @@
         "title": "No te quedan más cromos por obtener",
         "description": "En todos los juegos que poseo, las cartas que se pueden obtener mediante cultivo ya se han conseguido todas o no hay ninguna disponible en este momento."
       },
+      "whitelistEmpty": {
+        "title": "No hay juegos en la lista blanca",
+        "description": "Agrega juegos desde la pestaña \"Juegos con recompensas\" para restringir la obtención de recompensas solo a esos juegos. Déjala vacía para obtener recompensas de todos los juegos."
+      },
       "blacklistEmpty": {
         "title": "No hay juegos en la lista negra",
         "description": "Los juegos que añadas a la lista negra desde la pestaña «Juegos con drops» nunca se farmearán y aparecerán aquí."
@@ -611,9 +623,15 @@
         "automaticDescription": "Inicia sesión automáticamente en la Comunidad de Steam para comprobar si hay novedades."
       },
       "progress": {
+        "activeTitleReadyFarm": "Cultivando ({{count}})",
+        "activeTitleBulkIdle": "Tiempo de juego ({{count}})",
         "queueTitle": "A continuación ({{count}})",
+        "accumulatingPlaytime": "{{hours}}H / {{threshold}}H hasta que sea cultivable",
+        "waitingTurn": "Esperando su turno",
         "completedNoDropsRemaining": "Ya no queda nada que cultivar",
         "completedRefundWindow": "Todavía dentro del plazo de reembolso (se puede volver a cultivar {{date}})",
+        "completedSkippedUnplayed": "Eliminado de la lista blanca: no tiene tiempo de reproducción registrado",
+        "completedSkippedPlayed": "Eliminado de la lista blanca: ya tiene tiempo de juego",
         "dropsRemaining_one": "{{count}} drop restante",
         "dropsRemaining_other": "{{count}} drops restantes"
       },
@@ -625,6 +643,14 @@
         "generic": "Se produjo un error al actualizar la configuración. Inténtalo de nuevo. ({{code}})"
       },
       "settings": {
+        "hoursUntilFarmable": {
+          "title": "Horas hasta que se pueda cultivar",
+          "description": "Cuántas horas de juego necesitan los juegos para poder ser explotados. Establece el valor en 0 para pasar directamente a la explotación."
+        },
+        "allowMultiGameFarming": {
+          "title": "Cultiva varios juegos a la vez",
+          "description": "Juega hasta 32 partidas simultáneamente en lugar de una a la vez. En algunos casos, esto puede provocar que las cartas aparezcan mucho más lentamente."
+        },
         "skipRefundableGames": {
           "title": "Saltar los juegos reembolsables",
           "description": "No intentes conseguir un juego mientras aún esté dentro del plazo de reembolso de Steam (comprado en los últimos 14 días con menos de 2 horas de juego)."
@@ -1040,6 +1066,7 @@
         "title": "Ajustes del juego",
         "maxPlaytimeSection": "Tiempo de juego",
         "maxPlaytimeScopeNote": "Se aplica en cualquier situación en la que un juego pueda dejarse en modo inactivo: inactividad manual y automática, desbloqueo de logros y obtención de cartas.",
+        "idlingScopeNote": "Solo se aplica a juegos en modo inactivo manual y automático; el desbloqueado de logros tiene su propio límite independiente que se detalla más abajo.",
         "globalMaxPlaytime": {
           "label": "Tiempo máximo de juego (todos los juegos)",
           "description": "Detener automáticamente una partida y eliminarla de las colas una vez que su tiempo total de juego alcance esta cantidad de minutos."
