@@ -56,7 +56,7 @@ on:
         # that step fails, re-dispatch the same release with this enabled to let the GitHub
         # release/PR/Discord ping proceed anyway, then backfill R2 by hand
         # (`wrangler r2 object put`) once it's working again.
-        description: "Skip Cloudflare R2 upload (use if R2 is down/unreachable)"
+        description: "Skip Cloudflare R2 upload"
         required: false
         type: boolean
         default: false
