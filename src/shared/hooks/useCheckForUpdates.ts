@@ -49,7 +49,14 @@ export function useCheckForUpdates() {
         }
       } catch (error) {
         console.error('Error in (checkForUpdates):', error)
-        logFrontendWarn('useCheckForUpdates', 'update check/install failed', {
+        // `check()`'s own GitHub->R2 fallback runs entirely inside the Tauri updater plugin's Rust
+        // code (see tauri.conf.json's `plugins.updater.endpoints`) - this catch only ever sees the
+        // final outcome once every configured endpoint has failed, not which one(s) failed or in
+        // what order. That per-endpoint detail is still captured, just server-side in the log file
+        // (the plugin logs an error for each failed endpoint before trying the next one) - so this
+        // message intentionally doesn't guess at a specific cause (e.g. regional blocking) that
+        // this layer can't actually verify.
+        logFrontendWarn('useCheckForUpdates', 'update check failed on every configured endpoint', {
           error: String(error),
         })
         // A failure partway through performUpdate (e.g. downloadAndInstall rejecting) would

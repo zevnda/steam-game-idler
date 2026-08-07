@@ -50,6 +50,16 @@ on:
         required: false
         type: boolean
         default: false
+      skip_r2_upload:
+        # Escape hatch for a Cloudflare-side outage/misconfiguration: `publish`'s R2 upload step
+        # hard-fails by default (deliberately, so a broken upload is never silently missed) - if
+        # that step fails, re-dispatch the same release with this enabled to let the GitHub
+        # release/PR/Discord ping proceed anyway, then backfill R2 by hand
+        # (`wrangler r2 object put`) once it's working again.
+        description: "Skip Cloudflare R2 upload (use if R2 is down/unreachable)"
+        required: false
+        type: boolean
+        default: false
 
 run-name: Build release v${{ github.event.inputs.version }}
 
@@ -973,6 +983,99 @@ jobs:
 
           print('Merged platform signatures into latest.json')
           "
+
+      # China-reachable fallback for the Tauri updater: raw.githubusercontent.com and
+      # objects.githubusercontent.com (release assets) are both confirmed unreliable from mainland
+      # China (real ITDOG testing: ~34%/~21% failure rates, DNS-hijack signature on the former) -
+      # this bucket, already used in production for image assets, tested reliably reachable
+      # instead. tauri.conf.json's `plugins.updater.endpoints` tries GitHub first, falling back to
+      # this bucket only on a non-2xx/timeout - see that file and src/shared/utils/update.ts for
+      # the client side of this. Deliberately hard-fails by default (no error-suppression anywhere
+      # below) rather than silently soft-failing, so a broken upload is never missed - the
+      # `skip_r2_upload` dispatch input above is the explicit, deliberate opt-out for a real
+      # Cloudflare-side outage.
+      #
+      # No cleanup step here for a previous release's leftover updater/ files, deliberately -
+      # `wrangler r2 object` only has get/put/delete (confirmed against the real CLI, no `list`
+      # subcommand exists despite some docs/discussion implying otherwise), so listing objects to
+      # find what's stale isn't available this way without pulling in a separate S3-compatible
+      # client and a second credential type. Not worth it: the updater never needs a previous
+      # release's files (`check()` always compares against whatever latest.json currently reports
+      # as current), so leftover files are harmless, not a correctness issue - just storage
+      # housekeeping. Handled instead by an R2 Object Lifecycle Rule on the `updater/` prefix
+      # (bucket Settings -> Object Lifecycle Rules in the dashboard - a native, no-code expiry
+      # mechanism), configured directly on the bucket rather than here.
+      - name: Setup Node.js for R2 upload
+        if: github.event.inputs.dry_run != 'true' && github.event.inputs.skip_r2_upload != 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Build R2 latest.json variant
+        id: build_r2_latest
+        if: github.event.inputs.dry_run != 'true' && github.event.inputs.skip_r2_upload != 'true'
+        # Same latest.json as just merged above, but with each platform's `url` rewritten to the
+        # R2-hosted equivalent - `signature` values are untouched, since minisign signs the binary
+        # bytes, which are identical on both hosts, only the download URL differs. The filename is
+        # taken from the existing GitHub url's basename rather than reconstructed from a hardcoded
+        # naming pattern, so this never has to independently guess Tauri's bundle-naming convention
+        # (same caution build_linux_bundle's own "Update latest.json with signature" step already
+        # takes, for the same reason).
+        run: |
+          python3 -c "
+          import json
+          import os
+          from urllib.parse import urlparse
+
+          with open('latest.json', 'r') as f:
+              latest_json = json.load(f)
+
+          r2_base = 'https://cdn-steamgameidler.com/updater'
+          filenames = {}
+
+          for platform_key, platform_data in latest_json['platforms'].items():
+              filename = os.path.basename(urlparse(platform_data['url']).path)
+              platform_data['url'] = f'{r2_base}/{filename}'
+              filenames[platform_key] = filename
+
+          with open('latest-r2.json', 'w') as f:
+              json.dump(latest_json, f, indent=2)
+
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f\"windows_name={filenames['windows-x86_64']}\n\")
+              f.write(f\"linux_name={filenames['linux-x86_64']}\n\")
+
+          print('Built R2 latest.json variant')
+          "
+
+      - name: Upload updater files to Cloudflare R2
+        if: github.event.inputs.dry_run != 'true' && github.event.inputs.skip_r2_upload != 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          WINDOWS_NAME: ${{ steps.build_r2_latest.outputs.windows_name }}
+          LINUX_NAME: ${{ steps.build_r2_latest.outputs.linux_name }}
+        # `latest.json` gets `no-store` so Cloudflare's edge never caches it (every check is
+        # guaranteed fresh, no TTL window at all) - the two binaries get a long, immutable cache
+        # instead, safe since their filenames are version-stamped and never reused.
+        run: |
+          set -euo pipefail
+
+          npx --yes wrangler r2 object put "steam-game-idler/updater/latest.json" \
+            --file=./latest-r2.json \
+            --content-type="application/json" \
+            --cache-control="no-store" \
+            --remote
+
+          npx --yes wrangler r2 object put "steam-game-idler/updater/${WINDOWS_NAME}" \
+            --file="./dist-windows/${WINDOWS_NAME}" \
+            --cache-control="public, max-age=31536000, immutable" \
+            --remote
+
+          npx --yes wrangler r2 object put "steam-game-idler/updater/${LINUX_NAME}" \
+            --file="./dist-linux/${LINUX_NAME}" \
+            --cache-control="public, max-age=31536000, immutable" \
+            --remote
 
       - name: Restore built Cargo.lock
         if: needs.build_windows_bundle.result == 'success'
