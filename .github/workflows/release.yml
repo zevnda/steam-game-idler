@@ -1088,8 +1088,34 @@ jobs:
         # `latest.json` gets `no-store` so Cloudflare's edge never caches it (every check is
         # guaranteed fresh, no TTL window at all) - the two binaries get a long, immutable cache
         # instead, safe since their filenames are version-stamped and never reused.
+        #
+        # WINDOWS_NAME/LINUX_NAME (dotted, e.g. Steam.Game.Idler_6.2.2_x64-setup.nsis.zip) come
+        # from the committed latest.json's GitHub url, which GitHub itself rewrites space->dot for
+        # release-asset download URLs - that's the right value for the R2 *key* (matches what
+        # latest-r2.json's own url fields point at), but the *local* files staged in dist-windows/
+        # and dist-linux/ still have their real names with literal spaces
+        # (build_windows_bundle's "Stage bundle for publish" step and build_linux_bundle's glob
+        # both keep the space-containing name - only the GitHub URL gets the dots). Glob for the
+        # real local file instead of assuming it matches the dotted name, same reasoning as
+        # build_linux_bundle's own glob-discovery step.
         run: |
           set -euo pipefail
+          shopt -s nullglob
+
+          windows_files=(./dist-windows/*.nsis.zip)
+          linux_files=(./dist-linux/*.AppImage.tar.gz)
+
+          if [ "${#windows_files[@]}" -ne 1 ]; then
+            echo "::error::Expected exactly one .nsis.zip file in dist-windows/, found ${#windows_files[@]}"
+            exit 1
+          fi
+          if [ "${#linux_files[@]}" -ne 1 ]; then
+            echo "::error::Expected exactly one .AppImage.tar.gz file in dist-linux/, found ${#linux_files[@]}"
+            exit 1
+          fi
+
+          WINDOWS_LOCAL="${windows_files[0]}"
+          LINUX_LOCAL="${linux_files[0]}"
 
           npx --yes wrangler r2 object put "steam-game-idler/updater/latest.json" \
             --file=./latest-r2.json \
@@ -1098,12 +1124,12 @@ jobs:
             --remote
 
           npx --yes wrangler r2 object put "steam-game-idler/updater/${WINDOWS_NAME}" \
-            --file="./dist-windows/${WINDOWS_NAME}" \
+            --file="${WINDOWS_LOCAL}" \
             --cache-control="public, max-age=31536000, immutable" \
             --remote
 
           npx --yes wrangler r2 object put "steam-game-idler/updater/${LINUX_NAME}" \
-            --file="./dist-linux/${LINUX_NAME}" \
+            --file="${LINUX_LOCAL}" \
             --cache-control="public, max-age=31536000, immutable" \
             --remote
 
