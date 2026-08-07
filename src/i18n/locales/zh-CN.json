@@ -574,8 +574,13 @@
       "actions": {
         "stop": "停止挂卡"
       },
+      "confirmClearWhitelist": {
+        "title": "确认清空挂卡白名单吗？",
+        "description": "此操作将从卡牌挂机白名单中移除共计 {{count}} 款游戏，后续挂机程序会重新读取库中所有拥有掉落资格的游戏。"
+      },
       "multiGameNotice": {
-        "title": "想要一次挂取多个游戏？"
+        "title": "想要一次挂取多个游戏？",
+        "description": "同时挂取多款游戏会降低单款游戏的卡牌掉落速度，若长时间没有卡牌掉落，可以尝试关闭此项功能。"
       },
       "confirmClearBlacklist": {
         "title": "清空挂卡黑名单？",
@@ -583,6 +588,7 @@
       },
       "tabs": {
         "gamesWithDrops": "仍可掉落卡牌的游戏",
+        "whitelisted": "已加入白名单",
         "blacklisted": "黑名单"
       },
       "sort": {
@@ -593,6 +599,10 @@
         "title": "没有可掉落的卡牌",
         "description": "所有拥有游戏的卡牌均已挂完，或无可用掉落"
       },
+      "whitelistEmpty": {
+        "title": "暂无白名单游戏",
+        "description": "可从具备掉落权限游戏标签页添加游戏至白名单，限定仅挂机选中游戏，若留白则自动挂机所有拥有掉落资格的游戏。"
+      },
       "blacklistEmpty": {
         "title": "暂无黑名单游戏",
         "description": "您在「仍可掉落卡牌的游戏」中拉黑的游戏将永远不会被挂卡，并会显示在此处"
@@ -601,9 +611,15 @@
         "automaticDescription": "自动登录 Steam 社区以检查卡牌掉落"
       },
       "progress": {
+        "activeTitleReadyFarm": "挂卡中（{{count}}）",
+        "activeTitleBulkIdle": "挂取游戏时长中（{{count}}）",
         "queueTitle": "即将挂卡（{{count}}）",
+        "accumulatingPlaytime": "{{hours}} 小时 / 挂卡所需 {{threshold}} 小时",
+        "waitingTurn": "等待轮候",
         "completedNoDropsRemaining": "无剩余卡牌可挂",
         "completedRefundWindow": "仍在退款期限内（{{date}}时可挂卡）",
+        "completedSkippedUnplayed": "已从白名单移除：无游玩时长记录",
+        "completedSkippedPlayed": "已从白名单移除：已有游玩时长",
         "dropsRemaining_other": "剩余 {{count}} 张卡牌"
       },
       "errors": {
@@ -614,6 +630,14 @@
         "generic": "更新挂卡状态时出错，请重试，（{{code}}）"
       },
       "settings": {
+        "hoursUntilFarmable": {
+          "title": "距离可挂卡的时间",
+          "description": "游戏需要累积多少小时游玩时长后方可视为可挂卡，设为 0 则直接进入挂卡。"
+        },
+        "allowMultiGameFarming": {
+          "title": "同时挂卡多款游戏",
+          "description": "最多同时挂卡 32 款游戏，而非逐款依次进行，某些情况下，此举可能导致卡片掉落速度明显变慢。"
+        },
         "skipRefundableGames": {
           "title": "跳过可退款游戏",
           "description": "跳过仍在 Steam 退款期限内的游戏（购买后14天、游戏时间不超过2小时）。"
@@ -1021,6 +1045,7 @@
         "title": "游戏设置",
         "maxPlaytimeSection": "游戏时长",
         "maxPlaytimeScopeNote": "适用于所有挂机场景——手动和自动挂机、成就解锁器以及挂卡",
+        "idlingScopeNote": "该项仅针对手动与自动挂机游戏生效，成就解锁功能拥有下方独立的数量上限设置。",
         "globalMaxPlaytime": {
           "label": "最大游戏时长（所有游戏）",
           "description": "当游戏总时长达到此分钟数时，自动停止该游戏并将其从队列中移除"
