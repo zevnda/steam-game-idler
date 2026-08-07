@@ -86,7 +86,7 @@ export const GoProModal = () => {
     let cancelled = false
     async function getPaymentLinks() {
       try {
-        const res = await fetch('https://apibase.vercel.app/api/pro-data')
+        const res = await fetch('https://api.steamgameidler.com/api/pro-data')
         const data = await res.json()
         if (data && !cancelled) setPriceData(data)
       } catch (error) {

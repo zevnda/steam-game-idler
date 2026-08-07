@@ -301,7 +301,7 @@ export interface ProPriceData {
 
 export async function fetchProData() {
   try {
-    const res = await fetch('https://apibase.vercel.app/api/pro-data', {
+    const res = await fetch('https://api.steamgameidler.com/api/pro-data', {
       next: { revalidate: 3600 },
     })
     const data = await res.json()

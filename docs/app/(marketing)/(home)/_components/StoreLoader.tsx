@@ -93,7 +93,7 @@ export default function StoreLoader() {
   // Fetch the total download count across all releases
   useEffect(() => {
     try {
-      fetch('https://apibase.vercel.app/api/gh-downloads?user=zevnda&repo=steam-game-idler')
+      fetch('https://api.steamgameidler.com/api/gh-downloads?user=zevnda&repo=steam-game-idler')
         .then(response => response.json())
         .then(data => {
           if (typeof data.results?.grandTotal === 'string') {
