@@ -2,7 +2,7 @@ import type { ProTier } from './subscriptionAccess'
 import { GRANDFATHER_CUTOFF } from './subscriptionAccess'
 import { persistSubscriptionCache, useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 
-export const SUBSCRIPTION_API_URL = 'https://apibase.vercel.app/api/subscriptions'
+export const SUBSCRIPTION_API_URL = 'https://api.steamgameidler.com/api/subscriptions'
 
 export interface SubscriptionApiResult {
   // A real status string ('active'/'past_due'/'canceled'/...), not a bare success flag - also

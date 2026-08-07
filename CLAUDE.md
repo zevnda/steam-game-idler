@@ -410,7 +410,7 @@ way; several serde-side field-naming bugs have been found this way.
 A real, live subscription system (`src/shared/utils/subscriptionAccess.ts`:
 `hasCasualAccess(tier)`/`hasGamerAccess(tier)`, gamer implies casual) checked against a live
 external API (`useCheckSubscription.ts`, on mount + every 3 hours,
-`https://apibase.vercel.app/api/subscriptions`), gating specific features — real revenue, not
+`https://api.steamgameidler.com/api/subscriptions`), gating specific features — real revenue, not
 something to drop or redesign freely. **There is no Rust-side tier enforcement anywhere in this
 system** — gating is frontend-only scattered `if (hasGamerAccess(tier))`/`hasCasualAccess(tier)`
 checks at each feature's call site; the frontend is solely responsible for correct enforcement.

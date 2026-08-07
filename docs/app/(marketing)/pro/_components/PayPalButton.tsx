@@ -14,7 +14,7 @@ export default function PayPalButton({ tier, className }: PayPalButtonProps) {
   const handleClick = async () => {
     setIsLoading(true)
     try {
-      const res = await fetch('https://apibase.vercel.app/api/paypal-create-subscription', {
+      const res = await fetch('https://api.steamgameidler.com/api/paypal-create-subscription', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tier }),
