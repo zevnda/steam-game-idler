@@ -1,5 +1,6 @@
 ﻿import type { Update } from '@tauri-apps/plugin-updater'
 import { relaunch } from '@tauri-apps/plugin-process'
+import { CDN_BASE_URL } from '@/shared/constants'
 import { logFrontendInfo, logFrontendWarn } from '@/shared/utils/frontendLogging'
 import { invoke } from '@/shared/utils/invoke'
 
@@ -11,16 +12,39 @@ interface LatestManifest {
   major: boolean
 }
 
+// Mirrors tauri.conf.json's `plugins.updater.endpoints` - GitHub primary, Cloudflare R2 fallback
+// for regions where raw.githubusercontent.com is unreliable (confirmed via real-world testing,
+// mainland China GFW DNS interference specifically targeting that host). This fetch is separate
+// from the Tauri updater plugin's own endpoint-array fallback (used for `check()`/
+// `downloadAndInstall()`) because `major` isn't part of the plugin's own `Update` shape, so the
+// plugin's internal fallback logic can't cover it - the two URLs are duplicated here rather than
+// shared with tauri.conf.json since the latter is plain JSON with no import mechanism.
+const GITHUB_LATEST_JSON_URL =
+  'https://raw.githubusercontent.com/zevnda/steam-game-idler/main/latest.json'
+const R2_LATEST_JSON_URL = `${CDN_BASE_URL}/updater/latest.json`
+
 export async function fetchLatest() {
   try {
-    const res = await fetch(
-      'https://raw.githubusercontent.com/zevnda/steam-game-idler/main/latest.json',
-    )
+    const res = await fetch(GITHUB_LATEST_JSON_URL)
+    if (!res.ok) throw new Error(`GitHub latest.json responded with status ${res.status}`)
     return (await res.json()) as LatestManifest
-  } catch (error) {
-    console.error('Error in (fetchLatest):', error)
-    logFrontendWarn('update', 'update check failed', { error: String(error) })
-    return null
+  } catch (githubError) {
+    logFrontendWarn('update', 'GitHub latest.json check failed, falling back to Cloudflare R2', {
+      error: String(githubError),
+    })
+
+    try {
+      const res = await fetch(R2_LATEST_JSON_URL)
+      if (!res.ok) throw new Error(`R2 latest.json responded with status ${res.status}`)
+      return (await res.json()) as LatestManifest
+    } catch (r2Error) {
+      console.error('Error in (fetchLatest):', r2Error)
+      logFrontendWarn('update', 'update check failed on every configured endpoint', {
+        githubError: String(githubError),
+        r2Error: String(r2Error),
+      })
+      return null
+    }
   }
 }
 

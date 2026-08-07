@@ -153,7 +153,7 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <html lang='en' className={`${geist.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
-        <link rel='preconnect' href='https://pub-ca47df86597c4ccbb6ddf4366ca7f733.r2.dev' />
+        <link rel='preconnect' href='https://cdn-steamgameidler.com' />
         <link rel='preconnect' href='https://www.googletagmanager.com' />
         <link
           rel='preconnect'

@@ -3,7 +3,7 @@
 // serve real per-game data instead. Same bucket `main` already uses for this and other assets
 // (Go Pro modal art, ad slots) - already whitelisted in next.config.ts even before this constant's
 // first real consumer landed.
-export const CDN_BASE_URL = 'https://pub-ca47df86597c4ccbb6ddf4366ca7f733.r2.dev'
+export const CDN_BASE_URL = 'https://cdn-steamgameidler.com'
 
 // Billing-portal URLs for the live external subscription service, hardcoded verbatim from `main`.
 // Shared by
