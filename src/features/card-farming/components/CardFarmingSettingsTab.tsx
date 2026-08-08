@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbExternalLink } from 'react-icons/tb'
 import { errorMessageKey } from '../utils/errorMessageKey'
-import { Alert, AlertDialog, Button, Separator, Skeleton, toast, Typography } from '@heroui/react'
+import { Alert, Button, Modal, Separator, Skeleton, toast, Typography } from '@heroui/react'
 import { BetaBadge } from '@/shared/components/BetaBadge'
 import { InputField } from '@/shared/components/InputField'
 import { SettingsRow } from '@/shared/components/SettingsRow'
@@ -287,25 +287,23 @@ export const CardFarmingSettingsTab = ({
         </div>
       )}
 
-      <AlertDialog
+      <Modal
         isOpen={showMultiGameNotice}
         onOpenChange={open => {
           if (!open) dismissMultiGameNotice()
         }}
       >
-        <AlertDialog.Backdrop isDismissable isKeyboardDismissDisabled={false}>
-          <AlertDialog.Container size='sm'>
-            <AlertDialog.Dialog>
-              <AlertDialog.Header>
-                <AlertDialog.Heading>
-                  {t('dashboard.cardFarming.multiGameNotice.title')}
-                </AlertDialog.Heading>
-                <AlertDialog.CloseTrigger />
-              </AlertDialog.Header>
-              <AlertDialog.Body>
+        <Modal.Backdrop>
+          <Modal.Container size='sm'>
+            <Modal.Dialog>
+              <Modal.Header>
+                <Modal.Heading>{t('dashboard.cardFarming.multiGameNotice.title')}</Modal.Heading>
+                <Modal.CloseTrigger />
+              </Modal.Header>
+              <Modal.Body>
                 <p>{t('dashboard.cardFarming.multiGameNotice.description')}</p>
-              </AlertDialog.Body>
-              <AlertDialog.Footer>
+              </Modal.Body>
+              <Modal.Footer>
                 <Button
                   onPress={() => {
                     setShowMultiGameNotice(false)
@@ -318,11 +316,11 @@ export const CardFarmingSettingsTab = ({
                 >
                   {t('common.actions.continue')}
                 </Button>
-              </AlertDialog.Footer>
-            </AlertDialog.Dialog>
-          </AlertDialog.Container>
-        </AlertDialog.Backdrop>
-      </AlertDialog>
+              </Modal.Footer>
+            </Modal.Dialog>
+          </Modal.Container>
+        </Modal.Backdrop>
+      </Modal>
     </div>
   )
 }
