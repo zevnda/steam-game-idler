@@ -32,7 +32,6 @@
       "description": "Beklenmedik bir hata meydana geldi. Tekrar deneyin, eğer hata devam ederse Yardım & Destek 'den bizimle iletişime geçin."
     },
     "manualCookies": {
-      "sidLabel": "sessionid",
       "slsLabel": "steamLoginSecure",
       "smaLabel": "steamMachineAuth",
       "smaDescription": "İsteğe bağlı. Sadece hesabınızda bekleyen bir Steam Guard cihaz onayı varsa gereklidir.",

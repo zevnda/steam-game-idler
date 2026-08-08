@@ -32,7 +32,6 @@
       "description": "Se ha producido un error inesperado. Inténtalo de nuevo y, si el problema persiste, ponte en contacto con el servicio de Ayuda y Soporte."
     },
     "manualCookies": {
-      "sidLabel": "sessionid",
       "slsLabel": "steamLoginSecure",
       "smaLabel": "steamMachineAuth",
       "smaDescription": "Opcional. Solo es necesario si Steam Guard solicita confirmar este equipo.",

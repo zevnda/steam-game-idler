@@ -32,7 +32,6 @@
       "description": "发生了意外的错误，请重试，如果问题持续存在，请通过「帮助与支持」联系我们"
     },
     "manualCookies": {
-      "sidLabel": "sessionid",
       "slsLabel": "steamLoginSecure",
       "smaLabel": "steamMachineAuth",
       "smaDescription": "可选，仅当您的账号有待处理的 Steam 令牌设备确认时 需要",

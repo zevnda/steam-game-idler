@@ -32,7 +32,6 @@
       "description": "Ein unerwarteter Fehler ist aufgetreten. Versuchen Sie es noch einmal, und wenn es weiter passiert, wenden Sie sich an Hilfe & Support."
     },
     "manualCookies": {
-      "sidLabel": "sessionid",
       "slsLabel": "steamLoginSecure",
       "smaLabel": "steamMachineAuth",
       "smaDescription": "Optional. Nur erforderlich, wenn für Ihr Konto eine Steam Guard-Maschinenbestätigung aussteht.",

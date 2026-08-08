@@ -32,7 +32,6 @@
       "description": "Произошла непредвиденная ошибка. Попробуйте заново, и если это продолжается, то скажите об этом в поддержку."
     },
     "manualCookies": {
-      "sidLabel": "sessionid",
       "slsLabel": "steamLoginSecure",
       "smaLabel": "steamMachineAuth",
       "smaDescription": "Необязательно. Нужно только, если у вашего аккаунта есть рассматриваемая проверка в Steam Guard.",
