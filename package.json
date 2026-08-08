@@ -41,7 +41,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@heroui/react": "^3.2.3",
     "@heroui/styles": "^3.2.2",
-    "@internationalized/date": "^3.12.2",
+    "@internationalized/date": "^3.12.3",
     "@tauri-apps/api": "~2.11.1",
     "@tauri-apps/plugin-autostart": "~2.5.1",
     "@tauri-apps/plugin-clipboard-manager": "^2.3.2",
