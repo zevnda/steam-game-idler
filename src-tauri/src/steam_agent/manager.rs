@@ -415,6 +415,11 @@ impl AgentManager {
     /// agent mode doesn't depend on for this; see `steam_agent::ownership_settings` (defaults to
     /// `true`; `false` opts into the unfiltered "all content" scope some users specifically want).
     ///
+    /// `language` is a Steam schema language key (`"english"`, `"schinese"`, ...) - see
+    /// `achievements::steam_language::steam_language_for_locale`. Resolves each game's name from
+    /// PICS `common.name_localized` when the publisher has one for that language, falling back to
+    /// the flat `common.name` otherwise - see `Daemon/Bot/OwnershipManager.cs::ResolveLocalizedName`.
+    ///
     /// Uses `OWNED_APPS_REQUEST_TIMEOUT` rather than the default `send_request` timeout - unlike
     /// every other command sent through this manager, PICS-based ownership resolution scales with
     /// the account's library size (thousands of individual PICS requests for a 5,000-10,000+ game
@@ -424,12 +429,13 @@ impl AgentManager {
         &self,
         username: &str,
         games_only: bool,
+        language: &'static str,
     ) -> AppResult<Vec<crate::games::RawOwnedGame>> {
         let key = Self::key_for(username);
         let process = self.existing(&key).await?;
         let response = process
             .send_request_with_timeout(
-                |id| IpcRequest::get_owned_apps(id, games_only),
+                |id| IpcRequest::get_owned_apps(id, games_only, language),
                 OWNED_APPS_REQUEST_TIMEOUT,
             )
             .await?;
@@ -548,7 +554,9 @@ impl AgentManager {
             Box::pin(async move {
                 app_handle
                     .state::<AgentManager>()
-                    .get_owned_apps(&username, false)
+                    // "english": this is a real-ownership existence check, not a display list -
+                    // the resolved name is never read below.
+                    .get_owned_apps(&username, false, "english")
                     .await
                     .map(|games| games.iter().any(|game| game.app_id == app_id))
             })

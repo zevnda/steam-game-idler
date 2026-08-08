@@ -61,7 +61,11 @@ namespace SteamUtility.Daemon.Bot
             "Game",
         };
 
-        public async Task<IReadOnlyList<OwnedGame>> GetOwnedGamesAsync(SteamBot bot, bool gamesOnly)
+        public async Task<IReadOnlyList<OwnedGame>> GetOwnedGamesAsync(
+            SteamBot bot,
+            bool gamesOnly,
+            string language
+        )
         {
             if (!bot.IsLoggedOn)
             {
@@ -107,13 +111,13 @@ namespace SteamUtility.Daemon.Bot
                 {
                     foreach (var (appId, info) in result.Apps)
                     {
-                        if (gamesOnly && !GameAppTypes.Contains(info.KeyValues["common"]["type"].AsString() ?? ""))
+                        var commonNode = info.KeyValues["common"];
+                        if (gamesOnly && !GameAppTypes.Contains(commonNode["type"].AsString() ?? ""))
                         {
                             continue;
                         }
 
-                        var rawName = info.KeyValues["common"]["name"].AsString();
-                        var name = string.IsNullOrEmpty(rawName) ? null : rawName;
+                        var name = ResolveLocalizedName(commonNode, language);
                         playtimes.TryGetValue(appId, out var playtime);
                         resolution.LastRefundEligiblePurchaseUtcByAppId.TryGetValue(
                             appId,
@@ -134,6 +138,35 @@ namespace SteamUtility.Daemon.Bot
             }
 
             return games;
+        }
+
+        // Mirrors CLI mode's AppInfoReader.BuildResult (SteamUtility/Core/AppInfoParsing/) - same
+        // `common.name_localized` field, same reasoning for not reusing an achievement-style
+        // preferred->english->first-available walker: common.name (the flat, always-present
+        // field) is a reliable fallback, so falling through to some other unrelated language
+        // present in name_localized instead of the flat name would be actively wrong, not just
+        // imprecise. The only difference from CLI mode's version is the KeyValue type this walks -
+        // SteamKit2's own `KeyValue` (from the live PICS response), not this project's hand-rolled
+        // SchemaParsing/AppInfoParsing readers used for the local appinfo.vdf cache file - but the
+        // wire and on-disk formats carry the same data shape once decoded.
+        private static string? ResolveLocalizedName(KeyValue common, string preferredLanguage)
+        {
+            var englishName = common["name"].AsString();
+
+            var localizedNode = common["name_localized"];
+            if (localizedNode.Children is { Count: > 0 })
+            {
+                var preferred = localizedNode.Children.FirstOrDefault(child =>
+                    string.Equals(child.Name, preferredLanguage, StringComparison.OrdinalIgnoreCase)
+                );
+                var resolved = preferred?.AsString();
+                if (!string.IsNullOrEmpty(resolved))
+                {
+                    return resolved;
+                }
+            }
+
+            return string.IsNullOrEmpty(englishName) ? null : englishName;
         }
 
         // Enriches PICS-based ownership with playtime via SteamKit2's own Player.GetOwnedGames#1

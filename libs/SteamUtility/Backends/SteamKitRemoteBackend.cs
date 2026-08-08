@@ -76,8 +76,11 @@ namespace SteamUtility.Backends
             // BIsSubscribedApp loop. candidateAppIds is accepted for interface parity but ignored;
             // gamesOnly: true asks GetOwnedGamesAsync to keep only PICS common.type == "Game" apps
             // (see its doc comment), so this backend's ownership scope stays real-games-only here
-            // regardless of the user-facing games_only setting used elsewhere.
-            var games = await _ownershipManager.GetOwnedGamesAsync(_bot, gamesOnly: true);
+            // regardless of the user-facing games_only setting used elsewhere. "english" here since
+            // ISteamStatsBackend's shared interface has no language param to receive a real one
+            // through - this class isn't yet wired into the live IPC path (see class doc comment),
+            // so there's no real caller-supplied locale to thread through today either.
+            var games = await _ownershipManager.GetOwnedGamesAsync(_bot, gamesOnly: true, "english");
             return games.ToList();
         }
     }

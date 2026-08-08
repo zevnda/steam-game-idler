@@ -157,8 +157,13 @@
                                  Backends/SteamworksLocalBackend.cs below.
          - Backends/SteamworksLocalBackend.cs, Backends/SteamworksSession.cs - the Steamworks.NET
                                  backend implementation and its init/shutdown session wrapper.
-         - Core/Services/SteamPathHelper.cs - Win32 registry read, reachable only from
-                                 SteamworksLocalBackend above, nothing in the daemon (SteamKit2) path.
+         - Core/Services/SteamPathHelper.cs, Core/Services/SteamLanguageHelper.cs - Win32 registry
+                                 reads, reachable only from SteamworksLocalBackend above, nothing in
+                                 the daemon (SteamKit2) path.
+         - Core/AppInfoParsing/**  - reads the local Steam client's own appinfo.vdf cache
+                                 (SteamworksLocalBackend's owned-games name resolution), which
+                                 requires SteamPathHelper above and has no meaning without a local
+                                 Steam install.
        Everything else under Core/**, Daemon/**, and Backends/SteamKitRemoteBackend.cs is already
        plain managed .NET/SteamKit2 with no Windows-only dependency, and keeps compiling unchanged
        for both RIDs. -->
@@ -168,6 +173,8 @@
     <Compile Remove="Backends\SteamworksLocalBackend.cs" />
     <Compile Remove="Backends\SteamworksSession.cs" />
     <Compile Remove="Core\Services\SteamPathHelper.cs" />
+    <Compile Remove="Core\Services\SteamLanguageHelper.cs" />
+    <Compile Remove="Core\AppInfoParsing\**\*.cs" />
   </ItemGroup>
 
   <!-- PublishTrimmed disables System.Text.Json's reflection-based serialization by default (the

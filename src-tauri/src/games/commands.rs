@@ -66,11 +66,18 @@ pub async fn resolve_account_steam_id(
 /// The Steam Web API key override (if any) is read from the OS credential store internally rather
 /// than passed as a parameter - one less thing for every caller of this command to remember to
 /// plumb through.
+///
+/// `locale` is the frontend's own i18next locale (`i18n.language`, e.g. `"zh-CN"`), mapped to a
+/// Steam schema language key via `achievements::steam_language::steam_language_for_locale` -
+/// mirrors `get_achievement_data`'s exact same param, for the same reason. Only agent mode uses
+/// it: CLI mode resolves the local Steam client's own configured display language itself (see
+/// `SteamworksLocalBackend.ResolveLocalizedNames`'s registry read), independent of this app's locale.
 #[tauri::command]
 pub async fn get_owned_games(
     app_handle: AppHandle,
     agent_manager: State<'_, AgentManager>,
     account: GamesAccount,
+    locale: String,
 ) -> AppResult<OwnedGamesResult> {
     let steam_id = resolve_steam_id(&account, &agent_manager).await?;
     let is_agent = matches!(account, GamesAccount::Agent { .. });
@@ -81,7 +88,10 @@ pub async fn get_owned_games(
             let games_only = crate::steam_agent::ownership_settings::get(&app_handle, &steam_id)
                 .await?
                 .games_only;
-            agent_manager.get_owned_apps(&username, games_only).await?
+            let steam_language = crate::achievements::steam_language::steam_language_for_locale(&locale);
+            agent_manager
+                .get_owned_apps(&username, games_only, steam_language)
+                .await?
         }
         GamesAccount::Local { .. } => local_steam::ownership::check_ownership().await?,
     };

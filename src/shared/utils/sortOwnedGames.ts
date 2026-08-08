@@ -43,9 +43,14 @@ export const isRecentlyPlayedSortStyle = (style: OwnedGameSortStyle) =>
 // unplayed game before any actually-played one would make the ascending direction useless for its
 // intended purpose. Tied at 0, fall back to title so that group has a stable, predictable order
 // instead of whatever order the two backends happened to return.
-const compareRecentlyPlayed = <T extends OwnedGame>(a: T, b: T, mostRecentFirst: boolean) => {
+const compareRecentlyPlayed = <T extends OwnedGame>(
+  a: T,
+  b: T,
+  mostRecentFirst: boolean,
+  locale: string,
+) => {
   if (a.rtimeLastPlayed === 0 && b.rtimeLastPlayed === 0) {
-    return (a.name ?? '').localeCompare(b.name ?? '')
+    return (a.name ?? '').localeCompare(b.name ?? '', locale)
   }
   if (a.rtimeLastPlayed === 0) return 1
   if (b.rtimeLastPlayed === 0) return -1
@@ -54,7 +59,17 @@ const compareRecentlyPlayed = <T extends OwnedGame>(a: T, b: T, mostRecentFirst:
     : a.rtimeLastPlayed - b.rtimeLastPlayed
 }
 
-export const sortOwnedGames = <T extends OwnedGame>(games: T[], style: OwnedGameSortStyle) => {
+// `locale` (the caller's current `i18n.language`) is required, not optional/defaulted - a bare
+// `localeCompare()` call falls back to the runtime's own default locale (the OS/browser's, unrelated
+// to which language this app is actually displaying), which produces correct-looking-but-wrong
+// collation for a title in a script the runtime default doesn't expect (e.g. Chinese-localized game
+// names sorted under English collation rules). Threading it explicitly through every call site
+// keeps that mismatch from silently creeping back in.
+export const sortOwnedGames = <T extends OwnedGame>(
+  games: T[],
+  style: OwnedGameSortStyle,
+  locale: string,
+) => {
   const sorted = [...games]
   switch (style) {
     case 'playtimeDesc':
@@ -64,16 +79,16 @@ export const sortOwnedGames = <T extends OwnedGame>(games: T[], style: OwnedGame
       sorted.sort((a, b) => a.playtimeForeverMinutes - b.playtimeForeverMinutes)
       break
     case 'titleAsc':
-      sorted.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''))
+      sorted.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? '', locale))
       break
     case 'titleDesc':
-      sorted.sort((a, b) => (b.name ?? '').localeCompare(a.name ?? ''))
+      sorted.sort((a, b) => (b.name ?? '').localeCompare(a.name ?? '', locale))
       break
     case 'recentlyPlayedDesc':
-      sorted.sort((a, b) => compareRecentlyPlayed(a, b, true))
+      sorted.sort((a, b) => compareRecentlyPlayed(a, b, true, locale))
       break
     case 'recentlyPlayedAsc':
-      sorted.sort((a, b) => compareRecentlyPlayed(a, b, false))
+      sorted.sort((a, b) => compareRecentlyPlayed(a, b, false, locale))
       break
   }
   return sorted
