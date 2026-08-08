@@ -32,7 +32,6 @@
       "description": "An unexpected error occurred. Try again, and if it keeps happening, reach out from Help & Support."
     },
     "manualCookies": {
-      "sidLabel": "sessionid",
       "slsLabel": "steamLoginSecure",
       "smaLabel": "steamMachineAuth",
       "smaDescription": "Optional. Only needed if your account has a pending Steam Guard machine confirmation.",

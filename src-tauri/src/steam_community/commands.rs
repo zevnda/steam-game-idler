@@ -30,6 +30,12 @@ pub async fn set_steam_credentials(
     cookies: SteamCookies,
 ) -> AppResult<()> {
     let steam_id = resolve_steam_id(&account, &agent_manager).await?;
+    // The frontend no longer collects a `sessionid` from the user (see `session::resolve`'s doc
+    // comment) - never persist whatever placeholder it sent instead of a real one.
+    let cookies = SteamCookies {
+        sid: session::generate_session_id(),
+        ..cookies
+    };
     let result = credentials::set(&steam_id, &cookies);
     if result.is_ok() {
         tracing::info!(steam_id, "steam community: saved pre-validated credentials");
@@ -52,6 +58,12 @@ pub async fn validate_and_save_steam_credentials(
     cookies: SteamCookies,
 ) -> AppResult<SteamCookies> {
     let steam_id = resolve_steam_id(&account, &agent_manager).await?;
+    // Doesn't route through `session::resolve` (see that fn's own doc comment on why manual
+    // cookies get their `sessionid` minted fresh there), so it has to do the same override itself.
+    let cookies = SteamCookies {
+        sid: session::generate_session_id(),
+        ..cookies
+    };
     match session::validate(&steam_id, &cookies).await? {
         SessionStatus::Valid { user } => {
             credentials::set(&steam_id, &cookies)?;

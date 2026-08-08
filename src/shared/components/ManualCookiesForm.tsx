@@ -2,12 +2,11 @@ import { useTranslation } from 'react-i18next'
 import { Description, Input, Label, TextField } from '@heroui/react'
 
 export interface ManualCookiesFormValue {
-  sid: string
   sls: string
   sma: string
 }
 
-export const EMPTY_MANUAL_COOKIES_FORM_VALUE: ManualCookiesFormValue = { sid: '', sls: '', sma: '' }
+export const EMPTY_MANUAL_COOKIES_FORM_VALUE: ManualCookiesFormValue = { sls: '', sma: '' }
 
 interface ManualCookiesFormProps {
   value: ManualCookiesFormValue
@@ -21,20 +20,14 @@ interface ManualCookiesFormProps {
 // `steam_community::SteamCookies` shape every cookie-authenticated feature resolves against).
 // `sma` is optional
 // (`steamMachineAuth{steamId}`, only set for accounts with a pending Steam Guard machine
-// confirmation), `sid`/`sls` are required.
+// confirmation), `sls` is required. No `sessionid` field - it's just a CSRF double-submit token
+// Steam never validates against anything server-side (see `session::resolve`'s Rust-side doc
+// comment), so the app mints one itself instead of asking the user to dig it out of dev tools.
 export const ManualCookiesForm = ({ value, isDisabled, onChange }: ManualCookiesFormProps) => {
   const { t } = useTranslation()
 
   return (
     <div className='flex flex-col gap-4'>
-      <TextField
-        isDisabled={isDisabled}
-        value={value.sid}
-        onChange={sid => onChange({ ...value, sid })}
-      >
-        <Label>{t('common.manualCookies.sidLabel')}</Label>
-        <Input autoComplete='off' placeholder='sessionid' type='password' />
-      </TextField>
       <TextField
         isDisabled={isDisabled}
         value={value.sls}

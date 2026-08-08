@@ -138,7 +138,7 @@ export function SteamCookiesConnectPanel<T extends SteamCookiesLike>({
   useEffect(() => {
     if (!isLoaded) return
     if (savedCookies && !prefilledFromSaved) {
-      setCookiesForm({ sid: savedCookies.sid, sls: savedCookies.sls, sma: savedCookies.sma ?? '' })
+      setCookiesForm({ sls: savedCookies.sls, sma: savedCookies.sma ?? '' })
       setPrefilledFromSaved(true)
     } else if (!savedCookies && prefilledFromSaved) {
       setCookiesForm(EMPTY_MANUAL_COOKIES_FORM_VALUE)
@@ -146,7 +146,7 @@ export function SteamCookiesConnectPanel<T extends SteamCookiesLike>({
     }
   }, [isLoaded, savedCookies, prefilledFromSaved])
 
-  const canSubmitManual = cookiesForm.sid.trim() !== '' && cookiesForm.sls.trim() !== ''
+  const canSubmitManual = cookiesForm.sls.trim() !== ''
   const canSubmit = method === 'automatic' || canSubmitManual
   const submitLabel = method === 'automatic' ? t('common.actions.signIn') : t('common.actions.save')
 
@@ -168,7 +168,9 @@ export function SteamCookiesConnectPanel<T extends SteamCookiesLike>({
       return
     }
     const manualCookies = {
-      sid: cookiesForm.sid.trim(),
+      // The backend mints its own `sessionid` for every manually-supplied cookie set (see
+      // `session::resolve`'s Rust-side doc comment) - this placeholder is never actually used.
+      sid: '',
       sls: cookiesForm.sls.trim(),
       sma: cookiesForm.sma.trim() || undefined,
     } as T
