@@ -236,6 +236,15 @@ pub async fn resolve(
     steam_id: &str,
     manual: Option<SteamCookies>,
 ) -> AppResult<SteamCookies> {
+    // `sessionid` is just a CSRF double-submit token - Steam never checks it against anything
+    // server-side beyond "does this match the cookie" (see `generate_session_id`'s doc comment), so
+    // the frontend no longer collects one from the user. Every manually-supplied cookie set gets a
+    // freshly minted one here rather than trusting whatever (if anything) the caller sent.
+    let manual = manual.map(|cookies| SteamCookies {
+        sid: generate_session_id(),
+        ..cookies
+    });
+
     match account {
         GamesAccount::Agent { username } => {
             if let Some(cookies) = manual {
