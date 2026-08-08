@@ -32,7 +32,6 @@
       "description": "Une erreur inattendue s'est produite. Réessayez, et si le problème persiste, contactez l'Aide & Support."
     },
     "manualCookies": {
-      "sidLabel": "sessionid",
       "slsLabel": "steamLoginSecure",
       "smaLabel": "steamMachineAuth",
       "smaDescription": "Optionnel. Nécessaire uniquement si votre compte fait l'objet d'une confirmation en attente Steam Guard.",

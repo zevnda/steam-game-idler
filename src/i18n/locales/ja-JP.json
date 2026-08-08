@@ -1,1 +1,67 @@
-{}
+{
+  "common": {
+    "actions": {
+      "submit": "実行",
+      "cancel": "キャンセル",
+      "tryAgain": "リトライ",
+      "continue": "続行",
+      "refresh": "更新",
+      "save": "保存",
+      "settings": "設定",
+      "signIn": "ログイン",
+      "signOut": "ログアウト",
+      "start": "開始",
+      "stop": "停止",
+      "clear": "クリア",
+      "done": "完了",
+      "copy": "コピー",
+      "paste": "貼り付け",
+      "add": "追加"
+    },
+    "gameCardMenu": {
+      "startIdling": "アイドリング開始",
+      "stopIdling": "アイドリング停止",
+      "manageAchievements": "実績管理",
+      "viewOnSteam": "Steamで表示",
+      "addTo": "追加先"
+    },
+    "minutes": "分",
+    "zeroUnlimitedHint": "0 = 無制限",
+    "errorBoundary": {
+      "title": "問題が発生しました",
+      "description": "予期しないエラーが発生しました。もう一度お試しください。問題が解決しない場合は、「ヘルプとサポート」からお問い合わせください。"
+    },
+    "manualCookies": {
+      "slsLabel": "steamLoginSecure",
+      "smaLabel": "steamMachineAuth",
+      "smaDescription": "任意の項目。お使いのアカウントのSteam Guardで保留中の承認がある場合のみ必要です。",
+      "getCookiesNote": "からcookiesを入手する必要があります",
+      "savedFromSettingsNote": "「設定」に保存されたSteam認証情報が読み込まれました。",
+      "savedToast": "認証情報が保存されました",
+      "clearedToast": "認証情報がクリアされました",
+      "clearFailed": "保存されたSteamの認証情報を削除できませんでした。({{code}})"
+    },
+    "manualAdd": {
+      "title": "ゲームを手動で追加",
+      "description": "自動的に表示されない場合は、Steam App IDを使用してゲームを追加してください。",
+      "nameLabel": "名前",
+      "namePlaceholder": "例：映画『けいおん！』",
+      "appIdLabel": "App ID",
+      "appIdPlaceholder": "例：518440",
+      "duplicateError": "このApp IDは既にリストに存在しています"
+    },
+    "search": {
+      "placeholder": "検索",
+      "recentSearches": "検索履歴",
+      "noRecentSearches": "検索履歴はありません",
+      "noResults": "何も見つかりませんでした",
+      "noResultsTitle": "検索内容に一致するゲームはありません",
+      "noResultsDescription": "別の タイトル または App ID を試してください。"
+    },
+    "errors": {
+      "generic": "問題が発生しました。もう一度お試しください。({{code}})",
+      "steamUtilityMissing": "このインストールには、Steam agent componentが含まれていません。",
+      "processSpawnFailed": "Steam agent processを起動できませんでした。"
+    }
+  }
+}
