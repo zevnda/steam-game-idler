@@ -1,6 +1,6 @@
 import type { SearchScopeId } from '@/shared/search/scopes'
 import type { KeyboardEvent } from 'react'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
 import { TbX } from 'react-icons/tb'
@@ -28,6 +28,7 @@ export const GlobalSearchModal = () => {
   const addRecentSearch = useSearchStore(state => state.addRecentSearch)
   const removeRecentSearch = useSearchStore(state => state.removeRecentSearch)
   const { games } = useGamesList()
+  const [highlightedIndex, setHighlightedIndex] = useState(-1)
 
   const trimmedQuery = query.trim()
 
@@ -55,6 +56,28 @@ export const GlobalSearchModal = () => {
     return searchGames(scopeDataSources[activeScope], trimmedQuery).slice(0, MAX_LIVE_RESULTS)
   }, [activeScope, games, trimmedQuery])
 
+  // Whichever list is on-screen right now (live results while typing, else recent searches),
+  // reduced to just the string each row would commit - arrow-key navigation and Enter-to-commit
+  // both index into this rather than duplicating the trimmedQuery branch. -1 means "nothing
+  // highlighted", which falls back to the old behavior of committing the raw typed text on Enter.
+  const activeList = trimmedQuery
+    ? results.map(game => game.name ?? String(game.appId))
+    : recentSearches
+
+  // Re-anchor to "nothing highlighted" whenever the list on screen changes underneath the
+  // highlight (new query, scope switch, or a recent search added/removed) - otherwise the index
+  // could point at a stale row or go out of bounds.
+  useEffect(() => {
+    setHighlightedIndex(-1)
+  }, [activeScope, trimmedQuery, results, recentSearches])
+
+  // Keyboard-driven highlight moves can land outside the scrollable Modal.Body's viewport (up to
+  // 8 results / 10 recent searches vs. a max-h-96 body) - keep the highlighted row in view.
+  const itemRefs = useRef<(HTMLButtonElement | null)[]>([])
+  useEffect(() => {
+    itemRefs.current[highlightedIndex]?.scrollIntoView({ block: 'nearest' })
+  }, [highlightedIndex])
+
   const commit = (value: string) => {
     if (!activeScope) return
     setQuery(activeScope, value)
@@ -63,7 +86,16 @@ export const GlobalSearchModal = () => {
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && trimmedQuery) {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      if (activeList.length === 0) return
+      e.preventDefault()
+      setHighlightedIndex(prev => {
+        if (e.key === 'ArrowDown') return prev >= activeList.length - 1 ? 0 : prev + 1
+        return prev <= 0 ? activeList.length - 1 : prev - 1
+      })
+    } else if (e.key === 'Enter' && highlightedIndex >= 0 && highlightedIndex < activeList.length) {
+      commit(activeList[highlightedIndex])
+    } else if (e.key === 'Enter' && trimmedQuery) {
       commit(query)
     } else if (e.key === 'Escape' && query) {
       // Clear the text first, don't close - matching `main`'s escape behavior. Stopping
@@ -80,8 +112,6 @@ export const GlobalSearchModal = () => {
         <Modal.Container placement='top' size='md'>
           <Modal.Dialog className='mt-6' style={{ padding: 0 }}>
             <Modal.Header className='border-b border-border p-2'>
-              {/* Borderless, oversized input matching `main`'s SearchModal - the field itself
-                  reads as the modal's header, not a boxed input sitting inside it. */}
               <InputGroup
                 className={cn(
                   'min-h-20 w-full rounded-none border-none! bg-transparent! shadow-none',
@@ -101,7 +131,11 @@ export const GlobalSearchModal = () => {
                 />
                 {query && (
                   <InputGroup.Suffix className='border-none! bg-transparent!'>
-                    <button type='button' onClick={() => activeScope && setQuery(activeScope, '')}>
+                    <button
+                      type='button'
+                      onClick={() => activeScope && setQuery(activeScope, '')}
+                      className='cursor-pointer'
+                    >
                       <TbX fontSize={16} />
                     </button>
                   </InputGroup.Suffix>
@@ -113,12 +147,19 @@ export const GlobalSearchModal = () => {
               {trimmedQuery ? (
                 results.length > 0 ? (
                   <div className='flex flex-col gap-0.5 p-2'>
-                    {results.map(game => (
+                    {results.map((game, index) => (
                       <button
                         key={game.appId}
-                        className='flex items-center gap-3 rounded-lg p-2 text-left hover:bg-surface-hover'
+                        ref={el => {
+                          itemRefs.current[index] = el
+                        }}
+                        className={cn(
+                          'flex items-center gap-3 rounded-lg p-2 text-left hover:bg-surface-hover cursor-pointer',
+                          index === highlightedIndex && 'bg-surface-hover',
+                        )}
                         type='button'
                         onClick={() => commit(game.name ?? String(game.appId))}
+                        onMouseEnter={() => setHighlightedIndex(index)}
                       >
                         <div className='h-10 w-20 shrink-0'>
                           <GameThumbnail
@@ -150,18 +191,25 @@ export const GlobalSearchModal = () => {
                   >
                     {t('common.search.recentSearches')}
                   </Typography>
-                  {recentSearches.map(recent => (
+                  {recentSearches.map((recent, index) => (
                     <div className='flex items-center gap-1' key={recent}>
                       <button
-                        className='flex-1 truncate rounded-lg p-2 text-left text-sm hover:bg-surface-hover'
+                        ref={el => {
+                          itemRefs.current[index] = el
+                        }}
+                        className={cn(
+                          'flex-1 truncate rounded-lg p-2 text-left text-sm hover:bg-surface-hover cursor-pointer',
+                          index === highlightedIndex && 'bg-surface-hover',
+                        )}
                         type='button'
                         onClick={() => commit(recent)}
+                        onMouseEnter={() => setHighlightedIndex(index)}
                       >
                         {recent}
                       </button>
                       <button
                         aria-label={`Remove "${recent}" from recent searches`}
-                        className='shrink-0 rounded-full p-1 hover:bg-surface-hover'
+                        className='shrink-0 rounded-full p-1 hover:bg-surface-hover cursor-pointer'
                         type='button'
                         onClick={() => removeRecentSearch(recent)}
                       >
