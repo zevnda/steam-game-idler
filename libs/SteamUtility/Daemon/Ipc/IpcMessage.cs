@@ -32,8 +32,9 @@ namespace SteamUtility.Daemon.Ipc
         // owned app id; Steam silently ignores it for a synthetic/unowned game_id.
         public string? GameExtraInfo { get; set; }
 
-        // `achievements_get` only - a Steam schema language key (e.g. "english", "schinese"),
-        // pre-mapped Rust-side from the app's own locale. See AchievementHandler.GetAchievementsAndStatsAsync.
+        // `achievements_get`/`get_owned_apps` - a Steam schema language key (e.g. "english",
+        // "schinese"), pre-mapped Rust-side from the app's own locale. See
+        // AchievementHandler.GetAchievementsAndStatsAsync and OwnershipManager.GetOwnedGamesAsync.
         public string? Language { get; set; }
 
         // `get_owned_apps` only - when true, intersect the PICS-resolved owned app ids against the

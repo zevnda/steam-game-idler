@@ -47,7 +47,7 @@ type FavoritesTab = 'browse' | 'list'
 // @dnd-kit's need for every item mounted" reasoning, which extends naturally to skipping
 // filtering here too.
 export const FavoritesPage = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const router = useRouter()
   const account = useSessionStore(state => state.account)
   const { phase, games, errorCode: gamesErrorCode, refresh } = useGamesList()
@@ -74,8 +74,8 @@ export const FavoritesPage = () => {
   const { options: sortStyleOptions, effectiveStyle: effectiveSortStyle } =
     useOwnedGameSort(sortStyle)
   const sortedFilteredGames = useMemo(
-    () => sortOwnedGames(filteredGames, effectiveSortStyle),
-    [filteredGames, effectiveSortStyle],
+    () => sortOwnedGames(filteredGames, effectiveSortStyle, i18n.language),
+    [filteredGames, effectiveSortStyle, i18n.language],
   )
 
   const favoritedAppIds = useMemo(() => new Set(favorites.map(f => f.appId)), [favorites])

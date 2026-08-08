@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SteamUtility.Core;
+using SteamUtility.Core.AppInfoParsing;
 using SteamUtility.Core.Errors;
 using SteamUtility.Core.Logging;
 using SteamUtility.Core.Models;
@@ -331,7 +333,7 @@ namespace SteamUtility.Backends
                 throw new SteamClientInteropException(code, message, suggestion);
             }
 
-            var owned = new List<OwnedGame>();
+            var ownedAppIds = new List<uint>();
             foreach (var appId in candidates)
             {
                 ct.ThrowIfCancellationRequested();
@@ -348,25 +350,84 @@ namespace SteamUtility.Backends
                     continue;
                 }
 
-                if (!isOwned)
+                if (isOwned)
                 {
-                    continue;
+                    ownedAppIds.Add(appId);
                 }
+            }
 
-                string? name = null;
-                try
+            // One appinfo.vdf pass covering every owned app, in the client's own configured
+            // language, instead of the previous flat/unlocalized GetAppData("name") call - see
+            // AppInfoReader's doc comment for why GetAppData has no localized-name equivalent.
+            var localizedNames = ResolveLocalizedNames(ownedAppIds);
+
+            var owned = new List<OwnedGame>();
+            foreach (var appId in ownedAppIds)
+            {
+                ct.ThrowIfCancellationRequested();
+
+                string? name =
+                    localizedNames.TryGetValue(appId, out var localized)
+                    && !string.IsNullOrEmpty(localized.ResolvedName)
+                        ? localized.ResolvedName
+                        : null;
+
+                if (name == null)
                 {
-                    name = client.SteamApps001.GetAppData(appId, "name");
-                }
-                catch
-                {
-                    // Name resolution is best-effort - ownership is still reported without it.
+                    // appinfo.vdf had nothing for this app (not yet cached locally, or an
+                    // unreadable/unsupported file) - fall back to the raw interop name, matching
+                    // the previous behavior exactly.
+                    try
+                    {
+                        name = client.SteamApps001.GetAppData(appId, "name");
+                    }
+                    catch
+                    {
+                        // Name resolution is best-effort - ownership is still reported without it.
+                    }
                 }
 
                 owned.Add(new OwnedGame { AppId = appId, Name = name });
             }
 
             return owned;
+        }
+
+        // Best-effort by design, same as the GetAppData fallback it feeds into: any failure here
+        // (missing install path, missing/corrupt/unexpected-format appinfo.vdf) degrades to an
+        // empty map rather than failing the whole ownership check over a name-only concern.
+        private static IReadOnlyDictionary<uint, AppInfoLookupResult> ResolveLocalizedNames(
+            IReadOnlyCollection<uint> appIds
+        )
+        {
+            if (appIds.Count == 0)
+            {
+                return new Dictionary<uint, AppInfoLookupResult>();
+            }
+
+            var installPath = SteamPathHelper.GetSteamInstallPath();
+            if (string.IsNullOrEmpty(installPath))
+            {
+                return new Dictionary<uint, AppInfoLookupResult>();
+            }
+
+            var appInfoPath = Path.Combine(installPath, "appcache", "appinfo.vdf");
+            if (!File.Exists(appInfoPath))
+            {
+                return new Dictionary<uint, AppInfoLookupResult>();
+            }
+
+            var preferredLanguage = SteamLanguageHelper.GetConfiguredLanguage() ?? "english";
+
+            try
+            {
+                return AppInfoReader.FindAppNames(appInfoPath, appIds, preferredLanguage);
+            }
+            catch (Exception ex)
+            {
+                Log.Warn("SteamworksLocalBackend", $"appinfo.vdf name resolution failed: {ex.Message}");
+                return new Dictionary<uint, AppInfoLookupResult>();
+            }
         }
 
         private static byte[]? LoadLocalSchemaBytes(uint appId)

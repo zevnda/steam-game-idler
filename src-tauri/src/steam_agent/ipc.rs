@@ -48,8 +48,8 @@ pub struct IpcRequest {
     pub persona_state: Option<&'static str>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub game_extra_info: Option<String>,
-    /// `achievements_get` only - a Steam schema language key (`"english"`, `"schinese"`, ...) from
-    /// `achievements::steam_language::steam_language_for_locale`. See
+    /// `achievements_get`/`get_owned_apps` - a Steam schema language key (`"english"`,
+    /// `"schinese"`, ...) from `achievements::steam_language::steam_language_for_locale`. See
     /// `SteamUtility.Daemon.Ipc.IpcRequest.Language`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub language: Option<String>,
@@ -191,7 +191,11 @@ impl IpcRequest {
         }
     }
 
-    pub fn get_owned_apps(id: String, games_only: bool) -> Self {
+    /// `language` is a Steam schema language key (`"english"`, `"schinese"`, ...) - see
+    /// `achievements::steam_language::steam_language_for_locale`. Same field the daemon's
+    /// `common.name_localized` PICS lookup uses as achievements' schema-text lookup already does;
+    /// see `Daemon/Bot/OwnershipManager.cs::ResolveLocalizedName`.
+    pub fn get_owned_apps(id: String, games_only: bool, language: &str) -> Self {
         Self {
             id,
             cmd: "get_owned_apps",
@@ -207,7 +211,7 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
-            language: None,
+            language: Some(language.to_string()),
             games_only: Some(games_only),
         }
     }

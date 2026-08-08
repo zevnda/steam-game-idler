@@ -1,6 +1,8 @@
 ﻿import type { SignedInAccount } from '@/shared/stores/sessionStore'
 import type { OwnedGame } from '../types'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
+import i18n from '@/i18n'
 import { useGamesListStore } from '@/shared/stores/gamesListStore'
 import { getAccountKey, useSessionStore } from '@/shared/stores/sessionStore'
 import { invoke } from '@/shared/utils/invoke'
@@ -49,7 +51,10 @@ export async function fetchGamesList(
   })
 
   try {
-    const fresh = await invoke<OwnedGamesResult>('get_owned_games', { account })
+    const fresh = await invoke<OwnedGamesResult>('get_owned_games', {
+      account,
+      locale: i18n.language,
+    })
     updateEntry(key, {
       games: fresh.games,
       possiblyPrivate: fresh.possiblyPrivate,
@@ -72,7 +77,10 @@ export async function fetchGamesList(
 export async function silentlyRefreshGamesList(account: SignedInAccount) {
   const key = getAccountKey(account)
   try {
-    const fresh = await invoke<OwnedGamesResult>('get_owned_games', { account })
+    const fresh = await invoke<OwnedGamesResult>('get_owned_games', {
+      account,
+      locale: i18n.language,
+    })
     useGamesListStore.getState().updateEntry(key, {
       games: fresh.games,
       possiblyPrivate: fresh.possiblyPrivate,
@@ -89,6 +97,8 @@ export async function silentlyRefreshGamesList(account: SignedInAccount) {
 // away from /dashboard and back instead of refetching on every mount.
 export const useGamesListSync = () => {
   const account = useSessionStore(state => state.account)
+  const { i18n } = useTranslation()
+  const isFirstLanguageRender = useRef(true)
 
   useEffect(() => {
     if (!account) return
@@ -133,4 +143,33 @@ export const useGamesListSync = () => {
     }
     fetchGamesList(account)
   }, [account])
+
+  // Agent-mode game names are resolved server-side from this app's own locale (see
+  // games::commands::get_owned_games's `locale` param) - unlike CLI mode, whose names track the
+  // local Steam client's own configured language, entirely independent of this app's UI language
+  // (see SteamworksLocalBackend's registry read). So switching languages mid-session only ever
+  // has anything to refresh for an agent-mode account; a CLI-mode account's already-loaded names
+  // wouldn't change no matter what this app's locale becomes.
+  //
+  // Deliberately depends on `i18n.language` alone, not `account` - this must fire only on an
+  // actual language switch, not on every account switch (the other effect above already owns
+  // per-account staleness refreshing; adding `account` here would double-fetch on every switch
+  // between two already-loaded agent accounts, unconditionally, regardless of staleness).
+  useEffect(() => {
+    if (isFirstLanguageRender.current) {
+      // Skip the mount-time run - LanguageSwitch's own `changeLanguage` call is what this effect
+      // exists to react to, not the initial locale resolution every session already starts with.
+      isFirstLanguageRender.current = false
+      return
+    }
+    if (!account || account.mode !== 'agent') return
+
+    const key = getAccountKey(account)
+    if (!useGamesListStore.getState().entries[key]) return
+
+    // showLoadingState: true, not silentlyRefreshGamesList - every name in the list is about to
+    // change, so this should read as a visible reload (skeleton), not a quiet background update.
+    fetchGamesList(account, { showLoadingState: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [i18n.language])
 }

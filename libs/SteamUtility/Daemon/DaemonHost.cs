@@ -205,7 +205,8 @@ namespace SteamUtility.Daemon
                     {
                         var games = await _ownershipManager.GetOwnedGamesAsync(
                             _bot,
-                            request.GamesOnly ?? false
+                            request.GamesOnly ?? false,
+                            request.Language ?? "english"
                         );
                         IpcServer.SendResponse(request.Id, true, new { games });
                         break;

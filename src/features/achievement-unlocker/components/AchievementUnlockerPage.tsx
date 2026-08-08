@@ -50,7 +50,7 @@ type AchievementUnlockerTab = 'browse' | 'queue'
 // tab's own grid IS virtualized (AchievementUnlockerListGrid.tsx) - "Add all to queue" below can
 // push it well past "small/bounded".
 export const AchievementUnlockerPage = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const router = useRouter()
   const account = useSessionStore(state => state.account)
   const { phase, games, errorCode: gamesErrorCode, refresh } = useGamesList()
@@ -86,8 +86,8 @@ export const AchievementUnlockerPage = () => {
   const { options: sortStyleOptions, effectiveStyle: effectiveSortStyle } =
     useOwnedGameSort(sortStyle)
   const sortedFilteredGames = useMemo(
-    () => sortOwnedGames(filteredGames, effectiveSortStyle),
-    [filteredGames, effectiveSortStyle],
+    () => sortOwnedGames(filteredGames, effectiveSortStyle, i18n.language),
+    [filteredGames, effectiveSortStyle, i18n.language],
   )
   const {
     state: runState,

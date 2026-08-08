@@ -28,7 +28,7 @@ const STEAM_PRIVACY_SETTINGS_URL = 'https://steamcommunity.com/my/edit/settings'
 // GameCard) - the idling feature's own page is now just a filtered, view-only list of whatever
 // this page's toggles started, mirroring `main`'s split between the two pages.
 export const GamesPage = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const router = useRouter()
   const account = useSessionStore(state => state.account)
   const { phase, games, isRefreshing, isManualRefreshing, errorCode, possiblyPrivate, refresh } =
@@ -52,8 +52,8 @@ export const GamesPage = () => {
   const { options: sortStyleOptions, effectiveStyle: effectiveSortStyle } =
     useOwnedGameSort(sortStyle)
   const sortedFilteredGames = useMemo(
-    () => sortOwnedGames(filteredGames, effectiveSortStyle),
-    [filteredGames, effectiveSortStyle],
+    () => sortOwnedGames(filteredGames, effectiveSortStyle, i18n.language),
+    [filteredGames, effectiveSortStyle, i18n.language],
   )
 
   // A manual refresh replaces the whole page with the skeleton again (real, visible feedback that

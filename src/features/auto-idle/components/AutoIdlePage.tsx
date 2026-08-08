@@ -40,7 +40,7 @@ type AutoIdleTab = 'browse' | 'queue'
 // tab stays unfiltered for the same reorder-data-loss reason FavoritesPage's own file-level
 // comment documents - `onReorder` here replaces the *entire* persisted order too).
 export const AutoIdlePage = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const router = useRouter()
   const account = useSessionStore(state => state.account)
   const { phase, games, errorCode: gamesErrorCode, refresh } = useGamesList()
@@ -70,8 +70,8 @@ export const AutoIdlePage = () => {
   const { options: sortStyleOptions, effectiveStyle: effectiveSortStyle } =
     useOwnedGameSort(sortStyle)
   const sortedFilteredGames = useMemo(
-    () => sortOwnedGames(filteredGames, effectiveSortStyle),
-    [filteredGames, effectiveSortStyle],
+    () => sortOwnedGames(filteredGames, effectiveSortStyle, i18n.language),
+    [filteredGames, effectiveSortStyle, i18n.language],
   )
 
   const queuedAppIds = useMemo(() => new Set(queue.map(g => g.appId)), [queue])
