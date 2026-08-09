@@ -578,7 +578,7 @@
     },
     "cardFarming": {
       "status": {
-        "idle": "Non in raccolta",
+        "idle": "Raccolta non attiva",
         "farming_one": "Raccolta carte da {{count}} gioco",
         "farming_other": "Raccolta carte da {{count}} giochi"
       },
@@ -591,7 +591,7 @@
       },
       "multiGameNotice": {
         "title": "Raccogliere carte da più giochi contemporaneamente?",
-        "description": "Raccogliere carte da più giochi contemporaneamente può rallentare la velocità con cui vengono ottenute per ciascun gioco. Se per un po' non ottieni carte, prova a disattivare di nuovo questa opzione."
+        "description": "Raccogliere carte da più giochi contemporaneamente può rallentare la velocità con cui vengono ottenute per ciascun gioco. Se per un po' non ottieni carte, prova a disattivare questa opzione."
       },
       "confirmClearBlacklist": {
         "title": "Cancellare la lista nera di Raccolta carte?",
@@ -1102,8 +1102,8 @@
         "nextPage": "Pagina successiva",
         "prevPage": "Pagina precedente",
         "openSearch": "Apri ricerca",
-        "toggleSettings": "Attiva impostazioni",
-        "toggleSidebar": "Attiva barra laterale"
+        "toggleSettings": "Apri/chiudi le impostazioni",
+        "toggleSidebar": "Mostra/nascondi la barra laterale"
       },
       "debug": {
         "title": "Debug",
