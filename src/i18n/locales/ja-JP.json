@@ -61,7 +61,100 @@
     "errors": {
       "generic": "問題が発生しました。もう一度お試しください。({{code}})",
       "steamUtilityMissing": "このインストールには、Steam agent componentが含まれていません。",
-      "processSpawnFailed": "Steam agent processを起動できませんでした。"
+      "processSpawnFailed": "Steam agent processを起動できませんでした。",
+      "processExited": "The Steam agent processが予期せず終了しました。",
+      "timeout": "Steamの応答に時間がかかりすぎました。もう一度お試しください。",
+      "sessionNotFound": "Steamセッションの有効期限が切れました。再度サインインしてください。",
+      "steamIdUnknown": "あなたのSteam IDがまだ解決されていません。しばらくしてからもう一度お試しください。",
+      "steamNotRunning": "Steamが起動していません。Steamを起動してから、もう一度お試しください。"
+    },
+    "notifications": "通知",
+    "menu": "メニュー",
+    "needHelp": "お困りですか？",
+    "learnMore": "詳細",
+    "status": {
+      "saved": "保存しました",
+      "cleared": "クリアしました"
+    },
+    "steamWarning": {
+      "title": "お知らせ",
+      "description": "Steamが起動されていません。続けるには、Steamを再起動してください。"
+    },
+    "banner": {
+      "pastDue": "PROサブスクリプションの支払期限が過ぎています。サービスへのアクセスが停止されないよう、お支払い方法を更新してください。",
+      "manageSubscription": "サブスクリプション管理"
+    },
+    "badges": {
+      "beta": "ベータ"
+    },
+    "tabs": {
+      "allGames": "全てのゲーム",
+      "queue": "キュー"
+    },
+    "connect": {
+      "automaticTab": "自動",
+      "manualTab": "手動"
+    },
+    "sort": {
+      "nameAsc": "名前(A-Z)",
+      "nameDesc": "名前(Z-A)"
+    },
+    "noGamesQueued": "キューがありません",
+    "completedThisSessionCount": "このセッションで完了 ({{count}})",
+    "gamesQueuedCount_other": "{{count}} ゲームがキューに入っています"
+  },
+  "update": {
+    "downloading": "新しいバージョンをダウンロードしています…"
+  },
+  "toast": {
+    "checkUpdate": {
+      "none": "既に最新バージョンです",
+      "error": "更新を確認できませんでした。もう一度お試しください。"
+    },
+    "paypalCheckout": {
+      "error": "PayPalでの決済を開始できませんでした。もう一度お試しください。"
+    }
+  },
+  "notifications": {
+    "markAllRead": "全て既読にする",
+    "empty": "通知はありません"
+  },
+  "menu": {
+    "guide": "ドキュメント",
+    "issue": "問題を報告",
+    "feature": "機能のリクエスト",
+    "joinDiscord": "Discordに参加",
+    "changelog": "更新履歴",
+    "update": "アップデートを確認"
+  },
+  "changelog": {
+    "star": "GitHubでスターを付ける"
+  },
+  "titlebar": {
+    "closeToTrayNotification": "Steam Game Idlerはバックグラウンドで動作し続けます",
+    "helpDesk": "ヘルプデスク",
+    "updateReady": "アップデートの準備完了"
+  },
+  "tray": {
+    "show": "表示",
+    "recenter": "ウィンドウの位置をリセット",
+    "update": "アップデートを確認。。",
+    "quit": "終了"
+  },
+  "proMode": {
+    "hero": {
+      "headline": "他の機能をアンロック",
+      "subtext": "SGIの主要機能は<1>無料</1>であり、<3>今後もずっと無料のままです。</3>PRO版は、SGIの継続的な開発を支援したいと考えるユーザーのために用意されたものです。追加機能は、皆様のご支援に対する私たちからの<5>感謝のしるし</5>です。",
+      "viewTiers": "PROプランを見る",
+      "startingAt": "月額 ${{price}}～ · いつでもキャンセル可能"
+    },
+    "section": {
+      "allFeatures": "すべての機能"
+    },
+    "faq": {
+      "switchTier": {
+        "q": "プランを変更することはできますか？"
+      }
     }
   }
 }
