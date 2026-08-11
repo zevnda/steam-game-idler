@@ -470,7 +470,7 @@
     "achievements": {
       "tabs": {
         "achievements": "成就",
-        "statistics": "统计数据"
+        "statistics": "数据"
       },
       "header": {
         "viewOnSteam": "在 Steam 上查看",
@@ -878,7 +878,7 @@
     "settings": {
       "title": "设置",
       "general": {
-        "title": "常规",
+        "title": "通用",
         "account": {
           "displayNameLabel": "显示名称",
           "steamIdLabel": "Steam ID"
