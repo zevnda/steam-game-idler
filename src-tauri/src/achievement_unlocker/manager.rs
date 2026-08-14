@@ -826,6 +826,22 @@ async fn unlock_game(
         })
         .collect();
 
+    // Idling is a side effect of the game being *active*, not of it having actually started
+    // unlocking - starting it here (rather than only once the achievement loop below runs) means a
+    // configured `delayBeforeFirstUnlock` (which can be minutes long) no longer holds up idling the
+    // whole time it's waiting. Still respects `schedule`/`excluded_app_ids` the same way the
+    // achievement loop's own idle-start check does, so a schedule-gated or manually-excluded game
+    // doesn't start idling early just because it skipped the first-unlock delay.
+    let mut is_idling = false;
+    if unlocker_settings.idle
+        && !excluded_app_ids.lock().await.contains(&app_id)
+        && (!unlocker_settings.schedule
+            || is_within_schedule(unlocker_settings.schedule_from, unlocker_settings.schedule_to))
+    {
+        set_game_idling(idling_apps, app_handle, account, app_id, &game.name, true).await;
+        is_idling = true;
+    }
+
     if game.delay_before_first_unlock_ms > 0 {
         tracing::info!(
             app_id,
@@ -849,6 +865,9 @@ async fn unlock_game(
         )
         .await
         {
+            if is_idling {
+                set_game_idling(idling_apps, app_handle, account, app_id, &game.name, false).await;
+            }
             return;
         }
     } else {
@@ -857,7 +876,6 @@ async fn unlock_game(
 
     let total = game.achievements.len() as u32;
     let mut remaining = total;
-    let mut is_idling = false;
 
     for (index, achievement) in game.achievements.iter().enumerate() {
         if stopped.load(Ordering::SeqCst) {
