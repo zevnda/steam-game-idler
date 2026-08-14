@@ -29,7 +29,18 @@ const isRecoverableQrTimeout = (code: string) =>
 // Caps consecutive silent auto-restarts (reset once a real challenge renders again - see the
 // `qr_challenge_url` handler) so a genuinely persistent problem still surfaces after a few cycles
 // instead of retrying forever with no visible indication anything's wrong.
-const MAX_AUTO_RETRIES = 2
+// Hotfix (2026-08-15): was 2 - each retry tears down and reopens a brand-new CM connection
+// (AgentProcess::spawn), so back-to-back retries with no delay were firing several fresh Steam
+// logon attempts within under a minute and tripping Steam's own rate limiter, which then blocked
+// the real Steam client too. Cut to 1 and paired with RETRY_DELAY_MS below until a proper fix
+// (reusing one connection across a retry instead of spawning a new one) lands.
+const MAX_AUTO_RETRIES = 1
+
+// Hotfix (2026-08-15): auto-retry used to fire immediately (`void start()`, no delay) on a
+// recoverable failure - see MAX_AUTO_RETRIES' comment for why that's what actually tripped the
+// rate limit. A fixed delay is a stopgap, not the real fix (that's real backoff shared with
+// SteamBot.cs's reconnect logic plus not spawning a whole new process per retry).
+const RETRY_DELAY_MS = 8000
 
 // Mirrors `useAgentSignIn.ts`'s event-filtering shape, but keyed by the opaque `sessionKey` from
 // `agent_begin_qr_login` instead of a normalized username - see `QrChallenge`'s doc comment in
@@ -39,6 +50,7 @@ export const useAgentQrSignIn = () => {
   const [errorCode, setErrorCode] = useState<string | null>(null)
   const sessionKeyRef = useRef<string | null>(null)
   const autoRetryCountRef = useRef(0)
+  const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // `AgentManager::cancel_qr_login` is documented as a no-op once `sessionKey` has already
   // resolved (promoted into the real `sessions` map) or never existed, so this is always safe to
@@ -106,9 +118,13 @@ export const useAgentQrSignIn = () => {
             {
               error,
               attempt: autoRetryCountRef.current,
+              delayMs: RETRY_DELAY_MS,
             },
           )
-          void start()
+          retryTimeoutRef.current = setTimeout(() => {
+            retryTimeoutRef.current = null
+            void start()
+          }, RETRY_DELAY_MS)
           return
         }
         setErrorCode(error)
@@ -118,6 +134,10 @@ export const useAgentQrSignIn = () => {
 
     return () => {
       unlisten.then(stop => stop())
+      if (retryTimeoutRef.current) {
+        clearTimeout(retryTimeoutRef.current)
+        retryTimeoutRef.current = null
+      }
     }
   }, [cancel, start])
 
