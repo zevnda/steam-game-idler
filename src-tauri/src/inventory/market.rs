@@ -130,10 +130,23 @@ pub async fn get_item_price(
             .await
             .map_err(|e| AppError::MarketPriceFetchFailed(e.to_string()))?;
 
-        if response.status().as_u16() == 429 {
+        let status = response.status();
+        // Treat a 5xx (502/503/504 from Steam's edge under momentary load, seen clustering in
+        // #2087's log) the same as a 429 - retry with backoff instead of failing the item outright.
+        // Without this, one transient blip fails immediately with zero delay, and the frontend's
+        // bulk-sell loop moves on to the next item right away with no backoff of its own, which can
+        // cascade into a burst of further failures against an already-struggling endpoint.
+        if status.as_u16() == 429 || status.is_server_error() {
             if retry_count >= MAX_PRICE_RETRIES {
-                tracing::warn!(market_hash_name, "market: price fetch rate limited after retries");
-                return Err(AppError::MarketPriceRateLimited);
+                if status.as_u16() == 429 {
+                    tracing::warn!(
+                        market_hash_name,
+                        "market: price fetch rate limited after retries"
+                    );
+                    return Err(AppError::MarketPriceRateLimited);
+                }
+                tracing::warn!(market_hash_name, %status, "market: price fetch failed after retries");
+                return Err(AppError::MarketPriceFetchFailed(format!("HTTP {status}")));
             }
             let delay_ms = 5_000u64 * (1u64 << retry_count);
             retry_count += 1;
@@ -157,7 +170,7 @@ pub async fn get_item_price(
             .map_err(|e| AppError::MarketPriceFetchFailed(e.to_string()))?;
     };
 
-    let data = &json["data"];
+    let data = &json["data"]["data"];
     let e_currency = data["eCurrency"].as_u64().unwrap_or(1) as u32;
 
     let sell_order_graph = data["rgCompactSellOrders"]
