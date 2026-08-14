@@ -35,7 +35,7 @@
     "@types/node": "^26.0.1",
     "@types/react": "^19.2.13",
     "@types/react-dom": "^19.2.3",
-    "concurrently": "^10.0.3",
+    "concurrently": "^10.0.4",
     "next-sitemap": "^4.2.3",
     "postcss": "^8.5.23",
     "tailwindcss": "^4.3.0",
