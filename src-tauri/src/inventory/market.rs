@@ -436,19 +436,23 @@ async fn fetch_all_listing_ids(
             .header("Cookie", cookie_value)
             .send()
             .await
-            .map_err(|e| AppError::MarketListingsFetchFailed(e.to_string()))?;
+            .map_err(|e| {
+                tracing::warn!(error = %e, "market: listings fetch request failed");
+                AppError::MarketListingsFetchFailed(e.to_string())
+            })?;
 
         if !response.status().is_success() {
+            let status = response.status();
+            tracing::warn!(%status, "market: listings fetch returned a non-success status");
             return Err(AppError::MarketListingsFetchFailed(format!(
-                "HTTP {}",
-                response.status()
+                "HTTP {status}"
             )));
         }
 
-        let listings_data: Value = response
-            .json()
-            .await
-            .map_err(|e| AppError::MarketListingsFetchFailed(e.to_string()))?;
+        let listings_data: Value = response.json().await.map_err(|e| {
+            tracing::warn!(error = %e, "market: listings fetch response failed to parse as JSON");
+            AppError::MarketListingsFetchFailed(e.to_string())
+        })?;
 
         if first_request {
             total_listings = listings_data
