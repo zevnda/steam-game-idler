@@ -128,7 +128,10 @@ pub async fn get_games_with_drops(
         .header("Cookie", cookie_value.clone())
         .send()
         .await
-        .map_err(|e| AppError::CardFarmingScrapeFailed(e.to_string()))?;
+        .map_err(|e| {
+            tracing::warn!(steam_id, error = %e, "card farming: badge overview page 1 request failed");
+            AppError::CardFarmingScrapeFailed(e.to_string())
+        })?;
 
     // Checked only on page 1: pagination viability is decided from this page, and if the session
     // is dead it's dead account-wide, so there's no need to repeat this per page. Pages 2+ keep
@@ -137,10 +140,10 @@ pub async fn get_games_with_drops(
         return Err(AppError::SteamCommunitySessionExpired(steam_id.to_string()));
     }
 
-    let first_page_html = first_page_response
-        .text()
-        .await
-        .map_err(|e| AppError::CardFarmingScrapeFailed(e.to_string()))?;
+    let first_page_html = first_page_response.text().await.map_err(|e| {
+        tracing::warn!(steam_id, error = %e, "card farming: badge overview page 1 response failed to read");
+        AppError::CardFarmingScrapeFailed(e.to_string())
+    })?;
 
     let max_page = detect_max_page(&first_page_html);
     let mut games = parse_games_with_drops(&first_page_html);
@@ -158,13 +161,19 @@ pub async fn get_games_with_drops(
             let cookie_value = cookie_value.clone();
             let url = page_url(page);
             async move {
-                let Ok(response) = client.get(url).header("Cookie", cookie_value).send().await
-                else {
-                    return Vec::new();
+                let response = match client.get(url).header("Cookie", cookie_value).send().await {
+                    Ok(r) => r,
+                    Err(e) => {
+                        tracing::warn!(steam_id, page, error = %e, "card farming: badge overview page request failed, skipping page");
+                        return Vec::new();
+                    }
                 };
                 match response.text().await {
                     Ok(html) => parse_games_with_drops(&html),
-                    Err(_) => Vec::new(),
+                    Err(e) => {
+                        tracing::warn!(steam_id, page, error = %e, "card farming: badge overview page response failed to read, skipping page");
+                        Vec::new()
+                    }
                 }
             }
         });

@@ -104,19 +104,28 @@ async fn fetch_inventory_pages(
             .header("Cookie", cookie_value)
             .send()
             .await
-            .map_err(|e| AppError::InventoryFetchFailed(e.to_string()))?;
+            .map_err(|e| {
+                tracing::warn!(steam_id, error = %e, "inventory: fetch request failed");
+                AppError::InventoryFetchFailed(e.to_string())
+            })?;
 
         if !response.status().is_success() {
-            return Err(AppError::InventoryFetchFailed(format!(
-                "HTTP {}",
-                response.status()
-            )));
+            let status = response.status();
+            let body: String = response
+                .text()
+                .await
+                .unwrap_or_default()
+                .chars()
+                .take(300)
+                .collect();
+            tracing::warn!(steam_id, %status, body, "inventory: fetch returned a non-success status");
+            return Err(AppError::InventoryFetchFailed(format!("HTTP {status}")));
         }
 
-        let page: Value = response
-            .json()
-            .await
-            .map_err(|e| AppError::InventoryFetchFailed(e.to_string()))?;
+        let page: Value = response.json().await.map_err(|e| {
+            tracing::warn!(steam_id, error = %e, "inventory: fetch response failed to parse as JSON");
+            AppError::InventoryFetchFailed(e.to_string())
+        })?;
 
         if total_inventory_count == 0 {
             total_inventory_count = page
