@@ -113,4 +113,26 @@ namespace SteamUtility.Core.Errors
             Suggestion = suggestion;
         }
     }
+
+    // Both thrown only by GameWhitelistProvider.GetWhitelistAsync, and only when a live refresh
+    // failed AND there's no on-disk cached copy to fall back on at all (fresh install, or the cache
+    // dir got cleared) - the ordinary case of a transient/rate-limited fetch with a cache already on
+    // disk degrades silently to that stale cache instead of reaching either of these.
+    public sealed class GameWhitelistRateLimitedException : SteamUtilityException
+    {
+        public GameWhitelistRateLimitedException()
+            : base(
+                "game_whitelist_rate_limited",
+                "Steam Game Idler's game database is temporarily rate-limited and no cached copy is available yet"
+            ) { }
+    }
+
+    public sealed class GameWhitelistUnavailableException : SteamUtilityException
+    {
+        public GameWhitelistUnavailableException(string reason)
+            : base(
+                "game_whitelist_unavailable",
+                $"Could not reach Steam Game Idler's game database and no cached copy is available: {reason}"
+            ) { }
+    }
 }
