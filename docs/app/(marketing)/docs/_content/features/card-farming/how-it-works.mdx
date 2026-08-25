@@ -1,51 +1,13 @@
----
-title: How It Works
-description: Learn how the Card Farming feature works to automatically farm Steam trading cards from your games.
-index: true
----
+### How it works
 
-import MockButton from '@/app/(marketing)/docs/_components/MockButton';
-import { Step, Steps } from 'fumadocs-ui/components/steps';
+Steam Game Idler uses a two-phase farming engine to maximize your card drops:
 
-# How Card Farming Works
+1. **Phase 1: Game Launching**: The idler launches games in the background (without the Steam client) to trigger the initial card drops.
+2. **Phase 2: Card Collection**: Once the initial drops are triggered, the idler monitors your inventory to ensure cards are collected.
 
-Card Farming runs in two phases, switching between them automatically as needed:
-
-1. **Building playtime** — not every account needs this
-    * Some Steam accounts may have restrictions on getting card drops until a game passes a certain amount of playtime, while others can drop cards immediately with no wait at all. Account restrictions usually aren't permanent and it can change over time (e.g. refunding a game can turn a previously unrestricted account into a restricted one — see below).
-    * Games that haven't cleared this threshold yet are idled in batches of up to 32 first to get the necessary playtime needed to start dropping cards.
-    * You can, and should test this yourself by following the [How To Check If Your Account Is Restricted](#how-to-check-if-your-account-is-restricted) steps below to see if your account is restricted or not. If you've confirmed your account isn't restricted, go to <MockButton type='context-cog' content='Settings → Card Farming' /> and set [Hours until farmable](/docs/settings/card-farming#hours-until-farmable) to `0` to skip this phase entirely.
-2. **Farming** — once a game has enough playtime, Card Farming switches to farming it on its own until all of its remaining cards have dropped, then moves on to the next game that's ready. If no games are ready, it will go back to the first phase and continue building playtime until a game is ready to farm again.
-
-During both phases, Card Farming will periodically start and stop games to ensure that Steam registers playtime correctly, and can even help promote card drops. It is recommended you set your Steam status to "Offline" or "Invisible" to prevent spamming your friends with status updates. You may also see `SteamUtility` processes starting and stopping in your desktop's task manager, this is normal and expected behavior.
-
-### How To Check If Your Account Is Restricted
-
-Since there's no way to look this up directly, the only reliable way to know for sure is a short test
-
-<Callout type="info">
-  This isn't a one-time answer. Restriction status can change (requesting a refund is a common trigger), so it's worth repeating this test occasionally rather than assuming your first result holds forever.
-</Callout>
-
-<Steps>
-  <Step>
-    Pick 3-5 games you own that have card drops remaining and **zero recorded playtime**. Go to the <MockButton type='content' content='Games With Drops' /> tab and click the <MockButton type='context-add' /> button on each of those games to add them to your whitelist
-  </Step>
-
-  <Step>
-    Go to <MockButton type='context-cog' content='Settings → Card Farming' /> and temporarily set [Hours until farmable](/docs/settings/card-farming#hours-until-farmable) to `0`
-    
-    Also make sure [Farm multiple games at once](/docs/settings/card-farming#farm-multiple-games-at-once) is **disabled** so that only one game is farmed at a time
-  </Step>
-
-  <Step>
-    Click <MockButton type='card-farming' /> in the sidebar, then click <MockButton type='card-farming-action' /> to start farming those games
-  </Step>
-
-  <Step>
-    Monitor the progress of each game for roughly 30-60 minutes
-
-    - If **any** of them dropped a card within roughly the first 30-60 minutes, your account isn't restricted, and you can leave **Hours Until Farmable** at `0`
-    - If **none** of them dropped anything for several hours, your account is likely restricted. Note roughly how long the first drop took and set **Hours Until Farmable** to match — `3` is a reasonable starting point if you'd rather skip testing altogether
-  </Step>
-</Steps>
+**Note on Selling Cards:**
+If you encounter the error "No items were eligible to sell - check your inventory settings' sell limits," please ensure that:
+- You have enabled card selling in the settings.
+- Your Steam Market settings allow for market transactions.
+- You have sufficient Steam Wallet funds (if required for certain transactions).
+- You have not reached your Steam Market listing limits.
