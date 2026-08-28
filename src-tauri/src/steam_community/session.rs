@@ -315,6 +315,19 @@ pub(crate) fn is_session_revoked(response: &reqwest::Response) -> bool {
     })
 }
 
+/// Whether `status`/`body` is Steam Community's "Family View" PIN gate page rather than the
+/// requested data - confirmed live (2026-08-28) against a real Family-View-enabled account: both
+/// `/inventory/{id}/753/6` and `/profiles/{id}/badges/` return HTTP 403 with a `text/html` body
+/// containing `<title>Family View</title>` and a
+/// `data-featuretarget="parentalunlock"` marker, regardless of which cookie-authenticated endpoint
+/// is hit. Checks both the status and a body marker (not status alone) since a bare 403 has other
+/// possible causes (a WAF challenge, an unrelated access restriction) that shouldn't be
+/// misdiagnosed as Family View. `parentalunlock` is the more specific of the two markers (the
+/// `<title>` alone is generic enough it's not worth a second, redundant check).
+pub(crate) fn is_family_view_blocked(status: reqwest::StatusCode, body: &str) -> bool {
+    status == reqwest::StatusCode::FORBIDDEN && body.contains("parentalunlock")
+}
+
 pub async fn validate(steam_id: &str, cookies: &SteamCookies) -> AppResult<SessionStatus> {
     let client =
         steam_client().map_err(|e| AppError::SteamCommunitySessionFailed(e.to_string()))?;

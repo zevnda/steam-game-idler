@@ -22,6 +22,10 @@ const EXPECTED_ERROR_CODES = new Set([
   // `ensure_valid`) when it clears the saved cookies, so logging it again here as an unexpected
   // frontend failure would just duplicate that line.
   'steam_community_session_expired',
+  // Family View blocking a cookie-authenticated fetch - Rust already logs this via
+  // `is_family_view_blocked`'s call sites (inventory/card-farming/market scrapers), and it's a
+  // real Steam-account-configuration outcome, not an app bug.
+  'family_view_restricted',
   // CLI-mode pre-flight rejection (`require_steam_running`) - Rust already logs the warn itself,
   // and every call site surfaces this via a toast, so it's an expected/user-caused outcome too.
   'steam_not_running',

@@ -153,6 +153,16 @@ pub enum AppError {
     #[error("Steam Community session expired for {0}")]
     SteamCommunitySessionExpired(String),
 
+    /// Steam Community served its "Family View" PIN gate page (HTTP 403, `<title>Family
+    /// View</title>`, a `data-featuretarget="parentalunlock"` marker) instead of the requested
+    /// data - the account itself is fine and the session cookies are genuinely valid, but Family
+    /// View blocks this specific content class regardless. Distinct from
+    /// `SteamCommunitySessionExpired`/`SteamCommunitySessionFailed` so the frontend shows "disable
+    /// Family View" rather than "reconnect your session" - reconnecting changes nothing here. See
+    /// `steam_community::session::is_family_view_blocked`.
+    #[error("Family View is restricting Steam Community access for {0}")]
+    FamilyViewRestricted(String),
+
     #[error("failed to fetch/parse card-drop data: {0}")]
     CardFarmingScrapeFailed(String),
 
@@ -277,6 +287,7 @@ impl AppError {
             AppError::SteamCommunitySessionExpired(_) => {
                 "steam_community_session_expired".to_string()
             }
+            AppError::FamilyViewRestricted(_) => "family_view_restricted".to_string(),
             AppError::CardFarmingScrapeFailed(_) => "card_farming_scrape_failed".to_string(),
             AppError::SteamUtility(code) => code.clone(),
             AppError::InventoryFetchFailed(_) => "inventory_fetch_failed".to_string(),
