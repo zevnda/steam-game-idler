@@ -10,6 +10,8 @@ const ERROR_DOCS_HREFS: Record<string, string> = {
     'https://steamgameidler.com/docs/faq#error-messages:~:text=Incorrect%20card%20farming%20credentials',
   market_price_rate_limited:
     'https://steamgameidler.com/docs/faq#:~:text=Rate%20limited%20when%20fetching%20card%20prices',
+  family_view_restricted:
+    'https://steamgameidler.com/docs/steam-credentials#:~:text=This%20will%20not%20work%20if%20you%20have%20Family%20View%20enabled',
 }
 
 export const errorDocsHref = (code: string) => ERROR_DOCS_HREFS[code]

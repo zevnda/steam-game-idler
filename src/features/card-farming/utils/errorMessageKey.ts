@@ -22,6 +22,10 @@ const KNOWN_ERROR_KEYS: Record<string, TranslationKey> = {
   // "check your cookies" (see AppError::SteamCommunitySessionExpired's doc comment).
   steam_community_session_expired: 'dashboard.cardFarming.errors.sessionExpired',
   card_farming_scrape_failed: 'dashboard.cardFarming.errors.scrapeFailed',
+  // Not a session problem - the cookies are genuinely valid, Family View just blocks this content
+  // class regardless. Deliberately not treated like `steam_community_session_expired`/`_failed`
+  // anywhere (no reconnect/clear-cookies handling) since reconnecting fixes nothing here.
+  family_view_restricted: 'dashboard.cardFarming.errors.familyViewRestricted',
 }
 
 // A separate typed constant, not an inline literal - an explicit return-type annotation on an

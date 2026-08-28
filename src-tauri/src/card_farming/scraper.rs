@@ -8,7 +8,7 @@ use scraper::selectable::Selectable;
 use scraper::{Html, Selector};
 
 use crate::error::{AppError, AppResult};
-use crate::steam_community::session::is_session_revoked;
+use crate::steam_community::session::{is_family_view_blocked, is_session_revoked};
 use crate::steam_community::{cookie_header, steam_client};
 
 use super::{GameWithDrops, SteamCookies};
@@ -139,11 +139,17 @@ pub async fn get_games_with_drops(
     if is_session_revoked(&first_page_response) {
         return Err(AppError::SteamCommunitySessionExpired(steam_id.to_string()));
     }
+    let status = first_page_response.status();
 
     let first_page_html = first_page_response.text().await.map_err(|e| {
         tracing::warn!(steam_id, error = %e, "card farming: badge overview page 1 response failed to read");
         AppError::CardFarmingScrapeFailed(e.to_string())
     })?;
+
+    if is_family_view_blocked(status, &first_page_html) {
+        tracing::warn!(steam_id, "card farming: badge overview blocked by Family View");
+        return Err(AppError::FamilyViewRestricted(steam_id.to_string()));
+    }
 
     let max_page = detect_max_page(&first_page_html);
     let mut games = parse_games_with_drops(&first_page_html);

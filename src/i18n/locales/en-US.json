@@ -639,6 +639,7 @@
         "sessionFailed": "Couldn't sign in to Steam Community. Check your cookies and try again.",
         "sessionExpired": "Your Steam Community session has expired. Please reconnect to continue.",
         "scrapeFailed": "Couldn't check Steam for card drops right now.",
+        "familyViewRestricted": "Family View is enabled on your Steam account. Disable Family View and try again.",
         "generic": "Something went wrong updating card farming. Please try again. ({{code}})"
       },
       "settings": {

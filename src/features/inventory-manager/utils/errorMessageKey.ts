@@ -18,6 +18,9 @@ const KNOWN_ERROR_KEYS: Record<string, TranslationKey> = {
   // Reuses card-farming's copy (same underlying Rust error, same "reconnect" fix) rather than a
   // duplicate inventory-manager string - see that feature's errorMessageKey.ts for why.
   steam_community_session_expired: 'dashboard.cardFarming.errors.sessionExpired',
+  // Reuses card-farming's copy here too - not a session problem, so no inventory-manager-specific
+  // wording needed; see that feature's errorMessageKey.ts for the full reasoning.
+  family_view_restricted: 'dashboard.cardFarming.errors.familyViewRestricted',
   inventory_fetch_failed: 'dashboard.inventoryManager.errors.fetchFailed',
   inventory_cache_io_failed: 'dashboard.inventoryManager.errors.cacheIoFailed',
   market_price_fetch_failed: 'dashboard.inventoryManager.errors.priceFetchFailed',

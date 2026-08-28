@@ -13,6 +13,7 @@ use reqwest::Client;
 use serde_json::Value;
 
 use crate::error::{AppError, AppResult};
+use crate::steam_community::session::is_family_view_blocked;
 use crate::steam_community::{cookie_header, steam_client, SteamCookies};
 
 use super::{
@@ -417,6 +418,7 @@ fn parse_listing_ids(hovers: &str) -> Vec<(String, String)> {
 
 async fn fetch_all_listing_ids(
     client: &Client,
+    steam_id: &str,
     cookie_value: &str,
 ) -> AppResult<Vec<(String, String)>> {
     const PAGE_SIZE: usize = 100;
@@ -437,20 +439,26 @@ async fn fetch_all_listing_ids(
             .send()
             .await
             .map_err(|e| {
-                tracing::warn!(error = %e, "market: listings fetch request failed");
+                tracing::warn!(steam_id, error = %e, "market: listings fetch request failed");
                 AppError::MarketListingsFetchFailed(e.to_string())
             })?;
 
         if !response.status().is_success() {
             let status = response.status();
-            tracing::warn!(%status, "market: listings fetch returned a non-success status");
+            let body = response.text().await.unwrap_or_default();
+            if is_family_view_blocked(status, &body) {
+                tracing::warn!(steam_id, "market: listings fetch blocked by Family View");
+                return Err(AppError::FamilyViewRestricted(steam_id.to_string()));
+            }
+            let snippet: String = body.chars().take(300).collect();
+            tracing::warn!(steam_id, %status, body = snippet, "market: listings fetch returned a non-success status");
             return Err(AppError::MarketListingsFetchFailed(format!(
                 "HTTP {status}"
             )));
         }
 
         let listings_data: Value = response.json().await.map_err(|e| {
-            tracing::warn!(error = %e, "market: listings fetch response failed to parse as JSON");
+            tracing::warn!(steam_id, error = %e, "market: listings fetch response failed to parse as JSON");
             AppError::MarketListingsFetchFailed(e.to_string())
         })?;
 
@@ -494,7 +502,7 @@ pub async fn remove_market_listings(
     let client = steam_client().map_err(|e| AppError::MarketListingsFetchFailed(e.to_string()))?;
     let cookie_value = cookie_header(steam_id, cookies);
 
-    let all_listings = fetch_all_listing_ids(&client, &cookie_value).await?;
+    let all_listings = fetch_all_listing_ids(&client, steam_id, &cookie_value).await?;
     if all_listings.is_empty() {
         return Ok(RemoveListingsResult {
             total_listings: 0,

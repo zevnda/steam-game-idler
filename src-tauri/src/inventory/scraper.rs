@@ -13,6 +13,7 @@ use serde::Deserialize;
 use serde_json::Value;
 
 use crate::error::{AppError, AppResult};
+use crate::steam_community::session::is_family_view_blocked;
 use crate::steam_community::{cookie_header, steam_client, SteamCookies};
 use crate::steam_web_api::resolve_api_key;
 
@@ -111,14 +112,13 @@ async fn fetch_inventory_pages(
 
         if !response.status().is_success() {
             let status = response.status();
-            let body: String = response
-                .text()
-                .await
-                .unwrap_or_default()
-                .chars()
-                .take(300)
-                .collect();
-            tracing::warn!(steam_id, %status, body, "inventory: fetch returned a non-success status");
+            let body = response.text().await.unwrap_or_default();
+            if is_family_view_blocked(status, &body) {
+                tracing::warn!(steam_id, "inventory: fetch blocked by Family View");
+                return Err(AppError::FamilyViewRestricted(steam_id.to_string()));
+            }
+            let snippet: String = body.chars().take(300).collect();
+            tracing::warn!(steam_id, %status, body = snippet, "inventory: fetch returned a non-success status");
             return Err(AppError::InventoryFetchFailed(format!("HTTP {status}")));
         }
 
