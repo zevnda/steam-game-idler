@@ -638,6 +638,15 @@ async fn scan_game(
 /// removing from the queue (via `cache::remove`) any game that resolves to nothing left to unlock,
 /// and returns every game that does. Reports live `ScanProgress` via `state`/the state event as
 /// each game finishes, matching `main`'s scan-progress UI.
+///
+/// **Returns games in their original queue order, not scan-completion order** - each entry keeps
+/// its original backlog index as it's pulled off the shared work-stealing queue, and the per-worker
+/// results are sorted back into that order before returning. Without this, two games with the same
+/// achievement-data fetch latency landing on different workers would come back in whatever order
+/// each worker happened to finish scanning, silently discarding the queue position the user set
+/// (including via drag-reorder) once `worker_count > 1` - `run_unlock_phase`'s own work-stealing
+/// still means multiple games run concurrently, but which one is *offered to a free worker first*
+/// should track queue order.
 #[allow(clippy::too_many_arguments)]
 async fn run_scan_phase(
     app_handle: &AppHandle,
@@ -665,7 +674,7 @@ async fn run_scan_phase(
             .collect(),
     );
 
-    let queue = Arc::new(Mutex::new(VecDeque::from(backlog)));
+    let queue = Arc::new(Mutex::new(VecDeque::from_iter(backlog.into_iter().enumerate())));
     let checked = Arc::new(std::sync::atomic::AtomicU32::new(0));
     let mut handles = Vec::new();
 
@@ -686,7 +695,7 @@ async fn run_scan_phase(
                     break;
                 }
                 let entry = { queue.lock().await.pop_front() };
-                let Some(entry) = entry else { break };
+                let Some((queue_index, entry)) = entry else { break };
 
                 let playtime = playtime_by_app_id.get(&entry.app_id).copied().unwrap_or(0);
                 let over_cap = crate::max_playtime::settings::is_over_cap(
@@ -753,7 +762,7 @@ async fn run_scan_phase(
                     .await;
                     emit_state(&app_handle, &steam_id, &state).await;
                 } else {
-                    ready.push(scanned);
+                    ready.push((queue_index, scanned));
                 }
             }
             ready
@@ -766,6 +775,7 @@ async fn run_scan_phase(
             ready.append(&mut v);
         }
     }
+    ready.sort_by_key(|(queue_index, _)| *queue_index);
 
     {
         let mut s = state.lock().await;
@@ -773,7 +783,7 @@ async fn run_scan_phase(
     }
     emit_state(app_handle, steam_id, state).await;
 
-    ready
+    ready.into_iter().map(|(_, scanned)| scanned).collect()
 }
 
 /// Unlocks every achievement in `game`, one at a time, in order - schedule-waiting, idling, retrying
