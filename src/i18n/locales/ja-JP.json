@@ -178,7 +178,37 @@
   "auth": {
     "landing": {
       "title": "Steam Game Idlerにログイン",
-      "agentButton": "Steamにログイン"
+      "agentButton": "Steamにログイン",
+      "localButton": "従来のログイン",
+      "localAlreadySignedIn": "アカウントが既にログインしています。一度にログインできるのは一つのアカウントのみです。",
+      "acknowledge": "続行することで、<0>利用規約</0>に同意し、<1>プライバシーポリシー</1>を読んで確認したものとみなされます。"
+    },
+    "signIn": {
+      "usernameLabel": "ユーザー名",
+      "usernamePlaceholder": "Steamのユーザー名を入力してください",
+      "passwordLabel": "パスワード",
+      "passwordPlaceholder": "Steamのパスワードを入力してください",
+      "usernameRequired": "Steamのユーザー名を入力してください。",
+      "passwordRequired": "Steamのパスワードを入力してください。",
+      "credentialsSectionLabel": "アカウント名でログイン",
+      "guardCode": {
+        "deviceTitle": "Steamモバイルアプリを確認してください",
+        "deviceDescription": "Steamモバイルアプリのコードを入力してください。",
+        "emailTitle": "メールを確認してください",
+        "emailDescription": "{{email}} にコードを送信しました。以下に入力してください。",
+        "confirmationTitle": "このログインを承認する",
+        "confirmationDescription": "続行するには、Steamモバイルアプリでサインインリクエストを承認してください。",
+        "codeLabel": "Steam Guardコード",
+        "incorrectCode": "そのコードは正しくありませんでした。もう一度お試しください。",
+        "submitButton": "認証"
+      },
+      "qrCode": {
+        "sectionLabel": "またはQRコードでサインイン",
+        "instructions": "Steamモバイルアプリを使用して、QRコードでサインインしてください。"
+      },
+      "errors": {
+        "title": "サインインできませんでした"
+      }
     }
   }
 }

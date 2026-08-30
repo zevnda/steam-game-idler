@@ -626,6 +626,7 @@
         "sessionFailed": "无法登录 Steam 社区，请检查您的 Cookie 并重试",
         "sessionExpired": "您的 Steam 社区会话已过期，请重新连接以继续",
         "scrapeFailed": "当前无法从 Steam 检查卡牌掉落",
+        "familyViewRestricted": "您的 Steam 帐户已启用家庭视图，请禁用后重试。",
         "generic": "更新挂卡状态时出错，请重试，（{{code}}）"
       },
       "settings": {
