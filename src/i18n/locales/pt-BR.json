@@ -411,6 +411,11 @@
       "count_one": "{{count}} jogos na fila",
       "count_other": "{{count}} jogo em fila"
     },
+    "achievements": {
+      "protectedAlert": {
+        "description": "Conquistas ou estatísticas marcadas como protegidas são definidas pelo servidor do jogo e não podem ser alteradas pelos clientes."
+      }
+    },
     "settings": {
       "debug": {
         "system": {
