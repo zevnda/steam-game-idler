@@ -176,13 +176,17 @@ export const AchievementOrderOverlay = () => {
                           />
                         </div>
                       </SortableContext>
-                      <DragOverlay>
+                      {/* `dropAnimation={null}` disables dnd-kit's built-in drop animation, which
+                          otherwise races the underlying list's own re-render (`reorder` below runs
+                          synchronously in `onDragEnd`, but React's commit still lands a frame later
+                          than the overlay's animation start) and reads as a snap-back-then-correct
+                          glitch - same fix as AchievementUnlockerListGrid.tsx's DragOverlay. */}
+                      <DragOverlay dropAnimation={null}>
                         {activeAchievement ? (
                           <AchievementOrderRow
                             isOverlay
                             achievement={activeAchievement}
                             appId={openGame.appId}
-                            onSetDelay={setDelay}
                             onToggleSkip={toggleSkip}
                           />
                         ) : null}

@@ -718,6 +718,7 @@
       },
       "order": {
         "delayBeforeFirstUnlock": "Delay before first unlock",
+        "delayUntilNextUnlock": "Delay until next unlock",
         "reset": "Reset",
         "skipped": "Skipped",
         "empty": {
