@@ -406,14 +406,266 @@
     "idling": {
       "stopAll": "Parar Tudo",
       "sections": {
-        "manual": "Ocioso manualmente"
+        "manual": "Ocioso manualmente",
+        "other": "Outros"
+      },
+      "empty": {
+        "title": "Sem jogos ociosos",
+        "description": "Inicie um jogo ocioso na aba Jogos para vê-lo aqui."
+      },
+      "errors": {
+        "startFailed": "Não foi possível iniciar este jogo.",
+        "maxPlaytimeCapReached": "Este jogo já atingiu o limite máximo de tempo de jogo.",
+        "generic": "Algo deu errado. Por favor, tente novamente. ({{code}})"
       },
       "count_one": "{{count}} jogos na fila",
       "count_other": "{{count}} jogo em fila"
     },
+    "favorites": {
+      "confirmClear": {
+        "title": "Limpar todos os favoritos?",
+        "description": "Isto removerá todos os {{count}} jogos da sua lista de favoritos."
+      },
+      "empty": {
+        "title": "Ainda sem favoritos",
+        "description": "Adicione jogos da categoria Todos os Jogos para vê-los aqui."
+      },
+      "errors": {
+        "title": "Falha ao atualizar os favoritos",
+        "cacheIoFailed": "Não foi possível ler ou gravar no cache de favoritos.",
+        "generic": "Algo deu errado ao atualizar os favoritos. Por favor, tente novamente ({{code}})"
+      },
+      "count_one": "{{count}} favorito",
+      "count_other": "{{count}} favoritos"
+    },
+    "freeGames": {
+      "actions": {
+        "claim": "Resgatar",
+        "claimed": "Resgatado"
+      },
+      "outcomes": {
+        "alreadyOwned": "Você já tem esse jogo."
+      },
+      "empty": {
+        "title": "Sem novos jogos grátis agora",
+        "description": "Consulte novamente depois — Steam oferece jogos grátis periodicamente."
+      },
+      "errors": {
+        "title": "Não foi possível carregar jogos novos",
+        "scrapeFailed": "Não foi possível checar a Steam para jogos grátis agora.",
+        "storeLoginFailed": "Não foi possível iniciar sessão na loja da Steam. Por favor, tente novamente.",
+        "storeLogoutFailed": "Não foi possível encerrar a sessão da loja da Steam. Por favor, tente novamente.",
+        "claimFailed": "Não foi possível resgatar este jogo. Ele pode não estar mais grátis, ou você já o possui.",
+        "generic": "Algo deu errado carregando os jogos grátis. Por favor, tente novamente. ({{code}})"
+      },
+      "notifications": {
+        "title": "Novos jogos disponíveis!",
+        "bodyOne": "{{name}} está de graça na Steam agora.",
+        "bodyMany": "{{count}} novos jogos grátis estão disponíveis na Steam."
+      },
+      "autoRedeem": {
+        "success": "Resgatado automaticamente {{name}}",
+        "failure": "Não foi possível resgatar automaticamente {{name}}"
+      },
+      "correction": {
+        "granted": "{{name}} foi resgatado com sucesso — o erro passado era falso."
+      },
+      "count_one": "{{count}} jogo grátis Disponíveis",
+      "count_other": "{{count}} jogos grátis Disponíveis"
+    },
     "achievements": {
+      "tabs": {
+        "achievements": "Conquistas",
+        "statistics": "Estatísticas"
+      },
+      "header": {
+        "viewOnSteam": "Ver na Steam",
+        "viewOnSteamDb": "Ver na SteamDB"
+      },
       "protectedAlert": {
+        "title": "Alguns itens estão protegidos",
         "description": "Conquistas ou estatísticas marcadas como protegidas são definidas pelo servidor do jogo e não podem ser alteradas pelos clientes."
+      },
+      "unlockedCount": "{{unlocked}} / {{total}} desbloqueado",
+      "noDescription": "Sem descrição",
+      "protectedTooltip": "Definido pelo servidor do jogo e não pode ser alterado pelos clientes.",
+      "statFlags": "Bandeiras: {{flags}}",
+      "edited": "Editado",
+      "editedCount": "{{count}} editados",
+      "incrementOnlyTooltip": "Esta estatística só pode ser aumentada, nunca diminuída.",
+      "sort": {
+        "percent": "% de desbloqueio global",
+        "unlocked": "Desbloqueada primeiro",
+        "locked": "Bloqueada primeiro",
+        "unprotected": "Desprotegida primeiro",
+        "protected": "Protegida primeiro"
+      },
+      "rarity": {
+        "common": "Comum",
+        "uncommon": "Incomum",
+        "rare": "Raro",
+        "epic": "Épico",
+        "legendary": "Lendário"
+      },
+      "actions": {
+        "unlock": "Desbloquear",
+        "lock": "Bloquear",
+        "unlockAll": "Desbloquear tudo",
+        "lockAll": "Bloquear tudo",
+        "applyChanges": "Aplicar mudanças",
+        "applyChangesCount": "Aplicar mudanças ({{count}})",
+        "saveChanges": "Salvar alterações",
+        "saveChangesCount": "Salvar alterações({{count}})",
+        "resetAll": "Redefinir todos"
+      },
+      "confirmUnlockAll": {
+        "title": "Desbloqueie todas as conquistas?",
+        "description": "Isso desbloqueará todas as conquistas deste jogo que ainda não estejam desbloqueadas ou protegidas."
+      },
+      "confirmLockAll": {
+        "title": "Bloquear todas as conquistas?",
+        "description": "Isso bloqueará todas as conquistas deste jogo que ainda não estejam bloqueadas ou protegidas."
+      },
+      "confirmApplyChanges": {
+        "title": "Aplicar alterações faseadas?",
+        "descriptionBoth": "Isto vai bloquear {{unlockCount}} e desbloquear {{lockCount}} conquista(s) faseada(s).",
+        "descriptionUnlockOnly": "Isto vai desbloquear {{unlockCount}} conquista(s) faseada(s).",
+        "descriptionLockOnly": "Isto vai bloquear {{lockCount}} conquista(s) faseada(s)."
+      },
+      "confirmResetStats": {
+        "title": "Redefinir todas as estatísticas?",
+        "description": "Isto vai redefinir todas as estatísticas para esse jogo para o valor padrão. Isso não pode ser desfeito."
+      },
+      "empty": {
+        "title": "Sem conquistas",
+        "description": "Esse jogo não tem conquistas."
+      },
+      "emptyStats": {
+        "title": "Sem estatísticas",
+        "description": "Esse jogo não tem nenhuma estatística."
+      },
+      "searchNoResults": {
+        "title": "Sem resultados",
+        "description": "Tente um termo de pesquisa diferente."
+      },
+      "toasts": {
+        "achievementUnlocked": "''{{name}}'' desbloqueado",
+        "achievementLocked": "''{{name}}'' bloqueado",
+        "bulkNoChanges": "Nada para alterar — já foi requisitado ou protegido.",
+        "applyPartialFailure": "Não foi possível atualizar conquistas faseadas. Por favor, tente novamente.",
+        "statsReset": "Redefinir estatísticas",
+        "bulkUnlocked_one": "{{count}} conquista desbloqueada",
+        "bulkUnlocked_other": "{{count}} conquistas desbloqueadas",
+        "bulkLocked_one": "{{count}} conquista travada",
+        "bulkLocked_other": "{{count}} conquistas destravadas",
+        "changesApplied_one": "{{count}} conquista atualizada",
+        "changesApplied_other": "{{count}} conquistas atualizadas",
+        "statsSaved_one": "{{count}} estatística atualizada",
+        "statsSaved_other": "{{count}} estatísticas atualizadas"
+      },
+      "errors": {
+        "title": "Não foi possível carregar conquistas",
+        "invalidApp": "Esse aplicativo não tem dados de conquistas.",
+        "achievementNotFound": "Essa conquista não pode ser encontrada.",
+        "statNotFound": "Essa estatística não pode ser encontrada.",
+        "protected": "Esse valor é definido pelo servidor do jogo e não pode ser alterado.",
+        "unsupportedGameCoordinator": "Este jogo não é compatível com conquistas quando você está conectado com o Steam — use seu cliente Steam local.",
+        "unsupportedGameCoordinatorLinux": "Este jogo não é compatível com conquistas quando a sessão é iniciada com o Steam.",
+        "generic": "Ocorreu um erro ao carregar as conquistas. Tente novamente. ({{code}})"
+      },
+      "statCount_one": "{{count}} estatística",
+      "statCount_other": "{{count}} estatísticas"
+    },
+    "cardFarming": {
+      "status": {
+        "idle": "Nada farmando",
+        "farming_one": "Farmando {{count}} jogo",
+        "farming_other": "Farmando {{count}} jogos"
+      },
+      "actions": {
+        "stop": "Parar farm"
+      },
+      "confirmClearWhitelist": {
+        "title": "Limpar a lista branca de farm de cartas?",
+        "description": "Isto irá remover todos os {{count}} jogos da lista branca de farm de cartas. Voltar a farmar vai considerar todos os jogos com drops."
+      },
+      "multiGameNotice": {
+        "title": "Farmar multiplos jogos de uma vez?",
+        "description": "Farmar múltiplos jogos de uma só vez pode diminuir a frequência de drop de cartas por jogo. Se você não vê."
+      },
+      "confirmClearBlacklist": {
+        "title": "Limpar a lista negra de farm de cartas?",
+        "description": "Isto irá remover todos os {{count}} jogos da blacklist de farm de cartas."
+      },
+      "tabs": {
+        "gamesWithDrops": "Jogos com Drops",
+        "whitelisted": "Permitido",
+        "blacklisted": "Não permitido"
+      },
+      "sort": {
+        "dropsDesc": "Drops restantes (de maior a menor)",
+        "dropsAsc": "Drops restantes (de menor a maior)"
+      },
+      "browseEmpty": {
+        "title": "Sem drops de cartas restantes",
+        "description": "Todos drops de carta de jogos possuídos, tanto totalmente farmados ou não, estão disponíveis agora."
+      },
+      "whitelistEmpty": {
+        "title": "Sem jogos permitidos",
+        "description": "Adicione jogos da aba Jogos com Drops para restringir o farm para apenas esses jogos. Deixe vazio para farmar todos os jogos com drops."
+      },
+      "blacklistEmpty": {
+        "title": "Sem jogos Não permitidos",
+        "description": "Jogos que você proibiu de aba Jogos com Drops, nunca vão sser farmadas e aparecer aqui."
+      },
+      "connect": {
+        "automaticDescription": "Entre com a Comunidade Steam para checar drops automaticamente."
+      },
+      "progress": {
+        "activeTitleReadyFarm": "Farmando ({{count}})",
+        "activeTitleBulkIdle": "Tempo de jogo ({{count}})",
+        "queueTitle": "Restantes ({{count}})",
+        "accumulatingPlaytime": "{{hours}}h / {{threshold}}h até farmar",
+        "waitingTurn": "Esperando sua vez",
+        "completedNoDropsRemaining": "Nada mais para farmar",
+        "completedRefundWindow": "Continue no prazo de reembolso (pode voltar a farmar {{date}})",
+        "completedSkippedUnplayed": "Removido da lista branca: não há horas registradas",
+        "completedSkippedPlayed": "Removido da lista branca: já tem as horas registradas",
+        "dropsRemaining_one": "{{count}} drop restante",
+        "dropsRemaining_other": "{{count}} drops restantes"
+      },
+      "errors": {
+        "title": "Não pode atualizar o farm de cartas",
+        "sessionFailed": "Não pode entrar na Comunidade Steam. Confira seus cookies e tente novamente.",
+        "sessionExpired": "Sua sessão da Comunidade Steam expirou. Por favor, reconecte para continuar.",
+        "scrapeFailed": "Não foi possível checar a Steam para dropar cartas agora.",
+        "familyViewRestricted": "O Modo Família está ativado na sua conta Steam. Desative o Modo Família e tente novamente.",
+        "generic": "Algo deu errado atualizando o farm de cartas. Por favor, tente novamente. ({{code}})"
+      },
+      "settings": {
+        "hoursUntilFarmable": {
+          "title": "Horas até poder farmar",
+          "description": "Quantas horas de jogo são necessárias antes de ser considerável farmável. Configure para 0 para pular direto para o farm."
+        },
+        "allowMultiGameFarming": {
+          "title": "Farme múltiplos jogos ao mesmo tempo",
+          "description": "Farme até 32 jogos simultâneos ao invés de um por vez. Em alguns casos isso pode causar lentidão significativa no farm."
+        },
+        "skipRefundableGames": {
+          "title": "Pular jogos reembolsáveis",
+          "description": "Não farmar um jogo que ainda está na janela de reembolso (comprado dentro de 14 dias e abaixo de 2 horas de jogo)."
+        },
+        "autoFarmCards": {
+          "title": "Farmar cartas automaticamente",
+          "description": "Checar periodicamente para jogos possuídos com drop de cartas faltantes e farmar automaticamente eles."
+        },
+        "skipNoPlaytime": {
+          "title": "Pular jogos nunca jogados",
+          "description": "Não farmar jogos que não tenham tempo de jogo."
+        },
+        "farmUnplayedOnly": {
+          "title": "Apenas jogos nunca jogados"
+        }
       }
     },
     "settings": {
