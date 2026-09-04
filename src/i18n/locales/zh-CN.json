@@ -704,6 +704,7 @@
       },
       "order": {
         "delayBeforeFirstUnlock": "首次解锁前的延迟",
+        "delayUntilNextUnlock": "推迟至下次解锁",
         "reset": "重置",
         "skipped": "已跳过",
         "empty": {
