@@ -81,8 +81,8 @@ Help contribute to this project by adding new translations or improving existing
 | Language             | Flag | Language | Flag | Language | Flag |
 | -------------------- | ---- | -------- | ---- | -------- | ---- |
 | Chinese (Simplified) | 🇨🇳    | English  | 🇬🇧    | French   | 🇫🇷    |
-| German               | 🇩🇪    | Italian  | 🇮🇹    | Russian  | 🇷🇺    |
-| Spanish              | 🇪🇸    | Turkish  | 🇹🇷    |          |      |
+| German               | 🇩🇪    | Italian  | 🇮🇹    | Portuguese (Brazil) | 🇧🇷 |
+| Russian              | 🇷🇺    | Spanish  | 🇪🇸    | Turkish  | 🇹🇷    |
 
 # License
 Copyright © 2024-2026 zevnda — **[Elastic-2.0 License](./LICENSE)**

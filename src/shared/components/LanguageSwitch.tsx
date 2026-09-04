@@ -28,6 +28,7 @@ const ENABLED_LANGUAGES: ReadonlySet<string> = new Set([
   'es-ES',
   'fr-FR',
   'it-IT',
+  'pt-BR',
   'ru-RU',
   'tr-TR',
   'zh-CN',
