@@ -532,10 +532,30 @@ design. Sidebar is a real `SidebarItem` component rendered from a data-driven se
 
 ## i18n
 
-Only `en-US.json` is hand-maintained; the 6 other shipped locales (it-IT, ru-RU, fr-FR, zh-CN,
-pt-BR, tr-TR) sync via Crowdin (`.github/workflows/crowdin.yml`) — don't hand-edit or
+Only `en-US.json` is hand-maintained; the 8 other shipped locales (de-DE, es-ES, fr-FR, it-IT,
+pt-BR, ru-RU, tr-TR, zh-CN) sync via Crowdin (`.github/workflows/crowdin.yml`) — don't hand-edit or
 recreate them. `src/i18n/index.ts` types `i18next`'s resources from `en-US.json` and exports
 `TranslationKey` (every valid dot-path key) for compile-time key checking on literal `t()` calls.
+
+**Enabling a locale once Crowdin finishes translating it** (going from dimmed/unselectable to a
+real option in the language picker) is a two-file change, no more:
+1. Confirm completeness first — every leaf key in `src/i18n/locales/<locale>.json` should be
+   non-empty (spot-check, or diff key counts against `en-US.json`); Crowdin syncs partial progress
+   continuously, so a locale file existing is not the same as it being done.
+2. Add the locale code to `ENABLED_LANGUAGES` in
+   `src/shared/components/LanguageSwitch.tsx` — this is the **only** functional gate in the whole
+   app. Everything downstream already reads `i18n.language` generically (frontend `Intl`-based
+   sorting/formatting, and the backend's `steam_language_for_locale` in
+   `src-tauri/src/achievements/steam_language.rs`, which by its own design already covers every
+   locale in `src/i18n/index.ts`'s `resources` map, not just the enabled ones) — don't go looking
+   for other per-locale branches to update, there aren't any.
+3. Add a row to `README.md`'s "Supported Languages" table (language name + flag emoji, kept in
+   the existing 3-column layout).
+
+The only case needing more than that: a genuinely new locale (not just enabling an
+already-scaffolded one) also needs an `import`/`resources` entry in `src/i18n/index.ts` and a
+`steam_language_for_locale` match arm if it maps to a distinct Steam schema language key — see that
+file's own doc comment for the fallback-to-`"english"` behavior if it doesn't.
 
 **Hard rules for all frontend work:**
 - **Never hardcode a user-visible raw string** — every UI text goes through `useTranslation()`/
