@@ -1,11 +1,11 @@
 {
-  "id": "sgi-rewrite-2026-07",
+  "id": "sgi-giveaway-2026-09",
   "variant": "promo",
-  "title": "Steam Game Idler v6 is Here",
-  "message": "Steam Game Idler has been completely rebuilt from the ground up with full multi-account support, new sign-in method, and an improved interface.",
-  "ctaLabel": "Learn More",
-  "ctaUrl": "https://steamgameidler.com/changelog/6.0.0",
-  "asset": "update.webp",
+  "title": "Steam Game Idler PRO Giveaway (1-month)",
+  "message": "Win a 1-month Steam Game Idler PRO subscription! Enter the giveaway on Discord now and boost your SGI experience with exclusive features.",
+  "ctaLabel": "Join the Discord",
+  "ctaUrl": "https://discord.gg/5kY2ZbVnZ8",
+  "asset": "giveaway.webp",
   "dismissal": "permanent",
   "enabled": true
 }
