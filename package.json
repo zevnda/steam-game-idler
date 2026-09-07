@@ -23,6 +23,7 @@
     "lint:docs": "pnpm --filter steam-game-idler-docs lint",
     "lint:all": "pnpm lint && pnpm lint:docs",
     "i18n:check": "node scripts/check-i18n.mjs",
+    "ai-corpus:build": "node scripts/build-ai-corpus.mjs",
     "tauri": "tauri",
     "prepare": "husky",
     "prettier": "prettier --write .",

@@ -16,7 +16,8 @@
       "done": "Done",
       "copy": "Copy",
       "paste": "Paste",
-      "add": "Add"
+      "add": "Add",
+      "send": "Send"
     },
     "gameCardMenu": {
       "startIdling": "Start Idling",
@@ -134,7 +135,23 @@
   "titlebar": {
     "closeToTrayNotification": "Steam Game Idler will continue to run in the background",
     "helpDesk": "Help Desk",
+    "aiChat": "AI Assistant",
     "updateReady": "Update ready"
+  },
+  "aiChat": {
+    "placeholder": "Ask a question about using Steam Game Idler...",
+    "sources": "Sources",
+    "empty": {
+      "title": "Ask me anything about Steam Game Idler",
+      "description": "I can walk you through exactly where to find a feature and how to use it, based on the app's own documentation and interface."
+    },
+    "quota": {
+      "remaining": "{{used}} / {{max}} messages used today"
+    },
+    "errors": {
+      "generic": "Something went wrong. Please try again shortly.",
+      "quotaExceeded": "You've reached today's message limit. Come back tomorrow, or upgrade for a higher daily limit."
+    }
   },
   "tray": {
     "show": "Show",
@@ -214,11 +231,13 @@
       "continueWithPaypal": "PayPal",
       "processing": "Processing...",
       "cancelAnytime": "Cancel Anytime",
+      "messagesPerDay": "{{count}}/day",
       "casual": {
         "name": "Casual",
         "discordRole": "Discord PRO Role",
         "multiAccount": "3 Concurrent Accounts",
-        "multipleUnlockerGames": "Unlock 3 Games At Once"
+        "multipleUnlockerGames": "Unlock 3 Games At Once",
+        "aiAssistant": "25 AI Assistant Messages/Day"
       },
       "gamer": {
         "name": "Gamer",
@@ -226,7 +245,8 @@
         "sellDupes": "Sell Duplicate Inventory Items",
         "importTimings": "Import Achievement Unlock Timings",
         "multipleUnlockerGames": "Unlock 32 Games At Once",
-        "multiAccount": "10 Concurrent Accounts"
+        "multiAccount": "10 Concurrent Accounts",
+        "aiAssistant": "50 AI Assistant Messages/Day"
       }
     },
     "faq": {

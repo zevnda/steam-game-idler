@@ -12,6 +12,7 @@ import { useRouter } from 'next/router'
 import { Logo } from '@/shared/components/dashboard/Logo'
 import { GoPro } from '@/shared/components/pro/GoPro'
 import { GlobalSearchBar } from '@/shared/components/search/GlobalSearchBar'
+import { AiChatButton } from '@/shared/components/titlebar/AiChatButton'
 import { HelpDesk } from '@/shared/components/titlebar/HelpDesk'
 import { Menu } from '@/shared/components/titlebar/Menu'
 import { Notifications } from '@/shared/components/titlebar/Notifications'
@@ -134,6 +135,10 @@ export const Titlebar = ({ minimal = false }: TitlebarProps) => {
           {!minimal && (
             <>
               {updateAvailable && <UpdateButton />}
+              {/* Dashboard-only: AiChatOverlay is mounted in DashboardShell (not globally like
+                  HelpDesk's Chatway widget), so the button would open nothing on the sign-in
+                  screen. */}
+              {isDashboard && <AiChatButton />}
               <HelpDesk />
               <Notifications />
               <Menu />

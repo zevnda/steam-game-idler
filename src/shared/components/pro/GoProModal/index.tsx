@@ -11,6 +11,7 @@ import {
   TbGift,
   TbHeadset,
   TbKey,
+  TbMessageChatbot,
   TbPalette,
   TbPhoto,
   TbRefresh,
@@ -272,6 +273,7 @@ export const GoProModal = () => {
                       tier='casual'
                       url={priceData.tierOne.url}
                       features={[
+                        { label: t('proMode.tier.casual.aiAssistant'), icon: TbMessageChatbot },
                         { label: t('proMode.tier.casual.multiAccount'), icon: TbUsers },
                         { label: t('proMode.tier.casual.multipleUnlockerGames'), icon: TbAward },
                         { label: t('proMode.cards.gamesList.title'), icon: TbRefresh },
@@ -293,6 +295,7 @@ export const GoProModal = () => {
                       tier='gamer'
                       url={priceData.tierTwo.url}
                       features={[
+                        { label: t('proMode.tier.gamer.aiAssistant'), icon: TbMessageChatbot },
                         { label: t('proMode.tier.gamer.multiAccount'), icon: TbUsers },
                         { label: t('proMode.tier.gamer.multipleUnlockerGames'), icon: TbAward },
                         { label: t('proMode.cards.credentials.title'), icon: TbKey },
