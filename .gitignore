@@ -26,8 +26,13 @@ Thumbs.db
 desktop.ini
 *.pem
 
-# claude code runtime state
-/.claude/
+# claude code runtime state - skills/ is carved back out below since it's shared repo tooling
+# (e.g. /generate-ui-guide), not local/ephemeral state like scheduled_tasks.lock. Ignoring
+# `/.claude/*` (children) rather than `/.claude/` (the directory itself) matters here: excluding
+# the directory node outright makes git prune the whole subtree before it ever evaluates the
+# negation lines below, so the carve-out would silently do nothing.
+/.claude/*
+!/.claude/skills/
 
 # debug
 npm-debug.log*

@@ -6,6 +6,7 @@ import { useAgentAccountCapEnforcement } from '@/features/account-switcher/hooks
 import { AchievementManagerOverlay } from '@/features/achievement-manager/components/AchievementManagerOverlay'
 import { AchievementOrderOverlay } from '@/features/achievement-unlocker/components/AchievementOrderOverlay'
 import { useAchievementUnlockerSync } from '@/features/achievement-unlocker/hooks/useAchievementUnlockerSync'
+import { AiChatOverlay } from '@/features/ai-chat/components/AiChatOverlay'
 import { useAutoIdleStartup } from '@/features/auto-idle/hooks/useAutoIdleStartup'
 import { useAutoFarmCards } from '@/features/card-farming/hooks/useAutoFarmCards'
 import { useCardFarmingSync } from '@/features/card-farming/hooks/useCardFarmingSync'
@@ -87,6 +88,7 @@ export const DashboardShell = ({ children }: DashboardShellProps) => {
       <ReauthModal />
       <AchievementManagerOverlay />
       <AchievementOrderOverlay />
+      <AiChatOverlay />
       <GlobalSearchModal />
       <SteamWarning />
       <Banner />

@@ -10,6 +10,7 @@ import {
   TbGift,
   TbHeadset,
   TbKey,
+  TbMessageChatbot,
   TbPalette,
   TbPhoto,
   TbRefresh,
@@ -96,6 +97,14 @@ export function getFeatureCards(t: TFunction) {
 
 export function getComparisonRows(t: TFunction) {
   return [
+    {
+      label: t('titlebar.aiChat'),
+      icon: TbMessageChatbot,
+      tier: 'casual',
+      freeValue: t('proMode.tier.messagesPerDay', { count: 3 }),
+      casualValue: t('proMode.tier.messagesPerDay', { count: 25 }),
+      gamerValue: t('proMode.tier.messagesPerDay', { count: 50 }),
+    },
     {
       label: t('proMode.cards.multiAccount.title'),
       icon: TbUsers,
