@@ -202,14 +202,25 @@ async function main() {
     isDirectory: true,
     path: `${CORPUS_DIR}/ui-guides`,
   })
+  const architectureGuideChunks = loadLocalMarkdownChunks('architecture-guide', {
+    isDirectory: true,
+    path: `${CORPUS_DIR}/architecture-guides`,
+  })
   const platformFactsChunks = loadLocalMarkdownChunks('platform-facts', {
     isDirectory: false,
     path: `${CORPUS_DIR}/platform-facts.md`,
   })
 
-  const allChunks = [...docsChunks, ...uiGuideChunks, ...platformFactsChunks]
+  const allChunks = [
+    ...docsChunks,
+    ...uiGuideChunks,
+    ...architectureGuideChunks,
+    ...platformFactsChunks,
+  ]
   console.warn(
-    `Parsed ${docsChunks.length} docs chunks, ${uiGuideChunks.length} UI guide chunks, ${platformFactsChunks.length} platform-facts chunks.`,
+    `Parsed ${docsChunks.length} docs chunks, ${uiGuideChunks.length} UI guide chunks, ` +
+      `${architectureGuideChunks.length} architecture guide chunks, ` +
+      `${platformFactsChunks.length} platform-facts chunks.`,
   )
 
   const records = await embedAll(allChunks, apiKey)
