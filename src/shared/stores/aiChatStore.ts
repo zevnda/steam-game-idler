@@ -1,15 +1,9 @@
 import { create } from 'zustand'
 
-export interface AiChatSource {
-  title: string
-  url: string
-}
-
 export interface AiChatMessage {
   id: string
   role: 'user' | 'assistant'
   content: string
-  sources?: AiChatSource[]
 }
 
 export interface AiChatQuota {
@@ -27,6 +21,8 @@ interface AiChatStore {
   addMessage: (message: AiChatMessage) => void
   setSending: (isSending: boolean) => void
   setQuota: (quota: AiChatQuota) => void
+  clearQuota: () => void
+  clearMessages: () => void
 }
 
 // Session-only AI Assistant panel state - deliberately not persisted (cleared on app restart) and
@@ -43,4 +39,8 @@ export const useAiChatStore = create<AiChatStore>(set => ({
   addMessage: message => set(state => ({ messages: [...state.messages, message] })),
   setSending: isSending => set({ isSending }),
   setQuota: quota => set({ quota }),
+  clearQuota: () => set({ quota: null }),
+  // Only wipes conversation history - `quota` is real server-tracked daily usage tied to the
+  // caller's identity, not conversation state, so starting a new chat must not reset it.
+  clearMessages: () => set({ messages: [] }),
 }))

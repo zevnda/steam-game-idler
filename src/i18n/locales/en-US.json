@@ -16,8 +16,7 @@
       "done": "Done",
       "copy": "Copy",
       "paste": "Paste",
-      "add": "Add",
-      "send": "Send"
+      "add": "Add"
     },
     "gameCardMenu": {
       "startIdling": "Start Idling",
@@ -139,14 +138,14 @@
     "updateReady": "Update ready"
   },
   "aiChat": {
-    "placeholder": "Ask a question about using Steam Game Idler...",
-    "sources": "Sources",
+    "newChat": "New chat",
+    "placeholder": "Ask a question about Steam Game Idler...",
     "empty": {
-      "title": "Ask me anything about Steam Game Idler",
-      "description": "I can walk you through exactly where to find a feature and how to use it, based on the app's own documentation and interface."
+      "title": "Ask me anything"
     },
-    "quota": {
-      "remaining": "{{used}} / {{max}} messages used today"
+    "limit": {
+      "upgradePrompt": "Daily limit reached. Upgrade to continue or wait {{time}}.",
+      "resetsIn": "Daily limit reached. Resets in {{time}}."
     },
     "errors": {
       "generic": "Something went wrong. Please try again shortly.",
@@ -231,7 +230,7 @@
       "continueWithPaypal": "PayPal",
       "processing": "Processing...",
       "cancelAnytime": "Cancel Anytime",
-      "messagesPerDay": "{{count}}/day",
+      "messagesPerDay": "{{count}} msgs/day",
       "casual": {
         "name": "Casual",
         "discordRole": "Discord PRO Role",
