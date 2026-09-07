@@ -21,11 +21,15 @@ names, click targets — grounded in the real component code, not a guess.
 
 ## Steps
 
-1. **Find the feature's component tree.** Features live under `src/features/<feature>/` (see root
+1. **Find the component tree.** Most features live under `src/features/<feature>/` (see root
    `CLAUDE.md`'s "Repo layout"). Read every component under `src/features/<feature>/components/`
    that renders visible UI — not just the top-level page, but overlays/modals it opens (check
    `src/shared/components/dashboard/DashboardShell.tsx` for overlays gated behind that feature's
-   own zustand store) and any shared components it composes.
+   own zustand store) and any shared components it composes. **Global/shared UI that isn't tied to
+   one feature** (the titlebar and its buttons, the sidebar, notifications, the account switcher
+   chrome) doesn't live under `src/features/` at all — for one of these, target the relevant
+   `src/shared/components/<area>/` folder instead (e.g. `/generate-ui-guide titlebar` →
+   `src/shared/components/titlebar/`). Same process either way; only the source folder differs.
 
 2. **Read for the visual/interactive detail, not the business logic.** For each interactive
    element, note:
