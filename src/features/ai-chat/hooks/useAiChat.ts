@@ -1,8 +1,9 @@
 import type { AiChatApiResponse } from '@/shared/utils/aiChatApi'
-import { useCallback } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAiChatStore } from '@/shared/stores/aiChatStore'
 import { useSessionStore } from '@/shared/stores/sessionStore'
+import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { AI_CHAT_API_URL } from '@/shared/utils/aiChatApi'
 import { logFrontendWarn } from '@/shared/utils/frontendLogging'
 import { invoke } from '@/shared/utils/invoke'
@@ -28,6 +29,21 @@ export function useAiChat() {
   const addMessage = useAiChatStore(state => state.addMessage)
   const setSending = useAiChatStore(state => state.setSending)
   const setQuota = useAiChatStore(state => state.setQuota)
+  const clearQuota = useAiChatStore(state => state.clearQuota)
+  const subscriptionTier = useSubscriptionStore(state => state.subscriptionTier)
+
+  // The daily quota is keyed server-side by license key (or device fingerprint for an unlicensed
+  // caller) - activating a license key mid-session, or a tier change from a plan swap, moves the
+  // caller to a different identity/cap entirely. Without this, a cached `quota` object from the old
+  // identity (e.g. a maxed-out free-tier fingerprint) keeps `isInputDisabled` true forever, since
+  // nothing else ever triggers a fresh request to learn the new identity's real (reset) usage.
+  const previousTierRef = useRef(subscriptionTier)
+  useEffect(() => {
+    if (previousTierRef.current !== subscriptionTier) {
+      previousTierRef.current = subscriptionTier
+      clearQuota()
+    }
+  }, [subscriptionTier, clearQuota])
 
   const sendQuestion = useCallback(
     async (question: string) => {
@@ -67,7 +83,6 @@ export function useAiChat() {
           id: crypto.randomUUID(),
           role: 'assistant',
           content: data.answer,
-          sources: data.sources,
         })
       } catch (error) {
         logFrontendWarn('useAiChat', 'AI chat request failed', { error: String(error) })

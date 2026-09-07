@@ -98,14 +98,6 @@ export function getFeatureCards(t: TFunction) {
 export function getComparisonRows(t: TFunction) {
   return [
     {
-      label: t('titlebar.aiChat'),
-      icon: TbMessageChatbot,
-      tier: 'casual',
-      freeValue: t('proMode.tier.messagesPerDay', { count: 3 }),
-      casualValue: t('proMode.tier.messagesPerDay', { count: 25 }),
-      gamerValue: t('proMode.tier.messagesPerDay', { count: 50 }),
-    },
-    {
       label: t('proMode.cards.multiAccount.title'),
       icon: TbUsers,
       tier: 'casual',
@@ -120,6 +112,15 @@ export function getComparisonRows(t: TFunction) {
       freeValue: '1',
       casualValue: '3',
       gamerValue: '32',
+    },
+
+    {
+      label: t('titlebar.aiChat'),
+      icon: TbMessageChatbot,
+      tier: 'casual',
+      freeValue: t('proMode.tier.messagesPerDay', { count: 3 }),
+      casualValue: t('proMode.tier.messagesPerDay', { count: 25 }),
+      gamerValue: t('proMode.tier.messagesPerDay', { count: 50 }),
     },
     { label: t('proMode.cards.adFree.title'), icon: TbAd, tier: 'casual' },
     { label: t('proMode.cards.themes.title'), icon: TbPalette, tier: 'casual' },

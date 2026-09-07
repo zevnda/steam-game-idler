@@ -135,10 +135,10 @@ export const Titlebar = ({ minimal = false }: TitlebarProps) => {
           {!minimal && (
             <>
               {updateAvailable && <UpdateButton />}
-              {/* Dashboard-only: AiChatOverlay is mounted in DashboardShell (not globally like
-                  HelpDesk's Chatway widget), so the button would open nothing on the sign-in
-                  screen. */}
-              {isDashboard && <AiChatButton />}
+              {/* AiChatOverlay is root-mounted in _app.tsx (not scoped to DashboardShell), so this
+                  is reachable on the pre-dashboard sign-in screens too - nothing about the AI
+                  Assistant feature itself requires a signed-in account. */}
+              <AiChatButton />
               <HelpDesk />
               <Notifications />
               <Menu />

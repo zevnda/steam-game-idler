@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { RiRobotLine } from 'react-icons/ri'
+import { RiRobot3Line } from 'react-icons/ri'
 import { AppTooltip } from '@/shared/components/AppTooltip'
 import { useAiChatStore } from '@/shared/stores/aiChatStore'
 
@@ -19,7 +19,7 @@ export const AiChatButton = () => {
           className='relative flex h-14 w-12 items-center justify-center text-foreground cursor-pointer outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-focus'
           onClick={open}
         >
-          <RiRobotLine fontSize={18} />
+          <RiRobot3Line fontSize={18} />
         </button>
       </AppTooltip.Trigger>
       <AppTooltip.Content placement='bottom'>{t('titlebar.aiChat')}</AppTooltip.Content>
