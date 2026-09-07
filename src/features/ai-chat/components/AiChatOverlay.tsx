@@ -58,7 +58,7 @@ const markdownComponents: Components = {
   ),
   a: ({ children, href }) => (
     <button
-      className='text-left underline underline-offset-2'
+      className='cursor-pointer text-left text-accent underline underline-offset-2 duration-150 hover:text-accent/80'
       type='button'
       onClick={() => href && openExternalLink(href)}
     >
