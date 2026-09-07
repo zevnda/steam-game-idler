@@ -54,6 +54,8 @@ This page covers common issues and their solutions when using Steam Game Idler.
   <Accordion title="Antivirus or Windows Defender is blocking SGI" id="antivirus-blocking">
     SGI's installer and its bundled helper process (`SteamUtility.exe`, used for idling, achievement management, and Steam Sign-in) are not code-signed with a paid certificate, so Windows SmartScreen and some antivirus programs may flag them as "unknown publisher" or quarantine them. This is a false positive.
 
+    If a feature fails immediately with **"The Steam agent component is missing from this installation."** or **"Couldn't start the Steam agent process."**, `SteamUtility.exe` has most likely been quarantined or deleted — follow the steps below.
+
     <Steps>
       <Step>
         ### If SmartScreen blocks the installer
@@ -81,6 +83,8 @@ This page covers common issues and their solutions when using Steam Game Idler.
 
     - Install the [.NET Framework 4.8 runtime](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48) from Microsoft
     - Restart your PC after installing, then try again
+
+    This is also a common cause of **"The Steam agent process closed unexpectedly."** or **"Steam took too long to respond. Please try again."** — both mean `SteamUtility.exe` stopped responding, which a missing runtime causes just as often as the antivirus case above.
   </Accordion>
 
   <Accordion title="I need admin rights to install or update SGI" id="admin-rights">
@@ -158,6 +162,11 @@ This page covers common issues and their solutions when using Steam Game Idler.
     - If using the QR code, make sure you scanned it with the **Steam** mobile app's own QR scanner (top-right icon), not a generic QR app, and approve the prompt on your phone
     - An unscanned QR code expires after a short time and will automatically refresh itself, so there's no need to reopen the sign-in screen
     - Close the sign-in window and try again. It can occasionally get stuck on a stale attempt
+
+    What each on-screen error means:
+    - **"Incorrect username or password."** — self-explanatory; Steam doesn't distinguish a wrong username from a wrong password, so double-check both
+    - **"Sign-in request denied in the Steam Mobile app. Please try again."** — appears when **Deny** is tapped (instead of **Approve**) for either a QR sign-in or a 2FA confirmation prompt. This is never auto-retried since it reflects a deliberate choice — just sign in again and tap **Approve** this time
+    - **"Your Steam session isn't active anymore. Please sign in again."** or **"Your Steam ID hasn't been resolved yet. Please try again in a moment."** — usually transient, right after signing in or if the account was signed in elsewhere (see the "Signed in on another device" reconnect prompt). Wait a moment and retry
   </Accordion>
 
   <Accordion title="No Steam accounts show up on the Legacy Sign-in screen" id="no-accounts">
@@ -167,6 +176,18 @@ This page covers common issues and their solutions when using Steam Game Idler.
     - Open Steam and sign in normally, then restart SGI
     - If you use **Steam Guard**, complete the login fully (don't cancel at the 2FA prompt) before switching to SGI
     - If you'd rather not deal with the local Steam client at all, use [Steam Sign-in](/docs/get-started/how-to-sign-in#steam-sign-in) instead
+
+    - **"Couldn't find a local Steam installation."** means SGI couldn't locate Steam at all — confirm it's actually installed
+    - **"Couldn't read this device's saved Steam accounts."** means SGI found Steam but couldn't read its `loginusers.vdf` file. Signing in through the Steam client at least once (as above) regenerates this file
+  </Accordion>
+
+  <Accordion title="Switching Legacy Sign-in accounts, or launching Steam from SGI, fails" id="legacy-account-switch-fails">
+    These errors are all specific to **Legacy Sign-in**'s account switcher, which works by directly editing your local Steam client's saved login state:
+
+    - **"That account could no longer be found."** — the account was removed from `loginusers.vdf` (e.g. it was signed out of the Steam client entirely) since SGI last read it. Sign in to it through Steam once more, then try switching again
+    - **"Couldn't switch Steam accounts."** — SGI couldn't update the registry value Steam uses to decide which account to auto-login. Make sure Steam is fully closed before switching, and that SGI has normal write access to `HKEY_CURRENT_USER` (try running SGI as administrator once if this persists)
+    - **"Couldn't start the Steam client."** — SGI couldn't launch `steam.exe`. Make sure Steam is installed in a standard location and isn't itself broken (try launching it manually)
+    - **"Couldn't load account details right now."** — a transient failure fetching that account's profile summary from Steam. Retry, or check your internet connection
   </Accordion>
 
   <Accordion title="A 'Steam is closed' warning appears while using SGI" id="steam-closed-warning">
@@ -174,6 +195,8 @@ This page covers common issues and their solutions when using Steam Game Idler.
 
     - Reopen the Steam client and make sure you're signed in to the same account
     - This doesn't affect [Steam Sign-in](/docs/get-started/how-to-sign-in#steam-sign-in) accounts, since they don't need a local Steam client at all
+
+    You may also see this as **"Steam isn't running. Please start Steam and try again."** on a specific action (starting idling, unlocking an achievement, etc.) rather than as a standing banner — same cause, same fix.
   </Accordion>
 
   <Accordion title="Signed in, but my games list is empty or incomplete" id="empty-games-list">
@@ -192,6 +215,8 @@ This page covers common issues and their solutions when using Steam Game Idler.
     - Check the log file (<MockButton type='view-log-file' /> in [Debug Settings](/docs/settings/debug)) for a "Failed to start idling" message
     - If you recently reinstalled SGI, make sure `SteamUtility.exe` wasn't removed by your antivirus (see [Antivirus or Windows Defender is blocking SGI](#antivirus-blocking))
     - Close and reopen SGI, then try idling the game again
+
+    If you see **"Couldn't start idling this game."**, this is the generic idle-start failure above — check the log file for the specific underlying reason (it's usually one of the causes listed here).
   </Accordion>
 
   <Accordion title="A game shows as idling in SGI but Steam doesn't show it as 'Currently in game'" id="idle-not-reflected">
@@ -213,6 +238,38 @@ This page covers common issues and their solutions when using Steam Game Idler.
     - This won't affect your Steam library or achievements. It only stops the helper process
     - To avoid this in future, close SGI normally (via the tray menu **Quit** option) rather than force-closing it
   </Accordion>
+
+  <Accordion title='"This game has already reached its max playtime cap"' id="max-playtime-cap-reached">
+    This is expected, not a bug. It means a **max playtime** limit is configured for this game (or for all games) under [Settings → Game Settings](/docs/settings/game-settings), and the game's total recorded playtime has already reached it. This cap applies everywhere a game can be idled — manual and automatic idling, the Achievement Unlocker, and Card Farming.
+
+    - Raise or remove the max playtime limit in <MockButton type='context-cog' content='Settings → Game Settings' /> if you want to keep idling this game
+  </Accordion>
+</Accordions>
+
+## Free Games Issues
+
+<Accordions type="multiple">
+  <Accordion title={`"Couldn't check Steam for free games right now"`} id="free-games-scrape-fails">
+    This means SGI couldn't fetch or parse Steam's current free-games listings, which usually means Steam's storefront is temporarily unreachable or changed in a way SGI's scraper doesn't recognize yet.
+
+    - Check your internet connection and try again in a few minutes
+    - If this keeps happening across multiple sessions, it's worth reporting as a bug — see [Getting Help](#getting-help)
+  </Accordion>
+
+  <Accordion title={`"Couldn't sign in/out of the Steam Store" (Gamer tier auto-redeem)`} id="free-games-store-signin-fails">
+    Auto-redemption (Gamer tier) needs its own signed-in Steam Store session, separate from your SGI sign-in.
+
+    - **"Couldn't sign in to the Steam Store. Please try again."** or **"Couldn't sign out of the Steam Store. Please try again."** — retry from <MockButton type='context-cog' content='Settings → Free Games' />. If it keeps failing, sign out and back in again to refresh the session
+    - Manual claiming (the **Claim** button on the Free Games page) doesn't need this session and still works if auto-redeem is broken
+  </Accordion>
+
+  <Accordion title={`"Couldn't claim this game. It may no longer be free, or you may already own it"`} id="free-games-claim-fails">
+    This isn't a bug — it means the claim itself was rejected by Steam, most commonly because:
+
+    - The game stopped being free between SGI listing it and you clicking **Claim** (free-game promotions can end abruptly)
+    - You already own the game on this account
+    - Check your library to confirm — if the game is missing and still shows as free on Steam directly, try claiming again
+  </Accordion>
 </Accordions>
 
 ## Card Farming & Inventory Manager Issues
@@ -225,6 +282,17 @@ This page covers common issues and their solutions when using Steam Game Idler.
     - If you're on a **Gamer** tier account using **Steam Sign-in**, this normally happens automatically. Check that your subscription is still active
     - If you use **Family View** or have a **Steam Guard Mobile Authenticator**, make sure you complete the full login (these accounts often need the additional `steamMachineAuth` cookie)
     - Session cookies typically last a few hours to a few weeks. If farming worked before and suddenly stops with login errors, this is the most common cause
+
+    On-screen error text and what it means:
+    - **"Couldn't sign in to Steam Community. Check your cookies and try again."** — shown for a fresh cookie paste/connect attempt that didn't validate
+    - **"Your Steam Community session has expired. Please reconnect to continue."** — shown when an already-working session stops working mid-farm/mid-session. Both point at the same fix above
+  </Accordion>
+
+  <Accordion title="Family View is restricting Card Farming or Inventory Manager" id="family-view-restricted">
+    If you see **"Family View is enabled on your Steam account. Disable Family View and try again."**, this is a different problem from the session/cookie errors above — your session cookies are genuinely valid, but Steam's Family View PIN gate is blocking this content class regardless. Reconnecting or re-pasting cookies will not fix this.
+
+    - Open the Steam client, go to your account menu, and disable **Family View** (you'll need the Family View PIN)
+    - Once disabled, Card Farming and Inventory Manager work normally again with no need to reconnect
   </Accordion>
 
   <Accordion title="Card Farming isn't detecting card drops" id="card-farming-no-drops">
@@ -239,13 +307,22 @@ This page covers common issues and their solutions when using Steam Game Idler.
     - If you're listing many items quickly, Steam may rate-limit you. Wait a few minutes and try again
     - Re-authenticate if your session cookies have expired
   </Accordion>
+
+  <Accordion title="Inventory Manager can't load items, prices, or listings" id="inventory-lookup-fails">
+    A few distinct Inventory Manager errors, all usually transient Steam-side issues rather than something wrong with your account:
+
+    - **"Couldn't load your Steam Community inventory right now."** / **"Couldn't fetch a market price right now."** / **"Couldn't read your active market listings."** — Steam Community was unreachable or returned an unexpected response. Wait a moment and retry
+    - **"Steam is rate-limiting price lookups right now. Please try again in a moment."** — you've fetched too many item prices in a short time. This is separate from the Marketplace's own listing rate limit (see [Listing cards on the Marketplace fails](#market-listing-fails)) — wait a few minutes before fetching more prices
+    - **"That item couldn't be found in your cached inventory."** — your local inventory cache is out of sync with Steam (e.g. the item was traded/sold elsewhere since the last refresh). Refresh your inventory to resync
+    - **"Couldn't read or write the inventory cache."** — a local disk read/write failure. See [My settings reset, or SGI behaves like a fresh install](#settings-reset) for the same underlying cache-file pattern
+  </Accordion>
 </Accordions>
 
 ## Achievement Manager & Unlocker Issues
 
 <Accordions type="multiple">
   <Accordion title="Achievements list is empty or won't load" id="achievements-empty">
-    - Make sure the game actually has achievements (some games genuinely have none)
+    - Make sure the game actually has achievements (some games genuinely have none — SGI shows **"This app doesn't have achievement data."** in this case, which is expected, not a bug)
     - Try toggling the **refresh/refetch** option for that game to force SGI to re-fetch the achievement schema from Steam
     - If using **Legacy Sign-in**, make sure the Steam client is running and online
   </Accordion>
@@ -255,6 +332,17 @@ This page covers common issues and their solutions when using Steam Game Idler.
     - Make sure the game isn't currently being idled by another tool, or already running through Steam itself, which can conflict with `SteamUtility.exe`
     - Check the log file for a specific error
     - Some games use **Family Sharing** or third-party anti-cheat that blocks stat writes. These games generally can't be modified
+
+    On-screen error text and what it means:
+    - **"That value is set by the game server and can't be changed."** — a genuinely different case from the Family Sharing one above. This achievement or statistic is flagged by the game itself as server-authoritative, so no client (SGI included) can write to it. This is a Steam-side restriction, not a bug
+    - **"That achievement/statistic couldn't be found."** — usually a stale cached achievement schema. Try the refresh/refetch option above; if it still fails afterward, it's worth reporting
+  </Accordion>
+
+  <Accordion title='"This game isn’t supported for achievements when signed in with Steam"' id="achievement-game-coordinator-unsupported">
+    This is expected, not a bug. A small set of games (Team Fortress 2, Dota 2, CS2, Left 4 Dead 2, Portal 2) use Valve's Game Coordinator system for stats, which isn't reachable through **Steam Sign-in**'s architecture at all.
+
+    - **On Windows**: switch to [Legacy Sign-in](/docs/get-started/how-to-sign-in#legacy-sign-in) for these specific games, which has no such restriction
+    - **On Linux**: there's no local-client fallback (Legacy Sign-in doesn't exist on Linux), so these games can't be managed at all — this is a Steam architecture limitation, not something SGI can work around
   </Accordion>
 
   <Accordion title="Achievement Unlocker isn't progressing" id="achievement-unlocker-stuck">
@@ -262,6 +350,14 @@ This page covers common issues and their solutions when using Steam Game Idler.
     - Check your unlock order, delay, and schedule settings under [Settings → Achievement Unlocker](/docs/settings/achievement-unlocker)
     - If you imported custom unlock timings, make sure the achievement names match exactly. See [Import Timings](/docs/features/achievement-unlocker/import-timings)
     - Check the log file for errors during the scheduled run
+  </Accordion>
+
+  <Accordion title="Import Timings fails" id="import-timings-fails">
+    [Import Timings](/docs/features/achievement-unlocker/import-timings) fetches another Steam profile's real unlock timestamps for a game, so its errors are about that target profile, not your own account or sign-in:
+
+    - **"That profile is private or has no public achievement data."** — the profile you entered needs its game details/achievements set to public. Try a different profile, or ask that player to make theirs public temporarily
+    - **"That player has no achievements with unlock timestamps for this game."** — the profile is public, but hasn't unlocked any achievements for this specific game
+    - **"Couldn't resolve that profile."** — the SteamID64, profile URL, or vanity URL you entered couldn't be matched to a Steam account. Double-check it's correct
   </Accordion>
 </Accordions>
 
@@ -274,6 +370,31 @@ This page covers common issues and their solutions when using Steam Game Idler.
     - Click <MockButton type='open-settings-file' /> in [Debug Settings](/docs/settings/debug) to locate your settings folder
     - If you have a previously exported settings backup, re-import it (see [Export Settings](/docs/settings/debug#export-settings))
     - Switching accounts in SGI loads separate per-feature settings files for that account. This is expected, not a bug
+
+    Any error mentioning it "couldn't read or write" a specific cache/settings file (games, favorites, automatic idler, achievement unlocker queue/settings/order, card farming, inventory manager, free games) follows this same self-healing pattern — SGI resets just that one file to defaults rather than failing to start.
+  </Accordion>
+
+  <Accordion title="Steam Web API key errors" id="api-key-errors">
+    These appear when adding your own [Steam Web API key](https://steamcommunity.com/dev/apikey) override under <MockButton type='context-cog' content='Settings → General' />:
+
+    - **"Steam rejected that API key. Double-check it and try again."** — the key itself is invalid. Generate a fresh one from Steam and re-paste it
+    - **"Couldn't access the Windows Credential Manager to store your API key."** — SGI couldn't save the key to your OS's secure credential store. This can happen if the credential store service isn't running, or (on Linux) if no keyring is set up — see [Sign-in fails or 'Your Steam session isn't active anymore' error](#linux-keyring-secret-service) for the same underlying fix
+  </Accordion>
+
+  <Accordion title="Custom background image won't upload" id="background-image-invalid">
+    **"That image couldn't be used - check the file type and size and try again."** means the file you picked under <MockButton type='context-cog' content='Settings → Customization' /> failed validation.
+
+    - Use a standard image format (PNG, JPG/JPEG, or WebP)
+    - Try a smaller file if it's a very large/high-resolution image
+  </Accordion>
+
+  <Accordion title="License key won't activate" id="license-key-activation-fails">
+    **"Couldn't activate this license key. Check that it's correct and try again."** means Steam Game Idler's licensing server rejected the key you entered under <MockButton type='context-cog' content='Settings → Subscription' />.
+
+    - Double-check you copied the entire key with no extra spaces
+    - Make sure you have an active internet connection
+    - If the key was already active on another device, activating it here prompts a transfer confirmation instead of this error — this error means the key itself wasn't recognized
+    - If you're confident the key is correct and this persists, see [Getting Help](#getting-help)
   </Accordion>
 
   <Accordion title="How do I fully reset SGI?" id="full-reset">
@@ -383,6 +504,10 @@ This page covers common issues and their solutions when using Steam Game Idler.
 </Accordions>
 
 ## Getting Help
+
+<Callout type="info">
+    Most errors show plain text like the ones quoted throughout this page. If you instead see a generic message like `Something went wrong... (some_error_code)` with a code that isn't mentioned anywhere on this page, it's likely an edge case SGI didn't anticipate rather than something you can fix yourself — please report it (include the code) rather than searching for a workaround
+</Callout>
 
 If these troubleshooting steps don't solve your issue:
 
