@@ -1,4 +1,4 @@
-import type { AiChatApiResponse } from '@/shared/utils/aiChatApi'
+import type { AiChatApiResponse, AiChatHistoryEntry } from '@/shared/utils/aiChatApi'
 import { useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAiChatStore } from '@/shared/stores/aiChatStore'
@@ -50,6 +50,19 @@ export function useAiChat() {
       const trimmed = question.trim()
       if (!trimmed) return
 
+      // Captured before this turn's user message is appended below, so it's exactly the prior
+      // exchange - bounded to one user+assistant pair on purpose (see aiChatApi.ts's AiChatHistoryEntry
+      // doc comment for why: unbounded history would grow the retrieved-sources input cost on every
+      // single turn of a long conversation, not just this one).
+      const lastTwo = useAiChatStore.getState().messages.slice(-2)
+      const history: AiChatHistoryEntry[] =
+        lastTwo.length === 2 && lastTwo[0].role === 'user' && lastTwo[1].role === 'assistant'
+          ? [
+              { role: 'user', content: lastTwo[0].content },
+              { role: 'assistant', content: lastTwo[1].content },
+            ]
+          : []
+
       addMessage({ id: crypto.randomUUID(), role: 'user', content: trimmed })
       setSending(true)
 
@@ -61,7 +74,13 @@ export function useAiChat() {
         const response = await fetch(AI_CHAT_API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ licenseKey, steamId, deviceFingerprint, question: trimmed }),
+          body: JSON.stringify({
+            licenseKey,
+            steamId,
+            deviceFingerprint,
+            question: trimmed,
+            history,
+          }),
         })
 
         const data = (await response.json()) as AiChatApiResponse
