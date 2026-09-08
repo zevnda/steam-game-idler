@@ -63,6 +63,7 @@ export const GoProModal = () => {
   const isLinux = usePlatformStore(state => state.currentOs) === 'linux'
 
   const tierRef = useRef<HTMLDivElement>(null)
+  const compareRef = useRef<HTMLDivElement>(null)
   const hasFetchedPriceData = useRef(false)
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
   const [priceData, setPriceData] = useState<PriceData>({
@@ -112,6 +113,10 @@ export const GoProModal = () => {
 
   const scrollToTiers = () => {
     tierRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  const scrollToCompare = () => {
+    compareRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   return (
@@ -231,7 +236,7 @@ export const GoProModal = () => {
                   </div>
 
                   <div className='relative z-10 px-4 pb-8'>
-                    <SectionHeading label={t('proMode.section.allFeatures')} />
+                    <SectionHeading label={t('proMode.section.topFeatures')} />
 
                     {/* Fixed `grid-cols-[repeat(3,18.75rem)]` (948px, 3x 300px cards) never fit
                         under the ~1420px+ window width it implicitly assumed - `justify-center`
@@ -242,8 +247,27 @@ export const GoProModal = () => {
                         `lg`+, and centered via `mx-auto` at every width in between. */}
                     <div className='mx-auto mb-3 grid w-full max-w-237 grid-cols-2 gap-6 lg:grid-cols-3'>
                       {cards.map((card, i) => (
-                        <FeatureCard card={card} index={i} key={card.title} />
+                        <FeatureCard
+                          card={card}
+                          index={i}
+                          key={card.title}
+                          // 9 cards is even at 3-up (`lg`+) but odd at 2-up, leaving a single
+                          // dangling card on its own row below `lg` - drop the last card there
+                          // so the 2-up grid always fills full rows.
+                          className={i === cards.length - 1 ? 'max-lg:hidden' : ''}
+                        />
                       ))}
+                    </div>
+
+                    <div className='flex w-full justify-center'>
+                      <button
+                        className='mt-3 flex cursor-pointer items-center gap-2.5 rounded-full bg-white px-7 py-3 font-black uppercase text-black duration-150 hover:scale-[1.02]'
+                        type='button'
+                        onClick={scrollToCompare}
+                      >
+                        {t('proMode.section.seeAllFeatures')}
+                        <FaArrowDown className='h-3 w-3' />
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -314,7 +338,7 @@ export const GoProModal = () => {
                 </div>
               </div>
 
-              <div className='px-4 pb-8'>
+              <div className='px-4 pb-8' ref={compareRef}>
                 <SectionHeading label={t('proMode.section.comparePlans')} />
                 <ComparisonTable priceData={priceData} rows={comparisonRows} />
               </div>

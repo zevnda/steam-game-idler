@@ -6,12 +6,20 @@ import { openExternalLink } from '@/shared/utils/links'
 
 // Ported from `main` - the staggered mount-in (`motion.div` + `transition={{ delay }}`) is now
 // `.pro-fade-in-up` with an inline `animationDelay`, see globals.css's Go Pro modal section.
-export function FeatureCard({ card, index }: { card: CardDef; index: number }) {
+export function FeatureCard({
+  card,
+  index,
+  className = '',
+}: {
+  card: CardDef
+  index: number
+  className?: string
+}) {
   const { t } = useTranslation()
 
   return (
     <div
-      className='pro-fade-in-up group relative min-h-87.5 overflow-hidden rounded-4xl bg-[#131313]'
+      className={`pro-fade-in-up group relative min-h-87.5 overflow-hidden rounded-4xl bg-[#131313] ${className}`}
       style={{
         gridColumn: card.colSpan === 2 ? 'span 2' : 'span 1',
         animationDelay: `${index * 55}ms`,
