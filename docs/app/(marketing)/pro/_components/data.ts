@@ -9,7 +9,6 @@ import {
   TbGift,
   TbHeadset,
   TbKey,
-  TbMessageChatbot,
   TbPalette,
   TbPhoto,
   TbRefresh,
@@ -58,18 +57,6 @@ export interface ComparisonRow {
 }
 
 export const allFeatures: Feature[] = [
-  {
-    icon: TbMessageChatbot,
-    title: 'AI Assistant',
-    description:
-      "Ask questions about using Steam Game Idler and get instant, accurate answers based on the app's own documentation and interface.",
-    detail:
-      "Ask the built-in AI Assistant anything about using SGI — where a setting lives, how a feature works, or how to complete a specific task — and get a precise, step-by-step answer grounded in SGI's own docs and interface, not a generic guess. Free accounts get 3 messages a day; Casual gets 25; Gamer gets 50.",
-    tier: 'casual',
-    id: 'ai-assistant',
-    casualValue: '25/day',
-    gamerValue: '50/day',
-  },
   {
     icon: TbAd,
     title: 'Ad-Free Experience',
@@ -246,14 +233,6 @@ export const allFeatures: Feature[] = [
 // never be a single shared source - matching shape is the next best thing.
 export const comparisonRows: ComparisonRow[] = [
   {
-    label: 'AI Assistant',
-    icon: TbMessageChatbot,
-    tier: 'casual',
-    freeValue: '3/day',
-    casualValue: '25/day',
-    gamerValue: '50/day',
-  },
-  {
     label: 'Multi-Account Support',
     icon: TbUsers,
     tier: 'casual',
@@ -290,7 +269,6 @@ export const comparisonRows: ComparisonRow[] = [
 // it's derived from `allFeatures` (not hand-duplicated) to keep the detail text single-sourced.
 // `allFeatures`' own order is untouched and keeps driving the bento grid in FeaturesSection.
 const FEATURE_DETAILS_ORDER = [
-  'ai-assistant',
   'multi-account-support',
   'unlock-achievements-for-multiple-games',
   'ad-free-experience',
