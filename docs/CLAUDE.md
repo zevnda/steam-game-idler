@@ -107,7 +107,7 @@ features/
   achievement-unlocker/ index, import timings, custom order & unlock delay
   inventory-manager/    index, marketplace fees, pricing, removing listings
   free-games/           index, notifications, what counts as a free game
-  idling.mdx
+  playtime-booster.mdx
   favorites.mdx
   auto-idle.mdx
 settings/            general, customization, card-farming, achievement-unlocker,

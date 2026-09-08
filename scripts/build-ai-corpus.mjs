@@ -51,9 +51,22 @@ function extractUrlOverride(markdown) {
   return match ? match[1] : null
 }
 
+// An optional `<!-- supersedes: url1, url2 -->` line (see the `/generate-ui-guide` skill) lists
+// every other docs page whose content a ui-guide has fully folded in - those pages' own docs
+// chunks get dropped from the corpus below (see main()) so retrieval never has to choose between
+// a hand-merged, code-verified ui-guide and the stale/duplicate raw docs page it superseded.
+function extractSupersededUrls(markdown) {
+  const match = /^<!--\s*supersedes:\s*(.+?)\s*-->/m.exec(markdown)
+  if (!match) return []
+  return match[1]
+    .split(',')
+    .map(url => url.trim())
+    .filter(Boolean)
+}
+
 function chunksFromMarkdown({ id, type, defaultUrl, pageTitle, markdown }) {
   const url = extractUrlOverride(markdown) ?? defaultUrl
-  const sections = splitByHeading(markdown.replace(/^<!--.*-->\n?/, ''))
+  const sections = splitByHeading(markdown.replace(/^<!--.*-->\n?/gm, ''))
 
   return sections.map((section, i) => {
     const title = section.heading ? `${pageTitle} — ${section.heading}` : pageTitle
@@ -62,12 +75,34 @@ function chunksFromMarkdown({ id, type, defaultUrl, pageTitle, markdown }) {
   })
 }
 
-async function loadDocsChunks() {
+// Every docs URL a ui-guide has explicitly claimed (its own `url` override, plus every URL in its
+// `supersedes` list - see extractSupersededUrls above and the `/generate-ui-guide` skill) gets
+// dropped from the raw docs ingestion below, so a page a ui-guide has hand-merged and code-verified
+// never also ships as a separate, potentially-stale-and-conflicting docs chunk. Reads the raw
+// override/supersedes comments directly rather than going through chunksFromMarkdown's
+// defaultUrl-fallback logic, since a ui-guide with no matching real docs page (titlebar, sidebar,
+// etc.) must NOT have its generic fallback URL treated as a claimed docs page.
+function collectSupersededDocUrls(uiGuidesDir) {
+  const claimed = new Set()
+  for (const file of readdirSync(uiGuidesDir).filter(f => f.endsWith('.md'))) {
+    const markdown = readFileSync(`${uiGuidesDir}/${file}`, 'utf8')
+    const primaryUrl = extractUrlOverride(markdown)
+    if (primaryUrl) claimed.add(primaryUrl)
+    for (const url of extractSupersededUrls(markdown)) claimed.add(url)
+  }
+  return claimed
+}
+
+async function loadDocsChunks(excludedUrls) {
   const res = await fetch(DOCS_CONTENT_URL)
   if (!res.ok) throw new Error(`Failed to fetch docs content: ${res.status} ${await res.text()}`)
   const pages = await res.json()
+  const included = pages.filter(page => !excludedUrls.has(page.url))
+  console.warn(
+    `Excluded ${pages.length - included.length} docs page(s) already superseded by a ui-guide.`,
+  )
 
-  return pages.flatMap(page =>
+  return included.flatMap(page =>
     chunksFromMarkdown({
       id: `docs:${page.url}`,
       type: 'docs',
@@ -196,11 +231,14 @@ async function main() {
     process.exit(1)
   }
 
+  const uiGuidesDir = `${CORPUS_DIR}/ui-guides`
+  const supersededDocUrls = collectSupersededDocUrls(uiGuidesDir)
+
   console.warn(`Fetching docs content from ${DOCS_CONTENT_URL}...`)
-  const docsChunks = await loadDocsChunks()
+  const docsChunks = await loadDocsChunks(supersededDocUrls)
   const uiGuideChunks = loadLocalMarkdownChunks('ui-guide', {
     isDirectory: true,
-    path: `${CORPUS_DIR}/ui-guides`,
+    path: uiGuidesDir,
   })
   const architectureGuideChunks = loadLocalMarkdownChunks('architecture-guide', {
     isDirectory: true,

@@ -229,9 +229,12 @@ window/event/updater/clipboard permission changes.
 - **Linux has no "portable mode" concept.** `platform::is_portable()`'s `.installed`-marker check
   is Windows-only (`#[cfg(windows)]`-gated) — Linux always uses `app_data_dir()`, never "write next
   to the executable," since an AppImage's squashfs mount is read-only at runtime and `.deb`/`.rpm`
-  install to `/usr/bin`, which a regular user can't write to either. Every Linux packaging format
-  *does* support auto-update, unlike Windows portable mode — gate on `platform::can_auto_update()`
-  (a separate check from `is_portable()`) if a feature needs to distinguish the two.
+  install to `/usr/bin`, which a regular user can't write to either. Unlike Windows portable mode,
+  this isn't a uniform Linux-wide restriction — only the AppImage build can self-update
+  (`platform::can_auto_update()` checks for the `APPIMAGE` env var); `.deb`/`.rpm` installs can't,
+  for the same `/usr/bin`-ownership reason as their lack of portable mode. Gate on
+  `platform::can_auto_update()` (a separate check from `is_portable()`) if a feature needs to know
+  whether self-update is actually possible for the current install.
 - **The daemon binary's resolved path differs by Linux packaging format.** `steam_utility_exe::
   locate_for_agent()` (used only by `AgentProcess::spawn`, the one call site that must work on
   every Linux format) builds the path directly from the `APPDIR` env var when launched from an
@@ -300,8 +303,10 @@ name safely can be (already confirmed against real shipped releases). `major` is
 already-running instances; `false` just offers click-to-update via `UpdateButton`, except on an
 app's very first check since launch, which always installs silently either way. Portable builds
 (Windows only — Linux has no portable-mode concept, see "Platform scope" above) skip update checks
-entirely (`platform::is_portable()`); every Linux packaging format supports auto-update, gated on
-the separate `platform::can_auto_update()` check instead.
+entirely (`platform::is_portable()`); on Linux, only the AppImage build can self-update
+(`platform::can_auto_update()` returns true only when the `APPIMAGE` env var is set) — `.deb`/`.rpm`
+installs live in `/usr/bin`, owned by the system package manager, so they can't self-update and the
+tray's "Check for updates" entry is hidden entirely for them.
 
 **Pre-install cleanup** (`updater.rs`'s `kill_all_steam_utility_processes`) is a cross-platform
 `sysinfo`-based implementation (not a Windows `taskkill` shell-out) that must keep killing every
@@ -419,7 +424,7 @@ a revenue-shaping decision, not a technical one, so raise it rather than guessin
 
 - **Casual** — ad-free (`AdSlot.tsx`), non-default themes + custom background image
   (`CustomizationSettingsTab.tsx`), non-default font picker, Discord role, live support
-  (`HelpDesk.tsx`), up to 2 concurrent agent-mode accounts, auto games-list updates, and a 3-game
+  (`HelpDesk.tsx`), up to 3 concurrent agent-mode accounts, auto games-list updates, and a 3-game
   concurrency step for achievement-unlocker's "multiple games at once" mode.
 - **Gamer** (implies casual) — up to 10 (sanity-capped) concurrent agent-mode accounts, automated
   Steam Community cookie retrieval/revalidation (manual cookie paste stays free-tier), free-game
