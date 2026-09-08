@@ -132,9 +132,15 @@ fn show_main_window(app_handle: &AppHandle) {
     }
 }
 
-/// Forces the window onto a detected monitor (preferring the primary monitor) and centers it -
-/// recovers a window left off-screen, e.g. after a monitor is unplugged or a multi-monitor layout
-/// changes. Mirrors `main`'s `recenter_window`. Each step is logged-and-continued rather than
+/// Must match `tauri.conf.json`'s `app.windows[0].width`/`height` - the size a brand-new install
+/// gets on first launch, and what "Reset Window Position" restores a resized/maximized window to.
+const DEFAULT_WINDOW_WIDTH: u32 = 1300;
+const DEFAULT_WINDOW_HEIGHT: u32 = 850;
+
+/// Forces the window onto a detected monitor (preferring the primary monitor), resets it to the
+/// default size, and centers it - recovers a window left off-screen or badly sized, e.g. after a
+/// monitor is unplugged, a multi-monitor layout changes, or the user resized/maximized it into an
+/// awkward state. Mirrors `main`'s `recenter_window`. Each step is logged-and-continued rather than
 /// aborting the whole action, since a failure part-way through (e.g. no monitor detected) should
 /// still fall through to showing/focusing whatever position the window already has.
 fn recenter_window(app_handle: &AppHandle) {
@@ -148,6 +154,25 @@ fn recenter_window(app_handle: &AppHandle) {
             ?err,
             "tray: failed to unminimize main window before recenter"
         );
+    }
+
+    // A maximized window ignores `set_size` on most backends, so it must be unmaximized first for
+    // the size reset below to actually take visual effect.
+    match window.is_maximized() {
+        Ok(true) => {
+            if let Err(err) = window.unmaximize() {
+                tracing::warn!(?err, "tray: failed to unmaximize main window for recenter");
+            }
+        }
+        Ok(false) => {}
+        Err(err) => tracing::warn!(?err, "tray: failed to read maximized state for recenter"),
+    }
+
+    if let Err(err) = window.set_size(tauri::Size::Logical(tauri::LogicalSize {
+        width: DEFAULT_WINDOW_WIDTH as f64,
+        height: DEFAULT_WINDOW_HEIGHT as f64,
+    })) {
+        tracing::warn!(?err, "tray: failed to reset main window size for recenter");
     }
 
     let monitor = window
