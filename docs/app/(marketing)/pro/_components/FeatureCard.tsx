@@ -3,12 +3,13 @@ import Image from 'next/image'
 
 interface FeatureCardProps {
   feature: Feature
+  className?: string
 }
 
-export default function FeatureCard({ feature: f }: FeatureCardProps) {
+export default function FeatureCard({ feature: f, className = '' }: FeatureCardProps) {
   return (
     <div
-      className='relative rounded-3xl overflow-hidden h-full min-h-95'
+      className={`relative rounded-3xl overflow-hidden h-full min-h-95 ${className}`}
       style={{ background: '#131313' }}
     >
       {f.imgBg && <Image src={f.imgBg} alt='' fill className='object-cover opacity-80' />}

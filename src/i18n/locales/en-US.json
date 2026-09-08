@@ -150,7 +150,8 @@
       "startingAt": "Starting at ${{price}}/month · Cancel anytime"
     },
     "section": {
-      "allFeatures": "All Features",
+      "topFeatures": "Top Features",
+      "seeAllFeatures": "View All Features",
       "chooseTier": "Choose Your Tier",
       "comparePlans": "Compare Tiers",
       "faq": "FAQ"
