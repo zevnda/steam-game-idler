@@ -150,7 +150,6 @@
       "startingAt": "Começão a ${{price}} por mês - Pode cancelar a qualquer momento"
     },
     "section": {
-      "allFeatures": "Todas as funções",
       "chooseTier": "Escolha seu nível",
       "comparePlans": "Comparar níveis",
       "faq": "Perguntas frequentes"

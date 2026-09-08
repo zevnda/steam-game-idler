@@ -147,7 +147,6 @@
       "startingAt": "Ab ${{price}}/Monat · Jederzeit kündbar"
     },
     "section": {
-      "allFeatures": "Alle Funktionen",
       "chooseTier": "Wählen Sie Ihre Stufe",
       "comparePlans": "Stufen vergleichen",
       "faq": "Häufig gestellte Fragen"

@@ -149,7 +149,6 @@
       "startingAt": "起价 ${{price}}/月 · 可随时取消"
     },
     "section": {
-      "allFeatures": "全部功能",
       "chooseTier": "选择您的套餐",
       "comparePlans": "对比套餐",
       "faq": "常见问题"
