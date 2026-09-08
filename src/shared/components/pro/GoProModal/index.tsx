@@ -11,7 +11,6 @@ import {
   TbGift,
   TbHeadset,
   TbKey,
-  TbMessageChatbot,
   TbPalette,
   TbPhoto,
   TbRefresh,
@@ -282,7 +281,6 @@ export const GoProModal = () => {
                         { label: t('proMode.cards.customFont.title'), icon: TbTypography },
                         { label: t('proMode.tier.casual.discordRole'), icon: FaDiscord },
                         { label: t('proMode.cards.liveSupport.title'), icon: TbHeadset },
-                        { label: t('proMode.tier.casual.aiAssistant'), icon: TbMessageChatbot },
                         { label: t('proMode.tier.cancelAnytime'), icon: FaCheck },
                       ]}
                     />
@@ -303,7 +301,6 @@ export const GoProModal = () => {
                         { label: t('proMode.tier.gamer.sellDupes'), icon: TbCurrencyDollar },
                         { label: t('proMode.tier.gamer.importTimings'), icon: TbClock },
                         { label: t('proMode.cards.customPresence.title'), icon: TbUserCircle },
-                        { label: t('proMode.tier.gamer.aiAssistant'), icon: TbMessageChatbot },
                         { label: t('proMode.tier.cancelAnytime'), icon: FaCheck },
                       ]}
                     />

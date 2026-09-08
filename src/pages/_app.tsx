@@ -2,7 +2,6 @@ import type { AppProps } from 'next/app'
 import { Toast } from '@heroui/react'
 import { useRouter } from 'next/router'
 import Script from 'next/script'
-import { AiChatOverlay } from '@/features/ai-chat/components/AiChatOverlay'
 import { ChangelogModal } from '@/shared/components/ChangelogModal'
 import { DashboardShell } from '@/shared/components/dashboard/DashboardShell'
 import { ErrorBoundary } from '@/shared/components/ErrorBoundary'
@@ -116,13 +115,6 @@ const App = ({ Component, pageProps }: AppProps) => {
       <Titlebar minimal={bootstrapPhase === 'checking'} />
       <ChangelogModal />
       <GoProModal />
-      {/* Root-mounted (not inside DashboardShell) so the AI Assistant is reachable from the
-          pre-dashboard sign-in screens too - nothing about the feature itself needs a signed-in
-          account (apibase's /api/ai-chat identifies a free-tier caller by device fingerprint alone,
-          falling back to a stored license key for a paid tier), it was only ever gated to
-          /dashboard/* by where this overlay happened to be mounted. See Titlebar.tsx's own
-          `isDashboard` removal on AiChatButton for the other half of this. */}
-      <AiChatOverlay />
       {/* Blocks the routed page (dashboard or pre-dashboard) until useSessionBootstrap has
           re-validated any persisted session - see that hook's doc comment. Everything above this
           (Titlebar, toasts, the Chatway widget) stays mounted through the check since none of it

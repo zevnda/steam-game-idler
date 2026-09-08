@@ -134,23 +134,7 @@
   "titlebar": {
     "closeToTrayNotification": "Steam Game Idler will continue to run in the background",
     "helpDesk": "Help Desk",
-    "aiChat": "AI Assistant",
     "updateReady": "Update ready"
-  },
-  "aiChat": {
-    "newChat": "New chat",
-    "placeholder": "Ask a question about Steam Game Idler...",
-    "empty": {
-      "title": "Ask me anything"
-    },
-    "limit": {
-      "upgradePrompt": "Daily limit reached. Upgrade to continue or wait {{time}}.",
-      "resetsIn": "Daily limit reached. Resets in {{time}}."
-    },
-    "errors": {
-      "generic": "Something went wrong. Please try again shortly.",
-      "quotaExceeded": "You've reached today's message limit. Come back tomorrow, or upgrade for a higher daily limit."
-    }
   },
   "tray": {
     "show": "Show",
@@ -230,13 +214,11 @@
       "continueWithPaypal": "PayPal",
       "processing": "Processing...",
       "cancelAnytime": "Cancel Anytime",
-      "messagesPerDay": "{{count}} msgs/day",
       "casual": {
         "name": "Casual",
         "discordRole": "Discord PRO Role",
         "multiAccount": "3 Concurrent Accounts",
-        "multipleUnlockerGames": "Unlock 3 Games At Once",
-        "aiAssistant": "25 AI Assistant Messages/Day"
+        "multipleUnlockerGames": "Unlock 3 Games At Once"
       },
       "gamer": {
         "name": "Gamer",
@@ -244,8 +226,7 @@
         "sellDupes": "Sell Duplicate Inventory Items",
         "importTimings": "Import Achievement Unlock Timings",
         "multipleUnlockerGames": "Unlock 32 Games At Once",
-        "multiAccount": "10 Concurrent Accounts",
-        "aiAssistant": "50 AI Assistant Messages/Day"
+        "multiAccount": "10 Concurrent Accounts"
       }
     },
     "faq": {

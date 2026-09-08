@@ -10,7 +10,7 @@
   │       └─⫸ Commit Scope: tauri|steam-agent|steam-utility|games-list|card-farming|
   │                          achievement-unlocker|achievement-manager|inventory-manager|
   │                          auto-idle|free-games|idling|favorites|account-switcher|sign-in|
-  │                          ai-chat|settings|customization|pro|automation|dashboard|states|
+  │                          settings|customization|pro|automation|dashboard|states|
   │                          components|hooks|ui|utils|types|cache|updater|i18n|deps|docs|readme
   │
   └─⫸ Commit Type: fix|feat|chore|refactor|libs|docs|ci|config|build|perf
@@ -52,7 +52,6 @@ Common scopes for this project include:
 | **favorites**            | Changes to `src/features/favorites` and `src-tauri/src/favorites`                                               |
 | **account-switcher**     | Changes to `src/features/account-switcher` and multi-account session/store logic                                |
 | **sign-in**              | Changes to `src/features/agent-sign-in`, `local-sign-in`, `sign-in-landing`, or `src-tauri/src/local_steam`     |
-| **ai-chat**              | Changes to `src/features/ai-chat` (the AI Assistant chat panel) - no `src-tauri` counterpart      |
 | **automation**           | Changes that affect multiple automation features at once (e.g.: idling claims, shared concurrency logic)        |
 | **settings**             | Changes to `src/features/settings` and `src-tauri/src/settings`                                                 |
 | **customization**        | Changes to themes, fonts, or `src-tauri/src/customization`                                                      |
@@ -78,8 +77,6 @@ fix(steam-agent): resolve QR login session timeout
 fix(games-list): resolve issue with game thumbnails not loading
 
 feat(account-switcher): add support for up to 10 concurrent agent-mode accounts
-
-feat(ai-chat): let ai assistant remember the previous exchange
 
 feat(ui): implement dark mode support
 
