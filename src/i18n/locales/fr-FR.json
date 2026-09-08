@@ -150,7 +150,6 @@
       "startingAt": "Débute à ${{price}} par mois · Annulable à tout moment"
     },
     "section": {
-      "allFeatures": "Toutes les fonctionnalités",
       "chooseTier": "Choisissez votre palier",
       "comparePlans": "Comparez les paliers",
       "faq": "FAQ"
@@ -639,6 +638,7 @@
         "sessionFailed": "Impossible de se connecter à Steam Community. Vérifiez vos cookies et réessayez.",
         "sessionExpired": "Votre session Steam Community a expiré. Veuillez vous reconnecter pour continuer.",
         "scrapeFailed": "Impossible de vérifier les drops de cartes sur Steam pour le moment.",
+        "familyViewRestricted": "La fonction Vue de Famille est activée sur votre compte Steam. Désactivez-la et réessayez.",
         "generic": "Une erreur s'est produite lors de la mise à jour du farming de cartes. Veuillez réessayer. ({{code}})"
       },
       "settings": {
@@ -717,6 +717,7 @@
       },
       "order": {
         "delayBeforeFirstUnlock": "Délai avant le premier déblocage",
+        "delayUntilNextUnlock": "Délai jusqu'au prochain déverrouillage",
         "reset": "Réinitialiser",
         "skipped": "Ignoré",
         "empty": {

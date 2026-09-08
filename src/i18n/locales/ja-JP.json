@@ -148,9 +148,6 @@
       "viewTiers": "PROプランを見る",
       "startingAt": "月額 ${{price}}～ · いつでもキャンセル可能"
     },
-    "section": {
-      "allFeatures": "すべての機能"
-    },
     "faq": {
       "switchTier": {
         "q": "プランを変更することはできますか？"

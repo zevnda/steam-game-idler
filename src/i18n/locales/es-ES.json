@@ -150,7 +150,6 @@
       "startingAt": "Comenzando en ${{price}}/mes · Cancela cuando quieras"
     },
     "section": {
-      "allFeatures": "Todas las funcionalidades",
       "chooseTier": "Elige tu nivel",
       "comparePlans": "Comparar planes",
       "faq": "Preguntas frecuentes"
