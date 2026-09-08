@@ -1,6 +1,6 @@
 ---
 title: Game Settings
-description: Configure individual game settings such as max playtime, idle time, card drop limits, and achievement unlock limits.
+description: Configure individual game settings such as max playtime, idle time, and achievement unlock limits.
 ---
 
 import MockButton from '@/app/(marketing)/docs/_components/MockButton';
@@ -15,7 +15,7 @@ You'll find this page under <MockButton type='context-cog' content='Settings →
 
 ## Playtime
 
-These limits apply everywhere a game can be idled: manual [Playtime Booster](/docs/features/playtime-booster), [Auto-Idle](/docs/features/auto-idle), [Achievement Unlocker](/docs/features/achievement-unlocker), and [Card Farming](/docs/features/card-farming) all respect them.
+These limits apply everywhere a game can be idled: manual [Playtime Booster](/docs/features/playtime-booster), [Auto-Idle](/docs/features/auto-idle), and the [Achievement Unlocker](/docs/features/achievement-unlocker) all respect them. [Card Farming](/docs/features/card-farming) does not currently check this limit — a game you're farming cards for keeps accumulating playtime regardless of any max playtime set for it, unless something else (Playtime Booster, Auto-Idle, or the Achievement Unlocker) is also idling it.
 
 ### Max Playtime (All Games)
 
@@ -27,7 +27,7 @@ Same as above, but for the selected game only. Overrides **Max Playtime (All Gam
 
 ## Idling
 
-These limits only apply to manually and automatically idled games. Card Farming and Achievement Unlocker have their own separate caps below.
+These limits only apply to manually and automatically idled games. The Achievement Unlocker has its own separate cap below; Card Farming has no idle-time cap of its own.
 
 ### Max Idle Time (All Games)
 
@@ -36,24 +36,6 @@ Set a default maximum idle time (in minutes) that applies to all games. Individu
 ### Max Idle Time
 
 Set the maximum idle time (in minutes) for the selected game. SGI will stop idling this game when the time limit is reached, overriding the value above.
-
-## Card Farming
-
-These limits only apply to Card Farming sessions.
-
-### Max Card Farming Time (All Games)
-
-Set a default maximum farming time (in minutes) that applies to all games. Individual per-game limits take priority over this value when set.
-
-### Max Card Farming Time
-
-Set the maximum farming time (in minutes) for the selected game. SGI will stop farming this game when the time limit is reached, overriding the value above.
-
-### Max Card Drops
-
-Set the maximum number of card drops to farm for the selected game before stopping.
-
-Note that because card drop timing is not precisely predictable, SGI will try to stay within this limit but it may not always be exact.
 
 ## Achievement Unlocker
 

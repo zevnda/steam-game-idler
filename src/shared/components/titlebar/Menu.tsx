@@ -20,8 +20,7 @@ import { canAutoUpdateCheck, fetchLatest, performUpdate } from '@/shared/utils/u
 const GITHUB_ISSUE_URL =
   'https://github.com/zevnda/steam-game-idler/issues/new?assignees=zevnda&labels='
 
-type MenuAction =
-  'guide' | 'report' | 'feature' | 'support' | 'discord' | 'changelog' | 'checkUpdate'
+type MenuAction = 'guide' | 'report' | 'feature' | 'discord' | 'changelog' | 'checkUpdate'
 
 // Titlebar overflow menu - guide/report/feature/support/discord links, a changelog toggle, and an
 // opt-in "check for updates" entry (hidden on builds that can't self-update - a portable Windows
@@ -71,9 +70,6 @@ export const Menu = () => {
         openExternalLink(
           `${GITHUB_ISSUE_URL}feature+request&projects=&template=feature_request.yml`,
         )
-        break
-      case 'support':
-        openExternalLink('https://github.com/sponsors/zevnda')
         break
       case 'discord':
         openExternalLink('https://discord.com/invite/5kY2ZbVnZ8')
