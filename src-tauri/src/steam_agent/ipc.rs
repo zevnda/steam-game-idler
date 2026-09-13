@@ -59,7 +59,11 @@ pub struct IpcRequest {
 }
 
 impl IpcRequest {
-    pub fn login(id: String, user: String, pass_b64: String) -> Self {
+    /// `persona_state`, when the caller already has one cached (see
+    /// `AgentManager::cached_persona_state`), pre-seeds the daemon's `PresenceManager` before it
+    /// ever logs on - see `Daemon/Bot/PresenceManager.cs`'s doc comment. `None` preserves the
+    /// original behavior (daemon defaults to Online until a follow-up `set_persona_state` call).
+    pub fn login(id: String, user: String, pass_b64: String, persona_state: Option<&'static str>) -> Self {
         Self {
             id,
             cmd: "login",
@@ -73,7 +77,7 @@ impl IpcRequest {
             unlock: None,
             stats: None,
             achievement_changes: None,
-            persona_state: None,
+            persona_state,
             game_extra_info: None,
             language: None,
             games_only: None,
@@ -104,7 +108,15 @@ impl IpcRequest {
         }
     }
 
-    pub fn login_with_token(id: String, user: String, refresh_token_b64: String) -> Self {
+    /// `persona_state` - see [`Self::login`]'s doc comment; same pre-seeding, same reasoning. This
+    /// is the command that matters most in practice, since it's what every app launch uses to
+    /// resume an already-linked account.
+    pub fn login_with_token(
+        id: String,
+        user: String,
+        refresh_token_b64: String,
+        persona_state: Option<&'static str>,
+    ) -> Self {
         Self {
             id,
             cmd: "login_with_token",
@@ -118,7 +130,7 @@ impl IpcRequest {
             unlock: None,
             stats: None,
             achievement_changes: None,
-            persona_state: None,
+            persona_state,
             game_extra_info: None,
             language: None,
             games_only: None,

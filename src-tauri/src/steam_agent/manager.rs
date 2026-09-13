@@ -160,10 +160,13 @@ impl AgentManager {
     ) -> AppResult<LoginOutcome> {
         let key = Self::key_for(&username);
         let process = self.respawn(app_handle, &key).await?;
+        let initial_persona_state = self.cached_persona_state(app_handle, &key).await;
 
         let pass_b64 = base64::engine::general_purpose::STANDARD.encode(password.as_bytes());
         let response = process
-            .send_request(move |id| IpcRequest::login(id, username, pass_b64))
+            .send_request(move |id| {
+                IpcRequest::login(id, username, pass_b64, initial_persona_state)
+            })
             .await?;
 
         let outcome = parse_login_response(response);
@@ -317,10 +320,13 @@ impl AgentManager {
 
         let token_b64 =
             credential_store::load_refresh_token(&key)?.ok_or(AppError::NoSavedAccount)?;
+        let initial_persona_state = self.cached_persona_state(app_handle, &key).await;
 
         let process = self.get_or_spawn(app_handle, &key).await?;
         let response = process
-            .send_request(move |id| IpcRequest::login_with_token(id, saved_username, token_b64))
+            .send_request(move |id| {
+                IpcRequest::login_with_token(id, saved_username, token_b64, initial_persona_state)
+            })
             .await?;
         if response.ok {
             tracing::info!(account = %key, "agent session resumed via saved token");
@@ -331,14 +337,47 @@ impl AgentManager {
         Ok(response.ok)
     }
 
+    /// Best-effort pre-login lookup of this account's saved persona state (Online/Invisible/...),
+    /// keyed by the SteamID64 that `apply_saved_persona_state` last cached in
+    /// `Settings::agent_account_steam_ids` for `key`. Passing the result into `IpcRequest::login`/
+    /// `login_with_token` lets the daemon apply the correct state on its very first broadcast after
+    /// logon, instead of `PresenceManager` defaulting to `Online` and this manager correcting it in
+    /// a second round trip afterward.
+    ///
+    /// That correction is why the fix matters: `Daemon/Bot/SteamBot.cs`'s `OnLoggedOn` invokes
+    /// `LogOnStatusChanged` (which triggers `PresenceManager.Apply()`, broadcasting whatever state
+    /// it currently holds) *before* resolving the pending `LogOnAsync` task that the `login`/
+    /// `login_with_token` IPC response depends on - so the daemon's default broadcast is guaranteed
+    /// to reach Steam strictly before this manager's own post-login correction ever gets a chance
+    /// to send a different one. A user who wants to appear Invisible/Offline would otherwise see a
+    /// real, if brief, "online" transition on every single launch.
+    ///
+    /// Returns `None` whenever nothing is cached yet (this account's first login on this machine,
+    /// or right after a settings reset) or any lookup step fails - `apply_saved_persona_state`
+    /// still runs unconditionally after every login regardless, so a lookup miss here only costs
+    /// the one-time flash this whole mechanism exists to avoid, never correctness.
+    async fn cached_persona_state(&self, app_handle: &AppHandle, key: &str) -> Option<&'static str> {
+        let settings = settings::load(app_handle).ok()?;
+        let steam_id = settings.agent_account_steam_ids.get(key)?.clone();
+        let presence = super::presence_settings::get(app_handle, &steam_id).await.ok()?;
+        Some(presence.persona_state.as_wire_str())
+    }
+
     /// Re-applies this account's saved persona state (see `presence_settings`) after a fresh
     /// (re)login. `PresenceManager` on the daemon side always defaults a freshly spawned process to
     /// `Online` (see `Daemon/Bot/PresenceManager.cs`) and only learns otherwise from an explicit
     /// `set_persona_state` call - without this, a user who set themselves to e.g. Offline would show
     /// as Online again after every app restart, since `login_with_token` spawns a brand new
-    /// `SteamUtility.exe` process with no memory of the prior session's live-applied state. Best-
-    /// effort: a lookup/apply failure here shouldn't fail the login itself, since the account is
-    /// still usably logged on with the (harmless) default persona state.
+    /// `SteamUtility.exe` process with no memory of the prior session's live-applied state.
+    ///
+    /// This still runs unconditionally after every login/resume, even though `login`/
+    /// `login_with_token` now also pre-seed the daemon's initial state (see
+    /// `cached_persona_state`) whenever a cache hit lets them - this function is the fallback for
+    /// a cache miss (this account's first login on this machine, or right after a settings reset)
+    /// and the source of truth that populates the cache in the first place. Best-effort: a
+    /// lookup/apply failure here shouldn't fail the login itself, since the account is still
+    /// usably logged on with whatever persona state the daemon settled on (correct, if pre-seeded;
+    /// the Online default otherwise).
     async fn apply_saved_persona_state(&self, app_handle: &AppHandle, key: &str) {
         let Ok(process) = self.existing(key).await else {
             return;
@@ -347,6 +386,14 @@ impl AgentManager {
             tracing::warn!(account = %key, "skipping persona state re-apply: steam id not resolved after login");
             return;
         };
+
+        // Cache this account's SteamID64 against its key so the *next* login/resume can look up
+        // its saved persona state before ever logging on - see `cached_persona_state`'s doc
+        // comment for why that matters (it's what lets that next login skip the brief "Online"
+        // broadcast this function exists to correct).
+        if let Err(e) = settings::record_agent_account_steam_id(app_handle, key, &steam_id) {
+            tracing::warn!(account = %key, error = %e, "failed to cache steam id for future persona state pre-seeding");
+        }
 
         let settings = match super::presence_settings::get(app_handle, &steam_id).await {
             Ok(settings) => settings,
