@@ -122,6 +122,17 @@ namespace SteamUtility.Daemon
                 switch (request.Cmd)
                 {
                     case "login":
+                        // Pre-seeds PresenceManager's desired state *before* logging on, when the
+                        // caller already knows one (Rust caches a resolved SteamID64 per account
+                        // after its first successful login and, from then on, looks up the saved
+                        // presence_settings.json before ever sending this command - see
+                        // AgentManager::cached_persona_state). SetPersonaState() no-ops its actual
+                        // Steam-facing Apply() while not yet logged on, so this only primes the
+                        // field PresenceManager's own LogOnStatusChanged subscription reads once
+                        // logon succeeds - without it, that subscription's default (Online) would
+                        // be what gets broadcast first, which is exactly the brief "online" flash
+                        // this pre-seeding exists to prevent for a user who wants Invisible/Offline.
+                        TryApplyInitialPersonaState(request.PersonaState);
                         await _authFlow.LoginWithCredentialsAsync(
                             request.Id,
                             request.User ?? "",
@@ -135,6 +146,10 @@ namespace SteamUtility.Daemon
 
                     case "login_with_token":
                     {
+                        // See the "login" case above - same pre-seeding, same reasoning. This is
+                        // the path that matters most in practice: it's what every app launch uses
+                        // to resume an already-linked account.
+                        TryApplyInitialPersonaState(request.PersonaState);
                         var success = await _authFlow.LoginWithRefreshTokenAsync(
                             request.User ?? "",
                             request.RefreshTokenB64 ?? ""
@@ -298,5 +313,20 @@ namespace SteamUtility.Daemon
         }
 
         private SteamID RequireSteamId() => _bot.SteamID ?? throw new NotLoggedOnException();
+
+        // Best-effort, silent pre-seed used by the "login"/"login_with_token" cases above - unlike
+        // the "set_persona_state" command itself, a missing/unparsable value here is expected
+        // (Rust omits it whenever it has no cached persona state for this account yet) and must
+        // never fail or respond to the in-flight login request.
+        private void TryApplyInitialPersonaState(string? rawPersonaState)
+        {
+            if (
+                !string.IsNullOrEmpty(rawPersonaState)
+                && Enum.TryParse<EPersonaState>(rawPersonaState, ignoreCase: true, out var state)
+            )
+            {
+                _presenceManager.SetPersonaState(state);
+            }
+        }
     }
 }

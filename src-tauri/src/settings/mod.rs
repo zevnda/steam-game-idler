@@ -29,6 +29,17 @@ const SETTINGS_FILE_NAME: &str = "settings.json";
 pub struct Settings {
     #[serde(default)]
     pub agent_accounts: HashMap<String, String>,
+    /// Caches the SteamID64 last resolved for an agent-mode account key (`AgentManager::key_for`),
+    /// learned once a login/resume actually succeeds. Lets `AgentManager::login`/`login_with_token`
+    /// look up this account's steam-id-scoped `presence_settings.json` and pass the saved persona
+    /// state into the login IPC request itself - see `AgentManager::cached_persona_state`'s doc
+    /// comment for why that matters (the daemon's `PresenceManager` always defaults a fresh session
+    /// to Online otherwise, briefly broadcasting it to friends before a follow-up correction).
+    /// Purely a performance/UX cache, safe to lose: a miss just falls back to the older
+    /// default-then-correct behavior for that one login, so `#[serde(default)]` is enough - no
+    /// dedicated migration needed.
+    #[serde(default)]
+    pub agent_account_steam_ids: HashMap<String, String>,
     /// "Always Online" anti-away toggle - whether `local_steam::commands::anti_away` should be
     /// invoked periodically by the frontend. Defaults `false`. Not scoped per-account despite only
     /// mattering for a CLI-mode (local Steam client) session - it's a property of this
@@ -124,6 +135,7 @@ impl Default for Settings {
     fn default() -> Self {
         Self {
             agent_accounts: HashMap::new(),
+            agent_account_steam_ids: HashMap::new(),
             anti_away: false,
             start_minimized: false,
             close_to_tray: default_close_to_tray(),
@@ -213,6 +225,22 @@ pub fn record_agent_account(app_handle: &tauri::AppHandle, username: &str) -> Re
         settings
             .agent_accounts
             .insert(username.trim().to_lowercase(), username.trim().to_string());
+    })?;
+    Ok(())
+}
+
+/// Records the SteamID64 resolved for an agent-mode account key, so a later `login`/
+/// `login_with_token` can look up its saved persona state before ever logging on. See
+/// [`Settings::agent_account_steam_ids`].
+pub fn record_agent_account_steam_id(
+    app_handle: &tauri::AppHandle,
+    key: &str,
+    steam_id: &str,
+) -> Result<(), String> {
+    mutate(app_handle, |settings| {
+        settings
+            .agent_account_steam_ids
+            .insert(key.to_string(), steam_id.to_string());
     })?;
     Ok(())
 }
@@ -313,14 +341,19 @@ pub fn set_show_recent_carousel(
 
 /// Resets every app-wide preference back to its default, for `debug::commands::reset_settings`.
 /// Deliberately preserves `agent_accounts` - that's the saved-session roster (authentication
-/// state), not a user preference, and a settings reset should never sign anyone out. Does not
-/// touch the Steam Web API key override (a bearer credential in the OS credential store, not this
-/// file) or the custom background image file on disk - the caller is responsible for clearing
-/// those separately (see `reset_settings`'s own doc comment).
+/// state), not a user preference, and a settings reset should never sign anyone out. Also
+/// preserves `agent_account_steam_ids` for the same reason: it's a cache tied to that same roster,
+/// not a preference, and dropping it would silently reintroduce the login-time "briefly online"
+/// flash (see that field's doc comment) for every already-linked account until their next login.
+/// Does not touch the Steam Web API key override (a bearer credential in the OS credential store,
+/// not this file) or the custom background image file on disk - the caller is responsible for
+/// clearing those separately (see `reset_settings`'s own doc comment).
 pub fn reset(app_handle: &tauri::AppHandle) -> Result<Settings, String> {
     mutate(app_handle, |settings| {
         let agent_accounts = std::mem::take(&mut settings.agent_accounts);
+        let agent_account_steam_ids = std::mem::take(&mut settings.agent_account_steam_ids);
         *settings = Settings::default();
         settings.agent_accounts = agent_accounts;
+        settings.agent_account_steam_ids = agent_account_steam_ids;
     })
 }

@@ -7,6 +7,15 @@ namespace SteamUtility.Daemon.Bot
     // without this, SteamBot's hardcoded EPersonaState.Online would win back over a user's chosen
     // state after every reconnect. Defaults to Online, matching the behavior this replaces
     // (SteamBot.cs previously called SetPersonaState(Online) directly in OnLoggedOn).
+    //
+    // DaemonHost's "login"/"login_with_token" cases call SetPersonaState() to pre-seed this field
+    // *before* logging on, whenever Rust already knows this account's saved preference (see
+    // AgentManager::cached_persona_state). That call's own Apply() no-ops harmlessly while not yet
+    // logged on (see below) - its only effect is making sure the LogOnStatusChanged-triggered
+    // Apply() that fires the moment logon succeeds broadcasts the *correct* state on the very
+    // first try, instead of this class's Online default, which a user who wants Invisible/Offline
+    // would otherwise see broadcast to their friends for the length of one extra IPC round trip
+    // (Rust's own post-login correction, kept as a fallback for whenever no pre-seed was sent).
     public sealed class PresenceManager
     {
         private readonly SteamBot _bot;
