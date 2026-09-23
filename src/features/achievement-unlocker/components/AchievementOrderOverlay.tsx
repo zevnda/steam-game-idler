@@ -56,6 +56,8 @@ export const AchievementOrderOverlay = () => {
     isLoading,
     isSaving,
     loadErrorCode,
+    hasProtectedAchievements,
+    protectedAchievements,
     refresh,
     reorder,
     toggleSkip,
@@ -114,6 +116,7 @@ export const AchievementOrderOverlay = () => {
               {openGame && (
                 <AchievementOrderHeader
                   canImportTimings={canImportTimings}
+                  hasProtectedAchievements={hasProtectedAchievements}
                   isDisabled={areControlsDisabled}
                   name={openGame.name}
                   onClose={() => handleOpenChange(false)}
@@ -146,7 +149,7 @@ export const AchievementOrderOverlay = () => {
                       {t('common.actions.tryAgain')}
                     </Button>
                   </div>
-                ) : achievements.length === 0 ? (
+                ) : achievements.length === 0 && protectedAchievements.length === 0 ? (
                   <EmptyState className='flex flex-col items-center justify-center gap-2 p-8 text-center'>
                     <Typography type='h3'>
                       {t('dashboard.achievementUnlocker.order.empty.title')}
@@ -172,6 +175,7 @@ export const AchievementOrderOverlay = () => {
                             isDelayDisabled={areControlsDisabled}
                             onDelayChange={setDelayBeforeFirstUnlock}
                             onSetDelay={setDelay}
+                            protectedAchievements={protectedAchievements}
                             onToggleSkip={toggleSkip}
                           />
                         </div>
@@ -187,6 +191,7 @@ export const AchievementOrderOverlay = () => {
                             isOverlay
                             achievement={activeAchievement}
                             appId={openGame.appId}
+                            isSkipped={activeAchievement.skip}
                             onToggleSkip={toggleSkip}
                           />
                         ) : null}

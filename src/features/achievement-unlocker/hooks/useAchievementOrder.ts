@@ -13,8 +13,9 @@ interface OpenGame {
   name: string
 }
 
-// Order-specific fields layered onto the achievement-manager's own AchievementDto - only unlocked
-// achievements are relevant here (an already-unlocked one has nothing left to order/skip/delay).
+// Order-specific fields layered onto the achievement-manager's own AchievementDto - only still-locked,
+// unprotected achievements are relevant here (an already-unlocked one has nothing left to
+// order/skip/delay, and a protected one can't be unlocked at all - see `protectedAchievements`).
 export interface OrderableAchievement extends AchievementDto {
   skip: boolean
   delayNextUnlock?: number
@@ -37,6 +38,16 @@ export const useAchievementOrder = (openGame: OpenGame | null) => {
   const [isLoading, setIsLoading] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [loadErrorCode, setLoadErrorCode] = useState<string | null>(null)
+  // Still-locked protected achievements - kept out of `achievements` entirely (never reorderable,
+  // skippable, or given a delay, and so never written into a saved order) since the game's server
+  // owns them and the unlocker can't set them. Surfaced separately as a read-only list below the
+  // real order (AchievementOrderList.tsx's protected section) so the editor's count still visibly
+  // matches the game's real locked total instead of silently coming up short.
+  const [protectedAchievements, setProtectedAchievements] = useState<AchievementDto[]>([])
+  // Checked against the full schema (not just the still-locked `achievements` list below) since
+  // achievement_unlocker::manager's `scan_game` drops a game from the queue if *any* achievement is
+  // protected - an already-unlocked protected one still disqualifies the whole game.
+  const [hasProtectedAchievements, setHasProtectedAchievements] = useState(false)
 
   const load = useCallback(async () => {
     if (!account || !openGame) return
@@ -55,13 +66,20 @@ export const useAchievementOrder = (openGame: OpenGame | null) => {
         }),
       ])
 
-      const unlocked = data.achievements.filter(achievement => !achievement.achieved)
+      setHasProtectedAchievements(
+        data.achievements.some(achievement => achievement.protectedAchievement),
+      )
+      const locked = data.achievements.filter(achievement => !achievement.achieved)
+      const orderable = locked.filter(achievement => !achievement.protectedAchievement)
+      setProtectedAchievements(
+        locked.filter(achievement => achievement.protectedAchievement).sort(byPercentDescending),
+      )
 
       if (order) {
         const savedById = new Map(
           order.achievements.map((entry, index) => [entry.id, { entry, index }]),
         )
-        const merged: OrderableAchievement[] = unlocked.map(achievement => {
+        const merged: OrderableAchievement[] = orderable.map(achievement => {
           const saved = savedById.get(achievement.id)
           return {
             ...achievement,
@@ -80,7 +98,7 @@ export const useAchievementOrder = (openGame: OpenGame | null) => {
         setAchievements(merged)
         setDelayBeforeFirstUnlock(order.delayBeforeFirstUnlock ?? '')
       } else {
-        const sorted = [...unlocked].sort(byPercentDescending)
+        const sorted = [...orderable].sort(byPercentDescending)
         setAchievements(sorted.map(achievement => ({ ...achievement, skip: false })))
         setDelayBeforeFirstUnlock('')
       }
@@ -96,6 +114,8 @@ export const useAchievementOrder = (openGame: OpenGame | null) => {
     if (openGame) {
       setAchievements([])
       setLoadErrorCode(null)
+      setHasProtectedAchievements(false)
+      setProtectedAchievements([])
       load()
     }
     // Only re-runs when the overlay opens for a (possibly new) game, same reasoning as
@@ -231,6 +251,8 @@ export const useAchievementOrder = (openGame: OpenGame | null) => {
     isLoading,
     isSaving,
     loadErrorCode,
+    hasProtectedAchievements,
+    protectedAchievements,
     refresh: load,
     reorder,
     toggleSkip,

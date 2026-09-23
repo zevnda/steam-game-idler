@@ -1,7 +1,8 @@
+import type { AchievementDto } from '@/features/achievement-manager/types'
 import type { DraggableAttributes, DraggableSyntheticListeners } from '@dnd-kit/core'
-import type { OrderableAchievement } from '../hooks/useAchievementOrder'
 import { useTranslation } from 'react-i18next'
 import { GoGrabber } from 'react-icons/go'
+import { TbBan } from 'react-icons/tb'
 import { Checkbox, cn, Typography } from '@heroui/react'
 import Image from 'next/image'
 import {
@@ -9,6 +10,7 @@ import {
   RARITY_TIER_CLASSES,
   RARITY_TIER_LABEL_KEYS,
 } from '@/features/achievement-manager/utils/achievementRarity'
+import { AppTooltip } from '@/shared/components/AppTooltip'
 
 const ICON_BASE_URL = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/'
 
@@ -29,10 +31,15 @@ interface DragHandleProps {
 
 interface AchievementOrderRowProps {
   appId: number
-  achievement: OrderableAchievement
+  // Plain AchievementDto rather than OrderableAchievement so the read-only protected list (which
+  // has no skip/delay state at all - see useAchievementOrder.ts's `protectedAchievements`) can
+  // render the same card; the orderable list passes its `skip` through `isSkipped` instead.
+  achievement: AchievementDto
+  isSkipped?: boolean
+  isReadOnly?: boolean
   isOverlay?: boolean
   dragHandleProps?: DragHandleProps
-  onToggleSkip: (id: string) => void
+  onToggleSkip?: (id: string) => void
 }
 
 // One achievement card in the order editor - checkbox (include/skip), icon, name + unlock percent,
@@ -46,9 +53,15 @@ interface AchievementOrderRowProps {
 // AchievementOrderPage.tsx SortableAchievement, minus the react-window virtualization (see Step 15's
 // own "no virtualized list" note - same small-count reasoning applies here) and keyed by `id`
 // instead of the display `name` (order.rs's own stable key, see its doc comment).
+// `isReadOnly` is the protected-achievement variant (AchievementOrderList.tsx's protected section):
+// the checkbox column shows the same TbBan + tooltip marker AchievementRow.tsx uses for a protected
+// achievement, and the drag-handle column is left empty, so the card keeps the exact same grid and
+// height as an orderable one but offers nothing to toggle or drag.
 export const AchievementOrderRow = ({
   appId,
   achievement,
+  isSkipped = false,
+  isReadOnly = false,
   isOverlay = false,
   dragHandleProps,
   onToggleSkip,
@@ -67,19 +80,33 @@ export const AchievementOrderRow = ({
         // De-emphasis for a skipped row comes from a solid, quieter card background rather than
         // `opacity` - same reasoning as AchievementRow.tsx's own de-emphasis treatment, so the
         // checkbox/delay input/name stay fully legible instead of visually fading along with it.
-        achievement.skip ? 'border-border/60' : 'border-border',
-        !isOverlay && 'hover:border-accent/50',
+        isSkipped || isReadOnly ? 'border-border/60' : 'border-border',
+        !isOverlay && !isReadOnly && 'hover:border-accent/50',
         isOverlay && 'border-accent shadow-xl ring-2 ring-accent/30',
       )}
     >
       <div className='flex items-center justify-center'>
-        <Checkbox isSelected={!achievement.skip} onChange={() => onToggleSkip(achievement.id)}>
-          <Checkbox.Content>
-            <Checkbox.Control className='bg-surface-tertiary hover:bg-surface-hover text-foreground'>
-              <Checkbox.Indicator />
-            </Checkbox.Control>
-          </Checkbox.Content>
-        </Checkbox>
+        {isReadOnly ? (
+          <AppTooltip.Root>
+            <AppTooltip.Trigger>
+              <span
+                aria-label={t('dashboard.achievements.protectedTooltip')}
+                className='inline-flex text-warning'
+              >
+                <TbBan fontSize={16} />
+              </span>
+            </AppTooltip.Trigger>
+            <AppTooltip.Content>{t('dashboard.achievements.protectedTooltip')}</AppTooltip.Content>
+          </AppTooltip.Root>
+        ) : (
+          <Checkbox isSelected={!isSkipped} onChange={() => onToggleSkip?.(achievement.id)}>
+            <Checkbox.Content>
+              <Checkbox.Control className='bg-surface-tertiary hover:bg-surface-hover text-foreground'>
+                <Checkbox.Indicator />
+              </Checkbox.Control>
+            </Checkbox.Content>
+          </Checkbox>
+        )}
       </div>
 
       <Image
@@ -94,13 +121,13 @@ export const AchievementOrderRow = ({
         <div className='flex items-baseline gap-2 min-w-0'>
           <Typography
             truncate
-            color={achievement.skip ? 'muted' : undefined}
+            color={isSkipped || isReadOnly ? 'muted' : undefined}
             type='body-sm'
             weight='semibold'
           >
             {achievement.name}
           </Typography>
-          {achievement.skip && (
+          {isSkipped && (
             <span className='shrink-0 rounded-full bg-surface-tertiary px-1.5 py-0.5 text-[10px] font-semibold text-muted'>
               {t('dashboard.achievementUnlocker.order.skipped')}
             </span>
@@ -117,8 +144,8 @@ export const AchievementOrderRow = ({
           )}
         </div>
         {/* AchievementRow.tsx's equivalent blur condition also checks `!achievement.achieved` -
-            omitted here since useAchievementOrder.ts's `load` only ever populates this list from
-            already-unlocked-filtered achievements, so `achieved` is always false for every row. */}
+            omitted here since useAchievementOrder.ts's `load` only ever populates both the orderable
+            and protected lists from still-locked achievements, so `achieved` is always false. */}
         <Typography
           className={cn('truncate', achievement.hidden && 'blur-xs hover:blur-none')}
           color='muted'
@@ -128,7 +155,9 @@ export const AchievementOrderRow = ({
         </Typography>
       </div>
 
-      {isOverlay ? (
+      {isReadOnly ? (
+        <span aria-hidden />
+      ) : isOverlay ? (
         <span className='justify-self-end rounded-full p-1.5'>
           <GoGrabber className='text-accent' fontSize={22} />
         </span>

@@ -1,7 +1,8 @@
+import type { AchievementDto } from '@/features/achievement-manager/types'
 import type { RowComponentProps } from 'react-window'
 import type { OrderableAchievement } from '../hooks/useAchievementOrder'
 import { useTranslation } from 'react-i18next'
-import { TbHourglassLow } from 'react-icons/tb'
+import { TbBan, TbHourglassLow } from 'react-icons/tb'
 import { List } from 'react-window'
 import { AchievementOrderRow } from './AchievementOrderRow'
 import { useSortable } from '@dnd-kit/sortable'
@@ -28,6 +29,15 @@ const CONNECTOR_HEIGHT = 52
 const DELAY_BEFORE_FIRST_GAP = 8
 
 const DELAY_BEFORE_FIRST_ROW_HEIGHT = CARD_HEIGHT + DELAY_BEFORE_FIRST_GAP
+
+// The protected section's header row (see ProtectedHeaderRow below) - its label sits at the bottom
+// of this height via `items-end pb-2`, so the space above the label is what visually separates the
+// section from the last orderable card (which has no trailing connector to fill that gap).
+const PROTECTED_HEADER_HEIGHT = 48
+
+// Protected cards aren't linked by ConnectorRows (they're not part of the unlock sequence), so they
+// get a plain `pb-2` gap between them instead, same size as the delay-before-first row's own gap.
+const PROTECTED_ROW_HEIGHT = CARD_HEIGHT + DELAY_BEFORE_FIRST_GAP
 
 interface DelayRowProps {
   delayBeforeFirstUnlock: number | ''
@@ -175,6 +185,7 @@ const AchievementOrderUnit = ({
         achievement={achievement}
         appId={appId}
         dragHandleProps={{ attributes: sortable.attributes, listeners: sortable.listeners }}
+        isSkipped={achievement.skip}
         onToggleSkip={onToggleSkip}
       />
       {hasConnector && (
@@ -189,8 +200,31 @@ const AchievementOrderUnit = ({
   )
 }
 
+// Labels the read-only protected list below the real order. Deliberately a plain label with no
+// connecting line or delay input - protected achievements aren't part of the unlock sequence at all
+// (see useAchievementOrder.ts's `protectedAchievements`), so nothing here should read as a step in
+// it. The explanation of *why* they're excluded lives in the header alert
+// (AchievementOrderHeader.tsx) rather than here, since this row has a fixed virtualized height and a
+// wrapping description would overflow it in longer locales.
+const ProtectedHeaderRow = ({ count }: { count: number }) => {
+  const { t } = useTranslation()
+
+  return (
+    <div className='flex h-full items-end gap-2 pb-2'>
+      <TbBan className='mb-0.5 shrink-0 text-warning' fontSize={14} />
+      <Typography truncate type='body-xs' weight='semibold'>
+        {t('dashboard.achievementUnlocker.order.protectedSection.title')}
+      </Typography>
+      <span className='shrink-0 rounded-full bg-surface-tertiary px-1.5 py-0.5 text-[10px] font-semibold text-muted'>
+        {count}
+      </span>
+    </div>
+  )
+}
+
 interface RowProps {
   achievements: OrderableAchievement[]
+  protectedAchievements: AchievementDto[]
   appId: number
   delayBeforeFirstUnlock: number | ''
   isDelayDisabled: boolean
@@ -215,6 +249,7 @@ const Row = ({
   index,
   style,
   achievements,
+  protectedAchievements,
   appId,
   delayBeforeFirstUnlock,
   isDelayDisabled,
@@ -235,6 +270,25 @@ const Row = ({
   }
 
   const achievementIndex = index - 1
+  // Past the last orderable card: the protected section (header first, then one card each).
+  if (achievementIndex >= achievements.length) {
+    const protectedIndex = achievementIndex - achievements.length - 1
+    if (protectedIndex === -1) {
+      return (
+        <div {...ariaAttributes} style={style}>
+          <ProtectedHeaderRow count={protectedAchievements.length} />
+        </div>
+      )
+    }
+    const protectedAchievement = protectedAchievements[protectedIndex]
+    if (!protectedAchievement) return null
+    return (
+      <div {...ariaAttributes} className='pb-2' style={style}>
+        <AchievementOrderRow isReadOnly achievement={protectedAchievement} appId={appId} />
+      </div>
+    )
+  }
+
   const achievement = achievements[achievementIndex]
   if (!achievement) return null
 
@@ -260,15 +314,20 @@ const Row = ({
 }
 
 // Row heights mirror `Row`'s own shape above: index 0 (delay-before-first) and the last achievement
-// have no connector, every other achievement's row is a card plus a connector. Keep both in sync.
+// have no connector, every other achievement's row is a card plus a connector, then (only if any
+// exist) the protected section's header followed by one plain card per protected achievement. Keep
+// both in sync.
 const getRowHeight = (index: number, { achievements }: RowProps) => {
   if (index === 0) return DELAY_BEFORE_FIRST_ROW_HEIGHT
+  if (index - 1 === achievements.length) return PROTECTED_HEADER_HEIGHT
+  if (index - 1 > achievements.length) return PROTECTED_ROW_HEIGHT
   const hasConnector = index - 1 < achievements.length - 1
   return CARD_HEIGHT + (hasConnector ? CONNECTOR_HEIGHT : 0)
 }
 
 interface AchievementOrderListProps {
   achievements: OrderableAchievement[]
+  protectedAchievements: AchievementDto[]
   appId: number
   delayBeforeFirstUnlock: number | ''
   isDelayDisabled: boolean
@@ -285,10 +344,18 @@ interface AchievementOrderListProps {
 // combining virtualization with sortable lists; dragging near either edge of the visible window
 // auto-scrolls the list (dnd-kit's default PointerSensor autoscroll targets the nearest scrollable
 // ancestor, which is this `List`'s own root), bringing the next rows into range.
+// Protected achievements render as trailing rows after the real order (a header plus one read-only
+// card each), outside the parent SortableContext's `items` - they're never drag sources or targets,
+// and sitting after the last orderable card means they can't be mistaken for a step between two
+// others or pick up a connector's delay.
 export const AchievementOrderList = (props: AchievementOrderListProps) => (
   <List
     rowComponent={Row}
-    rowCount={props.achievements.length + 1}
+    rowCount={
+      props.achievements.length +
+      1 +
+      (props.protectedAchievements.length > 0 ? props.protectedAchievements.length + 1 : 0)
+    }
     rowHeight={getRowHeight}
     rowProps={props}
     style={{ height: '100%', width: '100%' }}

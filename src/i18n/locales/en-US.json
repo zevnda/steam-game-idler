@@ -722,6 +722,12 @@
         "delayUntilNextUnlock": "Delay until next unlock",
         "reset": "Reset",
         "skipped": "Skipped",
+        "protectedSection": {
+          "title": "Protected achievements"
+        },
+        "protectedAlert": {
+          "description": "The achievement unlocker skips games with any protected achievements, so this order won't be used."
+        },
         "empty": {
           "title": "Nothing left to order",
           "description": "This game has no remaining achievements to unlock."
