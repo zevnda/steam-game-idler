@@ -1,12 +1,13 @@
 import { useTranslation } from 'react-i18next'
 import { TbX } from 'react-icons/tb'
-import { Button, Typography } from '@heroui/react'
+import { Alert, Button, Typography } from '@heroui/react'
 import { TierBadge } from '@/shared/components/TierBadge'
 
 interface AchievementOrderHeaderProps {
   name: string
   isDisabled: boolean
   canImportTimings: boolean
+  hasProtectedAchievements: boolean
   onClose: () => void
   onReset: () => void
   onImportTimings: () => void
@@ -18,11 +19,14 @@ interface AchievementOrderHeaderProps {
 // import controls stay reachable while the virtualized achievement list scrolls beneath them,
 // instead of scrolling away with it like the previous inline row did. The delay-before-first-unlock
 // input lives in AchievementOrderListHeader.tsx instead, above the list, so it lines up with each
-// row's own per-achievement delay input.
+// row's own per-achievement delay input. The protected-achievements alert mirrors
+// AchievementManagerHeader.tsx's own, below the controls row, but with unlocker-specific wording -
+// see useAchievementOrder.ts's `hasProtectedAchievements` for why it disqualifies the whole game.
 export const AchievementOrderHeader = ({
   name,
   isDisabled,
   canImportTimings,
+  hasProtectedAchievements,
   onClose,
   onReset,
   onImportTimings,
@@ -35,40 +39,54 @@ export const AchievementOrderHeader = ({
     // (see AchievementOrderOverlay.tsx), which paints over Titlebar just like
     // AchievementManagerHeader.tsx's does; see that file's doc comment for the full explanation.
     <div
-      className='bg-overlay relative z-10 flex shrink-0 items-center justify-between gap-4 border-b border-border px-6 py-3'
+      className='bg-overlay relative z-10 flex shrink-0 flex-col gap-3 border-b border-border px-6 py-3'
       data-tauri-drag-region
     >
-      <div className='flex min-w-0 items-center gap-2' data-tauri-drag-region>
-        <Button isIconOnly variant='ghost' onPress={onClose}>
-          <TbX fontSize={18} />
-        </Button>
-        <Typography className='max-w-65 truncate' data-tauri-drag-region type='h3'>
-          {name}
-        </Typography>
+      <div className='flex items-center justify-between gap-4' data-tauri-drag-region>
+        <div className='flex min-w-0 items-center gap-2' data-tauri-drag-region>
+          <Button isIconOnly variant='ghost' onPress={onClose}>
+            <TbX fontSize={18} />
+          </Button>
+          <Typography className='max-w-65 truncate' data-tauri-drag-region type='h3'>
+            {name}
+          </Typography>
+        </div>
+
+        <div className='flex shrink-0 items-center gap-2'>
+          <Button isDisabled={isDisabled} size='sm' variant='danger' onPress={onReset}>
+            {t('dashboard.achievementUnlocker.order.reset')}
+          </Button>
+          {canImportTimings ? (
+            <Button isDisabled={isDisabled} size='sm' variant='secondary' onPress={onImportTimings}>
+              {t('dashboard.achievementUnlocker.importTimings.title')}
+            </Button>
+          ) : (
+            // Not `isDisabled` on the Button - HeroUI maps that to a native `disabled` attribute,
+            // which swallows the real click a gated upsell needs entirely (confirmed live via CDP).
+            // The wrapping span only supplies the native hover tooltip; the Button itself stays real
+            // and pressable, styled to look disabled, with `onPress` opening the upsell - regardless
+            // of `isDisabled` (loading/error/empty), since opening the upsell modal isn't an edit.
+            <Button className='opacity-50' size='sm' variant='secondary' onPress={onUpsell}>
+              <span className='flex items-center gap-1.5'>
+                {t('dashboard.achievementUnlocker.importTimings.title')}
+                <TierBadge tier='gamer' />
+              </span>
+            </Button>
+          )}
+        </div>
       </div>
 
-      <div className='flex shrink-0 items-center gap-2'>
-        <Button isDisabled={isDisabled} size='sm' variant='danger' onPress={onReset}>
-          {t('dashboard.achievementUnlocker.order.reset')}
-        </Button>
-        {canImportTimings ? (
-          <Button isDisabled={isDisabled} size='sm' variant='secondary' onPress={onImportTimings}>
-            {t('dashboard.achievementUnlocker.importTimings.title')}
-          </Button>
-        ) : (
-          // Not `isDisabled` on the Button - HeroUI maps that to a native `disabled` attribute,
-          // which swallows the real click a gated upsell needs entirely (confirmed live via CDP).
-          // The wrapping span only supplies the native hover tooltip; the Button itself stays real
-          // and pressable, styled to look disabled, with `onPress` opening the upsell - regardless
-          // of `isDisabled` (loading/error/empty), since opening the upsell modal isn't an edit.
-          <Button className='opacity-50' size='sm' variant='secondary' onPress={onUpsell}>
-            <span className='flex items-center gap-1.5'>
-              {t('dashboard.achievementUnlocker.importTimings.title')}
-              <TierBadge tier='gamer' />
-            </span>
-          </Button>
-        )}
-      </div>
+      {hasProtectedAchievements && (
+        <Alert status='warning'>
+          <Alert.Indicator />
+          <Alert.Content>
+            <Alert.Title>{t('dashboard.achievements.protectedAlert.title')}</Alert.Title>
+            <Alert.Description>
+              {t('dashboard.achievementUnlocker.order.protectedAlert.description')}
+            </Alert.Description>
+          </Alert.Content>
+        </Alert>
+      )}
     </div>
   )
 }
