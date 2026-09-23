@@ -99,7 +99,9 @@
       "nameDesc": "İsim (Z-A)"
     },
     "noGamesQueued": "Sıraya alınmış oyun yok",
-    "completedThisSessionCount": "Bu oturumda tamamlanan ({{count}})"
+    "completedThisSessionCount": "Bu oturumda tamamlanan ({{count}})",
+    "gamesQueuedCount_one": "{{count}} oyun sırada",
+    "gamesQueuedCount_other": "{{count}} oyun sırada"
   },
   "update": {
     "downloading": "Güncelleme yükleniyor..."
@@ -147,6 +149,8 @@
       "startingAt": "Ayda ${{price}}'dan başlayan fiyatlarla · İstediğiniz zaman iptal edin"
     },
     "section": {
+      "topFeatures": "Bütün Özellikler",
+      "seeAllFeatures": "Bütün Özellikleri Görüntüle",
       "chooseTier": "Seviyenizi Seçin",
       "comparePlans": "Seviyeleri Karşılaştır",
       "faq": "SSS"
@@ -330,6 +334,7 @@
         "freeGames": "Bedava Oyunlar",
         "cardFarming": "Kart Kasma",
         "achievementUnlocker": "Başarım Açıcı",
+        "autoIdle": "Otomatik Kasıcı",
         "inventoryManager": "Envanter Yöneticisi"
       },
       "signOut": {
@@ -392,7 +397,9 @@
         "description": "Steam profiliniz veya oyun ayrıntılarınız gizli olarak ayarlanmış görünüyor. Bu nedenle oyun süresi, son oynanan oyunlar ve bazı oyun bilgileri eksik olabilir. Bu sorunu düzeltmek için profilinizi herkese açık yapın veya Ayarlar bölümünden kendi Steam Web API anahtarınızı ekleyin.",
         "changeSettings": "Gizlilik ayarlarını değiştir",
         "useOwnKey": "Kendi API anahtarımı ekle"
-      }
+      },
+      "count_one": "{{count}} oyun",
+      "count_other": "{{count}} oyun"
     },
     "idling": {
       "stopAll": "Hepsini durdur",
@@ -485,6 +492,7 @@
       },
       "rarity": {
         "common": "Yaygın",
+        "rare": "Nadir",
         "epic": "Destansı",
         "legendary": "Efsanevi"
       },
