@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Alert, Button, Modal } from '@heroui/react'
+import { AccountStatusModal } from './AccountStatusModal'
+import { Alert, Button } from '@heroui/react'
 import { errorMessageKey } from '@/features/agent-sign-in/utils/errorMessageKey'
 import { useAddAccountModalStore } from '@/shared/stores/addAccountModalStore'
 import { useReauthModalStore } from '@/shared/stores/reauthModalStore'
@@ -16,7 +17,9 @@ type ReconnectPhase =
   { kind: 'idle' } | { kind: 'reconnecting' } | { kind: 'failed'; errorCode: string }
 
 // Re-establishes one specific already-known agent-mode account's session (flagged by
-// agentReauthStore after a concurrent-login kick) via `agent_login_with_token`, the same
+// agentReauthStore after its session was replaced by another client of the same kind - usually a
+// second SGI instance; the user merely playing a game on their real Steam client never lands here,
+// that only pauses automation, see PlayingElsewhereModal) via `agent_login_with_token`, the same
 // saved-refresh-token resume every account already uses on app boot (useSessionBootstrap.ts's
 // `resumeAccount`), rather than asking for a password again: the daemon process for this account
 // is still alive (see steam_agent::process::handle_session_superseded's doc comment - deliberately
@@ -27,10 +30,9 @@ type ReconnectPhase =
 // "Use a different sign-in method" defers entirely to the normal AddAccountModal flow (same one
 // "+ Add another account" opens) rather than a locked-username password form of its own - that's
 // the only path that actually lets the user reach Legacy Sign-in (a different sign-in mode
-// entirely, not just different credentials for this same agent-mode account), which is exactly
-// what methodExplainer below is telling them to consider. Also used as the automatic fallback when
-// there's no saved token left to reconnect with (`agent_no_saved_credentials`) - nothing left to
-// retry in that case either. On a successful reconnect, agentReauthStore's flag clears itself via
+// entirely, not just different credentials for this same agent-mode account). Also used as the
+// automatic fallback when there's no saved token left to reconnect with
+// (`agent_no_saved_credentials`) - nothing left to retry in that case either. On a successful reconnect, agentReauthStore's flag clears itself via
 // useAgentReauthWatcher's `loggedOn: true` branch once the daemon's next status_changed event
 // confirms it - not from here directly.
 const ReauthModalBody = ({ username, onClose }: ReauthModalBodyProps) => {
@@ -69,7 +71,7 @@ const ReauthModalBody = ({ username, onClose }: ReauthModalBodyProps) => {
         {t('dashboard.sidebar.accountSwitcher.reauth.modalDescription', { account: username })}
       </p>
       <p className='text-center text-sm text-muted'>
-        {t('dashboard.sidebar.accountSwitcher.reauth.methodExplainer')}
+        {t('dashboard.sidebar.accountSwitcher.reauth.sessionReplacedExplainer')}
       </p>
       {reconnect.kind === 'failed' ? (
         <Alert className='w-full' status='danger'>
@@ -107,25 +109,12 @@ export const ReauthModal = () => {
   const username = account?.mode === 'agent' ? account.username : null
 
   return (
-    <Modal
+    <AccountStatusModal
       isOpen={Boolean(accountKey) && username !== null}
-      onOpenChange={open => !open && close()}
+      title={t('dashboard.sidebar.accountSwitcher.reauth.modalTitle')}
+      onClose={close}
     >
-      <Modal.Backdrop>
-        <Modal.Container size='md'>
-          <Modal.Dialog>
-            <Modal.Header>
-              <Modal.Heading>
-                {t('dashboard.sidebar.accountSwitcher.reauth.modalTitle')}
-              </Modal.Heading>
-              <Modal.CloseTrigger />
-            </Modal.Header>
-            <Modal.Body>
-              {username ? <ReauthModalBody username={username} onClose={close} /> : null}
-            </Modal.Body>
-          </Modal.Dialog>
-        </Modal.Container>
-      </Modal.Backdrop>
-    </Modal>
+      {username ? <ReauthModalBody username={username} onClose={close} /> : null}
+    </AccountStatusModal>
   )
 }

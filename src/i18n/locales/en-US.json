@@ -16,7 +16,8 @@
       "done": "Done",
       "copy": "Copy",
       "paste": "Paste",
-      "add": "Add"
+      "add": "Add",
+      "ok": "OK"
     },
     "gameCardMenu": {
       "startIdling": "Start Idling",
@@ -74,7 +75,8 @@
     "learnMore": "Learn more",
     "status": {
       "saved": "Saved",
-      "cleared": "Cleared"
+      "cleared": "Cleared",
+      "paused": "Paused"
     },
     "steamWarning": {
       "title": "Notice",
@@ -361,11 +363,10 @@
         },
         "reauth": {
           "badge": "Signed in elsewhere",
-          "tooltip": "This account was signed in on another device, so its automation has been paused. Sign in again to continue.",
           "modalTitle": "Signed in on another device",
           "modalDescription": "{{account}} was signed in on another device, so its automation has been paused. Sign in again to continue.",
           "reconnect": "Reconnect",
-          "methodExplainer": "Steam Sign-in only allows one active session per account. If you'd like to keep playing games while Steam Game Idler runs, use Legacy Sign-in instead.",
+          "sessionReplacedExplainer": "This usually happens when another copy of Steam Game Idler, or a similar tool, signs in to this account. Reconnecting here signs that one out.",
           "useDifferentMethod": "Use a different sign-in method"
         }
       },
@@ -403,6 +404,11 @@
         "changeSettings": "Change privacy settings",
         "useOwnKey": "Add my own API key"
       }
+    },
+    "playingElsewhere": {
+      "title": "Paused while you play",
+      "description": "This account is playing a game in another Steam session, so idling and automation are paused. Everything resumes automatically about a minute after that session stops playing.",
+      "descriptionWithGame": "This account is playing {{game}} in another Steam session, so idling and automation are paused. Everything resumes automatically about a minute after that session stops playing."
     },
     "idling": {
       "count_one": "{{count}} game idling",

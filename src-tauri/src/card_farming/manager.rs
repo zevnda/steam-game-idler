@@ -23,7 +23,7 @@ use crate::auto_idle;
 use crate::error::{AppError, AppResult};
 use crate::games::{self, commands::GamesAccount};
 use crate::idling::{self, IdleTarget, IdlingManager};
-use crate::steam_agent::AgentManager;
+use crate::steam_agent::{self, AgentManager};
 use crate::steam_community::credentials;
 
 use super::refund_window;
@@ -693,6 +693,21 @@ async fn run_cycle(
     let mut queue_genuinely_empty = false;
 
     while !stopped.load(Ordering::SeqCst) {
+        // No drops accrue while another session on the account is playing a game (the daemon
+        // holds this cycle's idle announces back - see `steam_agent::playing`'s module doc), so
+        // hold off between cycles instead of re-scraping the badges page every few minutes for
+        // nothing. A cycle already mid-way when the block starts just runs out its own timers.
+        if steam_agent::is_playing_blocked(&app_handle, &account).await {
+            tracing::info!(
+                steam_id,
+                "card farming: paused while another session is playing a game"
+            );
+            if steam_agent::wait_while_playing_blocked(&app_handle, &account, &stopped).await {
+                break;
+            }
+            tracing::info!(steam_id, "card farming: resumed");
+        }
+
         let farming_settings = settings::get(&app_handle, &steam_id).await.unwrap_or_default();
         let excluded_snapshot = excluded_app_ids.lock().await.clone();
 

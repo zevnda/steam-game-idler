@@ -1,7 +1,13 @@
 import type { AccountKey, SignedInAccount } from '@/shared/stores/sessionStore'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbAlertTriangle, TbChevronDown, TbLogout, TbPlus } from 'react-icons/tb'
+import {
+  TbAlertTriangle,
+  TbChevronDown,
+  TbLogout,
+  TbPlayerPauseFilled,
+  TbPlus,
+} from 'react-icons/tb'
 import { AlertDialog, Avatar, Button, cn, Popover, Spinner, toast } from '@heroui/react'
 import { useRouter } from 'next/router'
 import { AppTooltip } from '@/shared/components/AppTooltip'
@@ -13,6 +19,7 @@ import { useAddAccountModalStore } from '@/shared/stores/addAccountModalStore'
 import { useAgentReauthStore } from '@/shared/stores/agentReauthStore'
 import { useCardFarmingStore } from '@/shared/stores/cardFarmingStore'
 import { useIdlingStore } from '@/shared/stores/idlingStore'
+import { usePlayingSessionStore } from '@/shared/stores/playingSessionStore'
 import { useProModalStore } from '@/shared/stores/proModalStore'
 import { useReauthModalStore } from '@/shared/stores/reauthModalStore'
 import { useSearchStore } from '@/shared/stores/searchStore'
@@ -76,6 +83,9 @@ const AccountRow = ({
     state => state.entries[accountKey]?.isRunning ?? false,
   )
   const isActiveAutomation = isIdling || isFarming || isUnlocking
+  // Informational only, unlike `needsReauth` - a paused account stays fully switchable, it just
+  // explains why nothing is progressing (see PlayingElsewhereModal).
+  const isPaused = usePlayingSessionStore(state => accountKey in state.entries)
 
   const displayName = summary?.personaName || identifierFor(account)
   const initial = displayName.trim().charAt(0).toUpperCase() || '?'
@@ -139,17 +149,16 @@ const AccountRow = ({
           </span>
           {isOverCap ? <TierBadge className='shrink-0' tier='gamer' /> : null}
           {needsReauth ? (
-            <AppTooltip.Root delay={300}>
-              <AppTooltip.Trigger>
-                <span className='flex shrink-0 items-center gap-1 rounded-full bg-danger/15 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest leading-3.5 text-danger'>
-                  <TbAlertTriangle fontSize={10} />
-                  {t('dashboard.sidebar.accountSwitcher.reauth.badge')}
-                </span>
-              </AppTooltip.Trigger>
-              <AppTooltip.Content placement='top'>
-                {t('dashboard.sidebar.accountSwitcher.reauth.tooltip')}
-              </AppTooltip.Content>
-            </AppTooltip.Root>
+            <span className='flex shrink-0 items-center gap-1 rounded-full bg-danger/15 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest leading-3.5 text-danger'>
+              <TbAlertTriangle fontSize={10} />
+              {t('dashboard.sidebar.accountSwitcher.reauth.badge')}
+            </span>
+          ) : null}
+          {isPaused && !needsReauth ? (
+            <span className='flex shrink-0 items-center gap-1 rounded-full bg-warning/15 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest leading-3.5 text-warning'>
+              <TbPlayerPauseFilled fontSize={10} />
+              {t('common.status.paused')}
+            </span>
           ) : null}
         </span>
       </div>

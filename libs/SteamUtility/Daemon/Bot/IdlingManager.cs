@@ -30,6 +30,16 @@ namespace SteamUtility.Daemon.Bot
                     Resend();
                 }
             };
+            // The desired set (_currentAppIds) is kept untouched for the whole time another session
+            // holds the playing slot - only the announce is held back - so the moment it's released
+            // everything the Rust host last asked for resumes, with no re-sync needed from its side.
+            _bot.PlayingBlockedChanged += (blocked, _) =>
+            {
+                if (!blocked)
+                {
+                    Resend();
+                }
+            };
         }
 
         public IReadOnlyList<uint> CurrentAppIds => _currentAppIds;
@@ -44,6 +54,15 @@ namespace SteamUtility.Daemon.Bot
         private void Resend()
         {
             if (!_bot.IsLoggedOn)
+            {
+                return;
+            }
+
+            // Announcing while another session is playing would only get this client logged off
+            // again (LoggedInElsewhere) - never the user's real game session, see
+            // SteamBot.PlayingBlocked. Nothing to "stop" either: Steam already dropped this
+            // client's games when the other session took over the slot.
+            if (_bot.PlayingBlocked)
             {
                 return;
             }

@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use tauri::{AppHandle, State};
 
 use crate::error::AppResult;
@@ -5,6 +7,7 @@ use crate::error::AppResult;
 use super::manager::{AgentManager, LoginOutcome, QrChallenge};
 use super::ownership_settings::{self, OwnershipSettings};
 use super::presence_settings::{self, PresenceSettings};
+use super::PlayingSession;
 
 /// Starts (or restarts) an agent-mode sign-in for `username`/`password`. Resolves as soon as
 /// SteamUtility responds - which may be immediate success, or a guard-code/device-confirmation
@@ -66,6 +69,16 @@ pub async fn agent_login_with_token(
     username: String,
 ) -> AppResult<bool> {
     manager.login_with_token(&app_handle, username).await
+}
+
+/// Every live agent session's playing-session state (see [`PlayingSession`]), keyed by normalized
+/// username - the frontend's initial snapshot; `playing_session` events on `steam-agent-event`
+/// keep it current after that.
+#[tauri::command]
+pub async fn get_agent_playing_sessions(
+    manager: State<'_, AgentManager>,
+) -> AppResult<HashMap<String, PlayingSession>> {
+    Ok(manager.playing_sessions().await)
 }
 
 /// Ends the live agent session for `username` and stops its `SteamUtility.exe` process. Does not
