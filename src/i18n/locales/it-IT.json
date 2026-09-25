@@ -359,11 +359,9 @@
         },
         "reauth": {
           "badge": "Accesso effettuato altrove",
-          "tooltip": "Questo account ha effettuato l'accesso su un altro dispositivo, quindi la sua automazione è stata messa in pausa. Accedi di nuovo per continuare.",
           "modalTitle": "Accesso effettuato su un altro dispositivo",
           "modalDescription": "{{account}} ha effettuato l'accesso su un altro dispositivo, quindi la sua automazione è stata messa in pausa. Accedi di nuovo per continuare.",
           "reconnect": "Riconnetti",
-          "methodExplainer": "L'accesso con Steam consente una sola sessione attiva per account. Se desideri continuare a giocare mentre Steam Game Idler è in esecuzione, usa invece l'accesso legacy.",
           "useDifferentMethod": "Usa un metodo di accesso diverso"
         }
       },

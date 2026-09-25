@@ -354,11 +354,9 @@
         },
         "reauth": {
           "badge": "Andernorts angemeldet",
-          "tooltip": "Dieses Konto wurde auf einem anderen Gerät angemeldet, daher wurde die Automatisierung pausiert. Melden Sie sich erneut an, um fortzufahren.",
           "modalTitle": "Auf einem anderen Gerät angemeldet",
           "modalDescription": "{{account}} war auf einem anderen Gerät angemeldet, daher wurde die Automatisierung pausiert. Melden Sie sich erneut an, um fortzufahren.",
           "reconnect": "Erneutes Verbinden",
-          "methodExplainer": "Die Anmeldung mit Steam erlaubt nur eine aktive Sitzung pro Konto. Wenn Sie weiterspielen möchten, während Steam Game Idler läuft, verwenden Sie stattdessen die Legacy-Anmeldung.",
           "useDifferentMethod": "Verwenden Sie eine andere Anmeldemethode"
         }
       },

@@ -359,11 +359,9 @@
         },
         "reauth": {
           "badge": "Sesión iniciada en otro lugar",
-          "tooltip": "Esta cuenta se ha iniciado sesión en otro dispositivo, por lo que su automatización se ha pausado. Inicie sesión de nuevo para continuar.",
           "modalTitle": "Iniciaste sesión en otro dispositivo",
           "modalDescription": "Se ha iniciado sesión en {{account}} desde otro dispositivo, por lo que su automatización se ha pausado. Inicie sesión de nuevo para continuar.",
           "reconnect": "Reconectar",
-          "methodExplainer": "El inicio de sesión con Steam solo permite una sesión activa por cuenta. Si quieres seguir jugando mientras usas Steam Game Idler, utiliza el inicio de sesión clásico en su lugar.",
           "useDifferentMethod": "Utilice un método de inicio de sesión diferente"
         }
       },
