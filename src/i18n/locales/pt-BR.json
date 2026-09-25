@@ -361,11 +361,9 @@
         },
         "reauth": {
           "badge": "Conectado em outro lugar",
-          "tooltip": "Esta conta foi usada para entrar em outro dispositivo, então sua automação foi pausada. Faça login novamente para continuar.",
           "modalTitle": "Conectado em outro dispositivo",
           "modalDescription": "{{account}} foi usado para login em outro dispositivo, então sua automação foi pausada. Faça login novamente para continuar.",
           "reconnect": "Reconectar",
-          "methodExplainer": "O login do Steam permite apenas uma sessão ativa por conta. Se você quiser continuar jogando enquanto o Steam Game Idler está rodando, use o login Legacy.",
           "useDifferentMethod": "Use um método de login diferente"
         }
       },

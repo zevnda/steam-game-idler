@@ -358,11 +358,9 @@
         },
         "reauth": {
           "badge": "Başka bir yerde oturum açılmış",
-          "tooltip": "Bu hesap başka bir cihazda oturum açtığı için otomasyonu duraklatıldı. Devam etmek için tekrar oturum açın.",
           "modalTitle": "Başka bir cihazda oturum açık",
           "modalDescription": "{{account}} başka bir cihazda oturum açtığı için otomasyonu duraklatıldı. Devam etmek için tekrar oturum açın.",
           "reconnect": "Yeniden bağlan",
-          "methodExplainer": "Steam ile oturum açma yöntemi, hesap başına yalnızca bir aktif oturuma izin verir. Steam Game Idler çalışırken oyun oynamaya devam etmek istiyorsanız, bunun yerine Eski Oturum Açma (Legacy Sign-in) yöntemini kullanın.",
           "useDifferentMethod": "Farklı bir oturum açma şekli deneyin"
         }
       },

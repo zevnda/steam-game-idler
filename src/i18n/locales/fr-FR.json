@@ -359,11 +359,9 @@
         },
         "reauth": {
           "badge": "Connecté ailleurs",
-          "tooltip": "Ce compte a été connecté sur un autre appareil, son automatisation a donc été mise en pause. Connectez-vous à nouveau pour continuer.",
           "modalTitle": "Connecté sur un autre appareil",
           "modalDescription": "{{account}} a été connecté sur un autre appareil, son automatisation a donc été mise en pause. Connectez-vous à nouveau pour continuer.",
           "reconnect": "Reconnexion",
-          "methodExplainer": "La connexion Steam autorise une seule session active par compte. Si vous voulez continuer à jouer à des jeux lorsque Steam Game Idler est en cours d'exécution, utilisé la connexion legacy à la place.",
           "useDifferentMethod": "Utiliser une autre méthode de connexion"
         }
       },

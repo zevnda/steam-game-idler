@@ -359,11 +359,9 @@
         },
         "reauth": {
           "badge": "已在其他设备登录",
-          "tooltip": "该账号已在其他设备登录，自动化任务已暂停，请重新登录以继续",
           "modalTitle": "已在其他设备登录",
           "modalDescription": "{{account}} 已在其他设备登录，自动化任务已暂停，请重新登录以继续",
           "reconnect": "重新连接",
-          "methodExplainer": "Steam 登录仅允许每个账号同时存在一个活动会话，若希望在 Steam Game Idler 运行期间继续游玩游戏，请改用传统登录。",
           "useDifferentMethod": "使用其他登录方式"
         }
       },
