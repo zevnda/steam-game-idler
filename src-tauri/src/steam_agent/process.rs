@@ -41,6 +41,28 @@ const CREATE_NO_WINDOW: u32 = 0x08000000;
 
 type PendingMap = Arc<StdMutex<HashMap<String, oneshot::Sender<IpcResponse>>>>;
 
+/// Whether another session on this account (typically the user's real Steam client on another
+/// machine) currently holds the account's single "playing a game" slot, as last reported by the
+/// daemon's `playing_session` event - see `Daemon/Bot/SteamBot.cs::PlayingBlocked` for the state
+/// machine (including its 60s resume grace). While `blocked`, the daemon holds back every idle
+/// announce on its own, so idle claims stay intact and resume untouched; only automation that
+/// does more than idle (the achievement unlocker) needs to consult this itself - see
+/// [`crate::steam_agent::wait_while_playing_blocked`].
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PlayingSession {
+    pub blocked: bool,
+    /// The game the other session is playing - `None` when unknown (right after a kick, before
+    /// Steam's post-reconnect state push says which game) or when not blocked.
+    pub app_id: Option<u32>,
+    /// When this pause started (Unix epoch ms), stamped here on the not-blocked -> blocked
+    /// transition and kept across app-id updates within the same pause - `None` when not blocked.
+    /// Stamped Rust-side rather than by each listener so the frontend's snapshot and its live
+    /// events agree on one start time; the frontend uses it to freeze elapsed-idle timers for
+    /// exactly the paused span (see `playingSessionStore`).
+    pub since_ms: Option<i64>,
+}
+
 /// One spawned `SteamUtility.exe agent` child process plus its IPC plumbing. One `AgentProcess`
 /// exists per logged-in-or-logging-in account - see `AgentManager` for the account-keyed map this
 /// lives behind.
@@ -66,6 +88,8 @@ pub struct AgentProcess {
     /// reads this directly; `AgentManager::set_idle_games` doesn't wait for it (see that method's
     /// doc comment for why).
     idle_app_ids: Arc<StdMutex<Vec<u32>>>,
+    /// Last-reported playing-session state - see [`PlayingSession`].
+    playing_session: Arc<StdMutex<PlayingSession>>,
 }
 
 impl AgentProcess {
@@ -92,14 +116,19 @@ impl AgentProcess {
         let account_key: Arc<StdMutex<String>> = Arc::new(StdMutex::new(account_key));
         let steam_id: Arc<StdMutex<Option<String>>> = Arc::new(StdMutex::new(None));
         let idle_app_ids: Arc<StdMutex<Vec<u32>>> = Arc::new(StdMutex::new(Vec::new()));
+        let playing_session: Arc<StdMutex<PlayingSession>> =
+            Arc::new(StdMutex::new(PlayingSession::default()));
 
         spawn_stdout_reader(
             stdout,
             pending.clone(),
             app_handle,
             account_key.clone(),
-            steam_id.clone(),
-            idle_app_ids.clone(),
+            ProcessState {
+                steam_id: steam_id.clone(),
+                idle_app_ids: idle_app_ids.clone(),
+                playing_session: playing_session.clone(),
+            },
         );
         spawn_stderr_forwarder(stderr, account_key.clone());
 
@@ -114,6 +143,7 @@ impl AgentProcess {
             account_key,
             steam_id,
             idle_app_ids,
+            playing_session,
         })
     }
 
@@ -126,6 +156,11 @@ impl AgentProcess {
     /// The daemon's last-reported idling set - see the `idle_app_ids` field doc comment.
     pub fn idle_app_ids(&self) -> Vec<u32> {
         self.idle_app_ids.lock().unwrap().clone()
+    }
+
+    /// The daemon's last-reported playing-session state - see [`PlayingSession`].
+    pub fn playing_session(&self) -> PlayingSession {
+        *self.playing_session.lock().unwrap()
     }
 
     /// Updates the key this process's reader tasks tag every subsequent log line/emitted event
@@ -188,13 +223,20 @@ impl AgentProcess {
     }
 }
 
+/// The event-derived caches `handle_line` keeps current for one `AgentProcess` - bundled so each
+/// new cache doesn't widen every reader-side function signature by one more parameter.
+struct ProcessState {
+    steam_id: Arc<StdMutex<Option<String>>>,
+    idle_app_ids: Arc<StdMutex<Vec<u32>>>,
+    playing_session: Arc<StdMutex<PlayingSession>>,
+}
+
 fn spawn_stdout_reader(
     stdout: tokio::process::ChildStdout,
     pending: PendingMap,
     app_handle: AppHandle,
     account_key: Arc<StdMutex<String>>,
-    steam_id: Arc<StdMutex<Option<String>>>,
-    idle_app_ids: Arc<StdMutex<Vec<u32>>>,
+    process_state: ProcessState,
 ) {
     tokio::spawn(async move {
         let mut lines = BufReader::new(stdout).lines();
@@ -204,15 +246,7 @@ fn spawn_stdout_reader(
                     if line.trim().is_empty() {
                         continue;
                     }
-                    handle_line(
-                        &line,
-                        &pending,
-                        &app_handle,
-                        &account_key,
-                        &steam_id,
-                        &idle_app_ids,
-                    )
-                    .await;
+                    handle_line(&line, &pending, &app_handle, &account_key, &process_state).await;
                 }
                 Ok(None) => break,
                 Err(e) => {
@@ -251,9 +285,13 @@ async fn handle_line(
     pending: &PendingMap,
     app_handle: &AppHandle,
     account_key: &Arc<StdMutex<String>>,
-    steam_id: &Arc<StdMutex<Option<String>>>,
-    idle_app_ids: &Arc<StdMutex<Vec<u32>>>,
+    process_state: &ProcessState,
 ) {
+    let ProcessState {
+        steam_id,
+        idle_app_ids,
+        playing_session,
+    } = process_state;
     let message: IpcMessage = match serde_json::from_str(line) {
         Ok(m) => m,
         Err(e) => {
@@ -279,7 +317,7 @@ async fn handle_line(
                 let _ = tx.send(IpcResponse { ok, result, error });
             }
         }
-        IpcLine::Event { name, payload } => {
+        IpcLine::Event { name, mut payload } => {
             let key = account_key.lock().unwrap().clone();
             tracing::info!(account = %key, event = %name, "steam agent event");
 
@@ -347,6 +385,47 @@ async fn handle_line(
                 }
             }
 
+            if name == "playing_session" {
+                let blocked = payload
+                    .get("blocked")
+                    .and_then(|v| v.as_bool())
+                    .unwrap_or(false);
+                let session = {
+                    let mut current = playing_session.lock().unwrap();
+                    let since_ms = match (blocked, current.since_ms) {
+                        (false, _) => None,
+                        (true, Some(since)) => Some(since),
+                        (true, None) => Some(chrono::Utc::now().timestamp_millis()),
+                    };
+                    *current = PlayingSession {
+                        blocked,
+                        app_id: payload
+                            .get("appId")
+                            .and_then(|v| v.as_u64())
+                            .map(|n| n as u32),
+                        since_ms,
+                    };
+                    *current
+                };
+                // Forwarded to the frontend with the Rust-stamped start time added - see
+                // `PlayingSession::since_ms`.
+                payload.insert("sinceMs".to_string(), serde_json::json!(session.since_ms));
+                // Lifecycle breadcrumb for a user's log file - "why did my idling stop?" is
+                // exactly the question this answers in a bug report.
+                if session.blocked {
+                    tracing::info!(
+                        account = %key,
+                        playing_app_id = ?session.app_id,
+                        "steam agent: another session is playing a game - automation paused until it stops"
+                    );
+                } else {
+                    tracing::info!(
+                        account = %key,
+                        "steam agent: other session stopped playing - automation resumed"
+                    );
+                }
+            }
+
             // Additional, backend-agnostic forward on top of the generic `steam-agent-event`
             // below - see `idling::IDLE_STATE_EVENT`'s doc comment for why the idling feature
             // gets its own unified event rather than requiring the frontend to filter/branch on
@@ -390,14 +469,20 @@ async fn handle_line(
     }
 }
 
-/// Reacts to `status_changed{result: "LoggedInElsewhere"}` - the account was force-logged-off by
-/// Steam because it signed in elsewhere (another device/session, or the real Steam client). Stops
-/// this account's automation via the exact same underlying calls
+/// Reacts to `status_changed{result: "LoggedInElsewhere"}` - the account's session was terminally
+/// replaced by another client of the same logon type (`EResult.LogonSessionReplaced`, e.g. a
+/// second SGI instance signed into the same account - the wire name predates that narrowing, see
+/// `DaemonHost.cs`). Stops this account's automation via the exact same underlying calls
 /// `stop_farming`/`stop_achievement_unlocker`/`stop_all_idling` already make, rather than letting
 /// the daemon's own auto-reconnect (already suppressed for this case - see
 /// `SteamBot.cs::OnDisconnected`) leave stale automation state around. Runs unconditionally here
 /// (not gated behind the frontend being mounted/listening) so pausing is reliable regardless of
 /// whether anyone's looking at the app right now.
+///
+/// **Not** the path for the user simply launching a game on their real Steam client elsewhere
+/// (`EResult.LoggedInElsewhere`) - that kick auto-reconnects and only *pauses* via the
+/// `playing_session` event (see [`PlayingSession`]), keeping every claim and automation loop
+/// alive so it all resumes by itself once the other session stops playing.
 ///
 /// Deliberately does not call `agent_logout`/kill the `AgentProcess` - the daemon connection is
 /// already dead Steam-side, and keeping the process alive means a normal re-login later
@@ -438,7 +523,7 @@ async fn handle_session_superseded(app_handle: &AppHandle, account_key: &str, st
 
     tracing::warn!(
         account = %account_key,
-        "steam agent: account signed in on another device - automation paused, re-authentication required"
+        "steam agent: session replaced by another client - automation stopped, re-authentication required"
     );
 }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SteamKit2;
+using SteamUtility.Core.Logging;
 
 namespace SteamUtility.Daemon.Bot
 {
@@ -11,6 +12,16 @@ namespace SteamUtility.Daemon.Bot
     {
         private const int InitialReconnectDelayMs = 1000;
         private const int MaxReconnectDelayMs = 60_000;
+
+        // How long Steam must keep reporting "not blocked" before PlayingBlocked flips back to
+        // false - the same 60s ASF uses (its MinPlayingBlockedTTL). Absorbs brief blocked->unblocked
+        // blips (a launcher handing off to the real game exe, a quick restart of the same game)
+        // that would otherwise have idling resume for a few seconds and trip the user's own client
+        // into a "your account is in use elsewhere" prompt on their next launch.
+        private static readonly TimeSpan PlayingResumeGrace = TimeSpan.FromSeconds(60);
+
+        // Upper bound for the fallback unblock delay's doubling - see _fallbackUnblockDelay.
+        private static readonly TimeSpan MaxFallbackUnblockDelay = TimeSpan.FromMinutes(15);
 
         public SteamClient Client { get; }
         public CallbackManager Manager { get; }
@@ -48,18 +59,44 @@ namespace SteamUtility.Daemon.Bot
         public event Action? LicenseListUpdated;
 
         // First bool: whether this disconnect is one Start()'s own auto-reconnect/backoff below is
-        // about to retry on its own (network drop mid-session), as opposed to a permanent one
-        // (Stop() called, or the disconnect happened before any LogOnAsync was ever issued).
-        // Consumers that cache connection-derived state (e.g. AgentProcess's steam_id in the Rust
-        // host) need this to avoid treating a transient reconnect-in-progress as a fully-gone
-        // session. Second bool: whether the server force-logged this client off because the same
-        // account signed in elsewhere - either EResult.LoggedInElsewhere (a second session started
-        // actually playing a game, the "currently playing" exclusivity conflict) or
-        // EResult.LogonSessionReplaced (a second client of the same logon type - e.g. another
-        // SteamKit2-based client, no game-playing involved at all - confirmed by real-world testing:
-        // two SGI instances signed into the same account with nothing idling on either side still
-        // kicked each other in a tight ~2s loop, which is this case, not LoggedInElsewhere.
+        // about to retry on its own (network drop mid-session, or a "playing elsewhere" kick - see
+        // below), as opposed to a permanent one (Stop() called, or the disconnect happened before
+        // any LogOnAsync was ever issued). Consumers that cache connection-derived state (e.g.
+        // AgentProcess's steam_id in the Rust host) need this to avoid treating a transient
+        // reconnect-in-progress as a fully-gone session. Second bool: whether the server
+        // force-logged this client off *terminally* - EResult.LogonSessionReplaced (a second client
+        // of the same logon type, e.g. another SteamKit2-based client on the same machine, no
+        // game-playing involved at all - confirmed by real-world testing: two SGI instances signed
+        // into the same account with nothing idling on either side kicked each other in a tight ~2s
+        // loop). Reconnecting there would just restart that fight, so it never auto-reconnects.
+        //
+        // EResult.LoggedInElsewhere is deliberately NOT terminal: it means another session took
+        // over the account's single "playing a game" slot (the user launched a game on their real
+        // Steam client, or elsewhere) - logging on itself is never exclusive, only playing is. That
+        // kick reconnects like a network drop and marks PlayingBlocked, so idling stays paused
+        // until Steam reports the other session stopped playing (see OnPlayingSessionState).
         public event Action<bool, bool>? Disconnected;
+
+        // Fires whenever PlayingBlocked (or the blocking app id) changes - see OnPlayingSessionState
+        // for the full state machine. Args: (blocked, appId), where appId is 0 when unknown (a
+        // LoggedInElsewhere kick before Steam has told us which game) or when unblocked.
+        public event Action<bool, uint>? PlayingBlockedChanged;
+
+        // Whether another session on this account currently holds the "playing a game" slot, so
+        // sending ClientGamesPlayed would just get *this* client logged off with LoggedInElsewhere
+        // (per SteamKit2's own PlayingSessionStateCallback docs) - it can never preempt the other
+        // session, only ClientKickPlayingSession can, and this client never sends that. IdlingManager
+        // holds its announce while this is true and re-announces when it flips back to false.
+        public bool PlayingBlocked
+        {
+            get
+            {
+                lock (_playingLock)
+                {
+                    return _playingBlocked;
+                }
+            }
+        }
 
         private volatile bool _running;
         private SteamUser.LogOnDetails? _pendingLogOnDetails;
@@ -72,6 +109,25 @@ namespace SteamUtility.Daemon.Bot
         // it force-logs the client off) and consumed/cleared by the very next OnDisconnected - see
         // that method for why the reason isn't otherwise available there.
         private EResult? _lastLoggedOffResult;
+
+        // Guards every _playing* field below - written from the callback thread
+        // (OnPlayingSessionState/OnDisconnected/OnLoggedOn) and from ScheduleUnblock's thread-pool
+        // continuations.
+        private readonly object _playingLock = new();
+        private bool _playingBlocked;
+        private uint _playingAppId;
+
+        // Bumped on every blocked-state change or newly scheduled unblock, so a pending
+        // ScheduleUnblock continuation can tell it's been superseded (Steam reported "blocked"
+        // again, or a newer unblock was scheduled) and drop itself instead of resuming early.
+        private int _playingGeneration;
+
+        // Fallback for when Steam never sends a PlayingSessionState after a (re)logon while we still
+        // believe we're blocked (e.g. the kick arrived, but the post-reconnect state push didn't).
+        // Without it PlayingBlocked could stay true forever. Doubles on every use so a wrong guess
+        // (resume -> kicked again) backs off instead of looping every minute; reset to the base
+        // grace whenever Steam reports an explicit state, since that's the authoritative signal.
+        private TimeSpan _fallbackUnblockDelay = PlayingResumeGrace;
 
         public SteamBot()
         {
@@ -87,6 +143,7 @@ namespace SteamUtility.Daemon.Bot
             Manager.Subscribe<SteamUser.LoggedOnCallback>(OnLoggedOn);
             Manager.Subscribe<SteamUser.LoggedOffCallback>(OnLoggedOff);
             Manager.Subscribe<SteamApps.LicenseListCallback>(OnLicenseList);
+            Manager.Subscribe<SteamUser.PlayingSessionStateCallback>(OnPlayingSessionState);
         }
 
         public void Start()
@@ -186,13 +243,24 @@ namespace SteamUtility.Daemon.Bot
 
             var loggedOffResult = _lastLoggedOffResult;
             _lastLoggedOffResult = null;
-            var wasKicked =
-                loggedOffResult == EResult.LoggedInElsewhere
-                || loggedOffResult == EResult.LogonSessionReplaced;
+            var wasKicked = loggedOffResult == EResult.LogonSessionReplaced;
+
+            if (loggedOffResult == EResult.LoggedInElsewhere)
+            {
+                // Marked before Disconnected fires so every consumer (IdlingManager, the Rust host
+                // via DaemonHost's playing_session event) already sees "paused, not gone" by the
+                // time it hears about the disconnect - see the `Disconnected` event's doc comment.
+                Log.Info(
+                    "Daemon",
+                    "Logged off because another session started playing a game - reconnecting and pausing idling until it stops"
+                );
+                SetPlayingBlocked(true, 0);
+            }
 
             // Computed before invoking the event so subscribers get an accurate signal, not just a
             // bare "disconnected" they'd have to re-derive the same reconnect eligibility for
-            // themselves. Never reconnect after a kick - see the `Disconnected` event's doc comment.
+            // themselves. Never reconnect after a terminal kick - see the `Disconnected` event's
+            // doc comment.
             var willReconnect =
                 !wasKicked && _running && !callback.UserInitiated && _pendingLogOnDetails != null;
             Disconnected?.Invoke(willReconnect, wasKicked);
@@ -238,6 +306,22 @@ namespace SteamUtility.Daemon.Bot
                 _licenseListTcs = new TaskCompletionSource<bool>(
                     TaskCreationOptions.RunContinuationsAsynchronously
                 );
+
+                // Still blocked from before this (re)logon - normally Steam pushes a fresh
+                // PlayingSessionState right after logon, which supersedes this, but schedule a
+                // fallback unblock in case it never arrives. Before LogOnStatusChanged below so
+                // IdlingManager's resend-on-logon already sees the correct (still blocked) state.
+                lock (_playingLock)
+                {
+                    if (_playingBlocked)
+                    {
+                        var delay = _fallbackUnblockDelay;
+                        _fallbackUnblockDelay = TimeSpan.FromTicks(
+                            Math.Min(delay.Ticks * 2, MaxFallbackUnblockDelay.Ticks)
+                        );
+                        ScheduleUnblockLocked(delay);
+                    }
+                }
             }
 
             // Persona state is no longer set here - PresenceManager subscribes to
@@ -247,6 +331,92 @@ namespace SteamUtility.Daemon.Bot
 
             _pendingLogOnTcs?.TrySetResult(callback.Result);
             _pendingLogOnTcs = null;
+        }
+
+        // Steam's own authoritative signal for the "only one session can play at a time" rule -
+        // sent when another session on this account starts or stops playing a game, and after
+        // logon. "Blocked" applies immediately (never idle over the user's real game); "not
+        // blocked" only takes effect after PlayingResumeGrace of staying unblocked, see that
+        // constant's comment.
+        private void OnPlayingSessionState(SteamUser.PlayingSessionStateCallback callback)
+        {
+            if (callback.PlayingBlocked)
+            {
+                Log.Info(
+                    "Daemon",
+                    $"Another session is playing app {callback.PlayingAppID} - idling paused"
+                );
+                lock (_playingLock)
+                {
+                    _fallbackUnblockDelay = PlayingResumeGrace;
+                }
+                SetPlayingBlocked(true, callback.PlayingAppID);
+                return;
+            }
+
+            lock (_playingLock)
+            {
+                _fallbackUnblockDelay = PlayingResumeGrace;
+                if (!_playingBlocked)
+                {
+                    return;
+                }
+                Log.Info(
+                    "Daemon",
+                    $"Other session stopped playing - resuming idling in {PlayingResumeGrace.TotalSeconds:0}s unless it starts again"
+                );
+                ScheduleUnblockLocked(PlayingResumeGrace);
+            }
+        }
+
+        private void SetPlayingBlocked(bool blocked, uint appId)
+        {
+            lock (_playingLock)
+            {
+                SetPlayingBlockedLocked(blocked, appId);
+            }
+        }
+
+        // Caller must hold _playingLock. PlayingBlockedChanged is deliberately invoked while still
+        // holding it, so two near-simultaneous transitions (a grace timer firing just as Steam
+        // reports "blocked" again) can never reach subscribers out of order. Safe because every
+        // subscriber (IdlingManager.Resend, DaemonHost's IPC event write) only reads PlayingBlocked
+        // back on the same thread - Monitor locks are reentrant - and never waits on another thread
+        // that needs this lock.
+        private void SetPlayingBlockedLocked(bool blocked, uint appId)
+        {
+            // A newer report always cancels any pending unblock, even when nothing visible changed -
+            // that's what stops a stale grace timer from resuming idling while the other session is
+            // (again) playing.
+            _playingGeneration++;
+            // An unknown app id (0, from a kick) never overwrites an already-known one.
+            var effectiveAppId = blocked && appId == 0 ? _playingAppId : appId;
+            var changed = _playingBlocked != blocked || _playingAppId != effectiveAppId;
+            _playingBlocked = blocked;
+            _playingAppId = blocked ? effectiveAppId : 0;
+            if (changed)
+            {
+                PlayingBlockedChanged?.Invoke(_playingBlocked, _playingAppId);
+            }
+        }
+
+        // Caller must hold _playingLock.
+        private void ScheduleUnblockLocked(TimeSpan delay)
+        {
+            var generation = ++_playingGeneration;
+            Task.Delay(delay)
+                .ContinueWith(_ =>
+                {
+                    lock (_playingLock)
+                    {
+                        if (generation != _playingGeneration || !_playingBlocked)
+                        {
+                            return;
+                        }
+                        Log.Info("Daemon", "No other session is playing anymore - idling resumed");
+                        SetPlayingBlockedLocked(false, 0);
+                    }
+                });
         }
 
         private void OnLicenseList(SteamApps.LicenseListCallback callback)

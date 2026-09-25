@@ -42,7 +42,7 @@ use crate::card_farming;
 use crate::error::AppResult;
 use crate::games::commands::GamesAccount;
 use crate::idling::{self, IdleTarget, IdlingManager};
-use crate::steam_agent::AgentManager;
+use crate::steam_agent::{self, AgentManager};
 
 use super::settings::ScheduleTime;
 use super::{
@@ -966,6 +966,26 @@ async fn unlock_game(
             break;
         }
 
+        // Holds this achievement while another session on the account is playing a game (the
+        // user playing on their real Steam client) - see `steam_agent::playing`'s module doc. The
+        // game's idle claim is deliberately left in place: the daemon already holds that announce
+        // back on its own and resumes it untouched, so releasing/re-claiming here would only add
+        // churn. Re-projects `upcoming` afterwards since every countdown shown before the pause
+        // is stale by then.
+        if steam_agent::is_playing_blocked(app_handle, account).await {
+            tracing::info!(
+                app_id,
+                name = %game.name,
+                "achievement unlocker: paused while another session is playing a game"
+            );
+            if steam_agent::wait_while_playing_blocked(app_handle, account, stopped).await {
+                break;
+            }
+            tracing::info!(app_id, name = %game.name, "achievement unlocker: resumed");
+            update_upcoming(state, app_id, &game.achievements, &delays, index, 0).await;
+            emit_state(app_handle, steam_id, state).await;
+        }
+
         let mut succeeded = false;
         for attempt in 0..MAX_UNLOCK_ATTEMPTS {
             if stopped.load(Ordering::SeqCst) {
@@ -1272,6 +1292,15 @@ async fn run_loop(
 
     loop {
         if stopped.load(Ordering::SeqCst) {
+            end_reason = EndReason::Stopped;
+            break;
+        }
+
+        // Don't start a scan pass while another session is playing - a scan request landing in
+        // the brief reconnect window right after a "playing elsewhere" kick fails, and
+        // `scan_game` treats any failure as "nothing to unlock", which would silently drop that
+        // game from the queue. See `steam_agent::playing`'s module doc.
+        if steam_agent::wait_while_playing_blocked(&app_handle, &account, &stopped).await {
             end_reason = EndReason::Stopped;
             break;
         }

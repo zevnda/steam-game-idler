@@ -8,7 +8,9 @@ import { getAccountKey } from '@/shared/stores/sessionStore'
 
 // Mounted once from DashboardShell (not useAgentSignIn's sign-in-flow listener, which only runs
 // while a sign-in form is active and is otherwise the sole consumer of `steam-agent-event` today)
-// so a concurrent-login kick is caught regardless of what the user is doing at the time. The Rust
+// so a session-replaced kick (another client of the same kind, usually a second SGI instance -
+// not the user playing on their real Steam client, which usePlayingSessionWatcher handles as a
+// pause instead) is caught regardless of what the user is doing at the time. The Rust
 // host (steam_agent::process::handle_session_superseded) already stopped this account's
 // automation by the time this event arrives - this hook drives the UI two ways: a persistent
 // agentReauthStore flag for the account switcher badge, and immediately opening ReauthModal itself

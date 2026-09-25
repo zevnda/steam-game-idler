@@ -104,6 +104,7 @@ pub fn run() {
             steam_agent::commands::agent_submit_guard_code,
             steam_agent::commands::agent_login_with_token,
             steam_agent::commands::agent_logout,
+            steam_agent::commands::get_agent_playing_sessions,
             steam_agent::commands::agent_get_presence_settings,
             steam_agent::commands::agent_set_presence_settings,
             steam_agent::commands::agent_get_ownership_settings,

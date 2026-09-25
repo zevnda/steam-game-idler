@@ -1,9 +1,11 @@
 import type { UpcomingAchievement } from '../types'
 import { useTranslation } from 'react-i18next'
-import { TbHourglassHigh } from 'react-icons/tb'
+import { TbHourglassHigh, TbPlayerPauseFilled } from 'react-icons/tb'
 import { formatCountdown } from '../utils/formatCountdown'
 import { cn, Typography } from '@heroui/react'
 import Image from 'next/image'
+import { usePlayingSessionStore } from '@/shared/stores/playingSessionStore'
+import { useSessionStore } from '@/shared/stores/sessionStore'
 
 const ACHIEVEMENT_ICON_BASE_URL =
   'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/'
@@ -17,12 +19,19 @@ interface AchievementUnlockerUpcomingPanelProps {
 // Right-hand panel of a running game's row - the next up to 5 achievements queued to unlock, each
 // with its own live countdown. Mirrors `main`'s UpcomingAchievementsList.tsx, restyled to this
 // rewrite's card/typography tokens (see AchievementOrderRow.tsx for the same icon CDN convention).
+//
+// While the account is paused because another Steam session on it is playing a game, every
+// countdown shows "Paused" instead - the backend holds each unlock until the pause ends and only
+// then re-projects `unlockAtMs` (see achievement_unlocker::manager's unlock loop), so a countdown
+// left running would just sit at 0:00 looking stuck.
 export const AchievementUnlockerUpcomingPanel = ({
   appId,
   achievements,
   now,
 }: AchievementUnlockerUpcomingPanelProps) => {
   const { t } = useTranslation()
+  const activeKey = useSessionStore(state => state.activeAccountKey)
+  const isPaused = usePlayingSessionStore(state => Boolean(activeKey && state.entries[activeKey]))
 
   if (achievements.length === 0) return null
 
@@ -70,8 +79,17 @@ export const AchievementUnlockerUpcomingPanel = ({
                   isNext ? 'bg-accent/15 font-bold text-accent' : 'bg-default text-muted',
                 )}
               >
-                <TbHourglassHigh fontSize={12} />
-                {formatCountdown(remainingMs)}
+                {isPaused ? (
+                  <>
+                    <TbPlayerPauseFilled fontSize={12} />
+                    {t('common.status.paused')}
+                  </>
+                ) : (
+                  <>
+                    <TbHourglassHigh fontSize={12} />
+                    {formatCountdown(remainingMs)}
+                  </>
+                )}
               </div>
             </div>
           )

@@ -11,7 +11,7 @@ use crate::error::{AppError, AppResult};
 use crate::settings;
 
 use super::ipc::{AchievementChange, IpcRequest, IpcResponse};
-use super::process::{AgentProcess, OWNED_APPS_REQUEST_TIMEOUT};
+use super::process::{AgentProcess, PlayingSession, OWNED_APPS_REQUEST_TIMEOUT};
 
 /// Outcome of a `login` (or `submit_guard_code`) round trip, mirroring the `status` values
 /// `AuthFlow.cs` can send back for the `login` command: immediate success, or a prompt that the
@@ -356,10 +356,16 @@ impl AgentManager {
     /// or right after a settings reset) or any lookup step fails - `apply_saved_persona_state`
     /// still runs unconditionally after every login regardless, so a lookup miss here only costs
     /// the one-time flash this whole mechanism exists to avoid, never correctness.
-    async fn cached_persona_state(&self, app_handle: &AppHandle, key: &str) -> Option<&'static str> {
+    async fn cached_persona_state(
+        &self,
+        app_handle: &AppHandle,
+        key: &str,
+    ) -> Option<&'static str> {
         let settings = settings::load(app_handle).ok()?;
         let steam_id = settings.agent_account_steam_ids.get(key)?.clone();
-        let presence = super::presence_settings::get(app_handle, &steam_id).await.ok()?;
+        let presence = super::presence_settings::get(app_handle, &steam_id)
+            .await
+            .ok()?;
         Some(presence.persona_state.as_wire_str())
     }
 
@@ -560,6 +566,28 @@ impl AgentManager {
     pub async fn idle_state(&self, username: &str) -> AppResult<Vec<u32>> {
         let key = Self::key_for(username);
         Ok(self.existing(&key).await?.idle_app_ids())
+    }
+
+    /// This account's last-reported playing-session state (see [`PlayingSession`]) - the default
+    /// (not blocked) when no session exists for it, since a missing session has nothing to pause.
+    pub async fn playing_session(&self, username: &str) -> PlayingSession {
+        let key = Self::key_for(username);
+        self.existing(&key)
+            .await
+            .map(|process| process.playing_session())
+            .unwrap_or_default()
+    }
+
+    /// Every live session's playing-session state, keyed by normalized username - one snapshot
+    /// the frontend reads on mount, so a block that started before it began listening for
+    /// `playing_session` events (e.g. the user was already mid-game when SGI launched) still shows.
+    pub async fn playing_sessions(&self) -> HashMap<String, PlayingSession> {
+        self.sessions
+            .lock()
+            .await
+            .iter()
+            .map(|(key, process)| (key.clone(), process.playing_session()))
+            .collect()
     }
 
     /// Claims a free game via `free_games::store_claim`'s direct authenticated POST to Steam's own

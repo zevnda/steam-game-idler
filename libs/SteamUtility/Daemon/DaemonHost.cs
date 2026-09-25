@@ -68,15 +68,30 @@ namespace SteamUtility.Daemon
                         // "Reconnecting" lets the Rust host (steam_agent/process.rs) tell this
                         // transient, self-recovering disconnect apart from a genuinely dead
                         // session - see that file's handle_line for why the distinction matters.
-                        // "LoggedInElsewhere" is a third, distinct sentinel: the account was force-
-                        // logged-off because it signed in elsewhere (another device/session) - the
-                        // Rust host reacts to this one by pausing automation instead of waiting on a
-                        // reconnect that will never come.
+                        // "LoggedInElsewhere" is a third, distinct sentinel: the account was
+                        // terminally force-logged-off because another client of the same logon type
+                        // replaced this session (EResult.LogonSessionReplaced) - the Rust host
+                        // reacts to this one by stopping automation instead of waiting on a
+                        // reconnect that will never come. The wire name predates that narrowing
+                        // and is kept for compatibility. A kick because another session started
+                        // *playing* (EResult.LoggedInElsewhere itself) is not this case - it
+                        // reconnects, so it reports "Reconnecting" here, with the pause carried
+                        // separately by the playing_session event below.
                         result = wasKicked
                             ? "LoggedInElsewhere"
                             : (willReconnect ? "Reconnecting" : "Disconnected"),
                         steamId = (string?)null,
                     }
+                );
+            };
+            // Lets the Rust host pause/resume its own automation loops (the achievement unlocker)
+            // and show the user why nothing is idling - see SteamBot.PlayingBlocked. `appId` is the
+            // game the other session is playing, null when unknown or unblocked.
+            _bot.PlayingBlockedChanged += (blocked, appId) =>
+            {
+                IpcServer.SendEvent(
+                    "playing_session",
+                    new { blocked, appId = appId == 0 ? (uint?)null : appId }
                 );
             };
 

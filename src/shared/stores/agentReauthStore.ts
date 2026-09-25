@@ -2,9 +2,10 @@ import type { AccountKey } from './sessionStore'
 import { create } from 'zustand'
 
 interface AgentReauthStore {
-  // Agent-mode accounts currently force-logged-off because the same account signed in elsewhere
-  // (another device/session, or the real Steam client) - see useAgentReauthWatcher, which sets
-  // this from the daemon's `status_changed{result: "LoggedInElseWhere"}` event. The Rust host
+  // Agent-mode accounts currently force-logged-off because another client of the same kind (usually
+  // a second SGI instance) replaced their session - see useAgentReauthWatcher, which sets this from
+  // the daemon's `status_changed{result: "LoggedInElsewhere"}` event. Not set when the user merely
+  // plays a game on their real Steam client - that only pauses automation (playingSessionStore). The Rust host
   // already stopped this account's automation by the time this flips true (see
   // steam_agent::process::handle_session_superseded) - this store only drives the UI side
   // (account switcher badge, blocking a plain switch-to in favor of re-auth).
