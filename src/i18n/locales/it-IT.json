@@ -16,7 +16,8 @@
       "done": "Fatto",
       "copy": "Copia",
       "paste": "Incolla",
-      "add": "Aggiungi"
+      "add": "Aggiungi",
+      "ok": "OK"
     },
     "gameCardMenu": {
       "startIdling": "Inizia idle",
@@ -74,7 +75,8 @@
     "learnMore": "Scopri di più",
     "status": {
       "saved": "Salvato",
-      "cleared": "Cancellato"
+      "cleared": "Cancellato",
+      "paused": "In pausa"
     },
     "steamWarning": {
       "title": "Avviso",
@@ -150,6 +152,8 @@
       "startingAt": "A partire da ${{price}}/mese · Annulla quando vuoi"
     },
     "section": {
+      "topFeatures": "Funzionalità principali",
+      "seeAllFeatures": "Scopri tutte le funzionalità",
       "chooseTier": "Scegli il tuo piano",
       "comparePlans": "Confronta piani",
       "faq": "FAQ"
@@ -362,6 +366,7 @@
           "modalTitle": "Accesso effettuato su un altro dispositivo",
           "modalDescription": "{{account}} ha effettuato l'accesso su un altro dispositivo, quindi la sua automazione è stata messa in pausa. Accedi di nuovo per continuare.",
           "reconnect": "Riconnetti",
+          "sessionReplacedExplainer": "Di solito succede quando un'altra istanza di Steam Game Idler, o uno strumento simile, accede a questo account. Riconnettendoti qui, disconnetterai l'altra istanza.",
           "useDifferentMethod": "Usa un metodo di accesso diverso"
         }
       },
@@ -399,6 +404,11 @@
       },
       "count_one": "{{count}} gioco",
       "count_other": "{{count}} giochi"
+    },
+    "playingElsewhere": {
+      "title": "In pausa mentre giochi",
+      "description": "Stai giocando con questo account in un'altra sessione di Steam. L'idle e le automazioni sono in pausa e riprenderanno automaticamente circa un minuto dopo la chiusura del gioco nell'altra sessione.",
+      "descriptionWithGame": "Stai giocando a {{game}} con questo account in un'altra sessione di Steam. L'idle e le automazioni sono in pausa e riprenderanno automaticamente circa un minuto dopo la chiusura del gioco nell'altra sessione."
     },
     "idling": {
       "stopAll": "Ferma tutti",
@@ -636,6 +646,7 @@
         "sessionFailed": "Impossibile accedere a Steam Community. Controlla i cookie e riprova.",
         "sessionExpired": "La tua sessione Steam Community è scaduta. Riconnettiti per continuare.",
         "scrapeFailed": "Impossibile controllare le carte su Steam al momento.",
+        "familyViewRestricted": "La Visuale per la famiglia è attiva sul tuo account Steam. Disattivala e riprova.",
         "generic": "Qualcosa è andato storto durante l'aggiornamento di Raccolta carte. Riprova. ({{code}})"
       },
       "settings": {
@@ -714,8 +725,15 @@
       },
       "order": {
         "delayBeforeFirstUnlock": "Ritardo prima del primo sblocco",
+        "delayUntilNextUnlock": "Attesa prima del prossimo sblocco",
         "reset": "Ripristina",
         "skipped": "Saltato",
+        "protectedSection": {
+          "title": "Obiettivi protetti"
+        },
+        "protectedAlert": {
+          "description": "Sblocco obiettivi esclude i giochi che hanno anche un solo obiettivo protetto. Questo ordine di sblocco non verrà quindi utilizzato."
+        },
         "empty": {
           "title": "Niente più da ordinare",
           "description": "Questo gioco non ha altri obiettivi da sbloccare."
