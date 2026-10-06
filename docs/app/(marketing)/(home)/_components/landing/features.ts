@@ -37,7 +37,7 @@ export const FEATURES: Feature[] = [
     name: 'Your Games',
     short: 'Games',
     summary:
-      'Your whole Steam library, neatly laid out in one place - with idling and achievements one click away from every game.',
+      'Your whole Steam library in one place, with idling and achievements one click away from every game.',
     href: '/docs',
     accent: '#a3a3a3',
     pose: { focus: [730, 440], zoom: 1, rx: 3, ry: -5 },
@@ -48,7 +48,7 @@ export const FEATURES: Feature[] = [
     name: 'Card Farming',
     short: 'Card Farming',
     summary:
-      'Collects trading card drops from every game in your library automatically - up to 32 games at once.',
+      'Farms the trading card drops left in your library automatically, up to 32 games at once. Sell the cards or craft them into badges.',
     href: '/docs/features/card-farming',
     accent: '#60a5fa',
     pose: { focus: [740, 440], zoom: 1, rx: 3, ry: -6 },
@@ -80,7 +80,7 @@ export const FEATURES: Feature[] = [
     name: 'Playtime Booster',
     short: 'Playtime',
     summary:
-      'Idle up to 32 games at once to build playtime - grouped by whichever feature started them.',
+      'Farm Steam hours on up to 32 games at once, grouped by whichever feature started them.',
     href: '/docs/features/playtime-booster',
     accent: '#fb923c',
     pose: { focus: [740, 440], zoom: 1, rx: 4, ry: -5 },

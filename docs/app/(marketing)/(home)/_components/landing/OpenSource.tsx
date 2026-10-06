@@ -21,7 +21,7 @@ const POINTS = [
   {
     icon: TbCloudOff,
     title: 'Your data stays on your device',
-    body: 'No cloud sync - your settings, caches and logs are stored locally, on your machine.',
+    body: 'Your settings, caches and logs are stored locally on your machine. Nothing syncs to the cloud.',
   },
 ]
 
@@ -49,10 +49,10 @@ export default function OpenSource() {
             eyebrow='Open & secure'
             title={
               <>
-                Nothing to <span className='gradient-text'>hide.</span>
+                Is it safe? <span className='gradient-text'>See for yourself.</span>
               </>
             }
-            sub='A tool that touches your Steam account should be one you can inspect. So it is.'
+            sub='Steam Game Idler has been built in the open by zevnda since 2024. Every line that touches your Steam account is on GitHub for anyone to read.'
           />
           <div className='mt-10 space-y-7'>
             {POINTS.map(p => (

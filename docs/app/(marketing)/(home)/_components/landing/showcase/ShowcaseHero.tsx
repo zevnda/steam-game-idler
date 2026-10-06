@@ -55,12 +55,17 @@ export default function ShowcaseHero({
         </Link>
 
         <h1 className='mt-7'>
+          {/* The H1's keyword half: carries the page's primary query ("steam idler"), while the
+              display headline below stays short because it travels into the playground heading.
+              The brand leads the title tag and the intro paragraph instead - see seo-brief.md. */}
           <span
             className='hero-recede block font-mono text-xs sm:text-sm uppercase tracking-[0.3em] text-text-muted mb-5'
             style={{ '--i': 1 } as React.CSSProperties}
           >
-            Steam Game Idler
+            The free Steam idler
           </span>
+          {/* a real space between the two block spans, so the H1's text reads as two phrases
+              ("...idler Your Steam library...") rather than one run-on word */}{' '}
           {/* inline-block, so its box is the text itself (widest line) - Showcase measures it to
               plot the headline's path into the playground heading */}
           <span
@@ -79,8 +84,9 @@ export default function ShowcaseHero({
           className='hero-recede mt-6 max-w-xl mx-auto text-base sm:text-lg text-text-muted leading-relaxed'
           style={{ '--i': 2 } as React.CSSProperties}
         >
-          Farm trading cards, unlock achievements, boost playtime and sell your inventory - all from
-          one free desktop app.
+          Steam Game Idler is a Steam idler for Windows and Linux. It farms trading cards, builds up
+          playtime hours and unlocks achievements across your whole library while you do something
+          else.
         </p>
 
         {/* hero-recede--flat: no blur here - a filter would cut the ghost button's
@@ -154,7 +160,9 @@ export default function ShowcaseHero({
               sizes='min(74vw, 1180px)'
               width={1600}
               height={1000}
-              alt=''
+              // descriptive for image search - the wrapper's aria-hidden still keeps screen readers
+              // from hearing it alongside the identical live 3D window
+              alt="Steam Game Idler's Games page, showing a Steam library with idle and achievement buttons on every game"
               fetchPriority='high'
               decoding='async'
               className='hero-ph__img'

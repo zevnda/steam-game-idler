@@ -17,6 +17,22 @@ const SHOTS: Record<FeatureId | 'hero', string> = {
   'free-games': 'https://cdn-steamgameidler.com/example_v2.webp',
 }
 
+// Describes what each screenshot actually shows (several features share one), for image search.
+// The wrapper stays aria-hidden: the live 3D window is the same content, so screen readers would
+// otherwise hear it twice.
+const SHOT_ALT: Record<string, string> = {
+  'https://cdn-steamgameidler.com/example_v2.webp':
+    "Steam Game Idler's Games page listing a Steam library of 708 games",
+  'https://cdn-steamgameidler.com/card-farming.webp':
+    'Card Farming in Steam Game Idler, idling 32 games with 90 card drops remaining',
+  'https://cdn-steamgameidler.com/achievement-manager.webp':
+    'Achievement Manager in Steam Game Idler, with an Unlock button for every achievement in a game',
+  'https://cdn-steamgameidler.com/playtime-booster.webp':
+    'Steam Game Idler boosting playtime hours on 30 games at once',
+  'https://cdn-steamgameidler.com/inventory-manager.webp':
+    'Inventory Manager in Steam Game Idler, listing Steam inventory items for sale on the Community Market',
+}
+
 interface FallbackShotProps {
   ref?: Ref<HTMLDivElement>
   visible: boolean
@@ -36,7 +52,7 @@ export default function FallbackShot({ ref, visible, featureId }: FallbackShotPr
       <img
         key={key}
         src={SHOTS[key]}
-        alt=''
+        alt={SHOT_ALT[SHOTS[key]]}
         width={1600}
         height={860}
         className='w-full h-auto block fallback-shot__img'

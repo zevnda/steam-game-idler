@@ -48,10 +48,10 @@ export default function FeatureBento() {
           eyebrow='Features'
           title={
             <>
-              Every Steam chore, <span className='gradient-text'>handled.</span>
+              Cards, hours and achievements, <span className='gradient-text'>handled.</span>
             </>
           }
-          sub='Card farming, achievements, playtime, your inventory and free games - one app, one sign-in, all quietly running in the background.'
+          sub='Sign in once and SGI runs everything below in the background, from card drops to free-game claims.'
         />
 
         <div className='mt-16 sm:mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4'>
@@ -60,7 +60,7 @@ export default function FeatureBento() {
             className='md:col-span-2 lg:col-span-4'
             title='Card Farming'
             col={0}
-            body='Farms trading card drops across your whole library automatically - one game at a time, or up to 32 at once.'
+            body='Farms the trading card drops left in your library, one game at a time or up to 32 at once. Sell the cards on the Community Market, or craft them into badges to level up your profile.'
             loop={FARM_LOOP}
             art={t => <FarmArt t={t} />}
           />
@@ -69,7 +69,7 @@ export default function FeatureBento() {
             className='lg:col-span-2'
             title='Achievement Unlocker'
             col={1}
-            body='Unlocks queued achievements with randomised, human-like delays - or only during the hours you choose.'
+            body='Unlocks queued achievements with random, human-like delays, or only during the hours you choose.'
             loop={UNL_LOOP}
             art={t => <UnlockerArt t={t} />}
           />
@@ -87,7 +87,7 @@ export default function FeatureBento() {
             className='lg:col-span-2'
             title='Playtime Booster'
             col={1}
-            body='Idle up to 32 games at once to build hours and reach card-drop eligibility faster.'
+            body='Farm Steam hours on up to 32 games at once, and get new games eligible for card drops sooner.'
             loop={PLAY_LOOP}
             art={t => <PlaytimeArt t={t} />}
           />
@@ -119,7 +119,7 @@ export default function FeatureBento() {
             art={t => <AutoIdleArt t={t} />}
           />
           <Mini
-            title='Multiple accounts'
+            title='Multiple Accounts'
             col={1}
             body='Run automation for several Steam accounts side by side.'
             loop={ACCOUNTS_LOOP}
@@ -209,7 +209,6 @@ function Tile({
           <p className='text-[15px] text-text-muted leading-relaxed'>{body}</p>
           <div className='mt-auto pt-2 flex items-center gap-4'>
             <button type='button' onClick={() => tryLive(feature)} className='bento-try'>
-              <span className='bento-try__dot' aria-hidden='true' />
               Try it live
             </button>
             <Link
@@ -217,6 +216,9 @@ function Tile({
               href={f.href}
               className='inline-flex items-center gap-1 text-sm text-text-muted hover:text-text-primary transition-colors'
             >
+              {/* visually hidden prefix: a descriptive link name ("Card Farming docs") for search
+                  engines and screen readers, same short visible label */}
+              <span className='sr-only'>{title} </span>
               Docs <FiArrowUpRight className='w-3.5 h-3.5' />
             </Link>
           </div>
@@ -285,7 +287,7 @@ function ThemeTile({ col }: { col: number }) {
           <ThemeArt theme={shown} />
         </div>
         <div className='p-6 sm:p-7 pt-0 sm:pt-0 flex flex-col gap-3 flex-1'>
-          <h3 className='text-xl font-semibold tracking-tight text-text-primary'>Custom themes</h3>
+          <h3 className='text-xl font-semibold tracking-tight text-text-primary'>Custom Themes</h3>
           <p className='text-[15px] text-text-muted leading-relaxed'>
             Switch between built-in colour themes, pick your own font, or set a custom background.
           </p>

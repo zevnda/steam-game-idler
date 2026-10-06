@@ -4,6 +4,7 @@ import Script from 'next/script'
 import OSDetector from '@/app/(marketing)/(home)/_components/OSDetector'
 import VercelAnalytics from '@/app/(marketing)/(home)/_components/VercelAnalytics'
 import SearchDialog from '@/app/(marketing)/(home)/search'
+import JsonLd from '@/app/lib/JsonLd'
 import '../globals.css'
 
 interface LayoutProps {
@@ -28,11 +29,13 @@ declare global {
 
 export const metadata = {
   title: {
-    default: 'Steam Game Idler - Farm Cards, Unlock Achievements & Idle Games',
+    // Leads with the brand (already #1 for it) and carries the home page's primary non-brand query,
+    // "steam idler". Kept under 60 characters so it isn't truncated in results - see seo-brief.md.
+    default: 'Steam Game Idler - Free Steam Idler, Card & Hour Farmer',
     template: '%s | Steam Game Idler',
   },
   description:
-    'Free Steam automation tool to farm trading cards, unlock achievements, boost playtime, and idle games. Modern alternative to SAM, ASF, and Idle Master.',
+    'A free Steam idler for Windows and Linux. Farm trading cards and playtime hours on up to 32 games at once, unlock achievements and claim free games.',
   metadataBase: new URL('https://steamgameidler.com/'),
   keywords: [
     'Steam Game Idler',
@@ -63,13 +66,10 @@ export const metadata = {
     locale: 'en_US',
     type: 'website',
   },
+  // No `site`: that field takes an @handle, and the project has no X/Twitter account. Title and
+  // description fall back to the page's own, so cards stay in sync with the search snippet.
   twitter: {
     card: 'summary_large_image',
-    site: 'https://steamgameidler.com/',
-    title:
-      'Steam Game Idler – The best alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master',
-    description:
-      'The best Steam card farmer and achievement manager in 2026. Farm trading cards, manage achievements, and idle games automatically. A great alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master.',
     image: 'https://steamgameidler.com/og-image.png',
   },
   other: {
@@ -84,6 +84,9 @@ export const metadata = {
   },
 }
 
+// Site-wide structured data only. The home page's SoftwareApplication + FAQPage live in
+// (home)/page.tsx: this layout wraps every marketing and docs page, and FAQ markup must describe
+// a FAQ that's actually visible on the page it's on.
 const schemaData = [
   {
     '@context': 'https://schema.org',
@@ -98,54 +101,6 @@ const schemaData = [
     'url': 'https://steamgameidler.com',
     'logo': 'https://steamgameidler.com/logo.png',
     'sameAs': ['https://github.com/zevnda/steam-game-idler'],
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'SoftwareApplication',
-    'name': 'Steam Game Idler',
-    'url': 'https://steamgameidler.com/',
-    'description':
-      'Farm Steam trading cards, manage achievements, and idle games automatically — an all-in-one alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master.',
-    'applicationCategory': 'UtilitiesApplication',
-    'operatingSystem': 'Windows, Linux',
-    'offers': {
-      '@type': 'Offer',
-      'price': '0',
-      'priceCurrency': 'USD',
-    },
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    'mainEntity': [
-      {
-        '@type': 'Question',
-        'name': 'What is a Steam achievement manager?',
-        'acceptedAnswer': {
-          '@type': 'Answer',
-          'text':
-            "A Steam achievement manager is a tool that allows you to unlock, lock, and manage achievements for Steam games. SGI's Steam achievement manager provides a safe, intuitive interface for achievement management.",
-        },
-      },
-      {
-        '@type': 'Question',
-        'name': 'What is a Steam achievement unlocker?',
-        'acceptedAnswer': {
-          '@type': 'Answer',
-          'text':
-            "A Steam achievement unlocker is a tool that lets you automatically unlock Steam achievements for your games. SGI's Steam achievement unlocker uses human-like timing and methods for safety.",
-        },
-      },
-      {
-        '@type': 'Question',
-        'name': 'What is a Steam idle tool?',
-        'acceptedAnswer': {
-          '@type': 'Answer',
-          'text':
-            "A Steam idle tool lets you simulate playing games to boost playtime and earn trading cards. SGI's Steam idle feature is fast, safe, and easy to use.",
-        },
-      },
-    ],
   },
 ]
 
@@ -162,10 +117,7 @@ export default function Layout({ children }: LayoutProps) {
         />
         <link rel='dns-prefetch' href='https://cmp.gatekeeperconsent.com' />
 
-        <Script
-          type='application/ld+json'
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
-        />
+        <JsonLd data={schemaData} />
 
         <Script
           src='https://www.googletagmanager.com/gtag/js?id=G-W2GWCP59BN'

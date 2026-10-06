@@ -30,6 +30,8 @@ desktop.ini
 /.claude/*
 /.claude/skills/threejs-*
 !/.claude/skills/
+/.agents/
+seo-*.md
 
 # debug
 npm-debug.log*

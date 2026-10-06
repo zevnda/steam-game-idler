@@ -109,7 +109,11 @@ export default function Playground({
             href={active.href}
             className='inline-flex items-center gap-0.5 text-text-primary underline-offset-2 hover:underline'
           >
-            How it works <FiArrowUpRight className='w-3.5 h-3.5' />
+            How it works
+            {/* visually hidden: gives the link a descriptive name ("How it works: Card Farming")
+                for search engines and screen readers without lengthening the visible label */}
+            <span className='sr-only'>: {active.name}</span>{' '}
+            <FiArrowUpRight className='w-3.5 h-3.5' />
           </Link>
         </p>
       </div>
@@ -206,6 +210,8 @@ function FeatureFooter({ feature }: { feature: (typeof FEATURES)[number] }) {
       className='mt-3 inline-flex w-fit items-center gap-1 text-[13px] text-text-muted hover:text-text-primary transition-colors'
     >
       How it works
+      {/* see the stacked layout's link above */}
+      <span className='sr-only'>: {feature.name}</span>
       <FiArrowUpRight className='w-3.5 h-3.5' />
     </Link>
   )

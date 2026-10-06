@@ -43,10 +43,10 @@ export default function GetStarted() {
           eyebrow='Get started'
           title={
             <>
-              From download to <span className='gradient-text'>automation.</span>
+              Start idling in <span className='gradient-text'>three steps.</span>
             </>
           }
-          sub='No accounts to create and no config files to edit - three steps and SGI is working for you.'
+          sub='Download it, sign in with Steam and choose what to run. There are no config files to edit.'
         />
 
         <FadeIn className='mt-16'>
@@ -58,8 +58,9 @@ export default function GetStarted() {
               n={1}
               state={stepState(0, active, t)}
               title='Download & install'
-              body='One small installer - or a portable zip on Windows; .deb, .rpm or AppImage on Linux.'
+              body='Windows 10 or 11: one small installer, or a portable zip. Linux: a .deb, .rpm or AppImage package.'
               href='/docs/get-started/install'
+              more='about installing SGI on Windows and Linux'
               visual={<DownloadScene t={t} />}
             />
             <Step
@@ -68,10 +69,11 @@ export default function GetStarted() {
               title='Sign in'
               body={
                 method === 'steam'
-                  ? 'Sign in with your Steam username and password, or scan a QR code with the Steam mobile app. Your credentials go straight to Steam - no Steam client needed.'
+                  ? 'Sign in with your Steam username and password, or scan a QR code with the Steam mobile app. Your credentials go straight to Steam, and you don’t need the Steam client installed.'
                   : 'Rather not type your credentials anywhere? On Windows, SGI can use the Steam client that’s already running and signed in on your PC.'
               }
               href='/docs/get-started/how-to-sign-in'
+              more='about the two ways to sign in'
               swapKey={method}
               header={
                 <div className='seg' role='tablist' aria-label='Sign-in method'>
@@ -117,6 +119,7 @@ export default function GetStarted() {
               title='Pick what to automate'
               body='Switch on what you want running, minimise SGI to the tray, and get on with your day.'
               href='/docs'
+              more='about every feature in the docs'
               visual={<AutomateScene t={t} />}
             />
           </div>
@@ -140,6 +143,7 @@ function Step({
   title,
   body,
   href,
+  more,
   visual,
   header,
   footer,
@@ -150,6 +154,11 @@ function Step({
   title: string
   body: string
   href: string
+  /**
+   * Visually hidden end of the "Learn more" link, so its full name says where it goes
+   * ("Learn more about installing SGI...") for search engines and screen readers.
+   */
+  more: string
   visual: React.ReactNode
   header?: React.ReactNode
   footer?: React.ReactNode
@@ -191,7 +200,8 @@ function Step({
             href={href}
             className='mt-auto pt-1 inline-flex w-fit items-center gap-1 text-sm text-text-muted hover:text-text-primary transition-colors'
           >
-            Learn more <FiArrowUpRight className='w-3.5 h-3.5' />
+            Learn more<span className='sr-only'> {more}</span>{' '}
+            <FiArrowUpRight className='w-3.5 h-3.5' />
           </Link>
         </div>
       </div>

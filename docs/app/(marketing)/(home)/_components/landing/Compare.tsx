@@ -54,6 +54,24 @@ const TOOLS: { key: ToolKey; name: string; href: string }[] = [
   { key: 'im', name: 'Idle Master', href: '/alternatives/idle-master' },
 ]
 
+/**
+ * A tool's name in the section's sub-line, linked to its full comparison page - every tool gets
+ * one (same pages as the table's column headers), so no single name stands out as the only link.
+ */
+function ToolLink({ tool }: { tool: ToolKey }) {
+  const t = TOOLS.find(x => x.key === tool)
+  if (!t) return null
+  return (
+    <Link
+      prefetch={false}
+      href={t.href}
+      className='text-text-primary underline underline-offset-4 decoration-white/30 hover:decoration-white'
+    >
+      {t.name}
+    </Link>
+  )
+}
+
 function Cell({ value, sgi }: { value: Value; sgi?: boolean }) {
   if (typeof value === 'string') {
     return (
@@ -86,7 +104,12 @@ export default function Compare() {
               Everything the others do. <span className='gradient-text'>In one app.</span>
             </>
           }
-          sub='How Steam Game Idler stacks up against the tools people usually juggle.'
+          sub={
+            <>
+              Looking for an alternative to <ToolLink tool='im' />, <ToolLink tool='asf' /> or{' '}
+              <ToolLink tool='sam' />? Here’s how SGI compares, feature by feature.
+            </>
+          }
         />
 
         <FadeIn className='mt-14 max-w-5xl mx-auto'>

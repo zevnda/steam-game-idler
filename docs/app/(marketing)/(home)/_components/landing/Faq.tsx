@@ -22,7 +22,7 @@ export default function Faq() {
             eyebrow='FAQ'
             title={
               <>
-                Questions, <span className='gradient-text'>answered.</span>
+                Questions about SGI, <span className='gradient-text'>answered.</span>
               </>
             }
             sub='The things people ask most before downloading.'
