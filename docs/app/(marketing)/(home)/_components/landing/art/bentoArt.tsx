@@ -568,7 +568,8 @@ export const ACCOUNTS_LOOP = 4.4
 
 /**
  * Multiple accounts: stacked avatars fan out, come online one by one, sign back out and slide
- * back together - then it loops. The slide uses a CSS transition on `left`, toggled by `t`.
+ * back together - then it loops. The slide is a CSS transition on `transform` (not `left`, which
+ * relayouts every frame), toggled by `t`.
  */
 export function AccountsArt({ t }: { t: number }) {
   const spread = t > 0 && t < 3.3
@@ -589,7 +590,7 @@ export function AccountsArt({ t }: { t: number }) {
             className='mini-avatar'
             style={{
               background: `linear-gradient(135deg,${a},${b})`,
-              left: 6 + i * (spread ? 38 : 16),
+              transform: `translateX(${i * (spread ? 38 : 16)}px)`,
               zIndex: 3 - i,
             }}
           >

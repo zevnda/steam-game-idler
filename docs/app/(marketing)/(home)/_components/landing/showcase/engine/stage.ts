@@ -47,6 +47,12 @@ export interface StageHandle {
   setTheme(theme: ThemeId): void
   /** pauses the render loop entirely while the section is off screen */
   setActive(active: boolean): void
+  /**
+   * Resolves once the first frame has been drawn and presented - the canvas then shows the full
+   * window, so the hero placeholder above it can fade out without anything blank showing through.
+   * Needs the loop running (`setActive(true)`) to ever resolve.
+   */
+  firstRender: Promise<void>
   dispose(): void
 }
 
@@ -211,7 +217,10 @@ export async function createStage(container: HTMLElement, opts: StageOptions) {
         emitStats()
       },
       windowButton: kind => {
-        bump = { kind, t: clock }
+        // Reduced motion: every window button gets the gentle 'max' swell as its feedback -
+        // 'close' spins the whole window 360deg and 'min' drops and shrinks it, both large
+        // vestibular-trigger motions.
+        bump = { kind: opts.reducedMotion ? 'max' : kind, t: clock }
       },
     },
     opts.compact,
@@ -383,6 +392,8 @@ export async function createStage(container: HTMLElement, opts: StageOptions) {
   let docked = false
   const cur = { fx: UI_W / 2, fy: UI_H / 2, logZoom: 0, rx: 0, ry: 0 }
   let firstFrame = true
+  let onFirstRender: (() => void) | null = null
+  const firstRender = new Promise<void>(resolve => (onFirstRender = resolve))
 
   const resize = () => {
     width = Math.max(1, container.clientWidth)
@@ -631,6 +642,14 @@ export async function createStage(container: HTMLElement, opts: StageOptions) {
     updateHover()
 
     renderer.render(scene, camera)
+
+    if (onFirstRender) {
+      // resolve a frame later: render() only queues the draw, the next rAF means it has been
+      // composited and is actually on screen
+      const done = onFirstRender
+      onFirstRender = null
+      requestAnimationFrame(() => done())
+    }
   }
 
   const setActive = (on: boolean) => {
@@ -652,6 +671,7 @@ export async function createStage(container: HTMLElement, opts: StageOptions) {
     navigate: page => mock.navigate(page, false),
     setTheme: theme => mock.setTheme(theme),
     setActive,
+    firstRender,
     dispose: () => {
       setActive(false)
       ro.disconnect()

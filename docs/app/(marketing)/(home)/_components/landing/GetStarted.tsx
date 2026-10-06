@@ -15,6 +15,9 @@ import { useGlobalStore } from '@/app/lib/globalStore'
 const LOOP = 11
 const STEP_START = [0, 3.4, 7]
 const STEP_DONE = [2.9, 6.3, 9.2]
+// Where the pipeline rests once its replays run out (and under reduced motion): every step done,
+// the beam full, SGI in the tray - the finished picture rather than the blank starting one.
+const HOLD = 10.9
 
 type Method = 'steam' | 'legacy'
 
@@ -25,7 +28,7 @@ type Method = 'steam' | 'legacy'
  */
 export default function GetStarted() {
   const { ref, playing } = useInViewPlay<HTMLDivElement>()
-  const t = useElapsed(playing, LOOP)
+  const t = useElapsed(playing, LOOP, { cycles: 2, hold: HOLD })
   const [method, setMethod] = useState<Method>('steam')
   const active = t <= 0 ? -1 : STEP_START.filter(s => t >= s).length - 1
   // beam progress across the three nodes (0 = first node, 1 = last)
@@ -69,6 +72,7 @@ export default function GetStarted() {
                   : 'Rather not type your credentials anywhere? On Windows, SGI can use the Steam client that’s already running and signed in on your PC.'
               }
               href='/docs/get-started/how-to-sign-in'
+              swapKey={method}
               header={
                 <div className='seg' role='tablist' aria-label='Sign-in method'>
                   {(
@@ -139,6 +143,7 @@ function Step({
   visual,
   header,
   footer,
+  swapKey,
 }: {
   n: number
   state: StepStateValue
@@ -148,7 +153,14 @@ function Step({
   visual: React.ReactNode
   header?: React.ReactNode
   footer?: React.ReactNode
+  /**
+   * Changes when the step's content is swapped in place (the sign-in method toggle). Keying the
+   * swapped parts on it remounts them, which replays a short crossfade - otherwise the scene and
+   * copy changed in a single frame and the toggle read as a glitch rather than a switch.
+   */
+  swapKey?: string
 }) {
+  const swap = swapKey ? 'swap-in' : undefined
   return (
     <div className={`pipe-step pipe-step--${state}`}>
       <div className='pipe-step__node' aria-hidden='true'>
@@ -156,13 +168,24 @@ function Step({
       </div>
       <div className='pipe-step__card'>
         <div className='pipe-step__visual' aria-hidden='true'>
-          {visual}
+          <div key={swapKey} className={swap}>
+            {visual}
+          </div>
         </div>
         <div className='p-6 flex flex-col gap-3 flex-1'>
           {header}
           <h3 className='text-lg font-semibold text-text-primary'>{title}</h3>
-          <p className='text-[15px] text-text-muted leading-relaxed'>{body}</p>
-          {footer}
+          <p
+            key={`${swapKey}-body`}
+            className={`text-[15px] text-text-muted leading-relaxed ${swap ?? ''}`}
+          >
+            {body}
+          </p>
+          {footer && (
+            <div key={`${swapKey}-footer`} className={swap}>
+              {footer}
+            </div>
+          )}
           <Link
             prefetch={false}
             href={href}

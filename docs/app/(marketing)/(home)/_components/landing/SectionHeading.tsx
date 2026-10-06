@@ -1,5 +1,3 @@
-import { FadeIn } from '@/app/lib/animations'
-
 interface SectionHeadingProps {
   id?: string
   eyebrow: string
@@ -8,7 +6,13 @@ interface SectionHeadingProps {
   align?: 'center' | 'left'
 }
 
-/** The landing page's one section-header pattern: mono eyebrow, tight display title, short sub. */
+/**
+ * The landing page's one section-header pattern: mono eyebrow, tight display title, short sub.
+ *
+ * Deliberately not animated. Each section's content block below already reveals on scroll, so
+ * the heading also fading in meant two separate entrances per section and headings that were
+ * invisible until scrolled to. A heading that's simply there anchors the reveal under it.
+ */
 export default function SectionHeading({
   id,
   eyebrow,
@@ -18,7 +22,7 @@ export default function SectionHeading({
 }: SectionHeadingProps) {
   const centred = align === 'center'
   return (
-    <FadeIn className={centred ? 'max-w-3xl mx-auto text-center' : 'max-w-xl'}>
+    <div className={centred ? 'max-w-3xl mx-auto text-center' : 'max-w-xl'}>
       <p className='font-mono text-[11px] sm:text-xs uppercase tracking-[0.24em] text-text-muted'>
         {eyebrow}
       </p>
@@ -35,6 +39,6 @@ export default function SectionHeading({
           {sub}
         </p>
       )}
-    </FadeIn>
+    </div>
   )
 }

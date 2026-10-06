@@ -54,7 +54,7 @@ export default function OpenSource() {
             }
             sub='A tool that touches your Steam account should be one you can inspect. So it is.'
           />
-          <FadeIn className='mt-10 space-y-7' delay={0.1}>
+          <div className='mt-10 space-y-7'>
             {POINTS.map(p => (
               <div key={p.title} className='flex gap-4'>
                 <span className='trust-icon' aria-hidden='true'>
@@ -66,10 +66,10 @@ export default function OpenSource() {
                 </div>
               </div>
             ))}
-          </FadeIn>
+          </div>
         </div>
 
-        <FadeIn delay={0.15}>
+        <FadeIn>
           <a
             href='https://github.com/zevnda/steam-game-idler'
             target='_blank'

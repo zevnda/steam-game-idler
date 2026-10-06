@@ -6,6 +6,7 @@
 // whole scene, with no per-step state to clean up.
 import type { CSSProperties } from 'react'
 import { useEffect, useRef, useState } from 'react'
+import { useReducedMotion } from 'motion/react'
 
 /**
  * Plays while hovered or keyboard-focused. Devices that can't hover (phones/tablets) play while
@@ -48,11 +49,32 @@ export function useInViewPlay<T extends HTMLElement>(threshold = 0.35) {
   return { ref, playing }
 }
 
+interface ElapsedOptions {
+  /**
+   * How many times a looping storyboard replays before it stops and holds still. Capped by
+   * default: touch devices autoplay these while they're on screen, and moving content that runs
+   * on its own for more than a few seconds needs to stop by itself (WCAG 2.2.2). Leaving and
+   * re-entering (unhover, or scrolling away and back) starts a fresh run.
+   */
+  cycles?: number
+  /** the `t` to freeze on once the cycles run out, or under reduced motion (0 = resting state) */
+  hold?: number
+}
+
 /**
  * Seconds since `playing` became true (0 while stopped), re-rendering every frame only while
- * playing. With `loop`, time wraps so a storyboard replays for as long as it's hovered.
+ * playing. With `loop`, time wraps so a storyboard replays - up to `cycles` times.
+ *
+ * Under `prefers-reduced-motion` the clock never runs: a playing storyboard jumps straight to
+ * its `hold` frame instead. (These scenes are rAF-driven, so the stylesheet's reduced-motion
+ * block can't stop them - it has to happen here.)
  */
-export function useElapsed(playing: boolean, loop?: number) {
+export function useElapsed(
+  playing: boolean,
+  loop?: number,
+  { cycles = 3, hold = 0 }: ElapsedOptions = {},
+) {
+  const reduce = useReducedMotion()
   const [t, setT] = useState(0)
   useEffect(() => {
     if (!playing) {
@@ -60,15 +82,25 @@ export function useElapsed(playing: boolean, loop?: number) {
       return
     }
     let raf = 0
+    if (reduce) {
+      // still via rAF (not a synchronous setState in the effect body), and only once playing -
+      // never during hydration, where the server rendered t = 0
+      raf = requestAnimationFrame(() => setT(hold))
+      return () => cancelAnimationFrame(raf)
+    }
     const t0 = performance.now()
     const tick = (now: number) => {
       const s = (now - t0) / 1000
+      if (loop && s >= loop * cycles) {
+        setT(hold)
+        return
+      }
       setT(loop ? s % loop : s)
       raf = requestAnimationFrame(tick)
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [playing, loop])
+  }, [playing, loop, cycles, hold, reduce])
   return t
 }
 

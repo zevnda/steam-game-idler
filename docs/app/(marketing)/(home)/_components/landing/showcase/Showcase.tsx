@@ -287,6 +287,14 @@ export default function Showcase() {
         }
         stageRef.current = handle
         apply()
+        // Draw the first frame *before* flipping to 'ready' (which starts the placeholder's
+        // fade-out). Otherwise the placeholder began fading over a canvas that hadn't rendered
+        // yet - the render loop only starts once the visibility observer below reports in - and
+        // the hero blinked empty for a moment mid hand-over. The observer takes over from here
+        // and pauses the loop again if the showcase is off screen.
+        handle.setActive(true)
+        await handle.firstRender
+        if (disposed) return
         setStageState('ready')
       } catch (err) {
         // No WebGL (or a GPU blocklist) - real screenshots carry the showcase instead

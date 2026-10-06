@@ -27,10 +27,21 @@ export function registerPlaygroundTop(fn: (() => number) | null) {
   playgroundTop = fn
 }
 
+/**
+ * Smooth for in-page jumps, instant under reduced motion. Browsers don't apply the OS setting to
+ * an explicit `behavior: 'smooth'` themselves, so every scripted scroll on the page goes through
+ * this.
+ */
+export function scrollBehavior() {
+  const behavior: ScrollBehavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ? 'auto'
+    : 'smooth'
+  return behavior
+}
+
 /** Scrolls the page to the docked playground - used by every "Try it live" entry point. */
 export function scrollToPlayground() {
   const top = playgroundTop?.()
   if (top === undefined) return
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  window.scrollTo({ top, behavior: reduce ? 'auto' : 'smooth' })
+  window.scrollTo({ top, behavior: scrollBehavior() })
 }

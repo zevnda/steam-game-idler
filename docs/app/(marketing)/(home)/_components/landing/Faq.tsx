@@ -27,7 +27,7 @@ export default function Faq() {
             }
             sub='The things people ask most before downloading.'
           />
-          <FadeIn className='mt-8 flex flex-wrap gap-3' delay={0.1}>
+          <div className='mt-8 flex flex-wrap gap-3'>
             <Link prefetch={false} href='/docs/faq' className='btn-ghost px-5 py-2.5 rounded-full'>
               All FAQs <FiArrowUpRight className='w-4 h-4' />
             </Link>
@@ -39,7 +39,7 @@ export default function Faq() {
             >
               <FaDiscord className='w-4 h-4' /> Ask on Discord
             </Link>
-          </FadeIn>
+          </div>
         </div>
 
         <FadeIn className='flex flex-col gap-3'>

@@ -1,20 +1,25 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { FaQuoteLeft } from 'react-icons/fa6'
+import { FaPause, FaPlay, FaQuoteLeft } from 'react-icons/fa6'
 import SectionHeading from './SectionHeading'
 import { TESTIMONIALS } from './testimonials'
-import { useInView } from 'motion/react'
+import { useInView, useReducedMotion } from 'motion/react'
 import { FadeIn } from '@/app/lib/animations'
 import { useGlobalStore } from '@/app/lib/globalStore'
 
-/** Counts up from zero the first time it scrolls into view. */
+/**
+ * Counts up from zero the first time it scrolls into view. Under reduced motion it just shows
+ * the final number (gated on `inView`, which is false during hydration, so the server's "0" and
+ * the client's first render still match).
+ */
 function CountUp({ value, suffix = '' }: { value: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null)
   const inView = useInView(ref, { once: true })
+  const reduce = useReducedMotion()
   const [n, setN] = useState(0)
   useEffect(() => {
-    if (!inView || !value) return
+    if (!inView || !value || reduce) return
     let raf = 0
     const t0 = performance.now()
     const tick = (now: number) => {
@@ -24,10 +29,10 @@ function CountUp({ value, suffix = '' }: { value: number; suffix?: string }) {
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [inView, value])
+  }, [inView, value, reduce])
   return (
     <span ref={ref} className='tabular-nums'>
-      {n.toLocaleString()}
+      {(reduce && inView ? value : n).toLocaleString()}
       {suffix}
     </span>
   )
@@ -35,6 +40,9 @@ function CountUp({ value, suffix = '' }: { value: number; suffix?: string }) {
 
 export default function Community() {
   const { totalDownloads, totalGames, repoStars } = useGlobalStore(s => s)
+  // The wall scrolls on its own indefinitely, so it needs a real pause control (WCAG 2.2.2) -
+  // hover/focus pausing alone leaves touch visitors with no way to stop it.
+  const [paused, setPaused] = useState(false)
   // totalDownloads arrives pre-formatted (e.g. "192K") - split it so the number can still count up
   const dl = totalDownloads.match(/^(\d+(?:\.\d+)?)([A-Za-z+]*)$/)
 
@@ -85,7 +93,7 @@ export default function Community() {
           ))}
         </FadeIn>
 
-        <FadeIn className='quote-wall mt-6'>
+        <FadeIn className={`quote-wall mt-6 ${paused ? 'quote-wall--paused' : ''}`}>
           {columns.map((col, c) => (
             <div
               key={col[0].username}
@@ -122,6 +130,12 @@ export default function Community() {
             </div>
           ))}
         </FadeIn>
+        <div className='mt-4 flex justify-end'>
+          <button type='button' onClick={() => setPaused(p => !p)} className='quote-wall__pause'>
+            {paused ? <FaPlay aria-hidden='true' /> : <FaPause aria-hidden='true' />}
+            {paused ? 'Resume testimonials' : 'Pause testimonials'}
+          </button>
+        </div>
       </div>
     </section>
   )

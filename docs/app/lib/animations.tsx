@@ -2,8 +2,12 @@
 
 import type { ReactNode } from 'react'
 import { useRef } from 'react'
-import { motion, useInView } from 'motion/react'
+import { motion, MotionConfig, useInView } from 'motion/react'
 import { ease } from '@/app/lib/motion'
+
+// Both wrappers honour the OS "reduce motion" setting via MotionConfig's `reducedMotion='user'`:
+// the slide (a transform) is skipped and content only fades. Decided at animation time rather
+// than render time, so server and client markup stay identical (no hydration mismatch).
 
 const staggerContainer = {
   hidden: {},
@@ -30,15 +34,17 @@ export function FadeIn({ children, className, delay = 0, y = 24, immediate = fal
   const show = immediate || inView
 
   return (
-    <motion.div
-      ref={ref}
-      className={className}
-      initial={{ opacity: 0, y }}
-      animate={show ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, ease, delay }}
-    >
-      {children}
-    </motion.div>
+    <MotionConfig reducedMotion='user'>
+      <motion.div
+        ref={ref}
+        className={className}
+        initial={{ opacity: 0, y }}
+        animate={show ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.6, ease, delay }}
+      >
+        {children}
+      </motion.div>
+    </MotionConfig>
   )
 }
 
@@ -53,15 +59,17 @@ export function StaggerGroup({ children, className }: StaggerGroupProps) {
   const inView = useInView(ref, { once: true, margin: '-60px' })
 
   return (
-    <motion.div
-      ref={ref}
-      className={className}
-      variants={staggerContainer}
-      initial='hidden'
-      animate={inView ? 'show' : 'hidden'}
-    >
-      {children}
-    </motion.div>
+    <MotionConfig reducedMotion='user'>
+      <motion.div
+        ref={ref}
+        className={className}
+        variants={staggerContainer}
+        initial='hidden'
+        animate={inView ? 'show' : 'hidden'}
+      >
+        {children}
+      </motion.div>
+    </MotionConfig>
   )
 }
 

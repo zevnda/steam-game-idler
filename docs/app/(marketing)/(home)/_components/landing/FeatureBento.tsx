@@ -32,7 +32,7 @@ import { featureById } from './features'
 import SectionHeading from './SectionHeading'
 import { THEMES } from './showcase/engine/palette'
 import Link from 'next/link'
-import { StaggerGroup, StaggerItem } from '@/app/lib/animations'
+import { FadeIn } from '@/app/lib/animations'
 
 /**
  * "Every Steam chore, handled." - one tile per feature. Each illustration is a short storyboard
@@ -54,11 +54,12 @@ export default function FeatureBento() {
           sub='Card farming, achievements, playtime, your inventory and free games - one app, one sign-in, all quietly running in the background.'
         />
 
-        <StaggerGroup className='mt-16 sm:mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4'>
+        <div className='mt-16 sm:mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4'>
           <Tile
             feature='card-farming'
             className='md:col-span-2 lg:col-span-4'
             title='Card Farming'
+            col={0}
             body='Farms trading card drops across your whole library automatically - one game at a time, or up to 32 at once.'
             loop={FARM_LOOP}
             art={t => <FarmArt t={t} />}
@@ -67,6 +68,7 @@ export default function FeatureBento() {
             feature='achievement-unlocker'
             className='lg:col-span-2'
             title='Achievement Unlocker'
+            col={1}
             body='Unlocks queued achievements with randomised, human-like delays - or only during the hours you choose.'
             loop={UNL_LOOP}
             art={t => <UnlockerArt t={t} />}
@@ -75,6 +77,7 @@ export default function FeatureBento() {
             feature='achievement-manager'
             className='lg:col-span-2'
             title='Achievement Manager'
+            col={0}
             body='Unlock, lock and edit stats for any game you own, then apply every change in one go.'
             loop={MGR_LOOP}
             art={t => <ManagerArt t={t} />}
@@ -83,6 +86,7 @@ export default function FeatureBento() {
             feature='playtime'
             className='lg:col-span-2'
             title='Playtime Booster'
+            col={1}
             body='Idle up to 32 games at once to build hours and reach card-drop eligibility faster.'
             loop={PLAY_LOOP}
             art={t => <PlaytimeArt t={t} />}
@@ -91,6 +95,7 @@ export default function FeatureBento() {
             feature='free-games'
             className='lg:col-span-2'
             title='Free Games'
+            col={2}
             body='Get told the moment a game goes free on Steam, and claim it in one click.'
             loop={FREE_LOOP}
             art={t => <FreeArt t={t} />}
@@ -99,33 +104,65 @@ export default function FeatureBento() {
             feature='inventory'
             className='lg:col-span-3'
             title='Inventory Manager'
+            col={0}
             body='List items on the Community Market straight from the app, priced from live buy or sell orders.'
             loop={INV_LOOP}
             art={t => <InventoryArt t={t} />}
           />
-          <ThemeTile />
+          <ThemeTile col={1} />
 
           <Mini
             title='Automatic Idler'
+            col={0}
             body='Starts your chosen games every time SGI launches.'
             loop={AUTO_LOOP}
             art={t => <AutoIdleArt t={t} />}
           />
           <Mini
             title='Multiple accounts'
+            col={1}
             body='Run automation for several Steam accounts side by side.'
             loop={ACCOUNTS_LOOP}
             art={t => <AccountsArt t={t} />}
           />
           <Mini
             title='Windows & Linux'
+            col={2}
             body='Installer or portable zip on Windows; .deb, .rpm or AppImage on Linux.'
             loop={PLATFORMS_LOOP}
             art={t => <PlatformsArt t={t} />}
           />
-        </StaggerGroup>
+        </div>
       </div>
     </section>
+  )
+}
+
+// one pass through every preset (previewTheme steps every 0.75s), so the replay cap applies here
+// too instead of cycling forever while on screen
+const THEME_LOOP = Object.keys(THEMES).length * 0.75
+
+/**
+ * Tiles reveal on their own, as each scrolls into view - not as one stagger fired when the grid's
+ * top edge appears, which (10 tiles x 100ms, in a grid several screens tall) played out mostly
+ * off-screen: by the time the lower rows were visible, their entrance was long over. Tiles that
+ * share a desktop row still enter together, offset slightly left to right by `col`.
+ */
+const ROW_STEP = 0.08
+
+function Reveal({
+  col,
+  className,
+  children,
+}: {
+  col: number
+  className?: string
+  children: ReactNode
+}) {
+  return (
+    <FadeIn className={className} delay={col * ROW_STEP}>
+      {children}
+    </FadeIn>
   )
 }
 
@@ -136,6 +173,7 @@ function tryLive(id: FeatureId) {
 
 function Tile({
   feature,
+  col,
   className = '',
   title,
   body,
@@ -143,6 +181,8 @@ function Tile({
   art,
 }: {
   feature: FeatureId
+  /** position within its desktop row (0 = leftmost) - see Reveal */
+  col: number
   className?: string
   title: string
   body: string
@@ -154,7 +194,7 @@ function Tile({
   const { ref, playing, handlers } = usePlayTrigger<HTMLElement>()
   const t = useElapsed(playing, loop)
   return (
-    <StaggerItem className={className}>
+    <Reveal col={col} className={className}>
       <article
         ref={ref}
         {...handlers}
@@ -182,17 +222,19 @@ function Tile({
           </div>
         </div>
       </article>
-    </StaggerItem>
+    </Reveal>
   )
 }
 
 /** The smaller "and also" tiles: same card language as the big ones, with a shorter scene. */
 function Mini({
+  col,
   title,
   body,
   loop,
   art,
 }: {
+  col: number
   title: string
   body: string
   /** replay period - phones autoplay these while on screen, so they must loop */
@@ -202,7 +244,7 @@ function Mini({
   const { ref, playing, handlers } = usePlayTrigger<HTMLElement>()
   const t = useElapsed(playing, loop)
   return (
-    <StaggerItem className='md:col-span-1 lg:col-span-2'>
+    <Reveal col={col} className='md:col-span-1 lg:col-span-2'>
       <article
         ref={ref}
         {...handlers}
@@ -219,7 +261,7 @@ function Mini({
           <p className='text-[15px] text-text-muted leading-relaxed'>{body}</p>
         </div>
       </article>
-    </StaggerItem>
+    </Reveal>
   )
 }
 
@@ -227,12 +269,12 @@ function Mini({
  * Custom themes: the preview cycles through the real presets while the tile plays, and the
  * swatches below just track which one is showing - display only, nothing to click.
  */
-function ThemeTile() {
+function ThemeTile({ col }: { col: number }) {
   const { ref, playing, handlers } = usePlayTrigger<HTMLElement>()
-  const t = useElapsed(playing)
+  const t = useElapsed(playing, THEME_LOOP)
   const shown = previewTheme('default', t)
   return (
-    <StaggerItem className='lg:col-span-3'>
+    <Reveal col={col} className='lg:col-span-3'>
       <article
         ref={ref}
         {...handlers}
@@ -259,6 +301,6 @@ function ThemeTile() {
           </div>
         </div>
       </article>
-    </StaggerItem>
+    </Reveal>
   )
 }

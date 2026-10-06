@@ -93,7 +93,7 @@
     transition:
       background-color 150ms ease,
       border-color 150ms ease,
-      transform 150ms ease;
+      transform 150ms cubic-bezier(0.22, 1, 0.36, 1);
     white-space: nowrap;
   }
 
@@ -101,6 +101,11 @@
     background-color: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.25);
     transform: translateY(-1px);
+  }
+
+  /* pressed: settle back down and give a little - immediate, tactile confirmation of the click */
+  .btn-ghost:active {
+    transform: scale(0.97);
   }
 
   /* ── Glowing section divider ───────────────────────────────── */
@@ -158,7 +163,7 @@
     position: relative;
     overflow: hidden;
     transition:
-      transform 150ms ease,
+      transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
       box-shadow 200ms ease,
       background-color 150ms ease;
     white-space: nowrap;
@@ -177,15 +182,19 @@
     box-shadow:
       0 8px 32px rgba(255, 255, 255, 0.14),
       0 0 0 1px rgba(255, 255, 255, 0.25);
-    transform: scale(1.05);
+    /* a wide pill grows a lot of pixels per percent - 1.05 read as a jump, 1.03 as a lift */
+    transform: scale(1.03);
   }
 
   .btn-download:hover::before {
     animation: shimmer-sweep 550ms ease forwards;
   }
 
+  /* pressed: dips below rest size (previously it only dropped back to 1, which on a hovered
+     button read as the button shrinking away rather than being pressed) */
   .btn-download:active {
-    transform: translateY(0);
+    transform: scale(0.97);
+    transition-duration: 100ms;
   }
 
   @keyframes rainbow-border {
@@ -297,7 +306,25 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.96);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  animation: fade-in 200ms ease both;
+  /* closed (and the exit): a quick fade, then visibility flips once it's invisible */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition:
+    opacity 150ms ease-in,
+    transform 150ms ease-in,
+    visibility 0s linear 150ms;
+}
+
+/* open (and the enter): fades in while settling down from just under the nav */
+.landing-sheet--open {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s;
 }
 
 /* Rainbow-rimmed chip (hero release badge) */
@@ -326,7 +353,10 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
     hsl(315, 36%, 50%),
     hsl(360, 36%, 50%)
   );
-  animation: rainbow-border 4s linear infinite;
+  /* Same 8s turn as the closing CTA's rim (.cta-rim) - both are the 3D window's rim glow, so they
+     share one tempo. At 4s this small chip was the fastest-moving thing in the hero, competing
+     with the headline it sits above. */
+  animation: rainbow-border 8s linear infinite;
 }
 
 .rainbow-chip__inner {
@@ -352,11 +382,12 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
 }
 
 /* The pinned stage's bottom edge dissolves (rather than clipping the window's rim glow) - both
-   while docked and as the section scrolls away. */
-.showcase__stage canvas {
-  animation: fade-in 900ms ease both;
-}
+   while docked and as the section scrolls away.
 
+   The canvas itself deliberately has no fade-in: the hand-over is one-sided. The live canvas is
+   already fully drawn underneath (Showcase.tsx waits for the stage's first rendered frame), and
+   only the placeholder on top fades out. Fading both at once let the two dip transparent
+   together, which read as a blink. */
 .showcase__stage {
   mask-image: linear-gradient(to bottom, #000 calc(100% - 150px), transparent);
   -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 150px), transparent);
@@ -417,6 +448,20 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   }
 }
 
+/* Remount-to-replay crossfade for content swapped in place (keyed on the swap - see
+   GetStarted.tsx's Step). Short and small: it confirms the switch, it isn't an entrance. */
+.swap-in {
+  animation: swap-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes swap-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+    filter: blur(2px);
+  }
+}
+
 /* ── Hero placeholder: a static snapshot of the 3D window's opening frame, posed with CSS 3D to
    match the stage camera exactly - FOV 26deg -> perspective = viewport height / (2 * tan 13deg),
    vanishing at the viewport centre (--ph-vy, set by Showcase.tsx; the default approximates it
@@ -437,7 +482,11 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
     visibility 0s linear 700ms;
 }
 
-/* the window's muted rainbow rim glow (the stage's rimMaterial, as CSS) */
+/* The window's muted rainbow rim glow (the stage's rimMaterial, as CSS). Hues must land where the
+   shader puts them, or the hand-over to the live stage flashes from one colour scheme to another:
+   both start red at the right (90deg) and rise clockwise - purple at the top, cyan at the left,
+   yellow-green at the bottom - so the visible top edge reads blue -> purple. Change one, change
+   both (rimMaterial's `hue` in landing/showcase/engine/shaders.ts). */
 .hero-ph::before {
   content: '';
   position: absolute;
@@ -519,14 +568,8 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   height: 7px;
   border-radius: 999px;
   background: #34d399;
+  /* a steady glow, not a pulse: "Live demo" is a label, not a status that changes */
   box-shadow: 0 0 10px #34d399;
-  animation: pulse-dot 1.6s ease-in-out infinite;
-}
-
-@keyframes pulse-dot {
-  50% {
-    opacity: 0.35;
-  }
 }
 
 .playground__item {
@@ -638,23 +681,6 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   color: var(--accent);
 }
 
-.stat-pop {
-  animation: stat-pop 500ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@keyframes stat-pop {
-  0% {
-    transform: scale(1.5);
-    color: #ffd36b;
-  }
-}
-
-@media (max-height: 760px) {
-  .playground__stats {
-    display: none;
-  }
-}
-
 /* Static screenshot shown while three.js loads (and if WebGL is unavailable) */
 .fallback-shot {
   border-radius: 14px;
@@ -757,6 +783,10 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
 .bento-try:hover {
   transform: translateY(-1px);
   box-shadow: 0 6px 24px -6px var(--accent);
+}
+
+.bento-try:active {
+  transform: scale(0.97);
 }
 
 .bento-try__dot {
@@ -1337,9 +1367,10 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
 }
 
 .mini-avatar {
-  transition: left 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
   position: absolute;
   top: 4px;
+  left: 6px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1864,10 +1895,6 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.06);
 }
 
-.scene-auto__tray--on .scene-auto__tray-icon {
-  animation: pulse-dot 1.6s ease-in-out infinite;
-}
-
 /* ── Compare */
 .cmp {
   border-radius: 24px;
@@ -1900,6 +1927,13 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   /* phones compare SGI against one picked tool at a time */
   .cmp [data-off] {
     display: none;
+  }
+
+  /* a column coming back from display:none restarts this, so switching tools crossfades the
+     picked column in rather than swapping it in a single frame */
+  .cmp__cell,
+  .cmp__tool-head {
+    animation: fade-in 200ms ease-out both;
   }
 }
 
@@ -1998,8 +2032,35 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   animation: quote-scroll var(--dur) linear infinite;
 }
 
-.quote-wall:hover .quote-wall__col {
+.quote-wall:hover .quote-wall__col,
+.quote-wall:focus-within .quote-wall__col,
+.quote-wall--paused .quote-wall__col {
   animation-play-state: paused;
+}
+
+.quote-wall__pause {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition:
+    color 150ms ease,
+    border-color 150ms ease;
+}
+
+.quote-wall__pause:hover {
+  color: var(--color-text-primary);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.quote-wall__pause svg {
+  width: 10px;
+  height: 10px;
 }
 
 .quote-wall__track {
@@ -2171,15 +2232,20 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   color: var(--color-text-muted);
   opacity: 0;
   transform: translateY(-6px);
+  /* the exit: the answer gets out of the way quickly. Only the text's fade is asymmetric - the
+     height (.faq-card__body) stays 400ms both ways, because opening one question closes another
+     at the same moment, and mismatched speeds would make the cards below dip and rebound. */
   transition:
-    opacity 300ms ease,
-    transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 150ms ease,
+    transform 200ms ease;
 }
 
 .faq-card--open .faq-card__answer {
   opacity: 1;
   transform: none;
-  transition-delay: 80ms;
+  transition:
+    opacity 300ms ease 80ms,
+    transform 400ms cubic-bezier(0.22, 1, 0.36, 1) 80ms;
 }
 
 @media (max-width: 639px) {
@@ -2265,15 +2331,46 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   transform: translateY(18%);
 }
 
+/* Reduced motion: every CSS keyframe loop / burst / sweep on the page. (The JS-driven
+   storyboards stop themselves - see useElapsed in landing/art/storyboard.tsx - and the 3D stage
+   reads the same preference in Showcase.tsx.) Plain colour/opacity transitions stay: they're
+   state feedback, not movement. */
 @media (prefers-reduced-motion: reduce) {
   .showcase__hero,
   .fallback-shot__img,
-  .stat-pop,
   .rainbow-chip::before,
   .cta-rim::before,
   .cta-rim::after,
-  .quote-wall__col {
+  .quote-wall__col,
+  .scene-steam--search::before,
+  .scene-steam--search::after,
+  .btn-download:hover::before,
+  .swap-in,
+  .cmp__cell,
+  .cmp__tool-head {
     animation: none;
+  }
+
+  /* nothing moves, so there's nothing to pause */
+  .quote-wall__pause {
+    display: none;
+  }
+
+  /* particles would otherwise sit frozen at their origin */
+  .burst {
+    display: none;
+  }
+
+  .btn-download:hover,
+  .btn-ghost:hover,
+  .bento-try:hover,
+  .repo-card:hover {
+    transform: none;
+  }
+
+  .landing-sheet,
+  .landing-sheet--open {
+    transform: none;
   }
 }
 

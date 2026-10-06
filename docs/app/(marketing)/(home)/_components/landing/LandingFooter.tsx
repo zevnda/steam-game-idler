@@ -101,7 +101,7 @@ export default function LandingFooter() {
           </div>
         </div>
 
-        <div className='mt-16 pt-6 border-t border-white/8 flex flex-col md:flex-row justify-between gap-3 text-xs text-text-muted'>
+        <div className='mt-16 pt-6 border-t border-white/8 flex flex-col items-center text-center md:flex-row md:text-left justify-between gap-3 text-xs text-text-muted'>
           <span>© 2024-{new Date().getFullYear()} Steam Game Idler. All rights reserved.</span>
           <span>
             Website created and managed by{' '}

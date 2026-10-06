@@ -34,11 +34,10 @@ export default function ShowcaseHero({ ref, textRef, placeholderRef, live }: Sho
           className='rainbow-chip'
         >
           <span className='rainbow-chip__inner'>
-            <span
-              className='w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse'
-              aria-hidden='true'
-            />
-            v{latestVersion} is out
+            {/* static on purpose: the rotating rim already draws the eye - a pulse on top
+                of it was a second, competing loop */}
+            <span className='w-1.5 h-1.5 rounded-full bg-emerald-400' aria-hidden='true' />v
+            {latestVersion} is out
             <span className='text-text-muted'>· Windows & Linux</span>
           </span>
         </Link>

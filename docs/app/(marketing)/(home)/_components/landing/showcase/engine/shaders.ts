@@ -75,7 +75,10 @@ export function rimMaterial(winW: number, winH: number, pad: number) {
         vec2 p = (vUv - 0.5) * uSize;
         float d = sdRoundRect(p, uHalf, 0.06);
         float glow = exp(-max(d, 0.0) * 5.5) * smoothstep(-0.25, 0.02, d);
-        float hue = fract(atan(p.y, p.x) / 6.2831853 + uTime * 0.035);
+        // -atan: hue runs clockwise on screen (red at the right, purple at the top, cyan at the
+        // left), so the visible top edge opens blue -> purple. Must match the hero placeholder's
+        // conic-gradient (.hero-ph::before in globals.css) or the hand-over flashes colours.
+        float hue = fract(-atan(p.y, p.x) / 6.2831853 + uTime * 0.035);
         vec3 col = hsl2rgb(vec3(hue, 0.36, 0.55));
         gl_FragColor = validGlow(col * glow * uIntensity);
       }
