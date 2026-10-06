@@ -28,6 +28,7 @@ desktop.ini
 
 # claude code runtime state (skills are tracked, everything else isn't)
 /.claude/*
+/.claude/skills/threejs-*
 !/.claude/skills/
 
 # debug

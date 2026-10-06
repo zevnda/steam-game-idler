@@ -43,7 +43,8 @@ docs/
   app/                     # Next.js App Router
     (marketing)/           # Full-layout marketing/docs site — route group, own root layout
       (home)/              # Marketing home — nested route group with its own sub-layout
-        _components/       # Section components (Hero, Features, FAQ, etc.)
+        _components/       # Shared marketing components (NavBar, FooterSection, CTASection, DownloadButton...)
+          landing/         # The home page's own sections + the interactive three.js showcase (see below)
         layout.tsx
         page.tsx           # Composes all home sections
         search.tsx         # Search dialog
@@ -182,6 +183,50 @@ Docs section layout using Fumadocs `DocsLayout`:
 - Sidebar with Orama-powered search
 - GitHub + Discord external links
 - Theme switch disabled
+
+### Home page (`app/(marketing)/(home)/_components/landing/`)
+The landing page has its own sections, nav (`LandingNav`) and footer (`LandingFooter`); every other
+marketing page keeps the shared `NavBar`/`FooterSection`/`CTASection`. Order: showcase -> feature
+bento -> get started -> compare -> community -> open source -> FAQ -> final CTA, with the six
+AdSense slots between sections (never inside the pinned showcase).
+- **`showcase/Showcase.tsx`** pins a full-viewport three.js stage: the hero headline sits above a
+  live 3D replica of the app, and scrolling hands over to a docked "playground" (feature picker +
+  the window). One scroll-progress value drives both the stage (`setView(frame, pose)`) and the
+  overlays (the `--t` CSS variable), so scrolling never re-renders React.
+- **`features.ts`** is the single source for the demo features (copy, mock page, pose, tier extras);
+  **`demoStore.ts`** (zustand) lets any section drive the demo - the bento's "Try it live" buttons
+  and theme swatches. Picking a feature navigates the mock; navigating *inside* the mock updates the
+  picker (`source: 'app'` stops that bouncing back).
+- **`showcase/engine/`** is lazily `import()`ed, so three.js (~160 KB gz) never blocks first paint,
+  and only renders while the showcase is on screen. `stage.ts` = renderer/camera rig/raycast input;
+  `mockApp.ts` = the app UI drawn immediate-mode onto a canvas texture (re-uploaded only when
+  something changed) with hit regions mapped from raycast UVs; `effects.ts` = pooled cards, sparks,
+  coins, confetti. No post-processing on purpose (bloom smears the screen's UI text; an
+  EffectComposer drops the MSAA that text needs). Glows are additive shaders that must never write
+  canvas alpha (`glowBlend` in `shaders.ts`) - the canvas is transparent over the CSS god rays.
+  `engine/types.ts` and `engine/palette.ts` are three-free and safe to import from the main bundle.
+- **Illustrations** (`landing/art/`): every bento tile and the "Get started" pipeline is a small
+  storyboard - a pure function of `t` from `useElapsed`, played by `usePlayTrigger` (hover/focus,
+  or in-view on touch devices) or `useInViewPlay`. Unhovering resets `t` to 0, which resets the
+  scene; `FakeCursor` keys are px inside each scene's fixed-size `.art-stage`.
+- **Honesty rules**: fictional games only (`engine/games.ts` - never real capsule art, it's
+  third-party branding), UI wording copied from the desktop app's `en-US.json`, feature claims only
+  from the README/docs, and no invented numbers (user counts, earnings, ratings).
+- **Hero placeholder + Web Vitals**: the 3D stage only starts after `load` + idle, in small
+  yielding steps (`yieldToMain` in `stage.ts`; no PMREM environment - it alone was ~0.9s of
+  blocking work). Until then `public/landing/sgi-mock-hero*.webp` - an exact snapshot of the
+  mock's opening frame, posed with CSS 3D to match the stage camera (`.hero-ph`) - holds the hero
+  and is the page's LCP element. **Regenerate it whenever the mock's Games page changes**: on the
+  dev page run `__sgiMockSnapshot(1600)` / `__sgiMockSnapshot(960)` (dev-only hook in `stage.ts`)
+  and save the data URLs over those two files; do the same in a phone-sized window for
+  `sgi-mock-hero-compact.webp` (900) / `sgi-mock-hero-compact-560.webp` (560).
+- **Compact layout**: phones/portrait tablets (`STACKED_QUERY`) get the mock's `compact` layout
+  (`mockLayout()` in `mockApp.ts`: a 560x960 portrait window, icon-rail sidebar, reflowed grids)
+  shown whole, instead of a cropped desktop window. Every page draws both layouts; effects
+  (cards, coins, rings) scale with the window via `FX` in `stage.ts`. The hero headline's entrance animation must never
+  animate opacity (it would delay LCP).
+- **No-WebGL fallback**: `showcase/FallbackShot.tsx` places the real CDN screenshots on the same
+  frame the 3D window would occupy (also shown while three.js loads).
 
 ## Styling
 

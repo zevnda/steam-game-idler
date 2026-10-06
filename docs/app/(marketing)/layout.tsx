@@ -183,10 +183,14 @@ export default function Layout({ children }: LayoutProps) {
       </head>
 
       <body className='flex flex-col min-h-screen'>
+        {/* The site is designed dark-only (the docs' theme switch is disabled too). Without
+            forcing it, next-themes follows the visitor's OS setting, so light-mode visitors got
+            white docs pages and mis-coloured text on dark-styled components. */}
         <RootProvider
           search={{
             SearchDialog,
           }}
+          theme={{ forcedTheme: 'dark', defaultTheme: 'dark', enableSystem: false }}
         >
           {children}
         </RootProvider>
