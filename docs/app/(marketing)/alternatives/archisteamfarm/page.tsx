@@ -12,6 +12,7 @@ import WhyChooseSection from '@/app/(marketing)/alternatives/_components/WhyChoo
 import { COMPETITORS } from '@/app/(marketing)/alternatives/_data/competitors'
 import SectionHeading from '@/app/(marketing)/pro/_components/SectionHeading'
 import { FadeIn } from '@/app/lib/animations'
+import JsonLd from '@/app/lib/JsonLd'
 
 const competitor = COMPETITORS.archisteamfarm
 
@@ -73,10 +74,7 @@ export default function page() {
   return (
     <div className='min-h-screen bg-background'>
       <AdScripts />
-      <script
-        type='application/ld+json'
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
-      />
+      <JsonLd data={articleSchema} />
       <NavBar />
       <div className='relative'>
         <AlternativeHero competitor={competitor} />

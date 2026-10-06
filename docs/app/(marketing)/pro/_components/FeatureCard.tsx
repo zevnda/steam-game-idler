@@ -14,7 +14,11 @@ export default function FeatureCard({ feature: f, className = '' }: FeatureCardP
     >
       {f.imgBg && <Image src={f.imgBg} alt='' fill className='object-cover opacity-80' />}
 
-      <div className={`relative z-10 p-4 flex flex-col h-full ${f.darkText ? 'text-black' : ''}`}>
+      {/* Both colours explicit: inheriting the page colour made light-text cards near-black when
+          the visitor's OS is in light mode (Fumadocs follows the system theme). */}
+      <div
+        className={`relative z-10 p-4 flex flex-col h-full ${f.darkText ? 'text-black' : 'text-white'}`}
+      >
         <p className='text-xl font-black mb-1.5'>{f.title}</p>
         <p className='text-sm font-semibold leading-relaxed flex-1'>{f.description}</p>
       </div>

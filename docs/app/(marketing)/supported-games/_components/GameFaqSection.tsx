@@ -1,5 +1,5 @@
 import type { GameData } from '../_data/games'
-import Script from 'next/script'
+import JsonLd from '@/app/lib/JsonLd'
 
 export default function GameFaqSection({ game }: { game: GameData }) {
   const schema = {
@@ -15,10 +15,7 @@ export default function GameFaqSection({ game }: { game: GameData }) {
   return (
     <section className='py-16 sm:py-20 relative'>
       <div className='container mx-auto px-4 sm:px-6 md:px-8 max-w-3xl'>
-        <Script
-          type='application/ld+json'
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-        />
+        <JsonLd data={schema} />
 
         <h2 className='text-3xl sm:text-4xl text-text-primary mb-10 text-center tracking-tight'>
           Frequently asked <span className='gradient-text'>questions</span>

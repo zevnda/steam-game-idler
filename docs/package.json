@@ -26,6 +26,7 @@
     "react-dom": "19.2.4",
     "react-icons": "^5.7.0",
     "react-markdown": "^10.1.0",
+    "three": "^0.186.1",
     "zod": "^4.4.3",
     "zustand": "^5.0.14"
   },
@@ -35,6 +36,7 @@
     "@types/node": "^26.0.1",
     "@types/react": "^19.2.13",
     "@types/react-dom": "^19.2.3",
+    "@types/three": "^0.186.0",
     "concurrently": "^10.0.3",
     "next-sitemap": "^4.2.3",
     "postcss": "^8.5.23",
