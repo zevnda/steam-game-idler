@@ -1,6 +1,15 @@
 // Types shared by the 3D engine and the React side. Kept free of any three.js import so the page's
 // main bundle can use them without pulling in the lazily-loaded 3D chunk.
 
+/**
+ * How quickly scroll-driven motion catches up with the scroll position: per-second rates for an
+ * exponential follow, `k = 1 - exp(-rate * dt)`. The 3D stage eases its camera/window with it
+ * (stage.ts) and the HTML overlays ease the showcase's `--t` with it (Showcase.tsx), so the hero
+ * copy and the window glide with the same inertia instead of one lagging the scrollbar and the
+ * other snapping to it.
+ */
+export const VIEW_DAMPING = { normal: 4.2, reduced: 12 }
+
 /** A page of the mock app (mirrors the desktop app's sidebar routes + the achievement overlay). */
 export type PageId =
   | 'games'

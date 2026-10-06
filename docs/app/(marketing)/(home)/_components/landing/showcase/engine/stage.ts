@@ -13,6 +13,7 @@ import { Coins, Confetti, Shockwaves, Sparks, TradingCards } from './effects'
 import { loadGameArt } from './games'
 import { drawLogo, MockApp, mockLayout } from './mockApp'
 import { beaconMaterial, dustMaterial, rimMaterial, sheenMaterial } from './shaders'
+import { VIEW_DAMPING } from './types'
 import * as THREE from 'three'
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js'
 
@@ -548,7 +549,9 @@ export async function createStage(container: HTMLElement, opts: StageOptions) {
 
     // frame + pose, damped toward what the page asked for
     const target = targetPose
-    const k = firstFrame ? 1 : 1 - Math.exp(-dt * (opts.reducedMotion ? 12 : 4.2))
+    const k = firstFrame
+      ? 1
+      : 1 - Math.exp(-dt * (opts.reducedMotion ? VIEW_DAMPING.reduced : VIEW_DAMPING.normal))
     firstFrame = false
     frame.x += (targetFrame.x - frame.x) * k
     frame.y += (targetFrame.y - frame.y) * k

@@ -424,13 +424,53 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   padding-inline: 1.25rem;
   text-align: center;
   z-index: 10;
-  opacity: clamp(0, calc(1 - var(--t) * 2.5), 1);
-  transform: translateY(calc(var(--t) * -110px)) scale(calc(1 - var(--t) * 0.06));
   animation: hero-enter 1s cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 
+/* Hero -> playground hand-over. The copy no longer fades as one block: the supporting lines step
+   back one after another (blur + lift + fade, staggered by --i), while the headline - positioned
+   from JS, see Showcase.tsx's HAND_OVER - travels into the playground's heading slot. */
+.hero-recede {
+  --p: clamp(0, calc((var(--t) - var(--i, 0) * 0.04) / 0.2), 1);
+  opacity: calc(1 - var(--p));
+  filter: blur(calc(var(--p) * 6px));
+  transform: translateY(calc(var(--p) * -14px));
+}
+
+/* no filter on an element whose children use backdrop-filter (it would become their backdrop
+   root and the blur would show nothing behind it) */
+.hero-recede--flat {
+  filter: none;
+}
+
+.hero-headline {
+  /* scales toward the heading slot's top-left corner, where it lands */
+  transform-origin: 0 0;
+}
+
+/* inline-block so each line can slide (transforms don't apply to plain inline boxes) */
+.hero-headline__line {
+  display: inline-block;
+}
+
+/* The playground's heading slot: an invisible spacer the hero headline lands on (Playground.tsx).
+   Shown for real only under reduced motion, where the headline doesn't travel. */
+.playground__title {
+  visibility: hidden;
+}
+
+.hero-ph-fade {
+  opacity: clamp(0, calc(1 - var(--t) * 2.5), 1);
+}
+
+/* docked: the hero's (by then invisible) links and buttons stop taking clicks and focus. The
+   headline isn't hidden - it's still mid roll-out at the start of this range. */
 .showcase[data-docked] .showcase__hero {
   pointer-events: none;
+}
+
+.showcase[data-docked] .hero-recede,
+.showcase[data-docked] .hero-ph-fade {
   visibility: hidden;
 }
 
@@ -548,8 +588,9 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   z-index: 10;
   /* centred in the space below the floating nav */
   top: calc(50% + 34px);
-  transform: translate(calc((1 - var(--t)) * -40px), -50%);
-  opacity: clamp(0, calc((var(--t) - 0.45) * 2.4), 1);
+  /* exactly -50%, no scroll offset: Showcase.tsx lands the hero headline on the heading inside
+     this panel by its layout position */
+  transform: translateY(-50%);
   pointer-events: none;
 }
 
@@ -558,9 +599,16 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
 }
 
 .playground--stacked {
-  transform: translateY(calc((1 - var(--t)) * 30px));
-  /* phones: only appears once the window has nearly docked, never over it mid-rise */
-  opacity: clamp(0, calc((var(--t) - 0.72) * 4), 1);
+  transform: none;
+}
+
+/* The playground assembles rather than fading in as a block: each part comes up out of a blur as
+   --t passes its own --at (set per element in Playground.tsx). */
+.pg-reveal {
+  --p: clamp(0, calc((var(--t) - var(--at, 0)) / 0.12), 1);
+  opacity: var(--p);
+  filter: blur(calc((1 - var(--p)) * 6px));
+  transform: translateY(calc((1 - var(--p)) * 10px));
 }
 
 .live-dot {
@@ -2371,6 +2419,28 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   .landing-sheet,
   .landing-sheet--open {
     transform: none;
+  }
+
+  /* the hand-over becomes a plain crossfade: no blur, no movement, and the playground starts
+     earlier so it overlaps the headline's fade instead of leaving a gap */
+  .hero-recede,
+  .pg-reveal {
+    filter: none;
+    transform: none;
+  }
+
+  .playground__title {
+    visibility: visible;
+  }
+
+  /* the headline fades out over t 0.2-0.45 here, so the picker leads by 0.3 to overlap it. On
+     phones the tiles sit where the window rises through, so they only lead a little. */
+  .pg-reveal {
+    --p: clamp(0, calc((var(--t) - var(--at, 0) + 0.3) / 0.12), 1);
+  }
+
+  .playground--stacked .pg-reveal {
+    --p: clamp(0, calc((var(--t) - var(--at, 0) + 0.1) / 0.12), 1);
   }
 }
 

@@ -9,19 +9,30 @@ import DownloadButton from '@/app/(marketing)/(home)/_components/DownloadButton'
 import { useGlobalStore } from '@/app/lib/globalStore'
 
 /**
- * The hero's copy, centred above the 3D window. It fades and lifts away (driven by the showcase's
- * `--t` scroll variable in CSS) as the window rises into the playground.
+ * The hero's copy, centred above the 3D window. As the window rises into the playground the copy
+ * hands over to it rather than just fading (all driven by the showcase's `--t` scroll variable):
+ * the supporting lines (`.hero-recede`, in `--i` order) step back first, while the headline itself
+ * travels into the playground's heading slot and stays there as the playground's heading - see
+ * `drawOverlay` in Showcase.tsx.
  */
 interface ShowcaseHeroProps {
   ref?: Ref<HTMLDivElement>
   /** the copy block only - its bottom edge is where the window frame starts */
   textRef?: Ref<HTMLDivElement>
+  /** the headline's text (not the eyebrow above it) - the part that travels */
+  headlineRef?: Ref<HTMLSpanElement>
   placeholderRef?: Ref<HTMLDivElement>
   /** the live 3D stage is up - the placeholder fades out under it */
   live: boolean
 }
 
-export default function ShowcaseHero({ ref, textRef, placeholderRef, live }: ShowcaseHeroProps) {
+export default function ShowcaseHero({
+  ref,
+  textRef,
+  headlineRef,
+  placeholderRef,
+  live,
+}: ShowcaseHeroProps) {
   const { latestVersion, repoStars, totalDownloads } = useGlobalStore(state => state)
 
   return (
@@ -31,7 +42,8 @@ export default function ShowcaseHero({ ref, textRef, placeholderRef, live }: Sho
           prefetch={false}
           href={`https://github.com/zevnda/steam-game-idler/releases/${latestVersion}`}
           target='_blank'
-          className='rainbow-chip'
+          className='rainbow-chip hero-recede'
+          style={{ '--i': 0 } as React.CSSProperties}
         >
           <span className='rainbow-chip__inner'>
             {/* static on purpose: the rotating rim already draws the eye - a pulse on top
@@ -43,22 +55,40 @@ export default function ShowcaseHero({ ref, textRef, placeholderRef, live }: Sho
         </Link>
 
         <h1 className='mt-7'>
-          <span className='block font-mono text-xs sm:text-sm uppercase tracking-[0.3em] text-text-muted mb-5'>
+          <span
+            className='hero-recede block font-mono text-xs sm:text-sm uppercase tracking-[0.3em] text-text-muted mb-5'
+            style={{ '--i': 1 } as React.CSSProperties}
+          >
             Steam Game Idler
           </span>
-          <span className='block text-[clamp(2.6rem,6.4vw,5.6rem)] font-semibold leading-[0.98] tracking-[-0.04em] text-text-primary'>
-            Your Steam library,
+          {/* inline-block, so its box is the text itself (widest line) - Showcase measures it to
+              plot the headline's path into the playground heading */}
+          <span
+            ref={headlineRef}
+            className='hero-headline inline-block text-[clamp(2.6rem,6.4vw,5.6rem)] font-semibold leading-[0.98] tracking-[-0.04em] text-text-primary'
+          >
+            {/* each line is its own box: centred here, they slide to left-aligned as the
+                headline travels into the (left-aligned) playground heading */}
+            <span className='hero-headline__line'>Your Steam library,</span>
             <br />
-            <span className='gradient-text'>on autopilot.</span>
+            <span className='hero-headline__line gradient-text'>on autopilot.</span>
           </span>
         </h1>
 
-        <p className='mt-6 max-w-xl mx-auto text-base sm:text-lg text-text-muted leading-relaxed'>
+        <p
+          className='hero-recede mt-6 max-w-xl mx-auto text-base sm:text-lg text-text-muted leading-relaxed'
+          style={{ '--i': 2 } as React.CSSProperties}
+        >
           Farm trading cards, unlock achievements, boost playtime and sell your inventory - all from
           one free desktop app.
         </p>
 
-        <div className='mt-8 flex flex-wrap items-center justify-center gap-3'>
+        {/* hero-recede--flat: no blur here - a filter would cut the ghost button's
+            backdrop-blur off from the window behind it */}
+        <div
+          className='hero-recede hero-recede--flat mt-8 flex flex-wrap items-center justify-center gap-3'
+          style={{ '--i': 3 } as React.CSSProperties}
+        >
           <DownloadButton label='Download for free' />
           <button
             type='button'
@@ -70,7 +100,10 @@ export default function ShowcaseHero({ ref, textRef, placeholderRef, live }: Sho
           </button>
         </div>
 
-        <div className='mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-text-muted'>
+        <div
+          className='hero-recede mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-text-muted'
+          style={{ '--i': 4 } as React.CSSProperties}
+        >
           <span>
             <strong className='text-text-primary font-semibold'>{totalDownloads || '100K+'}</strong>{' '}
             downloads
@@ -100,30 +133,34 @@ export default function ShowcaseHero({ ref, textRef, placeholderRef, live }: Sho
         the hero until three.js has loaded, then fades out under the identical live window. It
         is also the page's LCP image, so it loads eagerly at high priority.
       */}
-      <div
-        ref={placeholderRef}
-        className={`hero-ph ${live ? 'hero-ph--off' : ''}`}
-        aria-hidden='true'
-      >
-        {/* phones/portrait tablets get the compact (portrait) window - same breakpoint as Showcase */}
-        <picture>
-          <source
-            media='(max-width: 1023px), (max-aspect-ratio: 1/1)'
-            srcSet='/landing/sgi-mock-hero-compact-560.webp 560w, /landing/sgi-mock-hero-compact.webp 900w'
-            sizes='94vw'
-          />
-          <img
-            src='/landing/sgi-mock-hero.webp'
-            srcSet='/landing/sgi-mock-hero-960.webp 960w, /landing/sgi-mock-hero.webp 1600w'
-            sizes='min(74vw, 1180px)'
-            width={1600}
-            height={1000}
-            alt=''
-            fetchPriority='high'
-            decoding='async'
-            className='hero-ph__img'
-          />
-        </picture>
+      {/* the wrapper carries the scroll fade, so it doesn't fight .hero-ph's own load-time
+          opacity transition (which would make the scroll fade lag behind the scrollbar) */}
+      <div className='hero-ph-fade'>
+        <div
+          ref={placeholderRef}
+          className={`hero-ph ${live ? 'hero-ph--off' : ''}`}
+          aria-hidden='true'
+        >
+          {/* phones/portrait tablets get the compact (portrait) window - same breakpoint as Showcase */}
+          <picture>
+            <source
+              media='(max-width: 1023px), (max-aspect-ratio: 1/1)'
+              srcSet='/landing/sgi-mock-hero-compact-560.webp 560w, /landing/sgi-mock-hero-compact.webp 900w'
+              sizes='94vw'
+            />
+            <img
+              src='/landing/sgi-mock-hero.webp'
+              srcSet='/landing/sgi-mock-hero-960.webp 960w, /landing/sgi-mock-hero.webp 1600w'
+              sizes='min(74vw, 1180px)'
+              width={1600}
+              height={1000}
+              alt=''
+              fetchPriority='high'
+              decoding='async'
+              className='hero-ph__img'
+            />
+          </picture>
+        </div>
       </div>
     </div>
   )

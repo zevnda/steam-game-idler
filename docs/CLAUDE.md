@@ -192,7 +192,16 @@ AdSense slots between sections (never inside the pinned showcase).
 - **`showcase/Showcase.tsx`** pins a full-viewport three.js stage: the hero headline sits above a
   live 3D replica of the app, and scrolling hands over to a docked "playground" (feature picker +
   the window). One scroll-progress value drives both the stage (`setView(frame, pose)`) and the
-  overlays (the `--t` CSS variable), so scrolling never re-renders React.
+  overlays (the `--t` CSS variable), so scrolling never re-renders React. The hero -> playground
+  hand-over is one continuous thread, not two fades: supporting copy steps back (`.hero-recede`),
+  the headline (the page's h1) travels into the playground's heading slot and *stays* as its
+  heading - the slot is an invisible same-text spacer, shown only under reduced motion
+  (`HAND_OVER` + `drawOverlay` in `Showcase.tsx`, JS because it needs measured positions), and the
+  picker assembles piece by piece (`.pg-reveal` + per-element `--at` windows in `Playground.tsx`).
+  Keep those three sets of `t` windows in step when retiming any of it. The overlays read a
+  *damped* `--t` that eases toward the scroll position at the same rate the stage eases its
+  camera (`VIEW_DAMPING` in `engine/types.ts`) - tie any new scroll-linked overlay to that, not
+  to raw scroll, or it will snap while the window glides.
 - **`features.ts`** is the single source for the demo features (copy, mock page, pose, tier extras);
   **`demoStore.ts`** (zustand) lets any section drive the demo - the bento's "Try it live" buttons
   and theme swatches. Picking a feature navigates the mock; navigating *inside* the mock updates the
