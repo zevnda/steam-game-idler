@@ -9,7 +9,8 @@ use std::time::Duration;
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
 use tauri::Manager;
-use tokio::process::Command;
+use tokio::io::{AsyncBufReadExt, AsyncRead, BufReader};
+use tokio::process::{ChildStderr, Command};
 
 use crate::error::{AppError, AppResult};
 
@@ -169,4 +170,82 @@ async fn run_once<T: DeserializeOwned>(args: &[&str]) -> AppResult<Result<T, Str
     Ok(Ok(envelope
         .result
         .ok_or_else(|| AppError::SteamUtility("empty result".to_string()))?))
+}
+
+/// Forwards a long-lived SteamUtility child's stderr (its `Core/Logging/Log.cs` lines) into this
+/// app's log, one `on_line` call per non-empty line, until the stream closes - the streaming
+/// counterpart to [`run_once`]'s one-shot stderr dump, for the agent daemon and CLI-mode `idle`
+/// processes.
+///
+/// Decodes each line lossily rather than through `AsyncBufReadExt::lines()`: SteamUtility writes
+/// stderr in the console code page, not UTF-8, and `lines()` returns an error on the first invalid
+/// UTF-8 byte - which ended the forwarding loop silently. On any non-English Windows locale that
+/// meant the very first line (a localized month name in its timestamp) dropped every daemon log
+/// line after it for the rest of the process's lifetime.
+pub(crate) fn forward_stderr<F>(stderr: ChildStderr, on_line: F)
+where
+    F: FnMut(&str) + Send + 'static,
+{
+    tauri::async_runtime::spawn(read_lines_lossy(stderr, on_line));
+}
+
+/// [`forward_stderr`]'s read loop, generic over the reader so it's testable without a real child
+/// process.
+async fn read_lines_lossy<R, F>(reader: R, mut on_line: F)
+where
+    R: AsyncRead + Unpin,
+    F: FnMut(&str),
+{
+    let mut reader = BufReader::new(reader);
+    let mut buf = Vec::new();
+    loop {
+        buf.clear();
+        match reader.read_until(b'\n', &mut buf).await {
+            Ok(0) => break,
+            Ok(_) => {
+                let line = String::from_utf8_lossy(&buf);
+                let line = line.trim_end_matches(['\r', '\n']);
+                if !line.is_empty() {
+                    on_line(line);
+                }
+            }
+            Err(e) => {
+                tracing::warn!(error = %e, "SteamUtility stderr read failed, no longer forwarding its log lines");
+                break;
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    async fn collect(input: &[u8]) -> Vec<String> {
+        let mut lines = Vec::new();
+        read_lines_lossy(input, |line| lines.push(line.to_string())).await;
+        lines
+    }
+
+    #[tokio::test]
+    async fn keeps_forwarding_past_a_non_utf8_line() {
+        // "окт." as Windows-1251 bytes (a ru-RU console code page) - not valid UTF-8, which is
+        // exactly what used to end forwarding on the first daemon log line.
+        let mut input = b"\xEE\xEA\xF2. 07 15:08:16.870 [Info] [Daemon] Starting\r\n".to_vec();
+        input.extend_from_slice(b"Oct 07 15:08:16.900 [Warn] [Daemon] Steam rejected logon\r\n");
+
+        let lines = collect(&input).await;
+
+        assert_eq!(lines.len(), 2);
+        assert!(lines[0].ends_with("[Info] [Daemon] Starting"));
+        assert_eq!(
+            lines[1],
+            "Oct 07 15:08:16.900 [Warn] [Daemon] Steam rejected logon"
+        );
+    }
+
+    #[tokio::test]
+    async fn forwards_a_final_line_without_a_trailing_newline_and_skips_blank_ones() {
+        assert_eq!(collect(b"first\n\r\n\nlast").await, ["first", "last"]);
+    }
 }

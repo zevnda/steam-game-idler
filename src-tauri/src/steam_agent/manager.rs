@@ -327,14 +327,56 @@ impl AgentManager {
             .send_request(move |id| {
                 IpcRequest::login_with_token(id, saved_username, token_b64, initial_persona_state)
             })
-            .await?;
-        if response.ok {
-            tracing::info!(account = %key, "agent session resumed via saved token");
-            self.apply_saved_persona_state(app_handle, &key).await;
-        } else {
-            tracing::warn!(account = %key, "agent session resume via saved token failed");
+            .await;
+
+        // A resume that didn't succeed must not leave its daemon running. The frontend already
+        // treats the account as not signed in (`useSessionBootstrap` never hydrates it), so a
+        // process left behind here is invisible to the user - yet it stays connected to Steam, and
+        // before `SteamBot.cs` stopped replaying rejected logons it re-sent the same rejected token
+        // every ~2s until the app exited, enough for Steam to throttle the account's real client
+        // too. Discarding it keeps a failed resume inert no matter what the daemon would do on its
+        // own; the next attempt (app restart, `ReauthModal`, a fresh sign-in) spawns a clean one.
+        match response {
+            Ok(response) if response.ok => {
+                tracing::info!(account = %key, "agent session resumed via saved token");
+                self.apply_saved_persona_state(app_handle, &key).await;
+                Ok(true)
+            }
+            Ok(response) => {
+                tracing::warn!(
+                    account = %key,
+                    error = response.error.as_deref().unwrap_or("unknown_error"),
+                    "agent session resume via saved token failed"
+                );
+                self.discard_session(&key, &process).await;
+                Ok(false)
+            }
+            Err(e) => {
+                tracing::warn!(account = %key, error = %e, "agent session resume via saved token failed");
+                self.discard_session(&key, &process).await;
+                Err(e)
+            }
         }
-        Ok(response.ok)
+    }
+
+    /// Kills `process` and drops it from `sessions` - but only while it's still the process
+    /// registered under `key`, so a concurrent [`respawn`](Self::respawn) that already replaced
+    /// (and killed) it never has its fresh replacement torn down by this.
+    async fn discard_session(&self, key: &str, process: &Arc<AgentProcess>) {
+        let removed = {
+            let mut sessions = self.sessions.lock().await;
+            let is_current = sessions
+                .get(key)
+                .is_some_and(|current| Arc::ptr_eq(current, process));
+            if is_current {
+                sessions.remove(key);
+            }
+            is_current
+        };
+        if removed {
+            process.kill().await;
+            tracing::info!(account = %key, "discarded agent process after failed session resume");
+        }
     }
 
     /// Best-effort pre-login lookup of this account's saved persona state (Online/Invisible/...),

@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace SteamUtility.Core.Logging
 {
@@ -61,7 +62,15 @@ namespace SteamUtility.Core.Logging
                 return;
             }
 
-            var timestamp = DateTime.Now.ToString("MMM dd HH:mm:ss.fff");
+            // Invariant culture so the month is always ASCII ("Oct", not ru-RU's "окт."). stderr is
+            // written in the console code page, not UTF-8, so a localized month name reached the
+            // Rust host's log as mojibake on every line (and, before the host decoded stderr
+            // lossily, silently ended agent-mode log forwarding entirely - see
+            // src-tauri/src/steam_utility_exe.rs's forward_stderr).
+            var timestamp = DateTime.Now.ToString(
+                "MMM dd HH:mm:ss.fff",
+                CultureInfo.InvariantCulture
+            );
             var line = $"{timestamp} [{level}] [{category}] {message}";
             if (ex != null)
             {
