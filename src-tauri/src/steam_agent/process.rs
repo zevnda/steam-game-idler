@@ -271,12 +271,9 @@ fn spawn_stdout_reader(
 }
 
 fn spawn_stderr_forwarder(stderr: tokio::process::ChildStderr, account_key: Arc<StdMutex<String>>) {
-    tokio::spawn(async move {
-        let mut lines = BufReader::new(stderr).lines();
-        while let Ok(Some(line)) = lines.next_line().await {
-            let key = account_key.lock().unwrap().clone();
-            tracing::info!(account = %key, "steam_utility: {line}");
-        }
+    crate::steam_utility_exe::forward_stderr(stderr, move |line| {
+        let key = account_key.lock().unwrap().clone();
+        tracing::info!(account = %key, "steam_utility: {line}");
     });
 }
 

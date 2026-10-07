@@ -246,10 +246,7 @@ async fn await_startup_line(stdout: ChildStdout, child: &mut Child) -> Result<()
 }
 
 fn forward_idle_stderr(stderr: ChildStderr, app_id: u32) {
-    tokio::spawn(async move {
-        let mut lines = BufReader::new(stderr).lines();
-        while let Ok(Some(line)) = lines.next_line().await {
-            tracing::info!(app_id, "steam_utility: {line}");
-        }
+    crate::steam_utility_exe::forward_stderr(stderr, move |line| {
+        tracing::info!(app_id, "steam_utility: {line}");
     });
 }

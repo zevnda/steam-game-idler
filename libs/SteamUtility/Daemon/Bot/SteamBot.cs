@@ -13,6 +13,13 @@ namespace SteamUtility.Daemon.Bot
         private const int InitialReconnectDelayMs = 1000;
         private const int MaxReconnectDelayMs = 60_000;
 
+        // How long a reconnect waits after Steam answers its re-logon with a logon throttle
+        // (RateLimitExceeded/AccountLoginDeniedThrottle) instead of the normal backoff. Steam doesn't
+        // document the throttle's length, but users consistently report around half an hour, and it
+        // covers the account's real Steam client too - retrying any sooner only risks keeping the
+        // user locked out of their own account for longer.
+        private const int LogOnThrottleCooldownMs = 30 * 60_000;
+
         // How long Steam must keep reporting "not blocked" before PlayingBlocked flips back to
         // false - the same 60s ASF uses (its MinPlayingBlockedTTL). Absorbs brief blocked->unblocked
         // blips (a launcher handing off to the real game exe, a quick restart of the same game)
@@ -60,8 +67,9 @@ namespace SteamUtility.Daemon.Bot
 
         // First bool: whether this disconnect is one Start()'s own auto-reconnect/backoff below is
         // about to retry on its own (network drop mid-session, or a "playing elsewhere" kick - see
-        // below), as opposed to a permanent one (Stop() called, or the disconnect happened before
-        // any LogOnAsync was ever issued). Consumers that cache connection-derived state (e.g.
+        // below), as opposed to a permanent one (Stop() called, the disconnect happened before
+        // Steam ever accepted a logon, or Steam rejected the reconnect's re-logon for good - see
+        // OnReconnectLogOnRejected). Consumers that cache connection-derived state (e.g.
         // AgentProcess's steam_id in the Rust host) need this to avoid treating a transient
         // reconnect-in-progress as a fully-gone session. Second bool: whether the server
         // force-logged this client off *terminally* - EResult.LogonSessionReplaced (a second client
@@ -99,7 +107,22 @@ namespace SteamUtility.Daemon.Bot
         }
 
         private volatile bool _running;
-        private SteamUser.LogOnDetails? _pendingLogOnDetails;
+
+        // The last logon Steam actually *accepted* - what OnConnected replays after a
+        // non-user-initiated disconnect. Only ever promoted from _inFlightLogOnDetails by a
+        // successful OnLoggedOn, never cached up front by LogOnAsync: caching before Steam's verdict
+        // meant a rejected logon (a revoked/expired saved token, or Steam throttling) was replayed
+        // by the reconnect path forever - connect, re-logon, rejected, disconnect, reconnect ~1s
+        // later - roughly 30 logon attempts a minute for as long as the app ran, even while the
+        // frontend had already given up on the account and wasn't showing it. That's the kind of
+        // logon flood Steam answers by throttling the whole account, which locks the user out of
+        // their real Steam client too (reported as 30+ minutes, outlasting an app restart since
+        // the next launch's resume attempt walked straight back into the same loop).
+        private SteamUser.LogOnDetails? _reconnectLogOnDetails;
+
+        // The details of the explicit LogOnAsync currently awaiting Steam's verdict - null once
+        // OnLoggedOn/OnDisconnected settles it.
+        private SteamUser.LogOnDetails? _inFlightLogOnDetails;
         private TaskCompletionSource<EResult>? _pendingLogOnTcs;
         private TaskCompletionSource? _pendingConnectTcs;
         private TaskCompletionSource<bool>? _licenseListTcs;
@@ -160,7 +183,8 @@ namespace SteamUtility.Daemon.Bot
         public void Stop()
         {
             _running = false;
-            _pendingLogOnDetails = null;
+            _reconnectLogOnDetails = null;
+            _inFlightLogOnDetails = null;
             if (Client.IsConnected)
             {
                 Client.Disconnect();
@@ -183,14 +207,19 @@ namespace SteamUtility.Daemon.Bot
             return tcs.Task;
         }
 
-        // Assumes the client is already connected (via ConnectAsync). Persists the details so
-        // reconnects (network drop, etc.) automatically re-log-on with the same credentials/token.
+        // Assumes the client is already connected (via ConnectAsync). Once Steam accepts the
+        // details, reconnects (network drop, etc.) automatically re-log-on with the same
+        // credentials/token - see _reconnectLogOnDetails for why only an accepted logon is kept.
+        // A rejection is reported to the caller only, never retried in the background.
         public Task<EResult> LogOnAsync(SteamUser.LogOnDetails details)
         {
             var tcs = new TaskCompletionSource<EResult>(
                 TaskCreationOptions.RunContinuationsAsynchronously
             );
-            _pendingLogOnDetails = details;
+            // A new explicit logon supersedes whatever session the old details belonged to - if this
+            // attempt is rejected, a later disconnect must not quietly fall back to replaying them.
+            _reconnectLogOnDetails = null;
+            _inFlightLogOnDetails = details;
             _pendingLogOnTcs = tcs;
             _reconnectDelayMs = InitialReconnectDelayMs;
             SteamUserHandler.LogOn(details);
@@ -207,17 +236,19 @@ namespace SteamUtility.Daemon.Bot
 
         private void OnConnected(SteamClient.ConnectedCallback callback)
         {
-            _reconnectDelayMs = InitialReconnectDelayMs;
-
+            // Deliberately doesn't reset _reconnectDelayMs - a TCP connect succeeding says nothing
+            // about whether the re-logon that follows will, and resetting here pinned the backoff at
+            // its 1s floor across a connect -> rejected logon -> disconnect cycle. Reset only once a
+            // logon is actually accepted (OnLoggedOn).
             _pendingConnectTcs?.TrySetResult();
             _pendingConnectTcs = null;
 
             Connected?.Invoke();
 
             // Reconnect case: we already have credentials/token from a prior successful LogOnAsync.
-            if (_pendingLogOnDetails != null && _pendingLogOnTcs == null)
+            if (_reconnectLogOnDetails != null && _pendingLogOnTcs == null)
             {
-                SteamUserHandler.LogOn(_pendingLogOnDetails);
+                SteamUserHandler.LogOn(_reconnectLogOnDetails);
             }
         }
 
@@ -238,8 +269,12 @@ namespace SteamUtility.Daemon.Bot
             );
             _pendingConnectTcs = null;
 
+            // An explicit logon still awaiting Steam's verdict is over - its caller hears
+            // NoConnection, and since its details were never promoted to _reconnectLogOnDetails,
+            // nothing below retries it behind that caller's back.
             _pendingLogOnTcs?.TrySetResult(EResult.NoConnection);
             _pendingLogOnTcs = null;
+            _inFlightLogOnDetails = null;
 
             var loggedOffResult = _lastLoggedOffResult;
             _lastLoggedOffResult = null;
@@ -262,7 +297,7 @@ namespace SteamUtility.Daemon.Bot
             // themselves. Never reconnect after a terminal kick - see the `Disconnected` event's
             // doc comment.
             var willReconnect =
-                !wasKicked && _running && !callback.UserInitiated && _pendingLogOnDetails != null;
+                !wasKicked && _running && !callback.UserInitiated && _reconnectLogOnDetails != null;
             Disconnected?.Invoke(willReconnect, wasKicked);
 
             if (wasKicked)
@@ -271,7 +306,7 @@ namespace SteamUtility.Daemon.Bot
                 // otherwise a later, unrelated Client.Connect() (if one ever happened) would hit
                 // OnConnected's own reconnect-case branch and silently re-log-on with stale details,
                 // re-triggering the exact fight this is meant to stop.
-                _pendingLogOnDetails = null;
+                _reconnectLogOnDetails = null;
             }
 
             if (!willReconnect)
@@ -285,7 +320,7 @@ namespace SteamUtility.Daemon.Bot
             Task.Delay(delay)
                 .ContinueWith(_ =>
                 {
-                    if (_running && _pendingLogOnDetails != null)
+                    if (_running && _reconnectLogOnDetails != null)
                     {
                         Client.Connect();
                     }
@@ -296,8 +331,19 @@ namespace SteamUtility.Daemon.Bot
         {
             IsLoggedOn = callback.Result == EResult.OK;
 
+            // Non-null only when this answers an explicit LogOnAsync - a reconnect's automatic
+            // re-logon (OnConnected) replays _reconnectLogOnDetails instead and never sets it.
+            var explicitLogOnDetails = _inFlightLogOnDetails;
+            _inFlightLogOnDetails = null;
+
             if (IsLoggedOn)
             {
+                if (explicitLogOnDetails != null)
+                {
+                    _reconnectLogOnDetails = explicitLogOnDetails;
+                }
+                _reconnectDelayMs = InitialReconnectDelayMs;
+
                 // LicenseListCallback is a separate, independently-timed server push with no
                 // ordering guarantee relative to this one - reset the waiter on every successful
                 // logon/reconnect so OwnershipManager can block on the fresh set actually arriving
@@ -323,6 +369,19 @@ namespace SteamUtility.Daemon.Bot
                     }
                 }
             }
+            else if (explicitLogOnDetails != null)
+            {
+                // The caller hears this via the TCS below and decides what happens next - nothing
+                // here retries it (see _reconnectLogOnDetails).
+                Log.Warn(
+                    "Daemon",
+                    $"Steam rejected logon: {callback.Result} (extended: {callback.ExtendedResult})"
+                );
+            }
+            else
+            {
+                OnReconnectLogOnRejected(callback.Result, callback.ExtendedResult);
+            }
 
             // Persona state is no longer set here - PresenceManager subscribes to
             // LogOnStatusChanged itself (mirroring IdlingManager's own resend-on-reconnect
@@ -331,6 +390,51 @@ namespace SteamUtility.Daemon.Bot
 
             _pendingLogOnTcs?.TrySetResult(callback.Result);
             _pendingLogOnTcs = null;
+        }
+
+        // Decides whether a reconnect keeps going after Steam rejects its automatic re-logon. Runs
+        // before the server's matching disconnect reaches OnDisconnected, which is what reads the
+        // state set here. Only answers meaning "Steam is unavailable right now" keep the normal
+        // backoff; a logon throttle waits out LogOnThrottleCooldownMs; anything else (a revoked or
+        // expired token, a disabled account, an EResult not seen here before) stops reconnecting
+        // for good, since replaying the same rejected details can never succeed and every attempt
+        // counts toward Steam throttling the whole account. That's a deliberate lean toward
+        // stopping for an unfamiliar result - a stopped session costs a re-sign-in, a wrong retry
+        // can lock the user out of their real Steam client.
+        private void OnReconnectLogOnRejected(EResult result, EResult extendedResult)
+        {
+            switch (result)
+            {
+                case EResult.NoConnection:
+                case EResult.Timeout:
+                case EResult.ServiceUnavailable:
+                case EResult.TryAnotherCM:
+                case EResult.Busy:
+                    Log.Warn(
+                        "Daemon",
+                        $"Steam couldn't complete the reconnect logon ({result}) - retrying with backoff"
+                    );
+                    break;
+
+                case EResult.RateLimitExceeded:
+                case EResult.AccountLoginDeniedThrottle:
+                    // OnDisconnected takes this as the very next delay, then caps the one after it
+                    // back at MaxReconnectDelayMs as usual.
+                    _reconnectDelayMs = LogOnThrottleCooldownMs;
+                    Log.Warn(
+                        "Daemon",
+                        $"Steam is throttling logons for this account ({result}) - waiting {LogOnThrottleCooldownMs / 60_000} minutes before reconnecting"
+                    );
+                    break;
+
+                default:
+                    _reconnectLogOnDetails = null;
+                    Log.Warn(
+                        "Daemon",
+                        $"Steam rejected the saved session while reconnecting ({result}, extended: {extendedResult}) - not retrying, signing in again is required"
+                    );
+                    break;
+            }
         }
 
         // Steam's own authoritative signal for the "only one session can play at a time" rule -
