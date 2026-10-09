@@ -49,7 +49,7 @@ pub fn get_users() -> AppResult<Vec<LocalSteamUser>> {
 /// `steam_web_api::resolve_api_key` for the fallback behavior when there isn't one.
 #[tauri::command]
 pub async fn get_user_summary(steam_id: String, app_handle: AppHandle) -> AppResult<Value> {
-    let api_key = crate::credential_store::load_web_api_key()?;
+    let api_key = crate::credential_store::load_web_api_key();
     steam_web_api::get_user_summary(&app_handle, &steam_id, api_key).await
 }
 

@@ -20,19 +20,21 @@ pub struct SettingsResponse {
     pub steam_web_api_key: Option<String>,
 }
 
-pub fn build_response(settings: Settings) -> AppResult<SettingsResponse> {
-    let steam_web_api_key = credential_store::load_web_api_key()?;
-    Ok(SettingsResponse {
+/// Infallible on purpose - an unreadable credential store just means no override is shown (see
+/// `credential_store::load_web_api_key`), never a failed settings load or a failed save of an
+/// unrelated toggle that only routes through here to echo the current state back.
+pub fn build_response(settings: Settings) -> SettingsResponse {
+    SettingsResponse {
         settings,
-        steam_web_api_key,
-    })
+        steam_web_api_key: credential_store::load_web_api_key(),
+    }
 }
 
 #[tauri::command]
 pub fn get_settings(app_handle: AppHandle) -> AppResult<SettingsResponse> {
     super::load(&app_handle)
         .map_err(AppError::SettingsIo)
-        .and_then(build_response)
+        .map(build_response)
 }
 
 /// A well-known, permanently public Steam profile (Steam's own official support account) used
@@ -80,28 +82,28 @@ pub fn set_steam_web_api_key(app_handle: AppHandle, key: Option<String>) -> AppR
 
     super::load(&app_handle)
         .map_err(AppError::SettingsIo)
-        .and_then(build_response)
+        .map(build_response)
 }
 
 #[tauri::command]
 pub fn set_anti_away(app_handle: AppHandle, enabled: bool) -> AppResult<SettingsResponse> {
     super::set_anti_away(&app_handle, enabled)
         .map_err(AppError::SettingsIo)
-        .and_then(build_response)
+        .map(build_response)
 }
 
 #[tauri::command]
 pub fn set_start_minimized(app_handle: AppHandle, enabled: bool) -> AppResult<SettingsResponse> {
     super::set_start_minimized(&app_handle, enabled)
         .map_err(AppError::SettingsIo)
-        .and_then(build_response)
+        .map(build_response)
 }
 
 #[tauri::command]
 pub fn set_close_to_tray(app_handle: AppHandle, enabled: bool) -> AppResult<SettingsResponse> {
     super::set_close_to_tray(&app_handle, enabled)
         .map_err(AppError::SettingsIo)
-        .and_then(build_response)
+        .map(build_response)
 }
 
 #[tauri::command]
@@ -111,7 +113,7 @@ pub fn set_auto_update_games_list(
 ) -> AppResult<SettingsResponse> {
     super::set_auto_update_games_list(&app_handle, enabled)
         .map_err(AppError::SettingsIo)
-        .and_then(build_response)
+        .map(build_response)
 }
 
 #[tauri::command]
@@ -121,28 +123,28 @@ pub fn set_free_game_notifications(
 ) -> AppResult<SettingsResponse> {
     super::set_free_game_notifications(&app_handle, enabled)
         .map_err(AppError::SettingsIo)
-        .and_then(build_response)
+        .map(build_response)
 }
 
 #[tauri::command]
 pub fn set_theme(app_handle: AppHandle, theme: String) -> AppResult<SettingsResponse> {
     super::set_theme(&app_handle, theme)
         .map_err(AppError::SettingsIo)
-        .and_then(build_response)
+        .map(build_response)
 }
 
 #[tauri::command]
 pub fn set_font(app_handle: AppHandle, font: String) -> AppResult<SettingsResponse> {
     super::set_font(&app_handle, font)
         .map_err(AppError::SettingsIo)
-        .and_then(build_response)
+        .map(build_response)
 }
 
 #[tauri::command]
 pub fn set_disable_tooltips(app_handle: AppHandle, enabled: bool) -> AppResult<SettingsResponse> {
     super::set_disable_tooltips(&app_handle, enabled)
         .map_err(AppError::SettingsIo)
-        .and_then(build_response)
+        .map(build_response)
 }
 
 #[tauri::command]
@@ -152,7 +154,7 @@ pub fn set_show_recommended_carousel(
 ) -> AppResult<SettingsResponse> {
     super::set_show_recommended_carousel(&app_handle, enabled)
         .map_err(AppError::SettingsIo)
-        .and_then(build_response)
+        .map(build_response)
 }
 
 #[tauri::command]
@@ -162,5 +164,5 @@ pub fn set_show_recent_carousel(
 ) -> AppResult<SettingsResponse> {
     super::set_show_recent_carousel(&app_handle, enabled)
         .map_err(AppError::SettingsIo)
-        .and_then(build_response)
+        .map(build_response)
 }
