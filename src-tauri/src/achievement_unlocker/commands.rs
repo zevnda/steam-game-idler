@@ -152,7 +152,7 @@ pub async fn import_achievement_timings(
     app_id: u32,
     steam_input: String,
 ) -> AppResult<Vec<AchievementTiming>> {
-    let api_key = crate::credential_store::load_web_api_key()?;
+    let api_key = crate::credential_store::load_web_api_key();
     import_timings::get_player_achievement_timings(app_id, steam_input, api_key).await
 }
 

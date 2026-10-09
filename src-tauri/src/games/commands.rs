@@ -102,7 +102,7 @@ pub async fn get_owned_games(
     let (merged, possibly_private) = if is_agent {
         (merge::from_agent(raw_games), false)
     } else {
-        let api_key = crate::credential_store::load_web_api_key()?;
+        let api_key = crate::credential_store::load_web_api_key();
         let fetch = web_api::fetch_owned_games(&steam_id, api_key).await?;
         (merge::merge(raw_games, fetch.games), fetch.possibly_private)
     };

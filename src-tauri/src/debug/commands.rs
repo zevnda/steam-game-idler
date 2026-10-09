@@ -175,7 +175,7 @@ pub async fn reset_settings(
 
     let settings = settings::reset(&app_handle)
         .map_err(AppError::SettingsIo)
-        .and_then(settings::commands::build_response)
+        .map(settings::commands::build_response)
         .map_err(|e| {
             tracing::warn!(error = %e, "settings reset: failed to reset app-wide settings");
             e
