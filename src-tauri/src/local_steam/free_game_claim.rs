@@ -247,11 +247,8 @@ enum StoreSessionStatus {
 /// otherwise-unclear response before giving up as `Inconclusive`, mirroring
 /// `steam_community::session::validate`'s identical retry/backoff shape.
 async fn validate_store_session(cookies: &SteamCookies) -> AppResult<StoreSessionStatus> {
-    let client = store_claim::steam_client(
-        &cookie_header("", cookies),
-        reqwest::redirect::Policy::limited(5),
-    )
-    .map_err(|e| AppError::StoreLoginFailed(e.to_string()))?;
+    let client = store_claim::steam_client(&cookie_header("", cookies))
+        .map_err(|e| AppError::StoreLoginFailed(e.to_string()))?;
 
     for attempt in 0..VALIDATE_MAX_ATTEMPTS {
         let response = client

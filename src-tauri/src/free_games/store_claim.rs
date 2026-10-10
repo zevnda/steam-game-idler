@@ -58,17 +58,18 @@ const CORRECTION_POLL_DELAYS_MS: &[u64] = &[15000, 30000, 45000];
 pub type OwnershipCheck =
     Arc<dyn Fn() -> Pin<Box<dyn Future<Output = AppResult<bool>> + Send>> + Send + Sync>;
 
-pub(crate) fn steam_client(
-    cookie_header: &str,
-    redirect: reqwest::redirect::Policy,
-) -> reqwest::Result<reqwest::Client> {
-    steam_client_builder(cookie_header, redirect).build()
+/// Builds the Steam Store client shared by this module's claim flow and
+/// `local_steam::free_game_claim`'s store-session check, seeded with `cookie_header`'s cookies.
+///
+/// Uses a cookie jar rather than a fixed `Cookie` header because Steam can 302 back to the same
+/// URL with a `Steam_Language` cookie for non-English accounts - a fixed header re-sends the old
+/// cookies on every hop and loops until the redirect limit. Reusing one client across the store
+/// page GET and the claim POST also carries any cookies issued by the GET into the POST.
+pub(crate) fn steam_client(cookie_header: &str) -> reqwest::Result<reqwest::Client> {
+    steam_client_builder(cookie_header).build()
 }
 
-fn steam_client_builder(
-    cookie_header: &str,
-    redirect: reqwest::redirect::Policy,
-) -> reqwest::ClientBuilder {
+fn steam_client_builder(cookie_header: &str) -> reqwest::ClientBuilder {
     let jar = Arc::new(reqwest::cookie::Jar::default());
     let store_url =
         reqwest::Url::parse("https://store.steampowered.com/").expect("static URL is always valid");
@@ -80,7 +81,7 @@ fn steam_client_builder(
         // Steam can redirect to the same URL until its issued language cookie is returned.
         .cookie_provider(jar)
         .https_only(true)
-        .redirect(redirect)
+        .redirect(reqwest::redirect::Policy::limited(5))
 }
 
 /// Full mode-agnostic claim orchestration for `app_id`: an upfront `check_owned` pre-check (skips
@@ -122,11 +123,8 @@ async fn attempt_direct_claim(
     session_id: &str,
     app_id: u32,
 ) -> AppResult<AddFreeLicenseResponse> {
-    let client = steam_client(
-        &format!("{cookie_header}; {AGE_BYPASS_COOKIES}"),
-        reqwest::redirect::Policy::default(),
-    )
-    .map_err(|e| AppError::StoreClaimFailed(e.to_string()))?;
+    let client = steam_client(&format!("{cookie_header}; {AGE_BYPASS_COOKIES}"))
+        .map_err(|e| AppError::StoreClaimFailed(e.to_string()))?;
     // Keep the cookies issued while loading the store page for the subsequent claim POST.
     let sub_id = resolve_sub_id(&client, app_id).await?;
     submit_add_free_license(&client, session_id, sub_id).await
@@ -464,16 +462,13 @@ mod tests {
             }
         });
 
-        let client = steam_client_builder(
-            "sessionid=test-session; steamLoginSecure=test-login",
-            reqwest::redirect::Policy::limited(5),
-        )
-        // Only the local mock permits HTTP. Production clients require HTTPS.
-        .https_only(false)
-        .no_proxy()
-        .resolve("store.steampowered.com", address)
-        .build()
-        .unwrap();
+        let client = steam_client_builder("sessionid=test-session; steamLoginSecure=test-login")
+            // Only the local mock permits HTTP. Production clients require HTTPS.
+            .https_only(false)
+            .no_proxy()
+            .resolve("store.steampowered.com", address)
+            .build()
+            .unwrap();
         assert!(client
             .get(format!("{base_url}/account/"))
             .send()
@@ -498,11 +493,7 @@ mod tests {
 
     #[tokio::test]
     async fn store_client_rejects_http_before_connecting() {
-        let client = steam_client(
-            "sessionid=test-session; steamLoginSecure=test-login",
-            reqwest::redirect::Policy::default(),
-        )
-        .unwrap();
+        let client = steam_client("sessionid=test-session; steamLoginSecure=test-login").unwrap();
         let error = client.get("http://127.0.0.1:9/").send().await.unwrap_err();
         assert!(
             error.is_builder(),
