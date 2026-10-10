@@ -58,10 +58,29 @@ const CORRECTION_POLL_DELAYS_MS: &[u64] = &[15000, 30000, 45000];
 pub type OwnershipCheck =
     Arc<dyn Fn() -> Pin<Box<dyn Future<Output = AppResult<bool>> + Send>> + Send + Sync>;
 
-fn steam_client() -> reqwest::Result<reqwest::Client> {
+pub(crate) fn steam_client(
+    cookie_header: &str,
+    redirect: reqwest::redirect::Policy,
+) -> reqwest::Result<reqwest::Client> {
+    steam_client_builder(cookie_header, redirect).build()
+}
+
+fn steam_client_builder(
+    cookie_header: &str,
+    redirect: reqwest::redirect::Policy,
+) -> reqwest::ClientBuilder {
+    let jar = Arc::new(reqwest::cookie::Jar::default());
+    let store_url =
+        reqwest::Url::parse("https://store.steampowered.com/").expect("static URL is always valid");
+    for cookie in cookie_header.split(';') {
+        jar.add_cookie_str(&format!("{}; Secure", cookie.trim()), &store_url);
+    }
     reqwest::Client::builder()
         .user_agent(STEAM_USER_AGENT)
-        .build()
+        // Steam can redirect to the same URL until its issued language cookie is returned.
+        .cookie_provider(jar)
+        .https_only(true)
+        .redirect(redirect)
 }
 
 /// Full mode-agnostic claim orchestration for `app_id`: an upfront `check_owned` pre-check (skips
@@ -103,8 +122,14 @@ async fn attempt_direct_claim(
     session_id: &str,
     app_id: u32,
 ) -> AppResult<AddFreeLicenseResponse> {
-    let sub_id = resolve_sub_id(cookie_header, app_id).await?;
-    submit_add_free_license(cookie_header, session_id, sub_id).await
+    let client = steam_client(
+        &format!("{cookie_header}; {AGE_BYPASS_COOKIES}"),
+        reqwest::redirect::Policy::default(),
+    )
+    .map_err(|e| AppError::StoreClaimFailed(e.to_string()))?;
+    // Keep the cookies issued while loading the store page for the subsequent claim POST.
+    let sub_id = resolve_sub_id(&client, app_id).await?;
+    submit_add_free_license(&client, session_id, sub_id).await
 }
 
 /// Finds the package (sub) id `app_id`'s store page currently advertises for its purchase widget -
@@ -115,13 +140,11 @@ async fn attempt_direct_claim(
 /// Tries each known candidate shape in turn and logs which one matched, rather than committing to
 /// a single selector - the page's exact markup for this isn't documented by Valve, and different
 /// promo types may render the purchase widget slightly differently.
-async fn resolve_sub_id(cookie_header: &str, app_id: u32) -> AppResult<u32> {
-    let client = steam_client().map_err(|e| AppError::StoreClaimFailed(e.to_string()))?;
+async fn resolve_sub_id(client: &reqwest::Client, app_id: u32) -> AppResult<u32> {
     let url = format!("https://store.steampowered.com/app/{app_id}");
 
     let response = client
         .get(&url)
-        .header("Cookie", format!("{cookie_header}; {AGE_BYPASS_COOKIES}"))
         .send()
         .await
         .map_err(|e| AppError::StoreClaimFailed(e.to_string()))?;
@@ -237,15 +260,12 @@ struct AddFreeLicenseResponse {
 /// `<h2>Success!</h2>` marker in the response body; failure by a `<span class="error">...</span>`
 /// block. Neither is treated as fully authoritative on its own - see this module's doc comment.
 async fn submit_add_free_license(
-    cookie_header: &str,
+    client: &reqwest::Client,
     session_id: &str,
     sub_id: u32,
 ) -> AppResult<AddFreeLicenseResponse> {
-    let client = steam_client().map_err(|e| AppError::StoreClaimFailed(e.to_string()))?;
-
     let response = client
         .post("https://store.steampowered.com/freelicense/addfreelicense")
-        .header("Cookie", cookie_header)
         .form(&[
             ("action", "add_to_cart"),
             ("sessionid", session_id),
@@ -392,4 +412,101 @@ fn spawn_correction_recheck(
             );
         }
     });
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::io::{Read, Write};
+    use std::net::TcpListener;
+
+    #[tokio::test]
+    async fn store_session_cookies_survive_redirects_and_reach_the_claim_post() {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let base_url = format!("http://store.steampowered.com:{}", address.port());
+        let server = std::thread::spawn(move || {
+            for step in 0..3 {
+                let (mut stream, _) = listener.accept().unwrap();
+                stream
+                    .set_read_timeout(Some(Duration::from_secs(5)))
+                    .unwrap();
+                let mut request = Vec::new();
+                let mut byte = [0];
+                while !request.ends_with(b"\r\n\r\n") {
+                    stream.read_exact(&mut byte).unwrap();
+                    request.push(byte[0]);
+                }
+                let request = String::from_utf8(request).unwrap();
+                // Even with HTTP enabled for this local fixture, Secure credentials stay off HTTP.
+                assert!(!request.contains("test-login"));
+                if step == 0 {
+                    assert!(request.starts_with("GET /account/ "));
+                    assert!(!request.contains("Steam_Language="));
+                } else {
+                    assert!(request.contains("Steam_Language=italian"));
+                }
+                let response = match step {
+                    0 => "HTTP/1.1 302 Found\r\nLocation: /account/\r\nSet-Cookie: Steam_Language=italian; Path=/\r\nContent-Length: 0\r\nConnection: close\r\n\r\n",
+                    1 => "HTTP/1.1 200 OK\r\nContent-Length: 0\r\nConnection: close\r\n\r\n",
+                    _ => {
+                        assert!(request.starts_with("POST /freelicense/addfreelicense "));
+                        let length: usize = request.lines()
+                            .find_map(|line| line.to_ascii_lowercase().strip_prefix("content-length: ").map(str::to_owned))
+                            .unwrap().parse().unwrap();
+                        let mut body = vec![0; length];
+                        stream.read_exact(&mut body).unwrap();
+                        assert_eq!(String::from_utf8(body).unwrap(), "action=add_to_cart&sessionid=test-session&subid=123");
+                        "HTTP/1.1 200 OK\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
+                    }
+                };
+                stream.write_all(response.as_bytes()).unwrap();
+            }
+        });
+
+        let client = steam_client_builder(
+            "sessionid=test-session; steamLoginSecure=test-login",
+            reqwest::redirect::Policy::limited(5),
+        )
+        // Only the local mock permits HTTP. Production clients require HTTPS.
+        .https_only(false)
+        .no_proxy()
+        .resolve("store.steampowered.com", address)
+        .build()
+        .unwrap();
+        assert!(client
+            .get(format!("{base_url}/account/"))
+            .send()
+            .await
+            .unwrap()
+            .status()
+            .is_success());
+        assert!(client
+            .post(format!("{base_url}/freelicense/addfreelicense"))
+            .form(&[
+                ("action", "add_to_cart"),
+                ("sessionid", "test-session"),
+                ("subid", "123")
+            ])
+            .send()
+            .await
+            .unwrap()
+            .status()
+            .is_success());
+        server.join().unwrap();
+    }
+
+    #[tokio::test]
+    async fn store_client_rejects_http_before_connecting() {
+        let client = steam_client(
+            "sessionid=test-session; steamLoginSecure=test-login",
+            reqwest::redirect::Policy::default(),
+        )
+        .unwrap();
+        let error = client.get("http://127.0.0.1:9/").send().await.unwrap_err();
+        assert!(
+            error.is_builder(),
+            "HTTP must be rejected before connecting"
+        );
+    }
 }

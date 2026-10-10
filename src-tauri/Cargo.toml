@@ -31,7 +31,7 @@ tracing-appender = "0.2"
 keyring = { version = "4.1.4", default-features = false, features = ["v1", "windows-native-keyring-store"] }
 steamlocate = "2.0.1"
 regex = { version = "1.11.1", default-features = false, features = ["std"] }
-reqwest = { version = "0.12.12", features = ["json", "gzip", "brotli", "deflate"] }
+reqwest = { version = "0.12.12", features = ["json", "gzip", "brotli", "deflate", "cookies"] }
 sysinfo = "0.36.0"
 scraper = "0.23"
 machine-uid = "0.5"
