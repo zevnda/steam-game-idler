@@ -20,7 +20,6 @@ interface FreeGamesStore {
   setGamesSilently: (games: FreeGameEntry[]) => void
   setLoading: () => void
   setError: (errorCode: string) => void
-  removeGame: (appId: number) => void
 }
 
 // Discovery (get_free_games) is public, mode-agnostic data with no per-account meaning (see
@@ -42,5 +41,4 @@ export const useFreeGamesStore = create<FreeGamesStore>(set => ({
   setGamesSilently: games => set({ games, lastFetchedAt: Date.now() }),
   setLoading: () => set({ isRefreshing: true, errorCode: null }),
   setError: errorCode => set({ errorCode, phase: 'ready', isRefreshing: false }),
-  removeGame: appId => set(state => ({ games: state.games.filter(game => game.appId !== appId) })),
 }))

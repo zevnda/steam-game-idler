@@ -103,10 +103,9 @@ async function autoRedeemForSignedInAccounts(games: FreeGameEntry[], t: TFunctio
         })
         if (outcome.outcome === 'granted') {
           toast.success(t('dashboard.freeGames.autoRedeem.success', { name: game.name }))
-          // Same optimistic removal `useClaimFreeGame`'s manual claim path does - drops it from
-          // the Free Games tab immediately rather than waiting on the owned-games refresh below
-          // (or, if this account isn't the active one, waiting on nothing at all).
-          useFreeGamesStore.getState().removeGame(game.appId)
+          // Deliberately not removed from `freeGamesStore` - that list is shared by every
+          // signed-in account, so removing it would hide the game from accounts that haven't
+          // claimed it yet. The owned-games refresh below is what hides it for this account.
           grantedAny = true
         } else if (outcome.outcome === 'failed') {
           toast.danger(t('dashboard.freeGames.autoRedeem.failure', { name: game.name }))

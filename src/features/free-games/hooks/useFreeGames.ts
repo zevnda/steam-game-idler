@@ -14,10 +14,12 @@ export const useFreeGames = () => {
   const freeGames = useFreeGamesStore(state => state.games)
   const isRefreshing = useFreeGamesStore(state => state.isRefreshing)
   const errorCode = useFreeGamesStore(state => state.errorCode)
-  const removeGame = useFreeGamesStore(state => state.removeGame)
 
   // Filters out games this account already owns - the backend's discovery list has no concept of
-  // "who's asking", it's the same scraped list for everyone (see discovery.rs's doc comment).
+  // "who's asking", it's the same scraped list for everyone (see discovery.rs's doc comment). This
+  // filter is also the only thing that hides a just-claimed game: a claim refreshes that account's
+  // owned-games list rather than removing the game from the shared store, so other signed-in
+  // accounts that haven't claimed it yet keep seeing it.
   const ownedAppIds = useMemo(() => new Set(ownedGames.map(game => game.appId)), [ownedGames])
   const unownedFreeGames = useMemo(
     () => freeGames.filter(game => !ownedAppIds.has(game.appId)),
@@ -30,8 +32,5 @@ export const useFreeGames = () => {
     isRefreshing,
     errorCode,
     refresh: fetchFreeGames,
-    // Optimistically drops a just-claimed game from the list without waiting on a full refetch -
-    // `useClaimFreeGame` calls this once a claim reports `granted`.
-    removeClaimed: removeGame,
   }
 }

@@ -21,8 +21,8 @@ export const FreeGamesPage = () => {
   const { t } = useTranslation()
   const router = useRouter()
   const account = useSessionStore(state => state.account)
-  const { freeGames, isLoading, isRefreshing, errorCode, refresh, removeClaimed } = useFreeGames()
-  const { pendingAppIds, outcomes, errorCodes, claim } = useClaimFreeGame(removeClaimed)
+  const { freeGames, isLoading, isRefreshing, errorCode, refresh } = useFreeGames()
+  const { pendingAppIds, outcomes, errorCodes, claim } = useClaimFreeGame()
 
   useEffect(() => {
     if (!account) {
