@@ -14,14 +14,13 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@orama/orama": "^3.1.16",
     "@vercel/analytics": "^2.0.1",
-    "fumadocs-core": "^16.9.3",
+    "fumadocs-core": "^16.14.2",
     "fumadocs-mdx": "^15.2.2",
-    "fumadocs-ui": "^16.12.1",
+    "fumadocs-ui": "^16.14.2",
     "lucide-react": "^0.563.0",
     "motion": "^12.42.2",
-    "next": "^16.2.11",
+    "next": "^16.3.8",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-icons": "^5.7.0",
@@ -37,10 +36,10 @@
     "@types/react": "^19.2.13",
     "@types/react-dom": "^19.2.3",
     "@types/three": "^0.186.0",
-    "concurrently": "^10.0.3",
+    "concurrently": "^10.0.6",
     "next-sitemap": "^4.2.3",
-    "postcss": "^8.5.23",
-    "tailwindcss": "^4.3.0",
+    "postcss": "^8.5.26",
+    "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3"
   }
 }
