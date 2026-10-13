@@ -661,10 +661,7 @@ jobs:
   build_linux_bundle:
     needs: [build_dotnet_libs_linux, prepare]
     timeout-minutes: 30
-    # TEMPORARY (Tauri CLI 2.12 AppImage experiment): build on 24.04 so the AppImage bundles
-    # noble's webkit2gtk 2.52.x instead of jammy's 2.50.4, to test whether the AppImage lag is the
-    # jammy WebKit build. Raises the minimum glibc from 2.35 to 2.39 - test only, revert to 22.04.
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     permissions:
       actions: write # delete this job's own dotnet-libs-linux artifact in the cleanup step
     steps:
