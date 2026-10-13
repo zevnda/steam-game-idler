@@ -731,23 +731,28 @@ jobs:
           APT_OPTS=(-o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30)
 
           retry sudo apt-get "${APT_OPTS[@]}" update
-          WEBKIT_VERSION="2.44.3-0ubuntu0.22.04.1"
-          echo "deb https://snapshot.ubuntu.com/ubuntu/20241001T000000Z/ jammy-updates main universe" | sudo tee /etc/apt/sources.list.d/webkit-snapshot.list
-          retry sudo apt-get "${APT_OPTS[@]}" update
+          # TEMPORARY (Tauri CLI 2.12 AppImage experiment, Step 5): webkit pin disabled to test stock
+          # jammy-updates webkit2gtk (2.50.4 as of 2026-10-13) now that CLI 2.12's linuxdeploy no
+          # longer bundles libwayland-client and exports GIO_MODULE_DIR. Restore the pinned block
+          # below (and drop libwebkit2gtk-4.1-dev from the plain install list) if this is rejected.
+          # WEBKIT_VERSION="2.44.3-0ubuntu0.22.04.1"
+          # echo "deb https://snapshot.ubuntu.com/ubuntu/20241001T000000Z/ jammy-updates main universe" | sudo tee /etc/apt/sources.list.d/webkit-snapshot.list
+          # retry sudo apt-get "${APT_OPTS[@]}" update
+          # retry sudo apt-get "${APT_OPTS[@]}" install -y \
+          #   libwebkit2gtk-4.1-0="$WEBKIT_VERSION" \
+          #   libwebkit2gtk-4.1-dev="$WEBKIT_VERSION" \
+          #   libjavascriptcoregtk-4.1-0="$WEBKIT_VERSION" \
+          #   libjavascriptcoregtk-4.1-dev="$WEBKIT_VERSION" \
+          #   gir1.2-webkit2-4.1="$WEBKIT_VERSION" \
+          #   gir1.2-javascriptcoregtk-4.1="$WEBKIT_VERSION"
+          # sudo apt-mark hold \
+          #   libwebkit2gtk-4.1-0 libwebkit2gtk-4.1-dev \
+          #   libjavascriptcoregtk-4.1-0 libjavascriptcoregtk-4.1-dev \
+          #   gir1.2-webkit2-4.1 gir1.2-javascriptcoregtk-4.1
+          # sudo rm /etc/apt/sources.list.d/webkit-snapshot.list
+          # retry sudo apt-get "${APT_OPTS[@]}" update
           retry sudo apt-get "${APT_OPTS[@]}" install -y \
-            libwebkit2gtk-4.1-0="$WEBKIT_VERSION" \
-            libwebkit2gtk-4.1-dev="$WEBKIT_VERSION" \
-            libjavascriptcoregtk-4.1-0="$WEBKIT_VERSION" \
-            libjavascriptcoregtk-4.1-dev="$WEBKIT_VERSION" \
-            gir1.2-webkit2-4.1="$WEBKIT_VERSION" \
-            gir1.2-javascriptcoregtk-4.1="$WEBKIT_VERSION"
-          sudo apt-mark hold \
-            libwebkit2gtk-4.1-0 libwebkit2gtk-4.1-dev \
-            libjavascriptcoregtk-4.1-0 libjavascriptcoregtk-4.1-dev \
-            gir1.2-webkit2-4.1 gir1.2-javascriptcoregtk-4.1
-          sudo rm /etc/apt/sources.list.d/webkit-snapshot.list
-          retry sudo apt-get "${APT_OPTS[@]}" update
-          retry sudo apt-get "${APT_OPTS[@]}" install -y \
+            libwebkit2gtk-4.1-dev \
             libsoup-3.0-dev \
             libgtk-3-dev \
             libayatana-appindicator3-dev \
@@ -761,6 +766,8 @@ jobs:
             patchelf \
             xdg-utils \
             pkg-config
+          # TEMPORARY (Step 5): log which webkit2gtk actually got installed, for the dry-run report.
+          dpkg -l libwebkit2gtk-4.1-0 libjavascriptcoregtk-4.1-0 | grep '^ii'
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
