@@ -107,8 +107,11 @@ fn appimage_prefer_system_libraries() {
         "/lib64",
         "/usr/lib",
     ];
-    // Set by linuxdeploy-plugin-gtk's / linuxdeploy-plugin-gstreamer's AppRun hooks to point at
-    // jammy-built modules inside the AppImage.
+    // Set by linuxdeploy-plugin-gtk's / linuxdeploy-plugin-gstreamer's AppRun hooks, or by AppRun
+    // itself, to point at jammy-built modules inside the AppImage. AppRun sets the *unversioned*
+    // GST_PLUGIN_SYSTEM_PATH (to a nonexistent `$APPDIR/usr/lib/gstreamer`) on top of the hook's
+    // `_1_0` variant - drop only the `_1_0` one and GStreamer falls back to the unversioned one,
+    // scans zero plugins, and WebKitWebProcess crashes on startup ("appsink not found").
     const HOOK_MODULE_VARS: &[&str] = &[
         "GTK_PATH",
         "GTK_EXE_PREFIX",
@@ -122,6 +125,9 @@ fn appimage_prefer_system_libraries() {
         "GST_PLUGIN_SCANNER_1_0",
         "GST_PTP_HELPER_1_0",
         "GST_REGISTRY_REUSE_PLUGIN_SCANNER",
+        "GST_PLUGIN_PATH",
+        "GST_PLUGIN_SYSTEM_PATH",
+        "GST_PLUGIN_SCANNER",
     ];
 
     if std::env::var_os("APPIMAGE").is_none()
@@ -149,9 +155,20 @@ fn appimage_prefer_system_libraries() {
         library_path.push_str(&existing.to_string_lossy());
     }
 
+    // The resolved path, not `/proc/self/exe` itself - exec'ing the symlink path names the new
+    // process `exe` (comm comes from the exec'd path's basename), so it'd show up as "exe" in
+    // system monitors and `pgrep steam-game-idler` would stop finding it.
+    let exe = match std::env::current_exe() {
+        Ok(exe) => exe,
+        Err(err) => {
+            eprintln!("appimage: couldn't resolve own executable, using bundled libraries: {err}");
+            return;
+        }
+    };
+
     let mut args = std::env::args_os();
     let arg0 = args.next().unwrap_or_else(|| "steam-game-idler".into());
-    let mut command = std::process::Command::new("/proc/self/exe");
+    let mut command = std::process::Command::new(exe);
     command
         .arg0(arg0)
         .args(args)
