@@ -58,12 +58,9 @@ export const GoProModal = () => {
   const requiredTier = useProModalStore(state => state.requiredTier)
   const close = useProModalStore(state => state.close)
   const subscriptionTier = useSubscriptionStore(state => state.subscriptionTier)
-  // WebKitGTK's compositor makes this modal's ambient motion meaningfully more expensive than
-  // Windows' WebView2 - see the `.force-reduced-motion` comment in globals.css.
-  const isLinux = usePlatformStore(state => state.currentOs) === 'linux'
-  // TEMPORARY (Tauri CLI 2.12 AppImage experiment, Step 4): animations forced on for Linux to
-  // measure performance on the host's WebKitGTK. Revert before merging.
-  const TEMP_FORCE_LINUX_ANIMATIONS = true
+  // Older WebKitGTK builds can't keep up with this modal's ambient motion - see the
+  // `.force-reduced-motion` comment in globals.css.
+  const forceReducedMotion = usePlatformStore(state => state.forceReducedMotion) === true
 
   const tierRef = useRef<HTMLDivElement>(null)
   const compareRef = useRef<HTMLDivElement>(null)
@@ -137,9 +134,7 @@ export const GoProModal = () => {
             <Modal.CloseTrigger className='absolute left-5 top-5 z-50 h-8 w-8 bg-field text-muted duration-150 hover:bg-field-hover rounded-full' />
 
             <Modal.Body className='select-none overflow-x-hidden overflow-y-auto p-0'>
-              <div
-                className={`relative ${isLinux && !TEMP_FORCE_LINUX_ANIMATIONS ? 'force-reduced-motion' : ''}`}
-              >
+              <div className={`relative ${forceReducedMotion ? 'force-reduced-motion' : ''}`}>
                 <div
                   className='pointer-events-none absolute inset-0'
                   style={{

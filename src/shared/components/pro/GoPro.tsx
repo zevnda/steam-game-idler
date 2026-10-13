@@ -12,16 +12,13 @@ import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 export const GoPro = () => {
   const subscriptionTier = useSubscriptionStore(state => state.subscriptionTier)
   const openProModal = useProModalStore(state => state.open)
-  const isLinux = usePlatformStore(state => state.currentOs) === 'linux'
-  // TEMPORARY (Tauri CLI 2.12 AppImage experiment, Step 4): shimmer forced on for Linux to
-  // measure performance on the host's WebKitGTK. Revert before merging.
-  const TEMP_FORCE_LINUX_ANIMATIONS = true
+  const forceReducedMotion = usePlatformStore(state => state.forceReducedMotion) === true
 
   if (subscriptionTier !== null) return null
 
   return (
     <button
-      className={`shiny-cta mx-2 flex min-w-17! items-center justify-between ${isLinux && !TEMP_FORCE_LINUX_ANIMATIONS ? 'force-reduced-motion' : ''}`}
+      className={`shiny-cta mx-2 flex min-w-17! items-center justify-between ${forceReducedMotion ? 'force-reduced-motion' : ''}`}
       type='button'
       onClick={() => openProModal()}
     >

@@ -232,7 +232,7 @@ body {
   opacity: 1;
 }
 
-/* Same reduced motion gating as GoProModal, this animation is expensive under WebKitGTK too. */
+/* Same reduced motion gating as GoProModal, this animation is expensive under older WebKitGTK too. */
 .shiny-cta.force-reduced-motion,
 .shiny-cta.force-reduced-motion::before,
 .shiny-cta.force-reduced-motion::after {
@@ -384,13 +384,13 @@ body {
   }
 }
 
-/* WebKitGTK's compositor makes GoProModal's ambient motion (15 infinitely-looping shooting stars +
-   a floating-image bounce, over a 260-gradient masked starfield background) meaningfully more
-   expensive than on Windows' WebView2 - a genuine Linux/WebKitGTK compositor-capability gap, not a
-   weak-GPU or virtualization artifact. Applied unconditionally via GoProModal's own `isLinux`
-   check (platformStore) rather than gating on the user's prefers-reduced-motion OS setting, since
-   this isn't a motion-sensitivity accommodation - mirrors the ruleset above exactly so both
-   mechanisms stay in sync if either changes. */
+/* Older WebKitGTK builds (every Ubuntu 22.04-era build measured, 2.44 and 2.50) can't keep up with
+   GoProModal's ambient motion (15 infinitely-looping shooting stars + a floating-image bounce, over
+   a 260-gradient masked starfield background) - unusable lag, where 2.52+ is smooth. Applied via
+   platformStore's `forceReducedMotion` (backed by `platform::needs_reduced_motion`, which checks
+   the WebKitGTK version actually loaded at runtime) rather than gating on the user's
+   prefers-reduced-motion OS setting, since this isn't a motion-sensitivity accommodation - mirrors
+   the ruleset above exactly so both mechanisms stay in sync if either changes. */
 .force-reduced-motion .pro-fade-in,
 .force-reduced-motion .pro-fade-in-up,
 .force-reduced-motion .overlay-fade-in {

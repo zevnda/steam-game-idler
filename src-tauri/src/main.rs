@@ -66,16 +66,16 @@ fn main() {
     steam_game_idler_lib::run();
 }
 
-/// EXPERIMENTAL (Tauri CLI 2.12 AppImage experiment): when running as an AppImage on a system that
-/// has its own WebKitGTK 4.1, re-exec once with the system library directories searched *before*
-/// the AppImage's bundled ones, so the app runs on the host's WebKitGTK/GTK stack the same way the
-/// .deb/.rpm builds do.
+/// When running as an AppImage on a system that has its own WebKitGTK 4.1, re-exec once with the
+/// system library directories searched *before* the AppImage's bundled ones, so the app runs on
+/// the host's WebKitGTK/GTK stack the same way the .deb/.rpm builds do.
 ///
 /// Why: the AppImage is built on ubuntu-22.04 (to keep glibc 2.35 compatibility) and therefore
-/// bundles jammy's WebKitGTK, which is stuck at 2.50.x and renders far slower than a current
-/// distro's 2.52+ - confirmed by VM testing to be the remaining cause of the AppImage-vs-.deb lag
-/// once XWayland, GIO and EGL were ruled out. A host without WebKitGTK 4.1 keeps the bundled
-/// libraries exactly as before, so older distros lose nothing.
+/// bundles a jammy WebKitGTK (pinned in release.yml), which renders far slower than a current
+/// distro's 2.52+ - confirmed by VM testing to be the cause of the AppImage-vs-.deb lag (XWayland,
+/// GIO and EGL were all ruled out; the bundled jammy atk-bridge mismatching a newer host's AT-SPI
+/// made it worse). A host without WebKitGTK 4.1 keeps the bundled libraries exactly as before, so
+/// nobody loses anything - `platform::needs_reduced_motion` then keeps animations reduced for them.
 ///
 /// The bundled libraries are found via RUNPATH (`$ORIGIN`), which `LD_LIBRARY_PATH` normally
 /// overrides - but linuxdeploy's AppRun *prepends* every bundled lib dir to `LD_LIBRARY_PATH`
