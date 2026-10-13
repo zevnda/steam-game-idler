@@ -456,11 +456,20 @@ This page covers common issues and their solutions when using Steam Game Idler.
 
 <Accordions type="multiple">
   <Accordion title="Which Linux install format should I use?" id="linux-which-format">
-    `.deb` and `.rpm` are recommended — they run under native Wayland and don't have the AppImage's performance caveat below, plus they support the desktop's normal application launcher integration. The trade-off is no in-app automatic updates (see [Install](/docs/get-started/install#linux) for the full comparison). Use the AppImage if you want automatic updates, or if your distro doesn't provide a compatible `.deb`/`.rpm`.
+    Either works. The AppImage updates itself automatically; `.deb` and `.rpm` integrate with your desktop's application launcher and are managed by your package manager, but don't update in-app (see [Install](/docs/get-started/install#linux) for the full comparison). From v6.2.9, the AppImage performs the same as `.deb`/`.rpm` on any distro with WebKitGTK installed (see below).
   </Accordion>
 
-  <Accordion title="The AppImage feels slower or laggier than the .deb/.rpm install" id="linux-appimage-lag">
-    This is expected, not a bug. The AppImage runs through a compatibility layer (XWayland) on a Wayland desktop, which has a real, hardware-independent performance cost. A `.deb`/`.rpm` install runs under native Wayland with no such layer. Switch to `.deb`/`.rpm` if this is noticeable for you.
+  <Accordion title="SGI feels slow, or some animations are turned off" id="linux-appimage-lag">
+    SGI draws its interface with WebKitGTK, and how smooth it feels depends on which version is running. WebKitGTK 2.52 or newer runs smoothly. Older versions — for example on Ubuntu 22.04, Linux Mint 21 or Debian 12 — are noticeably slower, so SGI automatically turns off some decorative animations there to keep it usable. There's nothing to change in SGI's settings.
+
+    - **`.deb`/`.rpm`**: SGI uses your system's WebKitGTK. Keeping your system updated gets you the newest version your distro offers
+    - **AppImage (v6.2.9 and later)**: SGI uses your system's WebKitGTK if one is installed, and otherwise falls back to an older built-in copy. If it feels slow, install your distro's WebKitGTK package and restart SGI:
+      - Debian/Ubuntu: `sudo apt install libwebkit2gtk-4.1-0`
+      - Fedora: `sudo dnf install webkit2gtk4.1`
+      - Arch: `sudo pacman -S webkit2gtk-4.1`
+    - **AppImage before v6.2.9**: always used the slower built-in copy — update SGI first
+
+    To see which WebKitGTK version SGI is using, look for the `platform: linux webview runtime` line near the start of each session in the log file ([Debug Settings](/docs/settings/debug)).
   </Accordion>
 
   <Accordion title="A few visual quirks on Linux" id="linux-visual-quirks">
