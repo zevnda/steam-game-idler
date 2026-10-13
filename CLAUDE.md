@@ -178,9 +178,10 @@ the live user base, not just useful in local dev.
 methods (CLI mode + agent mode — see "Agent mode vs. CLI mode" below); Linux ships **agent-mode
 only** (no local-Steam-client integration at all — no Steamworks.NET/Win32 port exists or is
 planned). Packaging: Windows gets an NSIS installer + a portable zip; Linux gets an AppImage
-(primary, self-updating like the Windows portable zip) plus `.deb`/`.rpm` (secondary — actually
-**the recommended Linux install method**, since the AppImage has a known, accepted performance
-caveat, see below). Every Windows-specific integration (`Windows Credential Manager` via
+(primary, self-updating like the Windows portable zip) plus `.deb`/`.rpm`. All three are built on
+`ubuntu-22.04` (glibc 2.35) so no 22.04-era distro is left behind; on a host with its own
+WebKitGTK the AppImage runs on it and performs the same as `.deb`/`.rpm` (see the AppImage
+host-libraries quirk below). Every Windows-specific integration (`Windows Credential Manager` via
 `keyring`, `windows`/`winapi` crates) stays exactly as it is — this is genuinely two supported
 platforms now, not "Windows plus best-effort portability."
 
@@ -191,7 +192,10 @@ consumer treats `null` (not yet resolved) as "not Linux," so a slow/failed check
 the pre-existing Windows-only behavior for one frame rather than flashing Linux-only UI, or
 blocking render, while it resolves. Use this exact pattern (store + root-mounted hook, `null` =
 not-Linux) for any new platform-conditional frontend code — see `usePlatformStore`'s `isLinux`
-gate on `LinuxResizeHandles.tsx`/`GoProModal` for worked examples.
+gate on `LinuxResizeHandles.tsx`/`SignInLanding.tsx` for worked examples. The same store also
+caches `forceReducedMotion` (`platform::needs_reduced_motion`), which gates expensive ambient
+animations (GoProModal, the GoPro button) on the WebKitGTK version actually running, not on
+"is Linux" — gate any new expensive animation on that flag, not on `currentOs`.
 
 **`src-tauri/capabilities/desktop.json`'s `"platforms"` array must include `"linux"`.** This is
 config JSON, not Rust/TS source — a plain grep-for-Windows-only-code audit will not catch a
@@ -203,11 +207,14 @@ window/event/updater/clipboard permission changes.
 ### Known Linux-specific quirks (durable — verify still true before removing any of these)
 
 - **`release.yml`'s Linux release job pins `libwebkit2gtk-4.1`/`libjavascriptcoregtk-4.1` to
-  `2.44.3-0ubuntu0.22.04.1`.** This works around a confirmed, still-open upstream WebKitGTK
-  regression (bugs.webkit.org #297921) that breaks EGL display creation on Wayland for every
-  release after 2.44. **Do not remove this pin** without confirming that bug is actually fixed
-  upstream and enough time has passed for `ubuntu-22.04`'s apt archive to carry a fixed version by
-  default.
+  `2.44.3-0ubuntu0.22.04.1`.** Originally added for an `EGL_BAD_PARAMETER` crash on Wayland
+  attributed to WebKitGTK (bugs.webkit.org #297921). VM testing (2026-10) found that crash — and
+  the July 2026 "GIO symbol mismatch" — were actually caused by the old Tauri CLI's AppImage
+  packaging (bundled jammy `libwayland-client`, no `GIO_MODULE_DIR`), fixed by
+  `@tauri-apps/cli` 2.12+: an unpinned 2.50.4 AppImage ran without either. The pin is kept anyway
+  because the bundled WebKitGTK is now only the *fallback* (see the host-libraries quirk below),
+  and the fallback was equally slow on 2.44 and 2.50 — removing it gains nothing. Ubuntu 22.04
+  never got WebKitGTK 2.52 (stuck at 2.50.4), so no jammy build can be fast regardless.
 - **Tauri's built-in native edge/corner resize-drag mechanism does not work on Linux/Wayland**,
   even with `core:window:allow-start-resize-dragging` granted (that permission gates the
   mechanism, but the mechanism itself silently no-ops under this app's Wayland session despite the
@@ -217,15 +224,21 @@ window/event/updater/clipboard permission changes.
   set of custom edge/corner hit-test divs that call `Window.startResizeDragging()` directly. Don't
   "fix" a Linux resize regression by re-checking that permission grant; verify this component is
   still mounted and still Linux-gated instead.
-- **The AppImage is forced through XWayland** (`linuxdeploy-plugin-gtk`'s bundled `AppRun` script
-  sets `GDK_BACKEND=x11` unconditionally, itself a deliberate, currently-necessary workaround for a
-  separate, still-open "GTK crashes under native Wayland" class of Tauri bug,
-  `tauri-apps/tauri#8541`). This causes a real, hardware-independent rendering lag vs. `.deb`/`.rpm`
-  (which run under native Wayland with no translation layer) — confirmed on both a VM's paravirtual
-  GPU and a real discrete GPU via WSL2. This is why `.deb`/`.rpm` are the recommended install
-  method and the AppImage is offered with this as a known, accepted caveat. Don't patch out the
-  `GDK_BACKEND=x11` forcing without first confirming upstream has actually fixed the native-Wayland
-  crash class it exists to prevent.
+- **The AppImage runs on the host's WebKitGTK/GTK when the host has WebKitGTK 4.1**
+  (`main.rs`'s `appimage_prefer_system_libraries`): it re-execs once with the system lib dirs in
+  front of the bundled ones (bundled stay as a per-library fallback) and drops the AppRun/hook
+  GTK/GIO/gdk-pixbuf/GStreamer module overrides. Without it, the AppImage ran on its bundled jammy
+  WebKitGTK and lagged badly vs. `.deb`/`.rpm` — that, not XWayland, was the cause of the
+  long-standing AppImage lag (VM-tested 2026-10: every build was already on native Wayland via
+  `main.rs`'s `GDK_BACKEND` override, and CLI 2.12's hook no longer forces `x11` anyway).
+  `SGI_APPIMAGE_BUNDLED_LIBS=1` forces the old bundled path for troubleshooting; the startup log
+  line `platform: linux webview runtime` records WebKit version, mode and reduced-motion decision.
+  Traps found the hard way: linuxdeploy's `AppRun` **prepends** every bundled dir to
+  `LD_LIBRARY_PATH` (so a user-set one never wins — reorder it, and re-exec, since the loader only
+  reads it at startup); `AppRun` also sets the **unversioned** `GST_PLUGIN_SYSTEM_PATH` to a
+  nonexistent dir, so clearing only the hook's `_1_0` variants leaves GStreamer with zero plugins
+  and crashes `WebKitWebProcess` on startup ("appsink not found"); and exec'ing `/proc/self/exe`
+  renames the process to `exe` — exec `current_exe()`'s resolved path instead.
 - **Linux has no "portable mode" concept.** `platform::is_portable()`'s `.installed`-marker check
   is Windows-only (`#[cfg(windows)]`-gated) — Linux always uses `app_data_dir()`, never "write next
   to the executable," since an AppImage's squashfs mount is read-only at runtime and `.deb`/`.rpm`
@@ -336,9 +349,6 @@ unless `$ErrorActionPreference = 'Stop'` is set. Every `pwsh` step in `release.y
 `$ErrorActionPreference = 'Stop'` and checks `$LASTEXITCODE` after each native call — keep doing
 this for any new step added there; without it, a broken release step can report green while
 publishing a `latest.json` that breaks auto-update for every existing user.
-
-**Still open**: the full silent *auto-update* path (the updater plugin's signature-verified
-download/install flow) hasn't been confirmed against a real signed release yet.
 
 ## The real SteamUtility contract
 

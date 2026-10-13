@@ -12,13 +12,13 @@ import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 export const GoPro = () => {
   const subscriptionTier = useSubscriptionStore(state => state.subscriptionTier)
   const openProModal = useProModalStore(state => state.open)
-  const isLinux = usePlatformStore(state => state.currentOs) === 'linux'
+  const forceReducedMotion = usePlatformStore(state => state.forceReducedMotion) === true
 
   if (subscriptionTier !== null) return null
 
   return (
     <button
-      className={`shiny-cta mx-2 flex min-w-17! items-center justify-between ${isLinux ? 'force-reduced-motion' : ''}`}
+      className={`shiny-cta mx-2 flex min-w-17! items-center justify-between ${forceReducedMotion ? 'force-reduced-motion' : ''}`}
       type='button'
       onClick={() => openProModal()}
     >

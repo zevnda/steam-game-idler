@@ -81,6 +81,69 @@ pub fn current_os() -> &'static str {
     std::env::consts::OS
 }
 
+/// The oldest WebKitGTK that renders the app's ambient animations (GoProModal's shooting stars,
+/// the GoPro button shimmer) smoothly. Measured on a VM: every jammy (22.04) WebKitGTK build tried
+/// - 2.44.3 and 2.50.4 - lagged badly with them on, 2.52.x was smooth. 2.46-2.48 were never
+/// measured, so this is the lowest *confirmed-good* version, not necessarily the true cutoff.
+#[cfg(target_os = "linux")]
+const SMOOTH_ANIMATIONS_MIN_WEBKIT: (u32, u32) = (2, 52);
+
+/// The (major, minor) version of the libwebkit2gtk actually loaded into this process - which,
+/// for an AppImage, depends on whether `main.rs`'s `appimage_prefer_system_libraries` switched
+/// to the host's copy or kept the bundled one, so it can't be known at build time.
+#[cfg(target_os = "linux")]
+fn webkit_runtime_version() -> (u32, u32) {
+    // SAFETY: plain getters returning constants baked into the loaded library - no
+    // initialization, threading or pointer requirements.
+    unsafe {
+        (
+            webkit2gtk::ffi::webkit_get_major_version(),
+            webkit2gtk::ffi::webkit_get_minor_version(),
+        )
+    }
+}
+
+/// Whether the webview is too slow for the app's ambient animations, so the frontend should apply
+/// `.force-reduced-motion` (see globals.css). Keyed on the running WebKitGTK version rather than
+/// "is Linux", since the same Linux build is smooth on a current host WebKitGTK and laggy on an
+/// old one (a jammy-era distro, or an AppImage falling back to its bundled copy). Always `false`
+/// on Windows (WebView2).
+#[tauri::command]
+pub fn needs_reduced_motion() -> bool {
+    #[cfg(target_os = "linux")]
+    {
+        webkit_runtime_version() < SMOOTH_ANIMATIONS_MIN_WEBKIT
+    }
+
+    #[cfg(not(target_os = "linux"))]
+    {
+        false
+    }
+}
+
+/// Logs which WebKitGTK the app ended up on and why, once at startup - the first thing to check
+/// in a user's log for a Linux performance/rendering report. No-op on Windows.
+pub fn log_runtime_environment() {
+    #[cfg(target_os = "linux")]
+    {
+        let (major, minor) = webkit_runtime_version();
+        // SGI_APPIMAGE_SYSTEM_LIBS is set by main.rs's re-exec, APPIMAGE by the AppImage runtime.
+        let mode = if std::env::var_os("SGI_APPIMAGE_SYSTEM_LIBS").is_some() {
+            "appimage, host libraries"
+        } else if std::env::var_os("APPIMAGE").is_some() {
+            "appimage, bundled libraries"
+        } else {
+            "system package"
+        };
+        tracing::info!(
+            webkit = %format!("{major}.{minor}"),
+            mode,
+            reduced_motion = needs_reduced_motion(),
+            "platform: linux webview runtime"
+        );
+    }
+}
+
 /// Portable-aware base directory every per-install file is rooted under: `<exe_dir>` in portable
 /// mode, `<app_data_dir>` otherwise. Shared by `cache_dir`/`logs_dir` to avoid duplicating the branch.
 fn base_dir(app_handle: &tauri::AppHandle) -> AppResult<PathBuf> {

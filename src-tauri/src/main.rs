@@ -26,6 +26,9 @@ fn main() {
     // way, the same lesson quirks.md already logged once.
     #[cfg(not(windows))]
     {
+        #[cfg(target_os = "linux")]
+        appimage_prefer_system_libraries();
+
         if std::env::var_os("WAYLAND_DISPLAY").is_some() {
             // SAFETY: single-threaded at this point, before Tauri's own setup or any other code
             // that could race on the environment has run.
@@ -61,4 +64,122 @@ fn main() {
     }
 
     steam_game_idler_lib::run();
+}
+
+/// When running as an AppImage on a system that has its own WebKitGTK 4.1, re-exec once with the
+/// system library directories searched *before* the AppImage's bundled ones, so the app runs on
+/// the host's WebKitGTK/GTK stack the same way the .deb/.rpm builds do.
+///
+/// Why: the AppImage is built on ubuntu-22.04 (to keep glibc 2.35 compatibility) and therefore
+/// bundles a jammy WebKitGTK (pinned in release.yml), which renders far slower than a current
+/// distro's 2.52+ - confirmed by VM testing to be the cause of the AppImage-vs-.deb lag (XWayland,
+/// GIO and EGL were all ruled out; the bundled jammy atk-bridge mismatching a newer host's AT-SPI
+/// made it worse). A host without WebKitGTK 4.1 keeps the bundled libraries exactly as before, so
+/// nobody loses anything - `platform::needs_reduced_motion` then keeps animations reduced for them.
+///
+/// The bundled libraries are found via RUNPATH (`$ORIGIN`), which `LD_LIBRARY_PATH` normally
+/// overrides - but linuxdeploy's AppRun *prepends* every bundled lib dir to `LD_LIBRARY_PATH`
+/// before exec'ing us, so the system dirs have to be put in front of those. The dynamic loader
+/// only reads `LD_LIBRARY_PATH` at process start, hence the re-exec rather than a plain
+/// `set_var`. `exec` keeps the same PID, so the AppImage runtime keeps its FUSE mount alive and
+/// single-instance enforcement (which runs later, in `run()`) never sees two processes.
+///
+/// The AppImage hook's module-path overrides (GTK/GIO/gdk-pixbuf/GStreamer) are dropped as well,
+/// so the system's GTK and GStreamer load their own matching modules rather than jammy-built ones -
+/// the same environment a .deb install runs in. The bundled lib dirs stay in `LD_LIBRARY_PATH`
+/// after the system ones, as a per-library fallback for anything the host doesn't ship.
+///
+/// Set `SGI_APPIMAGE_BUNDLED_LIBS=1` to skip this and force the bundled libraries (troubleshooting).
+#[cfg(target_os = "linux")]
+fn appimage_prefer_system_libraries() {
+    use std::os::unix::process::CommandExt;
+    use std::path::Path;
+
+    // Set on the re-exec'd process so this only ever runs once.
+    const REEXEC_MARKER: &str = "SGI_APPIMAGE_SYSTEM_LIBS";
+    const OPT_OUT: &str = "SGI_APPIMAGE_BUNDLED_LIBS";
+    // Debian/Ubuntu multiarch, Fedora/openSUSE lib64, Arch/SteamOS plain lib. Only dirs that exist
+    // are used; duplicates via /lib -> /usr/lib symlinks are harmless.
+    const SYSTEM_LIB_DIRS: &[&str] = &[
+        "/usr/lib/x86_64-linux-gnu",
+        "/lib/x86_64-linux-gnu",
+        "/usr/lib64",
+        "/lib64",
+        "/usr/lib",
+    ];
+    // Set by linuxdeploy-plugin-gtk's / linuxdeploy-plugin-gstreamer's AppRun hooks, or by AppRun
+    // itself, to point at jammy-built modules inside the AppImage. AppRun sets the *unversioned*
+    // GST_PLUGIN_SYSTEM_PATH (to a nonexistent `$APPDIR/usr/lib/gstreamer`) on top of the hook's
+    // `_1_0` variant - drop only the `_1_0` one and GStreamer falls back to the unversioned one,
+    // scans zero plugins, and WebKitWebProcess crashes on startup ("appsink not found").
+    const HOOK_MODULE_VARS: &[&str] = &[
+        "GTK_PATH",
+        "GTK_EXE_PREFIX",
+        "GTK_DATA_PREFIX",
+        "GTK_IM_MODULE_FILE",
+        "GDK_PIXBUF_MODULE_FILE",
+        "GIO_MODULE_DIR",
+        "GSETTINGS_SCHEMA_DIR",
+        "GST_PLUGIN_PATH_1_0",
+        "GST_PLUGIN_SYSTEM_PATH_1_0",
+        "GST_PLUGIN_SCANNER_1_0",
+        "GST_PTP_HELPER_1_0",
+        "GST_REGISTRY_REUSE_PLUGIN_SCANNER",
+        "GST_PLUGIN_PATH",
+        "GST_PLUGIN_SYSTEM_PATH",
+        "GST_PLUGIN_SCANNER",
+    ];
+
+    if std::env::var_os("APPIMAGE").is_none()
+        || std::env::var_os(REEXEC_MARKER).is_some()
+        || std::env::var_os(OPT_OUT).is_some()
+    {
+        return;
+    }
+
+    let system_dirs: Vec<&str> = SYSTEM_LIB_DIRS
+        .iter()
+        .copied()
+        .filter(|dir| Path::new(dir).is_dir())
+        .collect();
+    let has_system_webkit = system_dirs
+        .iter()
+        .any(|dir| Path::new(dir).join("libwebkit2gtk-4.1.so.0").exists());
+    if !has_system_webkit {
+        return;
+    }
+
+    let mut library_path = system_dirs.join(":");
+    if let Some(existing) = std::env::var_os("LD_LIBRARY_PATH") {
+        library_path.push(':');
+        library_path.push_str(&existing.to_string_lossy());
+    }
+
+    // The resolved path, not `/proc/self/exe` itself - exec'ing the symlink path names the new
+    // process `exe` (comm comes from the exec'd path's basename), so it'd show up as "exe" in
+    // system monitors and `pgrep steam-game-idler` would stop finding it.
+    let exe = match std::env::current_exe() {
+        Ok(exe) => exe,
+        Err(err) => {
+            eprintln!("appimage: couldn't resolve own executable, using bundled libraries: {err}");
+            return;
+        }
+    };
+
+    let mut args = std::env::args_os();
+    let arg0 = args.next().unwrap_or_else(|| "steam-game-idler".into());
+    let mut command = std::process::Command::new(exe);
+    command
+        .arg0(arg0)
+        .args(args)
+        .env("LD_LIBRARY_PATH", library_path)
+        .env(REEXEC_MARKER, "1");
+    for var in HOOK_MODULE_VARS {
+        command.env_remove(var);
+    }
+
+    // `exec` only returns on failure. Logging isn't initialized yet (that happens in `run()`), so
+    // report on stderr and carry on with the bundled libraries rather than failing to start.
+    let err = command.exec();
+    eprintln!("appimage: failed to re-exec with system libraries, using bundled ones: {err}");
 }
