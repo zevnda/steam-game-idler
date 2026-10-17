@@ -140,6 +140,44 @@ namespace SteamUtility.Daemon.Bot
             return games;
         }
 
+        // Fills in AchievementGroupDto.Owned for every DLC Achievement Set, from the same
+        // license-based PICS resolution GetOwnedGamesAsync uses - that set covers every owned app id
+        // including DLC (package `appids` list them), regardless of the gamesOnly display filter.
+        // Skips the lookup entirely for a game without DLC sets. Best-effort: on failure the groups
+        // come back with Owned left null, which every consumer treats as owned (fail open - see
+        // AchievementGroupDto), so a flaky PICS call never blocks an unlock outright.
+        public async Task<IReadOnlyList<AchievementGroupDto>> ApplyDlcOwnershipAsync(
+            SteamBot bot,
+            IReadOnlyList<AchievementGroupDto> groups
+        )
+        {
+            if (!groups.Any(group => group.DlcAppId != null))
+            {
+                return groups;
+            }
+
+            try
+            {
+                await bot.WaitForLicenseListAsync(TimeSpan.FromSeconds(10));
+                var owned = (await ResolveOwnedAppIdsAsync(bot)).AppIds;
+                return groups
+                    .Select(group =>
+                        group.DlcAppId is uint dlcAppId
+                            ? group with { Owned = owned.Contains(dlcAppId) }
+                            : group
+                    )
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                Log.Warn(
+                    "OwnershipManager",
+                    $"Failed to resolve DLC ownership for achievement sets: {ex.Message}"
+                );
+                return groups;
+            }
+        }
+
         // Mirrors CLI mode's AppInfoReader.BuildResult (SteamUtility/Core/AppInfoParsing/) - same
         // `common.name_localized` field, same reasoning for not reusing an achievement-style
         // preferred->english->first-available walker: common.name (the flat, always-present

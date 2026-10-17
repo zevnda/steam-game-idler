@@ -1,6 +1,6 @@
 import type { AchievementDto } from '../types'
 import { useTranslation } from 'react-i18next'
-import { TbBan, TbCheck, TbLock, TbLockOpen } from 'react-icons/tb'
+import { TbBan, TbCheck, TbLock, TbLockOpen, TbShoppingCartX } from 'react-icons/tb'
 import {
   getAchievementRarityTier,
   RARITY_TIER_CLASSES,
@@ -15,6 +15,11 @@ interface AchievementRowProps {
   appId: number
   isPending: boolean
   isSelected: boolean
+  // Belongs to a DLC set this account doesn't own - Steam rejects its unlock, so the unlock path
+  // (Unlock button, stage-to-unlock checkbox) is disabled. Locking an already-achieved one stays
+  // available. A genuine technical ceiling, not a monetization gate, so native `isDisabled` is
+  // right here (see CLAUDE.md's gating-UI note).
+  isUnownedDlc?: boolean
   onSelectChange: (checked: boolean) => void
   onToggle: () => void
 }
@@ -36,10 +41,12 @@ export const AchievementRow = ({
   appId,
   isPending,
   isSelected,
+  isUnownedDlc = false,
   onSelectChange,
   onToggle,
 }: AchievementRowProps) => {
   const { t } = useTranslation()
+  const isUnlockBlocked = isUnownedDlc && !achievement.achieved
   const icon = achievement.achieved ? achievement.iconNormal : achievement.iconLocked
   const rarityTier =
     achievement.percent !== undefined ? getAchievementRarityTier(achievement.percent) : null
@@ -68,7 +75,7 @@ export const AchievementRow = ({
               ? `Stage "${achievement.name}" to be locked`
               : `Stage "${achievement.name}" to be unlocked`
           }
-          isDisabled={achievement.protectedAchievement}
+          isDisabled={achievement.protectedAchievement || isUnlockBlocked}
           isSelected={isSelected}
           onChange={onSelectChange}
         >
@@ -84,9 +91,11 @@ export const AchievementRow = ({
             alt=''
             className={cn(
               'rounded-lg ring-2',
-              achievement.achieved
-                ? 'ring-border/50'
-                : 'shadow-[0_0_10px_-1px] shadow-accent/40 ring-accent/50',
+              isUnlockBlocked
+                ? 'ring-border/50 grayscale'
+                : achievement.achieved
+                  ? 'ring-border/50'
+                  : 'shadow-[0_0_10px_-1px] shadow-accent/40 ring-accent/50',
             )}
             height={44}
             src={`${ICON_BASE_URL}${appId}/${icon}`}
@@ -155,6 +164,18 @@ export const AchievementRow = ({
             </AppTooltip.Trigger>
             <AppTooltip.Content>{t('dashboard.achievements.protectedTooltip')}</AppTooltip.Content>
           </AppTooltip.Root>
+        ) : isUnlockBlocked ? (
+          // No tooltip, unlike the protected branch above - the set header's "Not owned" chip
+          // already says why, right above this row.
+          <Button
+            isDisabled
+            isIconOnly
+            aria-label={t('dashboard.achievements.sets.notOwned')}
+            size='sm'
+            variant='ghost'
+          >
+            <TbShoppingCartX fontSize={16} />
+          </Button>
         ) : (
           <Button
             isPending={isPending}

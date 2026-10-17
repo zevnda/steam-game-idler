@@ -2,9 +2,10 @@ import type { AchievementDto } from '@/features/achievement-manager/types'
 import type { DraggableAttributes, DraggableSyntheticListeners } from '@dnd-kit/core'
 import { useTranslation } from 'react-i18next'
 import { GoGrabber } from 'react-icons/go'
-import { TbBan } from 'react-icons/tb'
+import { TbBan, TbShoppingCartX } from 'react-icons/tb'
 import { Checkbox, cn, Typography } from '@heroui/react'
 import Image from 'next/image'
+import { DlcBadge } from '@/features/achievement-manager/components/DlcBadge'
 import {
   getAchievementRarityTier,
   RARITY_TIER_CLASSES,
@@ -36,7 +37,11 @@ interface AchievementOrderRowProps {
   // render the same card; the orderable list passes its `skip` through `isSkipped` instead.
   achievement: AchievementDto
   isSkipped?: boolean
-  isReadOnly?: boolean
+  // Achievement belongs to a DLC Achievement Set - see useAchievementOrder.ts's `dlcGroupIds`.
+  isDlc?: boolean
+  // Set = the read-only variant (AchievementOrderList.tsx's trailing sections), and which marker
+  // its checkbox column shows: protected (server-owned) or from DLC the account doesn't own.
+  readOnlyReason?: 'protected' | 'unownedDlc'
   isOverlay?: boolean
   dragHandleProps?: DragHandleProps
   onToggleSkip?: (id: string) => void
@@ -53,20 +58,23 @@ interface AchievementOrderRowProps {
 // AchievementOrderPage.tsx SortableAchievement, minus the react-window virtualization (see Step 15's
 // own "no virtualized list" note - same small-count reasoning applies here) and keyed by `id`
 // instead of the display `name` (order.rs's own stable key, see its doc comment).
-// `isReadOnly` is the protected-achievement variant (AchievementOrderList.tsx's protected section):
-// the checkbox column shows the same TbBan + tooltip marker AchievementRow.tsx uses for a protected
-// achievement, and the drag-handle column is left empty, so the card keeps the exact same grid and
+// `readOnlyReason` is the read-only variant (AchievementOrderList.tsx's trailing protected and
+// unowned-DLC sections): the checkbox column shows the same marker AchievementRow.tsx uses for that
+// case (TbBan + tooltip for protected, a plain TbShoppingCartX for unowned DLC), and the drag-handle
+// column is left empty, so the card keeps the exact same grid and
 // height as an orderable one but offers nothing to toggle or drag.
 export const AchievementOrderRow = ({
   appId,
   achievement,
   isSkipped = false,
-  isReadOnly = false,
+  isDlc = false,
+  readOnlyReason,
   isOverlay = false,
   dragHandleProps,
   onToggleSkip,
 }: AchievementOrderRowProps) => {
   const { t } = useTranslation()
+  const isReadOnly = readOnlyReason !== undefined
   const icon = `${ICON_BASE_URL}${appId}/${achievement.iconLocked}`
   const rarityTier =
     achievement.percent !== undefined ? getAchievementRarityTier(achievement.percent) : null
@@ -86,7 +94,15 @@ export const AchievementOrderRow = ({
       )}
     >
       <div className='flex items-center justify-center'>
-        {isReadOnly ? (
+        {readOnlyReason === 'unownedDlc' ? (
+          // No tooltip - the "From DLC you don't own" section header above already says why.
+          <span
+            aria-label={t('dashboard.achievements.sets.notOwned')}
+            className='inline-flex text-muted'
+          >
+            <TbShoppingCartX fontSize={16} />
+          </span>
+        ) : readOnlyReason === 'protected' ? (
           <AppTooltip.Root>
             <AppTooltip.Trigger>
               <span
@@ -111,7 +127,10 @@ export const AchievementOrderRow = ({
 
       <Image
         alt=''
-        className='rounded-lg ring-2 ring-border/50'
+        className={cn(
+          'rounded-lg ring-2 ring-border/50',
+          readOnlyReason === 'unownedDlc' && 'grayscale',
+        )}
         height={44}
         src={icon}
         width={44}
@@ -127,6 +146,7 @@ export const AchievementOrderRow = ({
           >
             {achievement.name}
           </Typography>
+          {isDlc && <DlcBadge />}
           {isSkipped && (
             <span className='shrink-0 rounded-full bg-surface-tertiary px-1.5 py-0.5 text-[10px] font-semibold text-muted'>
               {t('dashboard.achievementUnlocker.order.skipped')}

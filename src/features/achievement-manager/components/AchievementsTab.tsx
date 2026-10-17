@@ -1,8 +1,14 @@
-import type { AchievementDto } from '../types'
+import type { AchievementDto, AchievementGroup } from '../types'
+import type { AchievementListItem } from './AchievementsList'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
 import { TbLock, TbLockOpen, TbRefresh, TbTrophy } from 'react-icons/tb'
+import {
+  groupAchievementsBySet,
+  isInGroups,
+  unownedDlcGroupIdsOf,
+} from '../utils/groupAchievements'
 import { searchByName } from '../utils/searchByName'
 import {
   ACHIEVEMENT_SORT_LABEL_KEYS,
@@ -16,6 +22,7 @@ import { useSortPreferencesStore } from '@/shared/stores/sortPreferencesStore'
 
 interface AchievementsTabProps {
   achievements: AchievementDto[]
+  groups: AchievementGroup[]
   appId: number
   query: string
   isMutating: boolean
@@ -39,8 +46,22 @@ type BulkConfirmAction = 'unlock' | 'lock' | 'apply'
 // unchecked and checking it stages an unlock. "Apply changes" hands the staged id lists to
 // `onApplyStagedChanges`, which replays `set_achievement` per id and fires one summary toast -
 // there's no dedicated bulk-apply command since the staged set is an arbitrary per-user mix.
+//
+// A game using Steam Achievement Sets renders each set (base game first, then DLC/other sets, then
+// unowned DLC last) as a collapsible section - see groupAchievements.ts. Sorting applies within
+// each set. Sets start expanded except unowned DLC, which starts collapsed (matching Steam's own
+// achievements page, and those can't be unlocked anyway). Collapse state is plain component state
+// with the same lifetime as the staged selections above - reset whenever this tab remounts
+// (overlay reopen, refresh, switching to the Statistics tab and back). Deliberately not persisted:
+// set ids are per-game, so there's nothing meaningful to carry over. An active search ignores
+// collapse entirely, so a match inside a collapsed set is never silently hidden.
+//
+// Unowned DLC achievements are also left out of the overall trophy readout - Steam's own rule (they
+// don't count toward a game's progress until you own the DLC) - and out of `hasUnprotectedLocked`,
+// since Unlock all skips them backend-side (see AchievementData::unowned_dlc_group_ids).
 export const AchievementsTab = ({
   achievements,
+  groups,
   appId,
   query,
   isMutating,
@@ -67,10 +88,51 @@ export const AchievementsTab = ({
     () => searchByName(sortedAchievements, query),
     [sortedAchievements, query],
   )
+  const unownedDlcGroupIds = useMemo(() => unownedDlcGroupIdsOf(groups), [groups])
+  // Lazy initializer: `groups` is already loaded by the time this tab mounts (the overlay only
+  // renders it once `data` exists), so unowned DLC sets start collapsed from the first frame.
+  const [collapsedSets, setCollapsedSets] = useState(() => new Set(unownedDlcGroupIds))
+  const isSearching = query.trim().length > 0
+  const listItems = useMemo<AchievementListItem[]>(() => {
+    const sections = groupAchievementsBySet(achievements, filteredAchievements, groups)
+    if (sections.length === 0) {
+      return filteredAchievements.map(achievement => ({ type: 'achievement', achievement }))
+    }
+    return sections.flatMap(section => {
+      const isCollapsed = !isSearching && collapsedSets.has(section.key)
+      return [
+        { type: 'set', section, isCollapsed } as const,
+        ...(isCollapsed
+          ? []
+          : section.visible.map(
+              (achievement, index) =>
+                ({
+                  type: 'achievement',
+                  achievement,
+                  section,
+                  isLastInSection: index === section.visible.length - 1,
+                }) as const,
+            )),
+      ]
+    })
+  }, [achievements, filteredAchievements, groups, collapsedSets, isSearching])
 
-  const unlockedCount = achievements.filter(achievement => achievement.achieved).length
-  const isFullyUnlocked = unlockedCount === achievements.length
-  const hasUnprotectedLocked = achievements.some(
+  const toggleSet = (sectionKey: number) => {
+    setCollapsedSets(prev => {
+      const next = new Set(prev)
+      if (next.has(sectionKey)) next.delete(sectionKey)
+      else next.add(sectionKey)
+      return next
+    })
+  }
+
+  const countedAchievements = achievements.filter(
+    achievement => !isInGroups(achievement, unownedDlcGroupIds),
+  )
+  const unlockedCount = countedAchievements.filter(achievement => achievement.achieved).length
+  const totalCount = countedAchievements.length
+  const isFullyUnlocked = unlockedCount === totalCount
+  const hasUnprotectedLocked = countedAchievements.some(
     achievement => !achievement.achieved && !achievement.protectedAchievement,
   )
   const hasUnprotectedUnlocked = achievements.some(
@@ -161,16 +223,16 @@ export const AchievementsTab = ({
             <Typography className='whitespace-nowrap' color='muted' type='body-xs'>
               {t('dashboard.achievements.unlockedCount', {
                 unlocked: unlockedCount,
-                total: achievements.length,
+                total: totalCount,
               })}
             </Typography>
             <ProgressBar
               aria-label={t('dashboard.achievements.unlockedCount', {
                 unlocked: unlockedCount,
-                total: achievements.length,
+                total: totalCount,
               })}
               className='w-36'
-              maxValue={achievements.length || 1}
+              maxValue={totalCount || 1}
               minValue={0}
               value={unlockedCount}
             >
@@ -252,13 +314,14 @@ export const AchievementsTab = ({
           </div>
           <div className='min-h-0 flex-1'>
             <AchievementsList
-              achievements={filteredAchievements}
               appId={appId}
+              items={listItems}
               pendingId={pendingId}
               selectedToLock={selectedToLock}
               selectedToUnlock={selectedToUnlock}
               onSelectChange={handleSelectChange}
               onToggle={handleToggle}
+              onToggleSet={toggleSet}
             />
           </div>
         </div>

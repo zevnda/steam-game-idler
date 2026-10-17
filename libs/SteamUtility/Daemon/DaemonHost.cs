@@ -253,13 +253,26 @@ namespace SteamUtility.Daemon
                     case "achievements_get":
                     {
                         var steamId = RequireSteamId();
-                        var (achievements, stats) =
+                        var (achievements, stats, parsedGroups) =
                             await _achievementHandler.GetAchievementsAndStatsAsync(
                                 request.AppId ?? 0,
                                 steamId,
                                 request.Language ?? "english"
                             );
-                        IpcServer.SendResponse(request.Id, true, new { achievements, stats });
+                        var groups = await _ownershipManager.ApplyDlcOwnershipAsync(
+                            _bot,
+                            parsedGroups
+                        );
+                        IpcServer.SendResponse(
+                            request.Id,
+                            true,
+                            new
+                            {
+                                achievements,
+                                stats,
+                                groups,
+                            }
+                        );
                         break;
                     }
 

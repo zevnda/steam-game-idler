@@ -530,11 +530,25 @@ async fn scan_game(
         return empty(0);
     }
 
+    // Achievements from DLC this account doesn't own are dropped up front - Steam would reject
+    // every one of their unlocks (see `AchievementData::unowned_dlc_group_ids`), so queueing them
+    // would only burn their delays on guaranteed failures.
+    let unowned_dlc = data.unowned_dlc_group_ids();
     let eligible: Vec<&AchievementDto> = data
         .achievements
         .iter()
-        .filter(|a| !a.achieved && (!unlocker_settings.hidden || !a.hidden))
+        .filter(|a| {
+            !a.achieved && (!unlocker_settings.hidden || !a.hidden) && !a.is_in_group(&unowned_dlc)
+        })
         .collect();
+    if !unowned_dlc.is_empty() {
+        tracing::info!(
+            app_id = entry.app_id,
+            name = %entry.name,
+            unowned_dlc_sets = unowned_dlc.len(),
+            "achievement unlocker: skipping achievements from DLC the account doesn't own"
+        );
+    }
 
     let saved_order = order::get(app_handle, steam_id, entry.app_id)
         .await

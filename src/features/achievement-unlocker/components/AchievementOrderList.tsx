@@ -1,13 +1,16 @@
 import type { AchievementDto } from '@/features/achievement-manager/types'
+import type { TranslationKey } from '@/i18n'
 import type { RowComponentProps } from 'react-window'
 import type { OrderableAchievement } from '../hooks/useAchievementOrder'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbBan, TbHourglassLow } from 'react-icons/tb'
+import { TbBan, TbHourglassLow, TbShoppingCartX } from 'react-icons/tb'
 import { List } from 'react-window'
 import { AchievementOrderRow } from './AchievementOrderRow'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { cn, NumberField, Typography } from '@heroui/react'
+import { isInGroups } from '@/features/achievement-manager/utils/groupAchievements'
 
 // AchievementOrderRow's intrinsic height (44px icon + 2 * 10px `py-2.5` padding + 2px border = 66)
 // - the description line added below the name still fits under the 44px icon column (name +
@@ -30,14 +33,15 @@ const DELAY_BEFORE_FIRST_GAP = 8
 
 const DELAY_BEFORE_FIRST_ROW_HEIGHT = CARD_HEIGHT + DELAY_BEFORE_FIRST_GAP
 
-// The protected section's header row (see ProtectedHeaderRow below) - its label sits at the bottom
-// of this height via `items-end pb-2`, so the space above the label is what visually separates the
-// section from the last orderable card (which has no trailing connector to fill that gap).
-const PROTECTED_HEADER_HEIGHT = 48
+// A read-only section's header row (see ReadOnlySectionHeaderRow below) - its label sits at the
+// bottom of this height via `items-end pb-2`, so the space above the label is what visually
+// separates the section from whatever's above it (the last orderable card, which has no trailing
+// connector to fill that gap, or the previous read-only section).
+const READ_ONLY_HEADER_HEIGHT = 48
 
-// Protected cards aren't linked by ConnectorRows (they're not part of the unlock sequence), so they
+// Read-only cards aren't linked by ConnectorRows (they're not part of the unlock sequence), so they
 // get a plain `pb-2` gap between them instead, same size as the delay-before-first row's own gap.
-const PROTECTED_ROW_HEIGHT = CARD_HEIGHT + DELAY_BEFORE_FIRST_GAP
+const READ_ONLY_ROW_HEIGHT = CARD_HEIGHT + DELAY_BEFORE_FIRST_GAP
 
 interface DelayRowProps {
   delayBeforeFirstUnlock: number | ''
@@ -149,6 +153,7 @@ interface AchievementOrderUnitProps {
   achievement: OrderableAchievement
   appId: number
   hasConnector: boolean
+  isDlc: boolean
   onToggleSkip: (id: string) => void
   onSetDelay: (id: string, value: number | null) => void
 }
@@ -167,6 +172,7 @@ const AchievementOrderUnit = ({
   achievement,
   appId,
   hasConnector,
+  isDlc,
   onToggleSkip,
   onSetDelay,
 }: AchievementOrderUnitProps) => {
@@ -185,6 +191,7 @@ const AchievementOrderUnit = ({
         achievement={achievement}
         appId={appId}
         dragHandleProps={{ attributes: sortable.attributes, listeners: sortable.listeners }}
+        isDlc={isDlc}
         isSkipped={achievement.skip}
         onToggleSkip={onToggleSkip}
       />
@@ -200,20 +207,40 @@ const AchievementOrderUnit = ({
   )
 }
 
-// Labels the read-only protected list below the real order. Deliberately a plain label with no
-// connecting line or delay input - protected achievements aren't part of the unlock sequence at all
-// (see useAchievementOrder.ts's `protectedAchievements`), so nothing here should read as a step in
-// it. The explanation of *why* they're excluded lives in the header alert
-// (AchievementOrderHeader.tsx) rather than here, since this row has a fixed virtualized height and a
+type ReadOnlyReason = 'protected' | 'unownedDlc'
+
+const READ_ONLY_SECTION_TITLE_KEYS = {
+  protected: 'dashboard.achievementUnlocker.order.protectedSection.title',
+  unownedDlc: 'dashboard.achievementUnlocker.order.unownedDlcSection.title',
+} as const satisfies Record<ReadOnlyReason, TranslationKey>
+
+// Everything after the real order: one read-only section per reason an achievement can't be part
+// of it - protected first, then unowned DLC - each a header plus one plain card per achievement.
+// Precomputed once per render of AchievementOrderList (not per Row) since Row and getRowHeight
+// both index into it.
+type TrailingRow =
+  | { type: 'header'; reason: ReadOnlyReason; count: number }
+  | { type: 'card'; reason: ReadOnlyReason; achievement: AchievementDto }
+
+// Labels one read-only section below the real order. Deliberately a plain label with no connecting
+// line or delay input - these achievements aren't part of the unlock sequence at all (see
+// useAchievementOrder.ts's `protectedAchievements`/`unownedDlcAchievements`), so nothing here should
+// read as a step in it. The title itself is the explanation for unowned DLC; for protected, the
+// longer *why* lives in a tooltip on each card's marker and the header alert in
+// AchievementOrderHeader.tsx rather than here, since this row has a fixed virtualized height and a
 // wrapping description would overflow it in longer locales.
-const ProtectedHeaderRow = ({ count }: { count: number }) => {
+const ReadOnlySectionHeaderRow = ({ reason, count }: { reason: ReadOnlyReason; count: number }) => {
   const { t } = useTranslation()
+  const Icon = reason === 'unownedDlc' ? TbShoppingCartX : TbBan
 
   return (
     <div className='flex h-full items-end gap-2 pb-2'>
-      <TbBan className='mb-0.5 shrink-0 text-warning' fontSize={14} />
+      <Icon
+        className={cn('mb-0.5 shrink-0', reason === 'unownedDlc' ? 'text-muted' : 'text-warning')}
+        fontSize={14}
+      />
       <Typography truncate type='body-xs' weight='semibold'>
-        {t('dashboard.achievementUnlocker.order.protectedSection.title')}
+        {t(READ_ONLY_SECTION_TITLE_KEYS[reason])}
       </Typography>
       <span className='shrink-0 rounded-full bg-surface-tertiary px-1.5 py-0.5 text-[10px] font-semibold text-muted'>
         {count}
@@ -224,7 +251,8 @@ const ProtectedHeaderRow = ({ count }: { count: number }) => {
 
 interface RowProps {
   achievements: OrderableAchievement[]
-  protectedAchievements: AchievementDto[]
+  trailingRows: TrailingRow[]
+  dlcGroupIds: Set<number>
   appId: number
   delayBeforeFirstUnlock: number | ''
   isDelayDisabled: boolean
@@ -240,16 +268,18 @@ interface RowProps {
 //
 // Index 0 is the delay-before-first-unlock row (see DelayRow above). Every index after that is one
 // AchievementOrderUnit - achievements[index - 1]'s card, plus its trailing connector unless it's the
-// last achievement (nothing follows it, so no delay-after-it to show). Only achievements are
-// sortable items (see AchievementOrderUnit's own `useSortable` call, and the parent's
-// `SortableContext items` list in AchievementOrderOverlay.tsx) - the delay-before-first row isn't
-// one of them, same special case as DelayRow's own doc comment describes.
+// last achievement (nothing follows it, so no delay-after-it to show) - and past the last one, the
+// `trailingRows` read-only sections. Only achievements are sortable items (see
+// AchievementOrderUnit's own `useSortable` call, and the parent's `SortableContext items` list in
+// AchievementOrderOverlay.tsx) - the delay-before-first row isn't one of them, same special case as
+// DelayRow's own doc comment describes.
 const Row = ({
   ariaAttributes,
   index,
   style,
   achievements,
-  protectedAchievements,
+  trailingRows,
+  dlcGroupIds,
   appId,
   delayBeforeFirstUnlock,
   isDelayDisabled,
@@ -270,21 +300,24 @@ const Row = ({
   }
 
   const achievementIndex = index - 1
-  // Past the last orderable card: the protected section (header first, then one card each).
   if (achievementIndex >= achievements.length) {
-    const protectedIndex = achievementIndex - achievements.length - 1
-    if (protectedIndex === -1) {
+    const trailing = trailingRows[achievementIndex - achievements.length]
+    if (!trailing) return null
+    if (trailing.type === 'header') {
       return (
         <div {...ariaAttributes} style={style}>
-          <ProtectedHeaderRow count={protectedAchievements.length} />
+          <ReadOnlySectionHeaderRow count={trailing.count} reason={trailing.reason} />
         </div>
       )
     }
-    const protectedAchievement = protectedAchievements[protectedIndex]
-    if (!protectedAchievement) return null
     return (
       <div {...ariaAttributes} className='pb-2' style={style}>
-        <AchievementOrderRow isReadOnly achievement={protectedAchievement} appId={appId} />
+        <AchievementOrderRow
+          achievement={trailing.achievement}
+          appId={appId}
+          isDlc={isInGroups(trailing.achievement, dlcGroupIds)}
+          readOnlyReason={trailing.reason}
+        />
       </div>
     )
   }
@@ -306,6 +339,7 @@ const Row = ({
         achievement={achievement}
         appId={appId}
         hasConnector={achievementIndex < achievements.length - 1}
+        isDlc={isInGroups(achievement, dlcGroupIds)}
         onSetDelay={onSetDelay}
         onToggleSkip={onToggleSkip}
       />
@@ -314,26 +348,23 @@ const Row = ({
 }
 
 // Row heights mirror `Row`'s own shape above: index 0 (delay-before-first) and the last achievement
-// have no connector, every other achievement's row is a card plus a connector, then (only if any
-// exist) the protected section's header followed by one plain card per protected achievement. Keep
-// both in sync.
-const getRowHeight = (index: number, { achievements }: RowProps) => {
+// have no connector, every other achievement's row is a card plus a connector, then each trailing
+// read-only section's header followed by one plain card per achievement. Keep both in sync.
+const getRowHeight = (index: number, { achievements, trailingRows }: RowProps) => {
   if (index === 0) return DELAY_BEFORE_FIRST_ROW_HEIGHT
-  if (index - 1 === achievements.length) return PROTECTED_HEADER_HEIGHT
-  if (index - 1 > achievements.length) return PROTECTED_ROW_HEIGHT
-  const hasConnector = index - 1 < achievements.length - 1
+  const achievementIndex = index - 1
+  if (achievementIndex >= achievements.length) {
+    return trailingRows[achievementIndex - achievements.length]?.type === 'header'
+      ? READ_ONLY_HEADER_HEIGHT
+      : READ_ONLY_ROW_HEIGHT
+  }
+  const hasConnector = achievementIndex < achievements.length - 1
   return CARD_HEIGHT + (hasConnector ? CONNECTOR_HEIGHT : 0)
 }
 
-interface AchievementOrderListProps {
-  achievements: OrderableAchievement[]
+interface AchievementOrderListProps extends Omit<RowProps, 'trailingRows'> {
   protectedAchievements: AchievementDto[]
-  appId: number
-  delayBeforeFirstUnlock: number | ''
-  isDelayDisabled: boolean
-  onDelayChange: (value: number | '') => void
-  onToggleSkip: (id: string) => void
-  onSetDelay: (id: string, value: number | null) => void
+  unownedDlcAchievements: AchievementDto[]
 }
 
 // Virtualized replacement for the previous plain `.map()` of AchievementOrderRow - some games ship
@@ -344,20 +375,36 @@ interface AchievementOrderListProps {
 // combining virtualization with sortable lists; dragging near either edge of the visible window
 // auto-scrolls the list (dnd-kit's default PointerSensor autoscroll targets the nearest scrollable
 // ancestor, which is this `List`'s own root), bringing the next rows into range.
-// Protected achievements render as trailing rows after the real order (a header plus one read-only
-// card each), outside the parent SortableContext's `items` - they're never drag sources or targets,
-// and sitting after the last orderable card means they can't be mistaken for a step between two
-// others or pick up a connector's delay.
-export const AchievementOrderList = (props: AchievementOrderListProps) => (
-  <List
-    rowComponent={Row}
-    rowCount={
-      props.achievements.length +
-      1 +
-      (props.protectedAchievements.length > 0 ? props.protectedAchievements.length + 1 : 0)
+// Protected and unowned-DLC achievements render as trailing rows after the real order (see
+// TrailingRow), outside the parent SortableContext's `items` - they're never drag sources or
+// targets, and sitting after the last orderable card means they can't be mistaken for a step
+// between two others or pick up a connector's delay.
+export const AchievementOrderList = ({
+  protectedAchievements,
+  unownedDlcAchievements,
+  ...props
+}: AchievementOrderListProps) => {
+  const trailingRows = useMemo(() => {
+    const rows: TrailingRow[] = []
+    const sections: [ReadOnlyReason, AchievementDto[]][] = [
+      ['protected', protectedAchievements],
+      ['unownedDlc', unownedDlcAchievements],
+    ]
+    for (const [reason, list] of sections) {
+      if (list.length === 0) continue
+      rows.push({ type: 'header', reason, count: list.length })
+      for (const achievement of list) rows.push({ type: 'card', reason, achievement })
     }
-    rowHeight={getRowHeight}
-    rowProps={props}
-    style={{ height: '100%', width: '100%' }}
-  />
-)
+    return rows
+  }, [protectedAchievements, unownedDlcAchievements])
+
+  return (
+    <List
+      rowComponent={Row}
+      rowCount={props.achievements.length + 1 + trailingRows.length}
+      rowHeight={getRowHeight}
+      rowProps={{ ...props, trailingRows }}
+      style={{ height: '100%', width: '100%' }}
+    />
+  )
+}

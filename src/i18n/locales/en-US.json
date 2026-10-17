@@ -502,6 +502,11 @@
       "edited": "Edited",
       "editedCount": "{{count}} edited",
       "incrementOnlyTooltip": "This statistic can only increase, never decrease.",
+      "sets": {
+        "baseGame": "Base game",
+        "dlc": "DLC",
+        "notOwned": "Not owned"
+      },
       "sort": {
         "percent": "Global unlock %",
         "unlocked": "Unlocked first",
@@ -730,6 +735,9 @@
         "skipped": "Skipped",
         "protectedSection": {
           "title": "Protected achievements"
+        },
+        "unownedDlcSection": {
+          "title": "From DLC you don't own"
         },
         "protectedAlert": {
           "description": "The achievement unlocker skips games with any protected achievements, so this order won't be used."

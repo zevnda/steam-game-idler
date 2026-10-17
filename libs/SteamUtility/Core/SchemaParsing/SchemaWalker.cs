@@ -78,10 +78,60 @@ namespace SteamUtility.Core.SchemaParsing
                                 IconNormal = bit["display"]["icon"].AsString(""),
                                 IconLocked = bit["display"]["icon_gray"].AsString(""),
                                 Hidden = bit["display"]["hidden"].AsBoolean(false),
+                                GroupId = bit["groupid"].Valid
+                                    ? bit["groupid"].AsInteger(0)
+                                    : null,
                             }
                         );
                     }
                 }
+            }
+
+            return result;
+        }
+
+        // Steam "Achievement Sets" (Oct 2026 beta): a top-level `groups` section next to `stats`,
+        // keyed by group id, each with a localized `name` and - for a DLC set - a `dlcappid`. Each
+        // achievement bit then carries a `groupid` (see ParseAchievementDefinitions). Purely
+        // additive to the older schema shape - a schema without sets simply has no `groups` key,
+        // which returns an empty list here. Shape confirmed against a freshly downloaded ETS2
+        // (227300) schema; the implicit base-game set (id 0) is never listed.
+        public static List<AchievementGroupDto> ParseAchievementGroups(
+            uint appId,
+            byte[] schemaBytes,
+            string language = "english"
+        )
+        {
+            var result = new List<AchievementGroupDto>();
+
+            var kv = KeyValue.LoadFromBytes(schemaBytes);
+            if (kv == null)
+            {
+                return result;
+            }
+
+            var groups = kv[appId.ToString(CultureInfo.InvariantCulture)]["groups"];
+            if (!groups.Valid || groups.Children == null)
+            {
+                return result;
+            }
+
+            foreach (var group in groups.Children)
+            {
+                if (!group.Valid || !int.TryParse(group.Name, out var groupId))
+                {
+                    continue;
+                }
+
+                var dlcAppId = group["dlcappid"].AsInteger(0);
+                result.Add(
+                    new AchievementGroupDto
+                    {
+                        Id = groupId,
+                        Name = ResolveLocalizedString(group["name"], language),
+                        DlcAppId = dlcAppId > 0 ? (uint)dlcAppId : null,
+                    }
+                );
             }
 
             return result;
@@ -255,7 +305,13 @@ namespace SteamUtility.Core.SchemaParsing
                 return english.AsString("");
             }
 
-            var first = node.Children.FirstOrDefault(c => c.Valid && c.Type == KeyValueType.String);
+            // Skips `token` - Achievement Sets' group names carry one (e.g. "GROUP_6_NAME") alongside
+            // the real per-language strings, and it's a localization key, never display text.
+            var first = node.Children.FirstOrDefault(c =>
+                c.Valid
+                && c.Type == KeyValueType.String
+                && !string.Equals(c.Name, "token", StringComparison.OrdinalIgnoreCase)
+            );
             return first?.AsString("") ?? "";
         }
     }

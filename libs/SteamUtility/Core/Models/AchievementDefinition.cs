@@ -18,5 +18,8 @@ namespace SteamUtility.Core.Models
         public string IconNormal { get; init; } = "";
         public string IconLocked { get; init; } = "";
         public bool Hidden { get; init; }
+
+        // Schema `groupid` - absent for base-game achievements (see AchievementGroupDto).
+        public int? GroupId { get; init; }
     }
 }

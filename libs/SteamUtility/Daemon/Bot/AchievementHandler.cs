@@ -166,7 +166,8 @@ namespace SteamUtility.Daemon.Bot
         // frontend) doesn't need to change.
         public async Task<(
             IReadOnlyList<AchievementDto> Achievements,
-            IReadOnlyList<StatDto> Stats
+            IReadOnlyList<StatDto> Stats,
+            IReadOnlyList<AchievementGroupDto> Groups
         )> GetAchievementsAndStatsAsync(uint appId, SteamID steamId, string language = "english")
         {
             if (IsGameCoordinatorTitle(appId))
@@ -213,6 +214,7 @@ namespace SteamUtility.Daemon.Bot
                         Percent = null,
                         ProtectedAchievement = (flags & StatFlags.Protected) != 0,
                         Flags = flags.ToString(),
+                        GroupId = def.GroupId,
                     };
                 })
                 .ToList();
@@ -240,7 +242,9 @@ namespace SteamUtility.Daemon.Bot
                 })
                 .ToList();
 
-            return (achievements, stats);
+            var groups = SchemaWalker.ParseAchievementGroups(appId, statsResult.Schema, language);
+
+            return (achievements, stats, groups);
         }
 
         public async Task UpdateStatsAsync(

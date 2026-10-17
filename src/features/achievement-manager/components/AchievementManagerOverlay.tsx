@@ -136,6 +136,7 @@ export const AchievementManagerOverlay = () => {
                         <AchievementsTab
                           achievements={data.achievements}
                           appId={openGame.appId}
+                          groups={data.groups}
                           isMutating={isMutating}
                           isRefreshing={isLoading}
                           query={query}

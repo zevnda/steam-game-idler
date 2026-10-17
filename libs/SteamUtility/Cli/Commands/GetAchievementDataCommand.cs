@@ -32,7 +32,10 @@ namespace SteamUtility.Cli.Commands
                 throw new InvalidAppIdException();
             }
 
-            var (achievements, stats) = await _backend.GetAchievementsAndStatsAsync(appId, ct);
+            var (achievements, stats, groups) = await _backend.GetAchievementsAndStatsAsync(
+                appId,
+                ct
+            );
 
             if (args.Length >= 3)
             {
@@ -53,7 +56,7 @@ namespace SteamUtility.Cli.Commands
                 return CliResult.Failure("not_found", "ID not found");
             }
 
-            return CliResult.Success(new { achievements, stats });
+            return CliResult.Success(new { achievements, stats, groups });
         }
     }
 }

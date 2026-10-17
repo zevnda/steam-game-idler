@@ -1,0 +1,17 @@
+---
+title: 6.2.10
+date: 2026-10-17
+tags: ['New', 'Improved', 'Fixed']
+---
+
+### New 🎉
+- Added support for Steam's new **Achievement Sets**. In the **Achievement Manager**, games that use sets now show their achievements grouped into collapsible sections, with the base game first and each DLC (or other set, such as Team Fortress 2's per-class sets) in its own section with its own progress bar
+- SGI now knows which DLC you own. Achievements from DLC you don't own are grayed out, can't be unlocked, and their sections are moved to the bottom and collapsed by default
+
+### Improved 🚀
+- The overall unlocked count in the **Achievement Manager** no longer includes achievements from DLC you don't own, matching how Steam counts your progress
+- The **Custom Order/Unlock Delay** window in **Achievement Unlocker** now marks DLC achievements, and lists achievements from DLC you don't own separately at the bottom of the list instead of mixed in with the base game achievements
+
+### Fixed 🐛
+- Fixed an issue where **Unlock all** in the **Achievement Manager** could fail entirely for games with achievements from DLC you don't own. These achievements are now skipped
+- Fixed an issue where **Achievement Unlocker** would try to unlock achievements from DLC you don't own, which always failed. These achievements are now skipped

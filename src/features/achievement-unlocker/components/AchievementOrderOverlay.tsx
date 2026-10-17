@@ -13,6 +13,7 @@ import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove, SortableContext } from '@dnd-kit/sortable'
 import { Alert, Button, EmptyState, Modal, Skeleton, Typography } from '@heroui/react'
 import { errorMessageKey as achievementDataErrorMessageKey } from '@/features/achievement-manager/utils/errorMessageKey'
+import { isInGroups } from '@/features/achievement-manager/utils/groupAchievements'
 import { useAchievementOrderStore } from '@/shared/stores/achievementOrderStore'
 import { usePlatformStore } from '@/shared/stores/platformStore'
 import { useProModalStore } from '@/shared/stores/proModalStore'
@@ -58,6 +59,8 @@ export const AchievementOrderOverlay = () => {
     loadErrorCode,
     hasProtectedAchievements,
     protectedAchievements,
+    unownedDlcAchievements,
+    dlcGroupIds,
     refresh,
     reorder,
     toggleSkip,
@@ -149,7 +152,9 @@ export const AchievementOrderOverlay = () => {
                       {t('common.actions.tryAgain')}
                     </Button>
                   </div>
-                ) : achievements.length === 0 && protectedAchievements.length === 0 ? (
+                ) : achievements.length === 0 &&
+                  protectedAchievements.length === 0 &&
+                  unownedDlcAchievements.length === 0 ? (
                   <EmptyState className='flex flex-col items-center justify-center gap-2 p-8 text-center'>
                     <Typography type='h3'>
                       {t('dashboard.achievementUnlocker.order.empty.title')}
@@ -176,6 +181,8 @@ export const AchievementOrderOverlay = () => {
                             onDelayChange={setDelayBeforeFirstUnlock}
                             onSetDelay={setDelay}
                             protectedAchievements={protectedAchievements}
+                            unownedDlcAchievements={unownedDlcAchievements}
+                            dlcGroupIds={dlcGroupIds}
                             onToggleSkip={toggleSkip}
                           />
                         </div>
@@ -191,6 +198,7 @@ export const AchievementOrderOverlay = () => {
                             isOverlay
                             achievement={activeAchievement}
                             appId={openGame.appId}
+                            isDlc={isInGroups(activeAchievement, dlcGroupIds)}
                             isSkipped={activeAchievement.skip}
                             onToggleSkip={toggleSkip}
                           />
