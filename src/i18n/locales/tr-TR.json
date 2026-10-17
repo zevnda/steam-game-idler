@@ -16,7 +16,8 @@
       "done": "Bitti",
       "copy": "Kopyala",
       "paste": "Yapıştır",
-      "add": "Ekle"
+      "add": "Ekle",
+      "ok": "Tamam"
     },
     "gameCardMenu": {
       "startIdling": "Süre Kasmayı başlat",
@@ -477,9 +478,7 @@
       "unlockedCount": "{{unlocked}} / {{total}} açılan",
       "noDescription": "Açıklama yok",
       "protectedTooltip": "Sunucu tarafından ayarlanmıştır ve değiştirilemez.",
-      "statFlags": "Bayraklar: {{flags}}",
       "edited": "Düzenlendi",
-      "editedCount": "{{count}} düzenlendi",
       "incrementOnlyTooltip": "Bu istatislik daha artabilir, asla azalmaz.",
       "sort": {
         "percent": "Küresel açılan %",
@@ -498,10 +497,7 @@
         "unlock": "Açmak",
         "unlockAll": "Hepsinin kilidini aç",
         "lockAll": "Hepsini Kilitle",
-        "applyChanges": "Değişiklikleri uygula",
-        "applyChangesCount": "Değişiklikleri uygula ({{count}})",
         "saveChanges": "Değişiklikleri kaydet",
-        "saveChangesCount": "Değişiklikleri kaydet ({{count}})",
         "resetAll": "Hepsini Sıfırla"
       },
       "confirmUnlockAll": {

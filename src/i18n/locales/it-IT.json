@@ -496,9 +496,7 @@
       "unlockedCount": "{{unlocked}} / {{total}} sbloccati",
       "noDescription": "Nessuna descrizione",
       "protectedTooltip": "Impostato dal server del gioco e non modificabile dai client.",
-      "statFlags": "Flag: {{flags}}",
       "edited": "Modificato",
-      "editedCount": "{{count}} modificati",
       "incrementOnlyTooltip": "Questa statistica può solo aumentare, mai diminuire.",
       "sort": {
         "percent": "% sblocco globale",
@@ -519,10 +517,7 @@
         "lock": "Blocca",
         "unlockAll": "Sblocca tutti",
         "lockAll": "Blocca tutti",
-        "applyChanges": "Applica modifiche",
-        "applyChangesCount": "Applica modifiche ({{count}})",
         "saveChanges": "Salva modifiche",
-        "saveChangesCount": "Salva modifiche ({{count}})",
         "resetAll": "Ripristina tutto"
       },
       "confirmUnlockAll": {
@@ -579,9 +574,7 @@
         "unsupportedGameCoordinator": "Questo gioco non è supportato per gli obiettivi quando l'accesso è effettuato con Steam: usa invece il client Steam locale.",
         "unsupportedGameCoordinatorLinux": "Questo gioco non è supportato per gli obiettivi quando l'accesso è effettuato con Steam.",
         "generic": "Qualcosa è andato storto durante il caricamento degli obiettivi. Riprova. ({{code}})"
-      },
-      "statCount_one": "{{count}} statistica",
-      "statCount_other": "{{count}} statistiche"
+      }
     },
     "cardFarming": {
       "status": {

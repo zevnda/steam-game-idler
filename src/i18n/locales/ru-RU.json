@@ -508,9 +508,7 @@
       "unlockedCount": "{{unlocked}} / {{total}} получено",
       "noDescription": "Нет описания",
       "protectedTooltip": "Устанавливается игровым сервером и не может быть изменено клиентами.",
-      "statFlags": "Флаги: {{flags}}",
       "edited": "Изменено",
-      "editedCount": "Изменено: {{count}}",
       "incrementOnlyTooltip": "Эта статистика может только расти, но никогда не снижаться.",
       "sort": {
         "percent": "Глобальный % получения",
@@ -531,10 +529,7 @@
         "lock": "Заблокировать",
         "unlockAll": "Получить все",
         "lockAll": "Заблокировать все",
-        "applyChanges": "Применить изменения",
-        "applyChangesCount": "Применить изменения ({{count}})",
         "saveChanges": "Сохранить изменения",
-        "saveChangesCount": "Сохранить изменения ({{count}})",
         "resetAll": "Сбросить всё"
       },
       "confirmUnlockAll": {
@@ -599,11 +594,7 @@
         "unsupportedGameCoordinator": "В этой игре не поддерживаются достижения при входе через Steam — вместо этого воспользуйтесь локальным клиентом Steam.",
         "unsupportedGameCoordinatorLinux": "В этой игре не поддерживаются достижения при входе через Steam.",
         "generic": "При загрузке достижений произошла ошибка. Пожалуйста, попробуйте снова. ({{code}})"
-      },
-      "statCount_one": "{{count}} статистика",
-      "statCount_few": "{{count}} статистики",
-      "statCount_many": "{{count}} статистики",
-      "statCount_other": "{{count}} статистики"
+      }
     },
     "cardFarming": {
       "status": {

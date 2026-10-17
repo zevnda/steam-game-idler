@@ -490,9 +490,7 @@
       "unlockedCount": "已解锁 {{unlocked}} / {{total}}",
       "noDescription": "无描述",
       "protectedTooltip": "由游戏服务器设置，客户端无法更改",
-      "statFlags": "标签：{{flags}}",
       "edited": "已编辑",
-      "editedCount": "{{count}} 项已编辑",
       "incrementOnlyTooltip": "此统计数据只能增加，不能减少",
       "sort": {
         "percent": "全球解锁百分比",
@@ -513,10 +511,7 @@
         "lock": "锁定",
         "unlockAll": "全部解锁",
         "lockAll": "全部锁定",
-        "applyChanges": "应用更改",
-        "applyChangesCount": "应用更改（{{count}}）",
         "saveChanges": "保存更改",
-        "saveChangesCount": "保存更改（{{count}}）",
         "resetAll": "全部重置"
       },
       "confirmUnlockAll": {
@@ -569,8 +564,7 @@
         "unsupportedGameCoordinator": "通过 Steam 登录时，该游戏不支持成就——请改用您的本地 Steam 客户端",
         "unsupportedGameCoordinatorLinux": "此游戏在通过 Steam 登录时不支持成就功能。",
         "generic": "加载成就时出错，请重试，（{{code}}）"
-      },
-      "statCount_other": "{{count}} 项统计数据"
+      }
     },
     "cardFarming": {
       "status": {

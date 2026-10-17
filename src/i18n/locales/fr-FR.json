@@ -486,9 +486,7 @@
       "unlockedCount": "{{unlocked}} / {{total}} débloqués",
       "noDescription": "Aucune description",
       "protectedTooltip": "Défini par le serveur du jeu et ne peut pas être changé par les clients.",
-      "statFlags": "Drapeaux : {{flags}}",
       "edited": "Modifié",
-      "editedCount": "{{count}} modifiés",
       "incrementOnlyTooltip": "Cette statistique ne peu qu'augmenter, jamais diminuer.",
       "sort": {
         "percent": "Déblocage global %",
@@ -509,10 +507,7 @@
         "lock": "Verrouiller",
         "unlockAll": "Tout débloquer",
         "lockAll": "Tout verrouiller",
-        "applyChanges": "Appliquer les modifications",
-        "applyChangesCount": "Appliquer les modifications ({{count}})",
         "saveChanges": "Sauvegarder les modifications",
-        "saveChangesCount": "Sauvegarder les modifications ({{count}})",
         "resetAll": "Tout réinitialiser"
       },
       "confirmUnlockAll": {
@@ -569,9 +564,7 @@
         "unsupportedGameCoordinator": "Ce jeu n'est pas pris en charge pour les succès lorsque vous êtes connectés avec Steam - utilisez votre client Steam local à la place.",
         "unsupportedGameCoordinatorLinux": "Ce jeu n'est pas pris en charge pour les succès via la connexion Steam.",
         "generic": "Une erreur s'est produite lors du chargement des succès. Veuillez réessayer. ({{code}})"
-      },
-      "statCount_one": "{{count}} statistique",
-      "statCount_other": "{{count}} statistiques"
+      }
     },
     "cardFarming": {
       "status": {
