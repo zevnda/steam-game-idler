@@ -46,6 +46,12 @@ export interface StatDto {
   flags: string
 }
 
+// Which pane the overlay's main area shows, picked from AchievementManagerSidebar.tsx's nav:
+// achievements (all of them when `setKey` is null, otherwise one Achievement Set's section key -
+// see utils/groupAchievements.ts) or the statistics editor.
+export type AchievementManagerView =
+  { kind: 'achievements'; setKey: number | null } | { kind: 'statistics' }
+
 export interface AchievementData {
   achievements: AchievementDto[]
   stats: StatDto[]

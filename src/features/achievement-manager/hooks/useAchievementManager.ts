@@ -113,13 +113,12 @@ export const useAchievementManager = (openGame: OpenGame | null) => {
     [account, openGame, data, t, toastActionError],
   )
 
-  // Backs AchievementsTab's checkbox-staged "Apply changes" - unlike `toggleAchievement`, this
-  // loops silently (no per-item toast, which would otherwise stack one toast per staged item) and
+  // Backs AchievementsView's selection bar ("Save changes") - unlike `toggleAchievement`, this
+  // loops silently (no per-item toast, which would otherwise stack one toast per selected item) and
   // fires a single summary toast at the end, matching `bulkSetAchievements`'s one-toast convention.
   // There's no single backend command for an arbitrary unlock+lock mix (unlike Unlock/Lock all's
   // `unlock_all_achievements`/`lock_all_achievements`), so this replays `set_achievement` per id -
-  // a per-item failure is logged and the loop continues, never aborting the rest of the staged
-  // batch.
+  // a per-item failure is logged and the loop continues, never aborting the rest of the selection.
   const applyStagedChanges = useCallback(
     async (unlockIds: string[], lockIds: string[]) => {
       if (!account || !openGame) return

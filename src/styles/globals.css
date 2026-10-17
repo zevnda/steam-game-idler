@@ -708,3 +708,27 @@ body {
     animation: none;
   }
 }
+
+/* FloatingActionBar.tsx (achievement manager's selection / unsaved-changes bar) - a short slide-up
+   with a slight overshoot as it appears, so the bar is noticed the moment something gets selected
+   rather than quietly appearing at the bottom of the list. Skipped entirely for reduced motion. */
+@keyframes floating-action-bar-enter {
+  from {
+    translate: 0 24px;
+    opacity: 0;
+  }
+  to {
+    translate: 0 0;
+    opacity: 1;
+  }
+}
+
+.floating-action-bar-enter {
+  animation: floating-action-bar-enter 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-action-bar-enter {
+    animation: none;
+  }
+}

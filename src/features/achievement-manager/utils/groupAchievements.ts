@@ -27,8 +27,7 @@ export interface AchievementSection<T extends AchievementDto = AchievementDto> {
   // `null` = the base-game set.
   group: AchievementGroup | null
   isUnownedDlc: boolean
-  // Progress always counts the whole set, so search/sort never change a header's numbers - same
-  // rule AchievementsTab.tsx's overall trophy readout follows.
+  // Progress always counts the whole set (the sidebar nav's per-set counts and progress lines).
   unlocked: number
   total: number
   visible: T[]

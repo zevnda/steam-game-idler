@@ -1,7 +1,7 @@
 import type { TranslationKey } from '@/i18n'
 import type { AchievementDto } from '../types'
 
-// `percent` (default, see AchievementsTab.tsx) is backfilled for agent mode from a public Web API
+// `percent` (the default) is backfilled for agent mode from a public Web API
 // as well as being natively present for CLI/local-mode accounts - see AchievementDto's own doc
 // comment. The `?? 0` fallback below only matters for the rare case where that backfill itself
 // fails/omits an entry (e.g. a delisted app with no global stats), not a whole-mode gap.
@@ -16,6 +16,14 @@ export const ACHIEVEMENT_SORT_STYLES: AchievementSortStyle[] = [
   'unprotected',
   'protected',
 ]
+
+export const DEFAULT_ACHIEVEMENT_SORT: AchievementSortStyle = 'percent'
+
+// Only offered when the achievements being shown include a protected one - see AchievementsView.tsx.
+export const PROTECTION_SORT_STYLES: ReadonlySet<AchievementSortStyle> = new Set([
+  'unprotected',
+  'protected',
+])
 
 // 'title' reuses the shared common.sort key instead of duplicating the string here.
 export const ACHIEVEMENT_SORT_LABEL_KEYS: Record<AchievementSortStyle, TranslationKey> = {
