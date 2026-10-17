@@ -16,9 +16,12 @@ namespace SteamUtility.Core
     // forcing them into one method here would hide a real difference instead of documenting it.
     public interface ISteamStatsBackend
     {
+        // `Groups` is the game's Achievement Sets (empty for a game without any) - see
+        // Models/AchievementGroupDto.cs.
         Task<(
             IReadOnlyList<AchievementDto> Achievements,
-            IReadOnlyList<StatDto> Stats
+            IReadOnlyList<StatDto> Stats,
+            IReadOnlyList<AchievementGroupDto> Groups
         )> GetAchievementsAndStatsAsync(uint appId, CancellationToken ct);
 
         Task SetAchievementAsync(

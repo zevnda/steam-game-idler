@@ -48,5 +48,11 @@ namespace SteamUtility.Core.Models
 
         [JsonPropertyName("flags")]
         public string Flags { get; init; } = "";
+
+        // Which AchievementGroupDto this achievement belongs to; null (omitted from JSON) for the
+        // implicit base-game set and for every game that doesn't use Achievement Sets at all.
+        [JsonPropertyName("groupId")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public int? GroupId { get; init; }
     }
 }

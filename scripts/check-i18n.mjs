@@ -29,6 +29,11 @@ const ALLOWLIST = new Set([
   // achievements-stats page instead. Same English text today, different URL/role.
   'common.gameCardMenu.viewOnSteam',
   'dashboard.achievements.header.viewOnSteam',
+  // "Locked" - dashboard.inventoryManager.filter.locked means a trade-locked inventory item;
+  // dashboard.achievements.filters.locked means a not-yet-unlocked achievement. Same English word
+  // today, unrelated meanings that many languages translate differently.
+  'dashboard.inventoryManager.filter.locked',
+  'dashboard.achievements.filters.locked',
 ])
 
 const collectLeaves = (node, path, valuesOut, pathsOut) => {

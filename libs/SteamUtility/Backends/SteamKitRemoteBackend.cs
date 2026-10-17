@@ -37,10 +37,13 @@ namespace SteamUtility.Backends
 
         public async Task<(
             IReadOnlyList<AchievementDto> Achievements,
-            IReadOnlyList<StatDto> Stats
+            IReadOnlyList<StatDto> Stats,
+            IReadOnlyList<AchievementGroupDto> Groups
         )> GetAchievementsAndStatsAsync(uint appId, CancellationToken ct)
         {
-            return await _achievementHandler.GetAchievementsAndStatsAsync(appId, RequireSteamId());
+            var (achievements, stats, groups) =
+                await _achievementHandler.GetAchievementsAndStatsAsync(appId, RequireSteamId());
+            return (achievements, stats, await _ownershipManager.ApplyDlcOwnershipAsync(_bot, groups));
         }
 
         public Task SetAchievementAsync(

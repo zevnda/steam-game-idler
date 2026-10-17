@@ -15,6 +15,20 @@ export interface AchievementDto {
   percent?: number
   protectedAchievement: boolean
   flags: string
+  // `AchievementGroup.id` - absent for the implicit base-game set and for every game without
+  // Achievement Sets.
+  groupId?: number
+}
+
+// One Steam "Achievement Set" - mirrors AchievementGroupDto in src-tauri/src/achievements/mod.rs.
+// `dlcAppId` is set for a DLC set, and `owned` says whether this account owns that DLC - absent
+// for a non-DLC set *or* when the ownership lookup failed, which is treated as owned (fail open,
+// see isUnownedDlcGroup in utils/groupAchievements.ts).
+export interface AchievementGroup {
+  id: number
+  name: string
+  dlcAppId?: number
+  owned?: boolean
 }
 
 // `value` is a raw JSON number on the wire (int or float depending on `statType`) - typed as
@@ -32,9 +46,16 @@ export interface StatDto {
   flags: string
 }
 
+// Which pane the overlay's main area shows, picked from AchievementManagerSidebar.tsx's nav:
+// achievements (all of them when `setKey` is null, otherwise one Achievement Set's section key -
+// see utils/groupAchievements.ts) or the statistics editor.
+export type AchievementManagerView =
+  { kind: 'achievements'; setKey: number | null } | { kind: 'statistics' }
+
 export interface AchievementData {
   achievements: AchievementDto[]
   stats: StatDto[]
+  groups: AchievementGroup[]
 }
 
 // `name` must be a `StatDto.id`, not its display `name` - see StatUpdate's doc comment in

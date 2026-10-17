@@ -67,7 +67,11 @@ async fn achievements_get_agent_racing_schema_check(
                     app_id,
                     "achievement manager: confirmed empty schema via Web API, skipping slow daemon round trip"
                 );
-                Ok(AchievementData { achievements: Vec::new(), stats: Vec::new() })
+                Ok(AchievementData {
+                    achievements: Vec::new(),
+                    stats: Vec::new(),
+                    groups: Vec::new(),
+                })
             } else {
                 daemon_fut.await
             }

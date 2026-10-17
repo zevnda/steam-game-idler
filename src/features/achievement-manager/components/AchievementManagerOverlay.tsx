@@ -1,32 +1,38 @@
-import { useState } from 'react'
+import type { AchievementManagerView } from '../types'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAchievementManager } from '../hooks/useAchievementManager'
 import { errorMessageKey } from '../utils/errorMessageKey'
-import { AchievementManagerHeader } from './AchievementManagerHeader'
-import { AchievementsTab } from './AchievementsTab'
-import { StatisticsTab } from './StatisticsTab'
-import { Alert, Button, Modal, Skeleton, TabPanel, TabsRoot } from '@heroui/react'
-import Image from 'next/image'
+import {
+  dlcGroupIdsOf,
+  groupAchievementsBySet,
+  isInGroups,
+  unownedDlcGroupIdsOf,
+} from '../utils/groupAchievements'
+import { AchievementManagerSidebar } from './AchievementManagerSidebar'
+import { AchievementsView } from './AchievementsView'
+import { StatisticsView } from './StatisticsView'
+import { Alert, AlertDialog, Button, cn, Modal, Skeleton } from '@heroui/react'
 import { useAchievementManagerStore } from '@/shared/stores/achievementManagerStore'
 import { usePlatformStore } from '@/shared/stores/platformStore'
-import { heroImageUrl } from '@/shared/utils/heroImageUrl'
 
-type AchievementManagerTab = 'achievements' | 'statistics'
+const ALL_ACHIEVEMENTS: AchievementManagerView = { kind: 'achievements', setKey: null }
 
-// Single-game achievements/statistics overlay - mounted once in DashboardShell (see its "Mount
-// points for future overlays" comment), driven entirely by achievementManagerStore so opening it
-// never depends on which /dashboard/* route is active underneath.
+// Single-game achievements/statistics overlay - mounted once in DashboardShell, driven entirely by
+// achievementManagerStore so opening it never depends on which /dashboard/* route is active.
+//
+// Split view: AchievementManagerSidebar.tsx on the left holds everything about the game as a whole
+// (art, overall progress, Unlock all/Lock all, external links) plus the nav; the right pane shows
+// whichever view is picked there - AchievementsView.tsx (all achievements, or one Achievement Set)
+// or StatisticsView.tsx. The right pane is keyed by the view, so switching views always starts that
+// pane fresh (search, filter, selection, staged stat edits).
 export const AchievementManagerOverlay = () => {
   const { t } = useTranslation()
   const openGame = useAchievementManagerStore(state => state.openGame)
   const close = useAchievementManagerStore(state => state.close)
   const currentOs = usePlatformStore(state => state.currentOs)
-  const [activeTab, setActiveTab] = useState<AchievementManagerTab>('achievements')
-  const [query, setQuery] = useState('')
-  // 0 = library_hero.jpg, 1 = header.jpg fallback, 2 = both failed - mirrors GameThumbnail.tsx's
-  // single-fallback pattern, one step further since a hero crop is more likely to be missing than
-  // the capsule art GameThumbnail always falls back to.
-  const [heroFallbackLevel, setHeroFallbackLevel] = useState(0)
+  const [view, setView] = useState<AchievementManagerView>(ALL_ACHIEVEMENTS)
+  const [confirmBulk, setConfirmBulk] = useState<'unlock' | 'lock' | null>(null)
   const {
     data,
     isLoading,
@@ -43,127 +49,188 @@ export const AchievementManagerOverlay = () => {
   const handleOpenChange = (open: boolean) => {
     if (!open) {
       close()
-      setActiveTab('achievements')
-      setQuery('')
-      setHeroFallbackLevel(0)
+      setView(ALL_ACHIEVEMENTS)
     }
   }
 
-  const hasProtectedItems = Boolean(
-    data?.achievements.some(achievement => achievement.protectedAchievement) ||
-    data?.stats.some(stat => stat.protectedStat),
-  )
+  const derived = useMemo(() => {
+    if (!data) return null
+    const unownedDlcGroupIds = unownedDlcGroupIdsOf(data.groups)
+    // Unowned DLC achievements don't count toward overall progress or "Unlock all" - Steam's own
+    // rule, and Unlock all skips them backend-side (see AchievementData::unowned_dlc_group_ids).
+    const counted = data.achievements.filter(a => !isInGroups(a, unownedDlcGroupIds))
+    return {
+      sections: groupAchievementsBySet(data.achievements, data.achievements, data.groups),
+      dlcGroupIds: dlcGroupIdsOf(data.groups),
+      unownedDlcGroupIds,
+      unlockedCount: counted.filter(a => a.achieved).length,
+      totalCount: counted.length,
+      canUnlockAll: counted.some(a => !a.achieved && !a.protectedAchievement),
+      canLockAll: data.achievements.some(a => a.achieved && !a.protectedAchievement),
+    }
+  }, [data])
+
+  // The picked set's achievements and title, falling back to "all" if the picked set no longer
+  // exists (e.g. after a refresh).
+  const activeSection =
+    view.kind === 'achievements' && view.setKey !== null
+      ? derived?.sections.find(section => section.key === view.setKey)
+      : undefined
+  const viewAchievements = activeSection ? activeSection.visible : (data?.achievements ?? [])
+  const viewTitle = activeSection
+    ? (activeSection.group?.name ?? t('dashboard.achievements.sets.baseGame'))
+    : t('dashboard.achievements.views.all')
+  const viewKey = view.kind === 'statistics' ? 'statistics' : `set-${view.setKey ?? 'all'}`
+
+  const handleConfirmBulk = async () => {
+    if (confirmBulk) await bulkSetAchievements(confirmBulk === 'unlock')
+    setConfirmBulk(null)
+  }
 
   return (
     <Modal isOpen={openGame !== null} onOpenChange={handleOpenChange}>
       <Modal.Backdrop>
         <Modal.Container size='cover'>
-          <Modal.Dialog className='overflow-hidden p-0'>
-            <TabsRoot
-              className='relative flex min-h-0 flex-1 flex-col'
-              selectedKey={activeTab}
-              onSelectionChange={key => {
-                setActiveTab(key as AchievementManagerTab)
-                setQuery('')
-              }}
-            >
-              {/* Hero art sits absolutely positioned against Modal.Dialog (which never scrolls),
-                  not inside Modal.Body - Modal.Body's own vertical scrollbar narrows its available
-                  width, which broke edge-to-edge sizing when this lived inside it (confirmed live:
-                  a visible gap opened up on the scrollbar side only). Pinned as a permanent banner
-                  above the achievements/statistics list rather than scrolling away with content
-                  (unlike main's Achievements.tsx) - Modal.Body's own scroll was replaced by each
-                  tab's virtualized list owning its own internal scroll (see AchievementsList.tsx),
-                  so there's no longer an ambient page scroll for the hero to scroll away with. */}
-              {openGame && heroFallbackLevel < 2 && (
-                <div className='absolute inset-x-0 top-0 z-0 h-full overflow-hidden'>
-                  <Image
-                    fill
-                    unoptimized
-                    alt={`${openGame.name} background art`}
-                    className='object-cover'
-                    src={heroImageUrl(openGame.appId, heroFallbackLevel === 1)}
-                    onError={() => setHeroFallbackLevel(level => level + 1)}
-                  />
-                  <div className='from-overlay via-overlay/98 bg-black/70 absolute inset-0 bg-linear-to-t to-transparent' />
-                </div>
-              )}
+          <Modal.Dialog className='flex-row overflow-hidden p-0'>
+            {openGame && (
+              <AchievementManagerSidebar
+                appId={openGame.appId}
+                canLockAll={derived?.canLockAll ?? false}
+                canUnlockAll={derived?.canUnlockAll ?? false}
+                isMutating={isMutating}
+                isRefreshing={isLoading}
+                name={openGame.name}
+                sections={derived?.sections ?? null}
+                statCount={data?.stats.length ?? 0}
+                totalCount={derived?.totalCount ?? 0}
+                unlockedCount={derived?.unlockedCount ?? 0}
+                view={view}
+                onClose={() => handleOpenChange(false)}
+                onLockAll={() => setConfirmBulk('lock')}
+                onRefresh={refresh}
+                onUnlockAll={() => setConfirmBulk('unlock')}
+                onViewChange={setView}
+              />
+            )}
 
-              {openGame && (
-                <AchievementManagerHeader
-                  appId={openGame.appId}
-                  hasProtectedItems={hasProtectedItems}
-                  name={openGame.name}
-                  query={query}
-                  onClose={() => handleOpenChange(false)}
-                  onQueryChange={setQuery}
-                />
-              )}
-              <Modal.Body className='relative z-10 flex min-h-0 flex-1 flex-col m-0 p-6'>
-                {isLoading ? (
+            <main className='flex min-h-0 min-w-0 flex-1 flex-col bg-overlay'>
+              {/* Shown for *every* load, refreshes included (not just the first, when there's no
+                  data yet) - so pressing refresh visibly does something until the new data lands.
+                  The pane remounts afterwards, so search/filter/selection start fresh, same as a
+                  nav change; the sidebar keeps showing the previous data meanwhile. */}
+              {isLoading ? (
+                // Mirrors the active view's real layout (title line, toolbar line, then 64px
+                // AchievementList / 56px StatisticsList rows with an 8px gap) so content lands where
+                // the placeholders were instead of jumping. Keep in sync if those layouts change.
+                <div className='flex min-h-0 flex-1 flex-col overflow-hidden px-6 pt-5'>
+                  <Skeleton className='h-8 w-56 rounded-lg' />
+                  <div className='mt-3 mb-4 flex gap-3'>
+                    <Skeleton className='h-10 flex-1 rounded-full' />
+                    {view.kind === 'statistics' ? (
+                      <Skeleton className='h-10 w-32 rounded-full' />
+                    ) : (
+                      <>
+                        <Skeleton className='h-10 w-60 rounded-full' />
+                        <Skeleton className='h-10 w-62 rounded-full' />
+                      </>
+                    )}
+                  </div>
                   <div className='flex flex-col gap-2'>
-                    {Array.from({ length: 8 }, (_, index) => (
-                      <Skeleton key={index} className='h-14 w-full rounded-lg' />
+                    {Array.from({ length: 12 }, (_, index) => (
+                      <Skeleton
+                        key={index}
+                        className={cn(
+                          'w-full shrink-0 rounded-xl',
+                          view.kind === 'statistics' ? 'h-14' : 'h-16',
+                        )}
+                      />
                     ))}
                   </div>
-                ) : loadErrorCode ? (
-                  <div className='flex flex-1 flex-col items-center justify-center gap-4 p-8'>
-                    <Alert className='max-w-md' status='danger'>
-                      <Alert.Indicator />
-                      <Alert.Content>
-                        <Alert.Title>{t('dashboard.achievements.errors.title')}</Alert.Title>
-                        <Alert.Description>
-                          {t(errorMessageKey(loadErrorCode, currentOs), { code: loadErrorCode })}
-                        </Alert.Description>
-                      </Alert.Content>
-                    </Alert>
-                    <Button variant='secondary' onPress={refresh}>
-                      {t('common.actions.tryAgain')}
-                    </Button>
-                  </div>
+                </div>
+              ) : loadErrorCode ? (
+                <div className='flex flex-1 flex-col items-center justify-center gap-4 p-8'>
+                  <Alert className='max-w-md' status='danger'>
+                    <Alert.Indicator />
+                    <Alert.Content>
+                      <Alert.Title>{t('dashboard.achievements.errors.title')}</Alert.Title>
+                      <Alert.Description>
+                        {t(errorMessageKey(loadErrorCode, currentOs), { code: loadErrorCode })}
+                      </Alert.Description>
+                    </Alert.Content>
+                  </Alert>
+                  <Button variant='secondary' onPress={refresh}>
+                    {t('common.actions.tryAgain')}
+                  </Button>
+                </div>
+              ) : data && derived && openGame ? (
+                view.kind === 'statistics' ? (
+                  <StatisticsView
+                    key={viewKey}
+                    isMutating={isMutating}
+                    stats={data.stats}
+                    onResetAll={resetAllStats}
+                    onSave={saveStats}
+                  />
                 ) : (
-                  data &&
-                  openGame && (
-                    <>
-                      {/* `min-h-0 flex-1` so each tab's own virtualized list (AchievementsList/
-                          StatisticsList) gets a real bounded height to size itself against - only
-                          the active tab's TabPanel is actually mounted (react-aria-components'
-                          default, no `shouldForceMount`), so there's never two `flex-1` siblings
-                          competing for space here. `overflow-y-auto` is a safety net matching
-                          FavoritesPage.tsx's identical TabPanel usage - normally inert since the
-                          virtualized list already exactly fills this box and scrolls internally. */}
-                      <TabPanel className='min-h-0 flex-1 overflow-y-auto p-0' id='achievements'>
-                        <AchievementsTab
-                          achievements={data.achievements}
-                          appId={openGame.appId}
-                          isMutating={isMutating}
-                          isRefreshing={isLoading}
-                          query={query}
-                          onApplyStagedChanges={applyStagedChanges}
-                          onBulkSet={bulkSetAchievements}
-                          onRefresh={refresh}
-                          onToggle={toggleAchievement}
-                        />
-                      </TabPanel>
-                      <TabPanel className='min-h-0 flex-1 overflow-y-auto p-0' id='statistics'>
-                        <StatisticsTab
-                          isMutating={isMutating}
-                          isRefreshing={isLoading}
-                          query={query}
-                          stats={data.stats}
-                          onRefresh={refresh}
-                          onResetAll={resetAllStats}
-                          onSave={saveStats}
-                        />
-                      </TabPanel>
-                    </>
-                  )
-                )}
-              </Modal.Body>
-            </TabsRoot>
+                  <AchievementsView
+                    key={viewKey}
+                    achievements={viewAchievements}
+                    appId={openGame.appId}
+                    dlcGroupIds={derived.dlcGroupIds}
+                    isMutating={isMutating}
+                    title={viewTitle}
+                    unownedDlcGroupIds={derived.unownedDlcGroupIds}
+                    onApplySelection={applyStagedChanges}
+                    onToggle={toggleAchievement}
+                  />
+                )
+              ) : null}
+            </main>
           </Modal.Dialog>
         </Modal.Container>
       </Modal.Backdrop>
+
+      <AlertDialog
+        isOpen={confirmBulk !== null}
+        onOpenChange={open => !open && setConfirmBulk(null)}
+      >
+        <AlertDialog.Backdrop>
+          <AlertDialog.Container>
+            <AlertDialog.Dialog>
+              <AlertDialog.Header>
+                <AlertDialog.Heading>
+                  {confirmBulk === 'lock'
+                    ? t('dashboard.achievements.confirmLockAll.title')
+                    : t('dashboard.achievements.confirmUnlockAll.title')}
+                </AlertDialog.Heading>
+              </AlertDialog.Header>
+              <AlertDialog.Body>
+                {confirmBulk === 'lock'
+                  ? t('dashboard.achievements.confirmLockAll.description')
+                  : t('dashboard.achievements.confirmUnlockAll.description')}
+              </AlertDialog.Body>
+              <AlertDialog.Footer>
+                <Button
+                  isDisabled={isMutating}
+                  variant='secondary'
+                  onPress={() => setConfirmBulk(null)}
+                >
+                  {t('common.actions.cancel')}
+                </Button>
+                <Button
+                  isPending={isMutating}
+                  variant={confirmBulk === 'lock' ? 'danger' : 'primary'}
+                  onPress={handleConfirmBulk}
+                >
+                  {confirmBulk === 'lock'
+                    ? t('dashboard.achievements.actions.lockAll')
+                    : t('dashboard.achievements.actions.unlockAll')}
+                </Button>
+              </AlertDialog.Footer>
+            </AlertDialog.Dialog>
+          </AlertDialog.Container>
+        </AlertDialog.Backdrop>
+      </AlertDialog>
     </Modal>
   )
 }

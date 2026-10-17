@@ -3,6 +3,7 @@
     "actions": {
       "submit": "Submit",
       "cancel": "Cancel",
+      "close": "Close",
       "tryAgain": "Try again",
       "continue": "Continue",
       "refresh": "Refresh",
@@ -494,14 +495,29 @@
         "description": "Achievements or statistics marked as protected are set by the game's server and can't be changed by clients."
       },
       "unlockedCount": "{{unlocked}} / {{total}} unlocked",
-      "statCount_one": "{{count}} statistic",
-      "statCount_other": "{{count}} statistics",
       "noDescription": "No description",
       "protectedTooltip": "Set by the game server and can't be changed by clients.",
-      "statFlags": "Flags: {{flags}}",
       "edited": "Edited",
-      "editedCount": "{{count}} edited",
+      "pendingChanges_one": "{{count}} change",
+      "pendingChanges_other": "{{count}} changes",
+      "incrementOnly": "Only increases",
       "incrementOnlyTooltip": "This statistic can only increase, never decrease.",
+      "sets": {
+        "baseGame": "Base game",
+        "dlc": "DLC",
+        "notOwned": "Not owned"
+      },
+      "views": {
+        "all": "All achievements"
+      },
+      "filters": {
+        "all": "All",
+        "locked": "Locked",
+        "unlocked": "Unlocked"
+      },
+      "selection": {
+        "selectAll": "Select all"
+      },
       "sort": {
         "percent": "Global unlock %",
         "unlocked": "Unlocked first",
@@ -521,10 +537,7 @@
         "lock": "Lock",
         "unlockAll": "Unlock all",
         "lockAll": "Lock all",
-        "applyChanges": "Apply changes",
-        "applyChangesCount": "Apply changes ({{count}})",
         "saveChanges": "Save changes",
-        "saveChangesCount": "Save changes ({{count}})",
         "resetAll": "Reset all"
       },
       "confirmUnlockAll": {
@@ -730,6 +743,9 @@
         "skipped": "Skipped",
         "protectedSection": {
           "title": "Protected achievements"
+        },
+        "unownedDlcSection": {
+          "title": "From DLC you don't own"
         },
         "protectedAlert": {
           "description": "The achievement unlocker skips games with any protected achievements, so this order won't be used."

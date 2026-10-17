@@ -48,6 +48,25 @@ pub struct AchievementDto {
     ))]
     pub protected_achievement: bool,
     pub flags: String,
+    /// The `AchievementGroupDto.id` this achievement belongs to - `None` for the implicit
+    /// base-game set and for every game without Achievement Sets (SteamUtility omits it then).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group_id: Option<i32>,
+}
+
+/// Mirrors `libs/SteamUtility/Core/Models/AchievementGroupDto.cs` - one Steam "Achievement Set"
+/// parsed from the game's stats schema (see that file's doc comment). `dlc_app_id` is `Some` for a
+/// DLC set, and `owned` whether this account owns that DLC - `None` for a non-DLC set *or* when
+/// SteamUtility's ownership lookup failed, which is treated as owned (fail open).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AchievementGroupDto {
+    pub id: i32,
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub dlc_app_id: Option<u32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub owned: Option<bool>,
 }
 
 /// Mirrors `libs/SteamUtility/Core/Models/StatDto.cs`. Unlike `AchievementDto`, most of this DTO's
@@ -83,6 +102,29 @@ pub struct StatDto {
 pub struct AchievementData {
     pub achievements: Vec<AchievementDto>,
     pub stats: Vec<StatDto>,
+    /// Empty for a game without Achievement Sets.
+    #[serde(default)]
+    pub groups: Vec<AchievementGroupDto>,
+}
+
+impl AchievementData {
+    /// Ids of the DLC sets this account is known not to own. Steam rejects a `StoreStats` write
+    /// that unlocks one of their achievements (`EResult.InvalidParam`, seen live on ETS2) - and for
+    /// a batched write, the *whole* batch - so every unlock path skips them. Same rule as the C#
+    /// side's `AchievementGroupDto.UnownedDlcGroupIds` (CLI mode's bulk unlock).
+    pub fn unowned_dlc_group_ids(&self) -> std::collections::HashSet<i32> {
+        self.groups
+            .iter()
+            .filter(|group| group.dlc_app_id.is_some() && group.owned == Some(false))
+            .map(|group| group.id)
+            .collect()
+    }
+}
+
+impl AchievementDto {
+    pub fn is_in_group(&self, group_ids: &std::collections::HashSet<i32>) -> bool {
+        self.group_id.is_some_and(|id| group_ids.contains(&id))
+    }
 }
 
 /// A single stat write, matching `libs/SteamUtility/Core/Models/StatUpdateRequest.cs`'s wire shape
@@ -112,4 +154,53 @@ pub struct BulkAchievementResult {
     pub succeeded: Vec<String>,
     pub skipped: Vec<String>,
     pub failed: Vec<String>,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const ACHIEVEMENT_JSON: &str = r#"{"id":"a","name":"A","description":"","iconNormal":"","iconLocked":"","permission":0,"hidden":false,"achieved":false,"protected_achievement":false,"flags":"None""#;
+
+    // SteamUtility's real `achievements_get`/`get_achievement_data` wire shape for a game with
+    // Achievement Sets (field names taken from a live ETS2 run) - guards the camelCase mapping of
+    // the new fields in both directions, the way protected_achievement once silently broke.
+    #[test]
+    fn deserializes_achievement_sets_and_reserializes_camel_case() {
+        let wire = format!(
+            r#"{{"achievements":[{ACHIEVEMENT_JSON},"groupId":6}}],"stats":[],"groups":[{{"id":6,"name":"Scandinavia","dlcAppId":304212}},{{"id":12,"name":"Driving Academy"}}]}}"#
+        );
+        let data: AchievementData = serde_json::from_str(&wire).unwrap();
+        assert_eq!(data.achievements[0].group_id, Some(6));
+        assert_eq!(data.groups[0].dlc_app_id, Some(304212));
+        assert_eq!(data.groups[1].dlc_app_id, None);
+
+        let out = serde_json::to_value(&data).unwrap();
+        assert_eq!(out["achievements"][0]["groupId"], 6);
+        assert_eq!(out["groups"][0]["dlcAppId"], 304212);
+        assert!(out["groups"][1].get("dlcAppId").is_none());
+    }
+
+    // Only a DLC set explicitly reported unowned is excluded - an owned DLC set, a non-DLC set, and
+    // a DLC set whose ownership lookup failed (`owned` omitted) all stay unlockable (fail open).
+    #[test]
+    fn unowned_dlc_group_ids_only_counts_known_unowned_dlc() {
+        let wire = format!(
+            r#"{{"achievements":[{ACHIEVEMENT_JSON},"groupId":6}}],"stats":[],"groups":[{{"id":6,"name":"Scandinavia","dlcAppId":304212,"owned":false}},{{"id":7,"name":"Baltic","dlcAppId":925580,"owned":true}},{{"id":8,"name":"Iberia","dlcAppId":1209460}},{{"id":12,"name":"Driving Academy"}}]}}"#
+        );
+        let data: AchievementData = serde_json::from_str(&wire).unwrap();
+        let unowned = data.unowned_dlc_group_ids();
+        assert_eq!(unowned, std::collections::HashSet::from([6]));
+        assert!(data.achievements[0].is_in_group(&unowned));
+    }
+
+    // A game without sets: SteamUtility omits `groupId`, and `groups` is defaulted if absent.
+    #[test]
+    fn missing_group_fields_default_to_base_game() {
+        let wire = format!(r#"{{"achievements":[{ACHIEVEMENT_JSON}}}],"stats":[]}}"#);
+        let data: AchievementData = serde_json::from_str(&wire).unwrap();
+        assert_eq!(data.achievements[0].group_id, None);
+        assert!(data.groups.is_empty());
+        assert!(serde_json::to_value(&data).unwrap()["achievements"][0].get("groupId").is_none());
+    }
 }

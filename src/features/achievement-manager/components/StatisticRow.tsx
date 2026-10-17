@@ -1,6 +1,6 @@
 import type { StatDto } from '../types'
 import { useTranslation } from 'react-i18next'
-import { TbBan, TbChartBar, TbTrendingUp } from 'react-icons/tb'
+import { TbBan, TbTrendingUp } from 'react-icons/tb'
 import { cn, NumberField, Typography } from '@heroui/react'
 import { AppTooltip } from '@/shared/components/AppTooltip'
 
@@ -11,13 +11,12 @@ interface StatisticRowProps {
   onChange: (value: number) => void
 }
 
-// Grid layout (icon | name+flags | value) and card treatment mirror AchievementRow.tsx's row
-// shape, restyled the same way for the same reason - a flat bordered list read as flat/boring next
-// to it once that one got the card treatment. Keep StatisticsList.tsx's ROW_HEIGHT in sync with
-// this row's actual rendered height, and StatisticsTab.tsx's column-header grid template in sync
-// with this grid.
-const ROW_GRID = 'grid-cols-[44px_1fr_auto]'
-
+// Card treatment mirrors AchievementRow.tsx, but slimmer: name (+ status chips) on the left, value
+// on the right. Earlier versions also had a generic chart-icon tile on every row (identical on all
+// of them, so it carried no information) and a "Flags: None"-style raw flags line under the name -
+// internal jargon that was "None" for nearly every stat. The two flags that actually matter to a
+// user are now plain-language chips instead: "Only increases" (incrementOnly) and, via the value
+// pill on the right, protected. Keep StatisticsList.tsx's ROW_HEIGHT in sync with this row's height.
 export const StatisticRow = ({ stat, value, isEdited, onChange }: StatisticRowProps) => {
   const { t } = useTranslation()
 
@@ -30,59 +29,39 @@ export const StatisticRow = ({ stat, value, isEdited, onChange }: StatisticRowPr
     <div className='h-full pb-2'>
       <div
         className={cn(
-          'grid h-full items-center gap-3 rounded-xl border px-3',
+          'flex h-full items-center gap-3 rounded-xl border px-4',
           'duration-150 bg-surface hover:border-accent/50',
-          ROW_GRID,
           isEdited ? 'border-accent/60' : 'border-border',
         )}
       >
-        <div className='relative shrink-0'>
-          <div
-            className={cn(
-              'flex h-11 w-11 items-center justify-center rounded-lg',
-              isEdited ? 'bg-accent/15 text-accent' : 'bg-surface-tertiary text-muted',
-            )}
+        <div className='flex min-w-0 flex-1 items-center gap-2'>
+          <Typography
+            truncate
+            className='min-w-0'
+            title={stat.name}
+            type='body-sm'
+            weight='semibold'
           >
-            <TbChartBar fontSize={20} />
-          </div>
-          {/* Surfaces `incrementOnly` - previously not shown anywhere in the UI at all, despite
-              being genuinely useful context (a counter-style stat that can only go up, e.g. total
-              kills) - same corner-badge treatment as AchievementRow.tsx's done/lockable indicator.
-              Position/size classes go on `AppTooltip.Trigger` itself, not a `div` nested inside it
-              - HeroUI's tooltip trigger renders `display: inline-block` with no intrinsic size, so
-              a single `position: absolute` child (which contributes no size to a normal-flow
-              parent) collapses that wrapper to 0x0 and the badge renders in the wrong place
-              entirely (confirmed live: it landed bottom-left of the whole card, not the icon). */}
+            {stat.name}
+          </Typography>
+          {isEdited && (
+            <span className='shrink-0 rounded-full bg-accent/15 px-1.5 py-0.5 text-[10px] font-semibold text-accent'>
+              {t('dashboard.achievements.edited')}
+            </span>
+          )}
           {stat.incrementOnly && (
             <AppTooltip.Root>
-              <AppTooltip.Trigger className='absolute -bottom-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-surface-tertiary text-muted ring-2 ring-surface'>
-                <TbTrendingUp fontSize={10} />
+              <AppTooltip.Trigger>
+                <span className='inline-flex shrink-0 items-center gap-1 rounded-full bg-surface-tertiary px-1.5 py-0.5 text-[10px] font-semibold whitespace-nowrap text-muted'>
+                  <TbTrendingUp fontSize={11} />
+                  {t('dashboard.achievements.incrementOnly')}
+                </span>
               </AppTooltip.Trigger>
               <AppTooltip.Content>
                 {t('dashboard.achievements.incrementOnlyTooltip')}
               </AppTooltip.Content>
             </AppTooltip.Root>
           )}
-        </div>
-
-        <div className='flex min-w-0 flex-col'>
-          <div className='flex items-baseline gap-2'>
-            <Typography truncate className='min-w-0' type='body-sm' weight='semibold'>
-              {stat.name}
-            </Typography>
-            {isEdited && (
-              <span className='shrink-0 rounded-full bg-accent/15 px-1.5 py-0.5 text-[10px] font-semibold text-accent'>
-                {t('dashboard.achievements.edited')}
-              </span>
-            )}
-          </div>
-          <Typography
-            className={cn('truncate', stat.protectedStat ? 'text-warning' : undefined)}
-            color={stat.protectedStat ? undefined : 'muted'}
-            type='body-xs'
-          >
-            {t('dashboard.achievements.statFlags', { flags: stat.flags })}
-          </Typography>
         </div>
 
         {stat.protectedStat ? (
@@ -99,8 +78,8 @@ export const StatisticRow = ({ stat, value, isEdited, onChange }: StatisticRowPr
           </AppTooltip.Root>
         ) : (
           <NumberField
-            aria-label={`${stat.name} value`}
-            className='w-32 shrink-0'
+            aria-label={stat.name}
+            className='w-36 shrink-0'
             formatOptions={{ useGrouping: false }}
             value={value}
             onChange={onChange}

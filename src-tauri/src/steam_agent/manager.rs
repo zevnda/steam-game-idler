@@ -764,10 +764,22 @@ impl AgentManager {
         let key = Self::key_for(username);
         let process = self.existing(&key).await?;
 
+        // Unlocking only - an unowned DLC achievement in the one batched `achievement_set_bulk`
+        // write would make Steam reject every other unlock in it too (see
+        // `AchievementData::unowned_dlc_group_ids`).
+        let unowned_dlc = if unlock {
+            data.unowned_dlc_group_ids()
+        } else {
+            Default::default()
+        };
+
         let mut skipped = Vec::new();
         let mut changes = Vec::new();
         for achievement in data.achievements {
-            if achievement.achieved == unlock || achievement.protected_achievement {
+            if achievement.achieved == unlock
+                || achievement.protected_achievement
+                || achievement.is_in_group(&unowned_dlc)
+            {
                 skipped.push(achievement.id);
             } else {
                 changes.push(AchievementChange {

@@ -1,9 +1,14 @@
-﻿import type { AchievementDto } from '@/features/achievement-manager/types'
+﻿import type { AchievementData, AchievementDto } from '@/features/achievement-manager/types'
 import type { AchievementOrder, AchievementTiming } from '../types'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { errorMessageKey, importTimingsErrorMessageKey } from '../utils/errorMessageKey'
 import { toast } from '@heroui/react'
+import {
+  dlcGroupIdsOf,
+  isInGroups,
+  unownedDlcGroupIdsOf,
+} from '@/features/achievement-manager/utils/groupAchievements'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 import { logFrontendInfo } from '@/shared/utils/frontendLogging'
 import { invoke } from '@/shared/utils/invoke'
@@ -48,6 +53,15 @@ export const useAchievementOrder = (openGame: OpenGame | null) => {
   // achievement_unlocker::manager's `scan_game` drops a game from the queue if *any* achievement is
   // protected - an already-unlocked protected one still disqualifies the whole game.
   const [hasProtectedAchievements, setHasProtectedAchievements] = useState(false)
+  // Sets from a DLC (see groupAchievements.ts) - the order stays one flat sequence that can freely
+  // interleave sets, so DLC achievements get a tag on their card rather than their own section.
+  const [dlcGroupIds, setDlcGroupIds] = useState<Set<number>>(new Set())
+  // Still-locked achievements from DLC this account doesn't own - kept out of `achievements` for
+  // the same reason as `protectedAchievements` (Steam rejects their unlock, and the unlocker skips
+  // them - see achievement_unlocker::manager's scan_game), and shown the same way: a read-only
+  // list after the real order, so the editor's count still adds up. A protected achievement goes
+  // in `protectedAchievements` even if it's also unowned DLC (that's the stronger reason).
+  const [unownedDlcAchievements, setUnownedDlcAchievements] = useState<AchievementDto[]>([])
 
   const load = useCallback(async () => {
     if (!account || !openGame) return
@@ -55,7 +69,7 @@ export const useAchievementOrder = (openGame: OpenGame | null) => {
     setLoadErrorCode(null)
     try {
       const [data, order] = await Promise.all([
-        invoke<{ achievements: AchievementDto[] }>('get_achievement_data', {
+        invoke<AchievementData>('get_achievement_data', {
           account,
           appId: openGame.appId,
           locale: i18n.language,
@@ -69,10 +83,20 @@ export const useAchievementOrder = (openGame: OpenGame | null) => {
       setHasProtectedAchievements(
         data.achievements.some(achievement => achievement.protectedAchievement),
       )
+      setDlcGroupIds(dlcGroupIdsOf(data.groups))
+      const unownedDlcGroupIds = unownedDlcGroupIdsOf(data.groups)
       const locked = data.achievements.filter(achievement => !achievement.achieved)
-      const orderable = locked.filter(achievement => !achievement.protectedAchievement)
+      const unprotected = locked.filter(achievement => !achievement.protectedAchievement)
+      const orderable = unprotected.filter(
+        achievement => !isInGroups(achievement, unownedDlcGroupIds),
+      )
       setProtectedAchievements(
         locked.filter(achievement => achievement.protectedAchievement).sort(byPercentDescending),
+      )
+      setUnownedDlcAchievements(
+        unprotected
+          .filter(achievement => isInGroups(achievement, unownedDlcGroupIds))
+          .sort(byPercentDescending),
       )
 
       if (order) {
@@ -116,6 +140,8 @@ export const useAchievementOrder = (openGame: OpenGame | null) => {
       setLoadErrorCode(null)
       setHasProtectedAchievements(false)
       setProtectedAchievements([])
+      setDlcGroupIds(new Set())
+      setUnownedDlcAchievements([])
       load()
     }
     // Only re-runs when the overlay opens for a (possibly new) game, same reasoning as
@@ -253,6 +279,8 @@ export const useAchievementOrder = (openGame: OpenGame | null) => {
     loadErrorCode,
     hasProtectedAchievements,
     protectedAchievements,
+    dlcGroupIds,
+    unownedDlcAchievements,
     refresh: load,
     reorder,
     toggleSkip,

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SteamUtility.Core.Models;
 
 namespace SteamUtility.Core.Services
 {
@@ -38,14 +39,24 @@ namespace SteamUtility.Core.Services
             CancellationToken ct
         )
         {
-            var (achievements, _) = await backend.GetAchievementsAndStatsAsync(appId, ct);
+            var (achievements, _, groups) = await backend.GetAchievementsAndStatsAsync(appId, ct);
+            // Unlocking only: Steam rejects the whole batched write if it includes an achievement
+            // from a DLC the account doesn't own (see AchievementGroupDto.Owned), so those are
+            // skipped rather than sinking every other unlock with them.
+            var unownedDlcGroupIds = unlock
+                ? AchievementGroupDto.UnownedDlcGroupIds(groups)
+                : new HashSet<int>();
 
             var skipped = new List<string>();
             var toChange = new List<(string Id, bool Unlock)>();
 
             foreach (var achievement in achievements)
             {
-                if (achievement.Achieved == unlock || achievement.ProtectedAchievement)
+                if (
+                    achievement.Achieved == unlock
+                    || achievement.ProtectedAchievement
+                    || (achievement.GroupId is int groupId && unownedDlcGroupIds.Contains(groupId))
+                )
                 {
                     skipped.Add(achievement.Id);
                 }

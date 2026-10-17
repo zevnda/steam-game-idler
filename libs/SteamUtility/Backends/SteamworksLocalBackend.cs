@@ -24,7 +24,8 @@ namespace SteamUtility.Backends
 
         public Task<(
             IReadOnlyList<AchievementDto> Achievements,
-            IReadOnlyList<StatDto> Stats
+            IReadOnlyList<StatDto> Stats,
+            IReadOnlyList<AchievementGroupDto> Groups
         )> GetAchievementsAndStatsAsync(uint appId, CancellationToken ct)
         {
             using var session = SteamworksSession.Open(appId, ct);
@@ -34,8 +35,16 @@ namespace SteamUtility.Backends
             if (schemaBytes == null)
             {
                 Log.Warn("SteamworksLocalBackend", $"No local schema found for app {appId}");
-                return Task.FromResult<(IReadOnlyList<AchievementDto>, IReadOnlyList<StatDto>)>(
-                    (new List<AchievementDto>(), new List<StatDto>())
+                return Task.FromResult<(
+                    IReadOnlyList<AchievementDto>,
+                    IReadOnlyList<StatDto>,
+                    IReadOnlyList<AchievementGroupDto>
+                )>(
+                    (
+                        new List<AchievementDto>(),
+                        new List<StatDto>(),
+                        new List<AchievementGroupDto>()
+                    )
                 );
             }
 
@@ -73,8 +82,31 @@ namespace SteamUtility.Backends
                         Percent = hasPercent ? percent : null,
                         ProtectedAchievement = (flags & StatFlags.Protected) != 0,
                         Flags = flags.ToString(),
+                        GroupId = def.GroupId,
                     };
                 })
+                .ToList();
+
+            // No Steamworks API exposes Achievement Set names, so they come straight from the
+            // schema - in the Steam client's own game language (a schema key like "german", the
+            // same one GetAchievementDisplayAttribute above localizes to), falling back to English.
+            var gameLanguage = SteamApps.GetCurrentGameLanguage();
+            //
+            // DLC ownership comes from the same live session: BIsSubscribedApp answers for the
+            // signed-in account (owned, or borrowed via Family Sharing), whether or not the DLC is
+            // installed - unlike BIsDlcInstalled, which would wrongly report an owned-but-not-
+            // downloaded DLC as unowned.
+            var groups = SchemaWalker
+                .ParseAchievementGroups(
+                    appId,
+                    schemaBytes,
+                    string.IsNullOrEmpty(gameLanguage) ? "english" : gameLanguage
+                )
+                .Select(group =>
+                    group.DlcAppId is uint dlcAppId
+                        ? group with { Owned = SteamApps.BIsSubscribedApp(new AppId_t(dlcAppId)) }
+                        : group
+                )
                 .ToList();
 
             var stats = statDefs
@@ -107,9 +139,11 @@ namespace SteamUtility.Backends
                 })
                 .ToList();
 
-            return Task.FromResult<(IReadOnlyList<AchievementDto>, IReadOnlyList<StatDto>)>(
-                (achievements, stats)
-            );
+            return Task.FromResult<(
+                IReadOnlyList<AchievementDto>,
+                IReadOnlyList<StatDto>,
+                IReadOnlyList<AchievementGroupDto>
+            )>((achievements, stats, groups));
         }
 
         public Task SetAchievementAsync(

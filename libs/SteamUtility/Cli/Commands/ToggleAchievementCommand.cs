@@ -30,7 +30,7 @@ namespace SteamUtility.Cli.Commands
             }
 
             var achievementId = args[2];
-            var (achievements, _) = await _backend.GetAchievementsAndStatsAsync(appId, ct);
+            var (achievements, _, _) = await _backend.GetAchievementsAndStatsAsync(appId, ct);
             var achievement = achievements.FirstOrDefault(a => a.Id == achievementId);
             if (achievement == null)
             {
