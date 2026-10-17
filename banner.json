@@ -1,11 +1,11 @@
 {
-  "id": "sgi-giveaway-2026-09",
+  "id": "sgi-achievement-sets-2026-10",
   "variant": "promo",
-  "title": "Steam Game Idler PRO Giveaway (1-month)",
-  "message": "Win a 1-month Steam Game Idler PRO subscription! Enter the giveaway on Discord now and boost your SGI experience with exclusive features.",
-  "ctaLabel": "Join the Discord",
-  "ctaUrl": "https://discord.gg/5kY2ZbVnZ8",
-  "asset": "giveaway.webp",
+  "title": "Achievement Sets are Supported in Steam Game Idler!",
+  "message": "Steam Game Idler now supports Steam's new Achievement Sets feature! Take a look at the new redesigned Achievement Manager page for one of the supported games.",
+  "ctaLabel": "Learn More",
+  "ctaUrl": "https://store.steampowered.com/news/app/593110/?emclan=103582791457287600&emgid=710037059469839141",
+  "asset": "update.webp",
   "dismissal": "permanent",
   "enabled": true
 }
