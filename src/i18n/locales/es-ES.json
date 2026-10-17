@@ -486,9 +486,7 @@
       "unlockedCount": "{{unlocked}} / {{total}} desbloqueado",
       "noDescription": "Sin descripción",
       "protectedTooltip": "Establecido por el servidor del juego y no puede ser cambiado por los clientes.",
-      "statFlags": "Banderas: {{flags}}",
       "edited": "Editado",
-      "editedCount": "{{count}} Editado",
       "incrementOnlyTooltip": "Esta estadística solo puede aumentar, nunca disminuir.",
       "sort": {
         "percent": "% de desbloqueo global",
@@ -509,10 +507,7 @@
         "lock": "Bloquear",
         "unlockAll": "Desbloquear todo",
         "lockAll": "Bloquear todo",
-        "applyChanges": "Realizar cambios",
-        "applyChangesCount": "Realizar cambios ({{count}})",
         "saveChanges": "Guardar cambios",
-        "saveChangesCount": "Guardar cambios ({{count}})",
         "resetAll": "Restablecer todo"
       },
       "confirmUnlockAll": {
@@ -569,9 +564,7 @@
         "unsupportedGameCoordinator": "Este juego no es compatible con los logros cuando se inicia sesión con Steam; utilice su cliente local de Steam en su lugar.",
         "unsupportedGameCoordinatorLinux": "Este juego no es compatible con los logros cuando se inicia sesión con Steam.",
         "generic": "Se produjo un error al cargar los logros. Inténtalo de nuevo. ({{code}})"
-      },
-      "statCount_one": "{{count}} estadística",
-      "statCount_other": "{{count}} estadísticas"
+      }
     },
     "cardFarming": {
       "status": {

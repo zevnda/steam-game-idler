@@ -472,9 +472,7 @@
       "unlockedCount": "{{unlocked}} / {{total}} freigeschaltet",
       "noDescription": "Keine Beschreibung",
       "protectedTooltip": "Wird vom Spielserver festgelegt und kann von Clients nicht geändert werden.",
-      "statFlags": "Flaggen: {{flags}}",
       "edited": "Bearbeitet",
-      "editedCount": "{{count}} bearbeitet",
       "incrementOnlyTooltip": "Diese Statistik kann nur erhöht und nicht verringert werden.",
       "sort": {
         "percent": "Globale Entsperrung %",
@@ -495,10 +493,7 @@
         "lock": "Sperren",
         "unlockAll": "Alle entsperren",
         "lockAll": "Alle sperren",
-        "applyChanges": "Änderungen übernehmen",
-        "applyChangesCount": "Änderungen übernehmen ({{count}})",
         "saveChanges": "Änderungen speichern",
-        "saveChangesCount": "Änderungen speichern ({{count}})",
         "resetAll": "Alle zurücksetzen"
       },
       "confirmUnlockAll": {
