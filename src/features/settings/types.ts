@@ -36,6 +36,22 @@ export interface ResetSettingsResult {
   ownershipSettings: OwnershipSettings | null
 }
 
+// Mirrors src-tauri/src/achievements/commands.rs::LibraryBulkSetResult.
+export interface LibraryBulkSetResult {
+  gamesTotal: number
+  gamesChanged: number
+  gamesFailed: number
+  achievementsChanged: number
+}
+
+// Mirrors the payload of src-tauri/src/achievements/commands.rs's LIBRARY_RUN_PROGRESS_EVENT.
+export interface LibraryRunProgress {
+  steamId: string
+  completed: number
+  total: number
+  achievementsChanged: number
+}
+
 // Mirrors src-tauri/src/steam_community/mod.rs::SteamCookies. Each cookie-authenticated feature
 // keeps its own copy of this shape rather than a shared frontend type - see
 // features/inventory-manager/types.ts's identical comment for the precedent this follows.

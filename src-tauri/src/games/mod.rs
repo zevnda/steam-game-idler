@@ -11,7 +11,7 @@
 //! achievements, and the free-game redeem flow are separate, later features (see `main`'s
 //! `game_data.rs` for what this deliberately doesn't port yet).
 
-mod cache;
+pub(crate) mod cache;
 pub mod commands;
 mod merge;
 pub(crate) mod web_api;

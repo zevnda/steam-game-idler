@@ -457,10 +457,13 @@ fn maybe_start_next_task<'a>(
                 let agent_manager = app_handle.state::<AgentManager>();
                 let unlocker_manager =
                     app_handle.state::<achievement_unlocker::AchievementUnlockerManager>();
+                let library_runs =
+                    app_handle.state::<crate::achievements::library_run::LibraryRunRegistry>();
                 match achievement_unlocker::commands::start_achievement_unlocker(
                     app_handle.clone(),
                     agent_manager,
                     unlocker_manager,
+                    library_runs,
                     account.clone(),
                     1,
                 )

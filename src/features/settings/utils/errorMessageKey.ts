@@ -24,6 +24,10 @@ export const errorMessageKey = (code: string) => KNOWN_ERROR_KEYS[code] ?? GENER
 // a log failure doesn't get mapped to the general-tab's settings-file copy.
 const DEBUG_ERROR_KEYS: Record<string, TranslationKey> = {
   log_io_failed: 'dashboard.settings.debug.errors.logIoFailed',
+  // From set_all_owned_games_achievements - see src-tauri/src/achievements/library_run.rs.
+  achievement_unlocker_running: 'dashboard.settings.debug.errors.achievementUnlockerRunning',
+  library_achievement_run_in_progress: 'dashboard.settings.debug.errors.libraryRunInProgress',
+  steam_not_running: 'common.errors.steamNotRunning',
 }
 const DEBUG_GENERIC_KEY: TranslationKey = 'common.errors.generic'
 

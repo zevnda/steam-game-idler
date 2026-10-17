@@ -106,6 +106,12 @@ pub enum AppError {
     #[error("failed to read/write a custom achievement order file: {0}")]
     AchievementOrderIo(String),
 
+    #[error("the achievement unlocker is running for this account")]
+    AchievementUnlockerRunning,
+
+    #[error("a library-wide achievement lock/unlock is already running for this account")]
+    LibraryAchievementRunInProgress,
+
     #[error("the requested Steam profile is private or has no public achievement data")]
     PlayerProfilePrivate,
 
@@ -271,6 +277,10 @@ impl AppError {
             AppError::PresenceSettingsIo(_) => "presence_settings_io_failed".to_string(),
             AppError::OwnershipSettingsIo(_) => "ownership_settings_io_failed".to_string(),
             AppError::AchievementOrderIo(_) => "achievement_order_io_failed".to_string(),
+            AppError::AchievementUnlockerRunning => "achievement_unlocker_running".to_string(),
+            AppError::LibraryAchievementRunInProgress => {
+                "library_achievement_run_in_progress".to_string()
+            }
             AppError::PlayerProfilePrivate => "player_profile_private".to_string(),
             AppError::PlayerNoTimestamps => "player_no_timestamps".to_string(),
             AppError::PlayerProfileNotFound(_) => "player_profile_not_found".to_string(),

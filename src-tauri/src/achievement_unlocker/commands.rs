@@ -1,6 +1,7 @@
 use tauri::{AppHandle, State};
 
-use crate::error::AppResult;
+use crate::achievements::library_run::LibraryRunRegistry;
+use crate::error::{AppError, AppResult};
 use crate::games::commands::{resolve_steam_id, GamesAccount};
 use crate::local_steam::commands::require_steam_running;
 use crate::steam_agent::AgentManager;
@@ -167,6 +168,7 @@ pub async fn start_achievement_unlocker(
     app_handle: AppHandle,
     agent_manager: State<'_, AgentManager>,
     unlocker_manager: State<'_, AchievementUnlockerManager>,
+    library_runs: State<'_, LibraryRunRegistry>,
     account: GamesAccount,
     max_concurrent_games: u32,
 ) -> AppResult<AchievementUnlockerState> {
@@ -175,6 +177,15 @@ pub async fn start_achievement_unlocker(
     }
 
     let steam_id = resolve_steam_id(&account, &agent_manager).await?;
+    // The Debug tab's library-wide lock/unlock writes the same achievements this would - see
+    // `achievements::library_run`'s module doc comment.
+    if library_runs.is_running(&steam_id) {
+        tracing::warn!(
+            steam_id,
+            "achievement unlocker: refused to start, a library-wide achievement run is in progress"
+        );
+        return Err(AppError::LibraryAchievementRunInProgress);
+    }
     unlocker_manager
         .start(&app_handle, steam_id, account, max_concurrent_games)
         .await
