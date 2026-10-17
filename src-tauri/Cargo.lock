@@ -4551,7 +4551,7 @@ checksum = "ff7589a1859b09232522bb9edf076ca7fcf14ded96685d3fa629db73023ffbb7"
 
 [[package]]
 name = "steam-game-idler"
-version = "6.2.9"
+version = "6.2.10"
 dependencies = [
  "base64 0.22.1",
  "chrono",

@@ -1,14 +1,14 @@
 {
-  "version": "6.2.9",
+  "version": "6.2.10",
   "major": false,
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUSDh2NGF3cDBSMGlhRldGaVU4OS9SVFlpcmdQYnNzSjRMSTFaWUV6OU50UTRaOGlMbDV4a0F2Um1ZZ0tzNmh4VzdlYmlOQUZLc0pRcFlkb0IrVXdzenVxYTkyenhjbEFvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkxOTE4NTE2CWZpbGU6U3RlYW0gR2FtZSBJZGxlcl82LjIuOV94NjQtc2V0dXAubnNpcy56aXAJdmVyc2lvbjo2LjIuOQpHSjMwV2I0MlphMFlaQmFCUVkzQ3o1SzdlVnZMYzk4V3VlTGhIbjdVWXVCbFVLMHc3NXVTWDVyeXpOQmt5QTZiSUpwdzBDZE42ZXhLd0QvY25FYjRDZz09Cg==",
-      "url": "https://github.com/zevnda/steam-game-idler/releases/download/6.2.9/Steam.Game.Idler_6.2.9_x64-setup.nsis.zip"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUSDh2NGF3cDBSMGhCNWZ5WkFHZkRPZUdiTXo1cDR1NWszOXlidzJEZWR1V2hUbi9lMk5iemhVYzN3S0NKWkNqaTlRazk0c05XUUtPYXk5VXdsOE5TYzBtd2FwNnltanc0PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkyMjM0NzM1CWZpbGU6U3RlYW0gR2FtZSBJZGxlcl82LjIuMTBfeDY0LXNldHVwLm5zaXMuemlwCXZlcnNpb246Ni4yLjEwCmttV1NwQVE0Q09SU3dpV3U3U1hmZFhIWlo3Q1c4TmUyUnBtbExNYU5CUzdvTjRpZUs4S29WajVjWG1LS0R1ZXRydklCUU5ZY0Z6UlkvWkhLeW1sMkRBPT0K",
+      "url": "https://github.com/zevnda/steam-game-idler/releases/download/6.2.10/Steam.Game.Idler_6.2.10_x64-setup.nsis.zip"
     },
     "linux-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUSDh2NGF3cDBSMG54dTAvdXdjY05ucUlqZUN2Q095SEZheTBNQVBwUFU0NW1RTXBqSk1UZjVPanFHRVQ0UlYyd2ROSUUrVksyMVlHdmkwUVJqSWVNWU02WW9BYVBTeHcwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkxOTE4OTY3CWZpbGU6U3RlYW0gR2FtZSBJZGxlcl82LjIuOV9hbWQ2NC5BcHBJbWFnZS50YXIuZ3oJdmVyc2lvbjo2LjIuOQpJbXdzYUtxdi9IdFBlZld3Snp0SG1xZ3FsbWc5ZmVZNzBkenhWRnBMaVloeE1uOGhJc3BUMHNZY0JPZ0pCbk9pWXNqeU1Kb3U4VytLVnVJenc2SVlEZz09Cg==",
-      "url": "https://github.com/zevnda/steam-game-idler/releases/download/6.2.9/Steam.Game.Idler_6.2.9_amd64.AppImage.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUSDh2NGF3cDBSMG5odjc4bEJ2eWd2WGJHMGtEa1RYMy9SWGtoNWk0cEpnSVlROVgvMXVLQUZ4VUZnM1FKRFpjS0tEVnBpSFI0Skc3OGVjM0xMa0JaQkxpNkZab1c1d0FVPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkyMjM0NTQyCWZpbGU6U3RlYW0gR2FtZSBJZGxlcl82LjIuMTBfYW1kNjQuQXBwSW1hZ2UudGFyLmd6CXZlcnNpb246Ni4yLjEwCnhVYTdCMmhERUdHS2RrbTR1Y3BlZnVpc1BLS2VwcmFmajVOenJoN2dPVG5pQkU3RU5jcWRLRWppYXhJTlAwUE1GdXVkdlpaNjdYOHFzSVdKMEFsOEJnPT0K",
+      "url": "https://github.com/zevnda/steam-game-idler/releases/download/6.2.10/Steam.Game.Idler_6.2.10_amd64.AppImage.tar.gz"
     }
   }
 }
