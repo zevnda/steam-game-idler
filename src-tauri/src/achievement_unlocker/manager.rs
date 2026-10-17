@@ -191,6 +191,13 @@ impl AchievementUnlockerManager {
         Ok(())
     }
 
+    /// Whether `steam_id` has a session actively working its queue - checked via the session's own
+    /// `is_running` rather than map membership, since a session whose queue emptied naturally can
+    /// still be tracked here after its loop has ended.
+    pub async fn is_running(&self, steam_id: &str) -> bool {
+        self.state(steam_id).await.is_running
+    }
+
     pub async fn state(&self, steam_id: &str) -> AchievementUnlockerState {
         match self.sessions.lock().await.get(steam_id) {
             Some(session) => session.state.lock().await.clone(),

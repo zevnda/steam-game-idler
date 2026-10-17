@@ -15,6 +15,8 @@ const KNOWN_ERROR_KEYS: Record<string, TranslationKey> = {
     'dashboard.achievementUnlocker.errors.queueCacheIoFailed',
   achievement_unlocker_settings_io_failed: 'dashboard.achievementUnlocker.errors.settingsIoFailed',
   achievement_order_io_failed: 'dashboard.achievementUnlocker.errors.orderIoFailed',
+  // start_achievement_unlocker refuses while the Debug tab's library-wide lock/unlock is running.
+  library_achievement_run_in_progress: 'dashboard.achievementUnlocker.errors.libraryRunInProgress',
   steam_not_running: 'common.errors.steamNotRunning',
 }
 

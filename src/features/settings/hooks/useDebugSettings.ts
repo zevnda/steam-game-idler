@@ -2,9 +2,17 @@
 import type { CardFarmingSettings } from '@/features/card-farming/types'
 import type { FreeGamesSettings } from '@/features/free-games/types'
 import type { InventorySettings } from '@/features/inventory-manager/types'
+import type { TranslationKey } from '@/i18n'
 import type { SignedInAccount } from '@/shared/stores/sessionStore'
-import type { ResetSettingsResult, Settings, SystemInfo } from '../types'
+import type {
+  LibraryBulkSetResult,
+  LibraryRunProgress,
+  ResetSettingsResult,
+  Settings,
+  SystemInfo,
+} from '../types'
 import { getVersion } from '@tauri-apps/api/app'
+import { listen } from '@tauri-apps/api/event'
 import { revealItemInDir } from '@tauri-apps/plugin-opener'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -27,6 +35,18 @@ import { invoke } from '@/shared/utils/invoke'
 import { preserveKeysAndClearData } from '@/shared/utils/update'
 
 const LOG_LINES_LIMIT = 500
+
+// Matches src-tauri/src/achievements/commands.rs's LIBRARY_RUN_PROGRESS_EVENT constant.
+const LIBRARY_RUN_PROGRESS_EVENT = 'library-achievement-run-progress'
+
+const LOCK_ALL_RESULT_KEYS: Record<'success' | 'partial', TranslationKey> = {
+  success: 'dashboard.settings.debug.lockAllAchievements.success',
+  partial: 'dashboard.settings.debug.lockAllAchievements.partial',
+}
+const UNLOCK_ALL_RESULT_KEYS: Record<'success' | 'partial', TranslationKey> = {
+  success: 'dashboard.settings.debug.unlockAllAchievements.success',
+  partial: 'dashboard.settings.debug.unlockAllAchievements.partial',
+}
 const LOG_POLL_INTERVAL_MS = 1000
 
 // Session/identity-adjacent keys deliberately left out of an exported settings snapshot - mirrors
@@ -103,6 +123,11 @@ export function useDebugSettings({
   const [isClearingData, setIsClearingData] = useState(false)
   const [isViewingLogFile, setIsViewingLogFile] = useState(false)
   const [isViewingSettingsFile, setIsViewingSettingsFile] = useState(false)
+  // Which library-wide achievement run (if any) this tab started, and its latest progress event -
+  // drive the confirmation dialog's locked-open running state. The backend independently refuses
+  // overlapping runs, see `library_run.rs`.
+  const [libraryRun, setLibraryRun] = useState<'lock' | 'unlock' | null>(null)
+  const [libraryRunProgress, setLibraryRunProgress] = useState<LibraryRunProgress | null>(null)
 
   const loadLogs = useCallback(async () => {
     try {
@@ -319,6 +344,50 @@ export function useDebugSettings({
     }
   }, [closeSettingsModal, router, t])
 
+  // Locks or unlocks every achievement in every owned game for the active account. The whole
+  // library run (concurrency, skipping achievement-less titles, per-game failure handling and
+  // logging, refusing to overlap the achievement unlocker) lives in
+  // `set_all_owned_games_achievements` - this only reports its summary.
+  const setAllAchievements = useCallback(
+    async (unlock: boolean) => {
+      if (!account) return
+      setLibraryRun(unlock ? 'unlock' : 'lock')
+      setLibraryRunProgress(null)
+      // Subscribed before invoking so the backend's initial 0-of-N event can't be missed. Not
+      // filtered by `steamId`: the confirmation dialog stays modal for the whole run, so this tab
+      // can't have started a second one for another account in the meantime.
+      let unlisten: (() => void) | undefined
+      try {
+        unlisten = await listen<LibraryRunProgress>(LIBRARY_RUN_PROGRESS_EVENT, event => {
+          setLibraryRunProgress(event.payload)
+        })
+        const result = await invoke<LibraryBulkSetResult>('set_all_owned_games_achievements', {
+          account,
+          unlock,
+        })
+        const values = {
+          achievements: result.achievementsChanged,
+          games: result.gamesChanged,
+          failed: result.gamesFailed,
+        }
+        const keys = unlock ? UNLOCK_ALL_RESULT_KEYS : LOCK_ALL_RESULT_KEYS
+        if (result.gamesFailed > 0) {
+          toast.warning(t(keys.partial, values))
+        } else {
+          toast.success(t(keys.success, values))
+        }
+      } catch (error) {
+        console.error('Error in (setAllAchievements):', error)
+        toast.danger(t(debugErrorMessageKey(String(error)), { code: String(error) }))
+      } finally {
+        unlisten?.()
+        setLibraryRun(null)
+        setLibraryRunProgress(null)
+      }
+    },
+    [account, t],
+  )
+
   return {
     logLines,
     logsErrorCode,
@@ -331,11 +400,14 @@ export function useDebugSettings({
     isClearingData,
     isViewingLogFile,
     isViewingSettingsFile,
+    libraryRun,
+    libraryRunProgress,
     viewLogFile,
     viewSettingsFile,
     clearLogs,
     exportSettings,
     resetSettings,
     clearData,
+    setAllAchievements,
   }
 }

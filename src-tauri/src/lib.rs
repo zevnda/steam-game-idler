@@ -83,6 +83,7 @@ pub fn run() {
         .manage(idling::auto_stop::IdleAutoStopRegistry::new())
         .manage(card_farming::CardFarmingManager::new())
         .manage(achievement_unlocker::AchievementUnlockerManager::new())
+        .manage(achievements::library_run::LibraryRunRegistry::new())
         .manage(local_steam::commands::SteamStatusMonitor::new())
         .setup(|app| {
             let log_guard = logging::init(app.handle())?;
@@ -181,6 +182,7 @@ pub fn run() {
             achievements::commands::set_achievement,
             achievements::commands::unlock_all_achievements,
             achievements::commands::lock_all_achievements,
+            achievements::commands::set_all_owned_games_achievements,
             achievements::commands::update_stats,
             achievements::commands::reset_all_stats,
             subscription::get_device_fingerprint,
