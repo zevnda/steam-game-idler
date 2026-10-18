@@ -157,6 +157,23 @@ pub struct BulkAchievementResult {
     pub failed: Vec<String>,
 }
 
+/// One staged change for `set_achievements` (the Achievement Manager's "Save changes"). Same
+/// `{id, unlock}` wire shape as the CLI's `set_achievements` arg and the daemon's
+/// `achievement_set_bulk` (`steam_agent::ipc::AchievementChange`).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AchievementChangeInput {
+    pub id: String,
+    pub unlock: bool,
+}
+
+/// Outcome of `set_achievements` - no `skipped`, since every change was explicitly chosen.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SetAchievementsResult {
+    pub succeeded: Vec<String>,
+    pub failed: Vec<String>,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -66,6 +66,12 @@ export interface StatUpdate {
   value: number
 }
 
+// Mirrors `achievements::SetAchievementsResult` - the staged "Save changes" outcome.
+export interface SetAchievementsResult {
+  succeeded: string[]
+  failed: string[]
+}
+
 export interface BulkAchievementResult {
   succeeded: string[]
   skipped: string[]

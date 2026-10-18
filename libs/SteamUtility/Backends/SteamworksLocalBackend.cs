@@ -303,11 +303,16 @@ namespace SteamUtility.Backends
             return Task.CompletedTask;
         }
 
+        // Achievements too (`true`), matching the daemon's ResetAllStatsAsync. Beyond parity, this
+        // is the only way to lock an achievement backed by a progress stat (a schema `progress`
+        // block, e.g. Scribble It!'s "Win N games"): the local client keeps such an achievement
+        // and its stat consistent, so ClearAchievement alone is silently undone and resetting
+        // stats alone gets the stat bumped back up on the next store. Confirmed live on 1088150.
         public Task ResetAllStatsAsync(uint appId, CancellationToken ct)
         {
             using var session = SteamworksSession.Open(appId, ct);
 
-            if (!SteamUserStats.ResetAllStats(false) || !SteamUserStats.StoreStats())
+            if (!SteamUserStats.ResetAllStats(true) || !SteamUserStats.StoreStats())
             {
                 throw new StoreStatsFailedException("Failed to reset all stats");
             }

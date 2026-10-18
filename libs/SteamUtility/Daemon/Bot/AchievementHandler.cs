@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using SteamKit2;
 using SteamKit2.Internal;
@@ -53,12 +55,71 @@ namespace SteamUtility.Daemon.Bot
         // in-memory schema/stat processing around it.
         private static readonly SemaphoreSlim StatsRequestThrottle = new(6, 6);
 
+        // Backoff before each retry of a timed-out ClientGetUserStats (attempts = length + 1).
+        private static readonly TimeSpan[] StatsRetryBackoff =
+        {
+            TimeSpan.FromSeconds(3),
+            TimeSpan.FromSeconds(10),
+        };
+
+        // When the next stats request may go out, shared by every caller. A timeout pushes it
+        // forward so the whole daemon backs off together, rather than the other in-flight requests
+        // carrying on at the same rate that just made Steam stall. Ticks of DateTime.UtcNow.
+        private static long s_statsCooldownUntilTicks;
+
+        // A ClientGetUserStats response that doesn't arrive within SteamKit2's AsyncJob timeout
+        // (10s default) surfaces as TaskCanceledException - Steam occasionally stalls under a
+        // sustained burst like the Debug tab's library-wide run (seen live: a few apps per
+        // ~1000-app run, in short clusters, each of which fetched fine on its own). Retried after
+        // a shared cooldown; still timing out after every retry becomes a typed
+        // stats_request_timeout instead of an unhandled internal_error.
         private async Task<StatsResult> GetStatsThrottled(uint appId, ulong steamId)
         {
             await StatsRequestThrottle.WaitAsync();
             try
             {
-                return await GetStats(appId, steamId);
+                for (var attempt = 0; ; attempt++)
+                {
+                    var wait =
+                        new DateTime(Interlocked.Read(ref s_statsCooldownUntilTicks), DateTimeKind.Utc)
+                        - DateTime.UtcNow;
+                    if (wait > TimeSpan.Zero)
+                    {
+                        await Task.Delay(wait);
+                    }
+
+                    try
+                    {
+                        return await GetStats(appId, steamId);
+                    }
+                    catch (TaskCanceledException) when (attempt < StatsRetryBackoff.Length)
+                    {
+                        var backoff = StatsRetryBackoff[attempt];
+                        var until = (DateTime.UtcNow + backoff).Ticks;
+                        // Only ever extend the shared cooldown, never shorten another caller's.
+                        long current;
+                        do
+                        {
+                            current = Interlocked.Read(ref s_statsCooldownUntilTicks);
+                        } while (
+                            until > current
+                            && Interlocked.CompareExchange(ref s_statsCooldownUntilTicks, until, current)
+                                != current
+                        );
+                        Log.Warn(
+                            "AchievementHandler",
+                            $"Stats request for app {appId} timed out (attempt {attempt + 1}), backing off {backoff.TotalSeconds}s"
+                        );
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        Log.Warn(
+                            "AchievementHandler",
+                            $"Stats request for app {appId} timed out after {attempt + 1} attempts"
+                        );
+                        throw new SteamApiTimeoutException();
+                    }
+                }
             }
             finally
             {
@@ -306,10 +367,10 @@ namespace SteamUtility.Daemon.Bot
             }
         }
 
-        // Mirrors the native ISteamUserStats.ResetAllStats(false) semantics: zero every plain stat
-        // (to its schema default) and clear every achievement group's underlying stat in one
-        // StoreStats call, bypassing per-stat Protected flags the same way the native privileged
-        // reset call does.
+        // Mirrors the native ISteamUserStats.ResetAllStats(true) semantics (achievements included,
+        // same as SteamworksLocalBackend.ResetAllStatsAsync): zero every plain stat (to its schema
+        // default) and clear every achievement group's underlying stat in one StoreStats call,
+        // bypassing per-stat Protected flags the same way the native privileged reset call does.
         public async Task ResetAllStatsAsync(uint appId, SteamID steamId)
         {
             if (IsGameCoordinatorTitle(appId))

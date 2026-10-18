@@ -96,6 +96,10 @@ namespace SteamUtility
                 },
                 { "unlock_all_achievements <app_id>", "Unlock all achievements" },
                 { "lock_all_achievements <app_id>", "Lock all achievements" },
+                {
+                    "set_achievements <app_id> <[{id, unlock}...]>",
+                    "Unlock/lock a list of achievements in one batch"
+                },
                 { "update_stats <app_id> <[stat_objects...]>", "Update achievement statistics" },
                 { "reset_all_stats <app_id>", "Reset all statistics" },
             };

@@ -186,14 +186,18 @@ namespace SteamUtility.Core.SchemaParsing
                             : "avgrate",
                         Permission = stat["permission"].AsInteger(0),
                         IncrementOnly = stat["incrementonly"].AsBoolean(false),
+                        // The (object) casts matter: without them each ternary's int/float
+                        // branches are promoted to float, boxing a float even for integer stats,
+                        // and the daemon's ResetAllStatsAsync `(int)` unbox then throws
+                        // InvalidCastException (seen live on Scribble It! 1088150).
                         MinValue = isInteger
-                            ? stat["min"].AsInteger(int.MinValue)
+                            ? (object)stat["min"].AsInteger(int.MinValue)
                             : stat["min"].AsFloat(float.MinValue),
                         MaxValue = isInteger
-                            ? stat["max"].AsInteger(int.MaxValue)
+                            ? (object)stat["max"].AsInteger(int.MaxValue)
                             : stat["max"].AsFloat(float.MaxValue),
                         DefaultValue = isInteger
-                            ? stat["default"].AsInteger(0)
+                            ? (object)stat["default"].AsInteger(0)
                             : stat["default"].AsFloat(0f),
                     }
                 );

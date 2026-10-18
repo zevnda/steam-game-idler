@@ -365,7 +365,8 @@ way; several serde-side field-naming bugs have been found this way.
 
 - **CLI commands**: `idle <app_id> [app_name]`, `get_achievement_data <app_id> [specific_id]`,
   `unlock_achievement`/`lock_achievement`/`toggle_achievement <app_id> <ach_id>`,
-  `unlock_all_achievements`/`lock_all_achievements <app_id>`, `update_stats <app_id> <stats...>`,
+  `unlock_all_achievements`/`lock_all_achievements <app_id>`, `set_achievements <app_id>
+  <[{id, unlock}...]>` (batched mix), `update_stats <app_id> <stats...>`,
   `reset_all_stats <app_id>`, `check_ownership [app_ids_json]`. Each prints exactly one JSON
   envelope line to stdout, except `idle`, which stays resident (one OS process per idling game — a
   hard Steamworks.NET constraint, not a code choice).

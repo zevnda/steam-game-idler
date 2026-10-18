@@ -1,0 +1,15 @@
+---
+title: 6.2.12
+date: 2026-10-19
+tags: ['Improved', 'Fixed']
+---
+
+### Improved 🚀
+- **Achievement Manager** is now much faster when you've selected several achievements to lock/unlock
+- **Lock/Unlock all app achievements** in **Settings → Debug** now covers every app you own, including mods, tools and demos, regardless of what's shown in your games list. Some achievements still can't be changed. For example, protected achievements are skipped, achievements from DLC you don't own are skipped when unlocking, and apps that are no longer on your account (such as a free game whose license was removed) can't be reached, even if their achievements still show on your Steam profile
+  - **Steam Sign-in**: basically every app on your account is included
+  - **Legacy Sign-in**: doesn't have as much coverage. It will only include games that you own a license for. It won't include most mods, tools and demos
+
+### Fixed 🐛
+- Fixed an issue where **Lock/Unlock all** in the **Achievement Manager** and **Lock/Unlock all app achievements** in **Settings → Debug** didn't lock achievements tied to statistics progress
+- Fixed an issue where **Reset all statistics** in the **Achievement Manager** could fail for some games when using Steam Sign-in

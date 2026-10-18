@@ -761,8 +761,6 @@ impl AgentManager {
         // Only `id`/`achieved`/`protected_achievement` matter here, never display text, so the
         // schema language is irrelevant - always "english".
         let data = self.achievements_get(username, app_id, "english").await?;
-        let key = Self::key_for(username);
-        let process = self.existing(&key).await?;
 
         // Unlocking only - an unowned DLC achievement in the one batched `achievement_set_bulk`
         // write would make Steam reject every other unlock in it too (see
@@ -797,24 +795,46 @@ impl AgentManager {
             });
         }
 
-        let response = process
-            .send_request(move |id| IpcRequest::achievement_set_bulk(id, app_id, changes))
-            .await?;
-        let result = ok_or_agent_error_with_result(response)?;
-
-        #[derive(Deserialize)]
-        #[serde(rename_all = "camelCase")]
-        struct BulkSetResponse {
-            succeeded: Vec<String>,
-            failed: Vec<String>,
-        }
-        let parsed: BulkSetResponse = serde_json::from_value(result)?;
-
+        let parsed = self.send_achievement_set_bulk(username, app_id, changes).await?;
         Ok(BulkAchievementResult {
             succeeded: parsed.succeeded,
             skipped,
             failed: parsed.failed,
         })
+    }
+
+    /// Applies an arbitrary unlock+lock mix in one `achievement_set_bulk` round trip (one
+    /// GetStats+StoreStats) - the Achievement Manager's staged "Save changes". Unlike
+    /// `bulk_set_achievements`, nothing is filtered: the caller chose every change explicitly.
+    pub async fn set_achievements(
+        &self,
+        username: &str,
+        app_id: u32,
+        changes: Vec<crate::achievements::AchievementChangeInput>,
+    ) -> AppResult<crate::achievements::SetAchievementsResult> {
+        let changes = changes
+            .into_iter()
+            .map(|change| AchievementChange {
+                id: change.id,
+                unlock: change.unlock,
+            })
+            .collect();
+        self.send_achievement_set_bulk(username, app_id, changes).await
+    }
+
+    async fn send_achievement_set_bulk(
+        &self,
+        username: &str,
+        app_id: u32,
+        changes: Vec<AchievementChange>,
+    ) -> AppResult<crate::achievements::SetAchievementsResult> {
+        let key = Self::key_for(username);
+        let process = self.existing(&key).await?;
+        let response = process
+            .send_request(move |id| IpcRequest::achievement_set_bulk(id, app_id, changes))
+            .await?;
+        let result = ok_or_agent_error_with_result(response)?;
+        Ok(serde_json::from_value(result)?)
     }
 
     /// Writes one or more plain numeric stats via the daemon's `stats_update` command.
