@@ -3,6 +3,7 @@
     "actions": {
       "submit": "提交",
       "cancel": "取消",
+      "close": "关闭",
       "tryAgain": "重试",
       "continue": "继续",
       "refresh": "刷新",
@@ -491,7 +492,24 @@
       "noDescription": "无描述",
       "protectedTooltip": "由游戏服务器设置，客户端无法更改",
       "edited": "已编辑",
+      "incrementOnly": "仅增加",
       "incrementOnlyTooltip": "此统计数据只能增加，不能减少",
+      "sets": {
+        "baseGame": "游戏本体",
+        "dlc": "DLC",
+        "notOwned": "未拥有"
+      },
+      "views": {
+        "all": "全部成就"
+      },
+      "filters": {
+        "all": "全部",
+        "locked": "已锁定",
+        "unlocked": "已解锁"
+      },
+      "selection": {
+        "selectAll": "全选"
+      },
       "sort": {
         "percent": "全球解锁百分比",
         "unlocked": "已解锁优先",
@@ -564,7 +582,8 @@
         "unsupportedGameCoordinator": "通过 Steam 登录时，该游戏不支持成就——请改用您的本地 Steam 客户端",
         "unsupportedGameCoordinatorLinux": "此游戏在通过 Steam 登录时不支持成就功能。",
         "generic": "加载成就时出错，请重试，（{{code}}）"
-      }
+      },
+      "pendingChanges_other": "{{count}} 处更改"
     },
     "cardFarming": {
       "status": {
@@ -711,6 +730,9 @@
         "protectedSection": {
           "title": "受保护的成就"
         },
+        "unownedDlcSection": {
+          "title": "来自您未拥有的 DLC"
+        },
         "protectedAlert": {
           "description": "成就解锁器会跳过带有任何受保护成就的游戏，因此该顺序不会生效。"
         },
@@ -753,7 +775,8 @@
         "title": "无法更新成就解锁器",
         "queueCacheIoFailed": "无法获取成就解锁器队列",
         "settingsIoFailed": "无法获取成就解锁器设置",
-        "orderIoFailed": "无法获取该游戏的成就顺序"
+        "orderIoFailed": "无法获取该游戏的成就顺序",
+        "libraryRunInProgress": "调试设置正在对所有游戏的成就执行锁定或解锁操作，进行期间无法启动，请等待操作完成后再试。"
       }
     },
     "autoIdle": {
@@ -1126,8 +1149,28 @@
           "confirmTitle": "清除所有本地数据？",
           "confirmDescription": "登出所有账号，停止所有正在运行的自动化任务，清除日志和此设备上本地存储的应用数据（最近搜索、库存锁定等），此操作不可撤销"
         },
+        "lockAllAchievements": {
+          "button": "锁定所有游戏成就",
+          "confirmTitle": "要锁定所有游戏中的全部成就吗？",
+          "confirmDescription": "将锁定此账号拥有的所有游戏中的全部成就，受保护的成就将被跳过，此操作可能需要几分钟，当游戏库较大时甚至可能需要几个小时，且此操作无法撤销。",
+          "success": "已在 {{games}} 款游戏中锁定 {{achievements}} 个成就",
+          "partial": "已在 {{games}} 款游戏中锁定 {{achievements}} 个成就，有 {{failed}} 款游戏未能更新，详情请查看日志。"
+        },
+        "allAchievementsRun": {
+          "running": "正在处理你的游戏库，请保持应用开启，直至处理完成。",
+          "progress": "已完成 {{completed}}/{{total}} 款游戏 · {{achievements}} 个成就已变更，请保持应用开启，直至处理完成。"
+        },
+        "unlockAllAchievements": {
+          "button": "解锁所有游戏成就",
+          "confirmTitle": "要解锁所有游戏中的全部成就吗？",
+          "confirmDescription": "将解锁此账号拥有的所有游戏中的全部成就，受保护的成就以及您未拥有的 DLC 中的成就将被跳过，此操作可能需要几分钟，当游戏库较大时甚至可能需要几个小时。",
+          "success": "已在 {{games}} 款游戏中解锁 {{achievements}} 个成就",
+          "partial": "已在 {{games}} 款游戏中解锁 {{achievements}} 个成就，有 {{failed}} 款游戏未能更新，详情请查看日志。"
+        },
         "errors": {
-          "logIoFailed": "无法获取日志文件"
+          "logIoFailed": "无法获取日志文件",
+          "achievementUnlockerRunning": "请先终止成就解锁器，否则它会撤销成就，或与当前操作争抢同一批成就。",
+          "libraryRunInProgress": "所有游戏的成就正在被锁定或解锁，请先等待该操作完成。"
         }
       },
       "footer": {
