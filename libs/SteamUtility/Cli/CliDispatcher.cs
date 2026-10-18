@@ -27,6 +27,7 @@ namespace SteamUtility.Cli
             ["toggle_achievement"] = new ToggleAchievementCommand(Backend),
             ["unlock_all_achievements"] = new UnlockAllAchievementsCommand(Backend),
             ["lock_all_achievements"] = new LockAllAchievementsCommand(Backend),
+            ["set_achievements"] = new SetAchievementsCommand(Backend),
             ["update_stats"] = new UpdateStatsCommand(Backend),
             ["reset_all_stats"] = new ResetAllStatsCommand(Backend),
             ["get_achievement_data"] = new GetAchievementDataCommand(Backend),

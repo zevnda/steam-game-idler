@@ -1171,22 +1171,22 @@
           "confirmDescription": "Signs every account out, stops any running automation, clears logs, and clears locally-stored app data on this device (recent searches, inventory locks, etc.). This can't be undone."
         },
         "lockAllAchievements": {
-          "button": "Lock all game achievements",
-          "confirmTitle": "Lock every achievement in every game?",
-          "confirmDescription": "Locks every achievement in every game this account owns. Protected achievements are skipped. This can take several minutes, or even hours for a large library, and can't be undone.",
-          "success": "Locked {{achievements}} achievements across {{games}} games",
-          "partial": "Locked {{achievements}} achievements across {{games}} games. {{failed}} games couldn't be updated - check the log for details."
+          "button": "Lock all app achievements",
+          "confirmTitle": "Lock every achievement in every app?",
+          "confirmDescription": "Locks every achievement in every app this account owns (games, mods, tools and more). This can take several minutes, or even hours for a large library, and can't be undone.",
+          "success": "Locked {{achievements}} achievements across {{games}} apps",
+          "partial": "Locked {{achievements}} achievements across {{games}} apps. {{failed}} apps couldn't be updated - check the log for details."
         },
         "allAchievementsRun": {
           "running": "Working through your library. Keep the app open until this finishes.",
-          "progress": "{{completed}} of {{total}} games done · {{achievements}} achievements changed. Keep the app open until this finishes."
+          "progress": "{{completed}} of {{total}} apps done · {{achievements}} achievements changed. Keep the app open until this finishes."
         },
         "unlockAllAchievements": {
-          "button": "Unlock all game achievements",
-          "confirmTitle": "Unlock every achievement in every game?",
-          "confirmDescription": "Unlocks every achievement in every game this account owns. Protected achievements and achievements from DLC you don't own are skipped. This can take several minutes, or even hours for a large library.",
-          "success": "Unlocked {{achievements}} achievements across {{games}} games",
-          "partial": "Unlocked {{achievements}} achievements across {{games}} games. {{failed}} games couldn't be updated - check the log for details."
+          "button": "Unlock all app achievements",
+          "confirmTitle": "Unlock every achievement in every app?",
+          "confirmDescription": "Unlocks every achievement in every app this account owns (games, mods, tools and more). This can take several minutes, or even hours for a large library.",
+          "success": "Unlocked {{achievements}} achievements across {{games}} apps",
+          "partial": "Unlocked {{achievements}} achievements across {{games}} apps. {{failed}} apps couldn't be updated - check the log for details."
         },
         "errors": {
           "logIoFailed": "Couldn't read or write the log file.",

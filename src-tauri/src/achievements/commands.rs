@@ -10,7 +10,9 @@ use crate::local_steam::commands::require_steam_running;
 use crate::steam_agent::AgentManager;
 
 use super::library_run::LibraryRunRegistry;
-use super::{AchievementData, BulkAchievementResult, StatUpdate};
+use super::{
+    AchievementChangeInput, AchievementData, BulkAchievementResult, SetAchievementsResult, StatUpdate,
+};
 
 /// Fetches achievement/stat data for `app_id`. One command for both sign-in modes, branching
 /// internally. Agent mode fails with `unsupported_game_coordinator` for Game Coordinator titles
@@ -145,6 +147,85 @@ pub async fn set_achievement(
     result
 }
 
+/// Applies the Achievement Manager's staged "Save changes" (an arbitrary unlock+lock mix) as one
+/// batched write - one SteamUtility spawn / one daemon round trip, one StoreStats - instead of the
+/// frontend replaying `set_achievement` per id, which scaled linearly with the selection size.
+///
+/// A batched StoreStats is all-or-nothing on Steam's side (e.g. one unowned-DLC unlock makes Steam
+/// reject the whole write, see `AchievementData::unowned_dlc_group_ids`), so any change the batch
+/// reports as failed is retried on its own via the single-achievement path - keeping the old
+/// loop's per-item granularity without paying its cost when nothing goes wrong.
+#[tauri::command]
+pub async fn set_achievements(
+    agent_manager: State<'_, AgentManager>,
+    account: GamesAccount,
+    app_id: u32,
+    changes: Vec<AchievementChangeInput>,
+) -> AppResult<SetAchievementsResult> {
+    if matches!(account, GamesAccount::Local { .. }) {
+        require_steam_running()?;
+    }
+    let attempted = changes.len();
+    let batch = match &account {
+        GamesAccount::Agent { username } => {
+            agent_manager
+                .set_achievements(username, app_id, changes.clone())
+                .await
+        }
+        GamesAccount::Local { .. } => {
+            local_steam::achievements::set_achievements(app_id, &changes).await
+        }
+    };
+    let mut result = match batch {
+        Ok(result) => result,
+        Err(e) => {
+            tracing::warn!(app_id, attempted, error = %e, "achievement manager: batched save failed, retrying individually");
+            SetAchievementsResult {
+                succeeded: Vec::new(),
+                failed: changes.iter().map(|c| c.id.clone()).collect(),
+            }
+        }
+    };
+
+    if !result.failed.is_empty() {
+        let retry: Vec<_> = changes
+            .iter()
+            .filter(|c| result.failed.contains(&c.id))
+            .cloned()
+            .collect();
+        result.failed.clear();
+        for change in retry {
+            let single = match &account {
+                GamesAccount::Agent { username } => {
+                    agent_manager
+                        .set_achievement(username, app_id, change.id.clone(), change.unlock)
+                        .await
+                }
+                GamesAccount::Local { .. } => {
+                    local_steam::achievements::set_achievement(app_id, &change.id, change.unlock)
+                        .await
+                }
+            };
+            match single {
+                Ok(()) => result.succeeded.push(change.id),
+                Err(e) => {
+                    tracing::warn!(app_id, achievement_id = change.id, unlock = change.unlock, error = %e, "achievement manager: set achievement failed");
+                    result.failed.push(change.id);
+                }
+            }
+        }
+    }
+
+    tracing::info!(
+        app_id,
+        attempted,
+        succeeded = result.succeeded.len(),
+        failed = result.failed.len(),
+        "achievement manager: saved staged changes"
+    );
+    Ok(result)
+}
+
 #[tauri::command]
 pub async fn unlock_all_achievements(
     agent_manager: State<'_, AgentManager>,
@@ -166,7 +247,7 @@ pub async fn lock_all_achievements(
     if matches!(account, GamesAccount::Local { .. }) {
         require_steam_running()?;
     }
-    set_all(&agent_manager, &account, app_id, false).await
+    lock_all_via_reset(&agent_manager, &account, app_id).await
 }
 
 /// Shared body of `unlock_all_achievements`/`lock_all_achievements`/
@@ -209,6 +290,82 @@ async fn set_all(
     result
 }
 
+/// Every "lock all" (Achievement Manager's per-game one and the Debug tab's library run): a full
+/// stats reset (achievements included) instead of `set_all`'s per-achievement clear. An
+/// achievement backed by a progress stat (e.g. Scribble It!'s "Win N games") can't be cleared on
+/// its own - Steam keeps it consistent with its stat, so the clear is silently undone yet still
+/// reported as succeeded (confirmed live on 1088150 in CLI mode). Resetting is the one call that
+/// actually locks those, at the cost of wiping the game's stats - both confirmation dialogs say so.
+///
+/// Falls back to `set_all` (keeping today's per-achievement behavior) when any achievement or stat
+/// is protected: the daemon's reset bypasses Protected flags, and those are server-authoritative
+/// values this app must never overwrite. A game with nothing unlocked is left alone entirely, so
+/// its stats aren't wiped for no reason.
+async fn lock_all_via_reset(
+    agent_manager: &AgentManager,
+    account: &GamesAccount,
+    app_id: u32,
+) -> AppResult<BulkAchievementResult> {
+    // Only ids/achieved/protected flags matter, never display text - schema language irrelevant.
+    let data = match account {
+        GamesAccount::Agent { username } => {
+            agent_manager.achievements_get(username, app_id, "english").await
+        }
+        GamesAccount::Local { .. } => local_steam::achievements::get_achievement_data(app_id).await,
+    };
+    let data = match data {
+        Ok(data) => data,
+        Err(e) => {
+            tracing::warn!(app_id, error = %e, "lock all: failed to fetch achievement data");
+            return Err(e);
+        }
+    };
+
+    if data.achievements.iter().any(|a| a.protected_achievement)
+        || data.stats.iter().any(|s| s.protected_stat)
+    {
+        tracing::info!(
+            app_id,
+            "lock all: game has protected achievements/stats, locking per achievement instead of resetting"
+        );
+        return set_all(agent_manager, account, app_id, false).await;
+    }
+
+    let (unlocked, locked): (Vec<_>, Vec<_>) =
+        data.achievements.into_iter().partition(|a| a.achieved);
+    let skipped = locked.into_iter().map(|a| a.id).collect();
+    if unlocked.is_empty() {
+        return Ok(BulkAchievementResult {
+            succeeded: Vec::new(),
+            skipped,
+            failed: Vec::new(),
+        });
+    }
+
+    let result = match account {
+        GamesAccount::Agent { username } => agent_manager.reset_all_stats(username, app_id).await,
+        GamesAccount::Local { .. } => local_steam::achievements::reset_all_stats(app_id).await,
+    };
+    match result {
+        Ok(()) => {
+            tracing::info!(
+                app_id,
+                locked = unlocked.len(),
+                "lock all: reset stats to lock achievements"
+            );
+            Ok(BulkAchievementResult {
+                succeeded: unlocked.into_iter().map(|a| a.id).collect(),
+                skipped,
+                failed: Vec::new(),
+            })
+        }
+        Err(e) => {
+            tracing::warn!(app_id, error = %e, "lock all: stats reset failed");
+            Err(e)
+        }
+    }
+}
+
 /// How many owned games `set_all_owned_games_achievements` works on at once. CLI mode is further
 /// capped by `local_steam::achievements`' own process semaphore (one `SteamUtility.exe` spawn per
 /// game), so this mostly governs agent mode, where every game is a concurrent daemon request on the
@@ -233,8 +390,9 @@ pub struct LibraryBulkSetResult {
 }
 
 /// Debug-tab action: locks (`unlock: false`) or unlocks (`unlock: true`) every achievement in
-/// every game in this account's cached owned-games list (the same `games::cache` the games-list
-/// page reads, so it covers exactly what the user sees there). Each game first goes through
+/// every app the account owns - freshly fetched via `games::commands::all_owned_app_ids`, not the
+/// games-list page's cache, so mods/tools/etc. are covered regardless of that page's "games only"
+/// display setting (see that function for each mode's reach). Each app first goes through
 /// `web_api::confirm_empty_schema` - most libraries are dominated by achievement-less titles, and
 /// agent mode otherwise waits out the daemon's ~7-10s negative lookup for each one (see that
 /// function's doc comment). A failed schema check just falls through to the real call, same
@@ -280,16 +438,22 @@ pub async fn set_all_owned_games_achievements(
         return Err(AppError::AchievementUnlockerRunning);
     }
 
-    let games = crate::games::cache::read(&app_handle, &steam_id)?;
+    let app_ids = match crate::games::commands::all_owned_app_ids(&account, agent_manager.inner(), &steam_id).await {
+        Ok(app_ids) => app_ids,
+        Err(e) => {
+            tracing::warn!(steam_id, unlock, error = %e, "library achievement run: failed to fetch owned apps");
+            return Err(e);
+        }
+    };
     tracing::info!(
         steam_id,
         unlock,
-        games = games.len(),
+        apps = app_ids.len(),
         "library achievement run: started"
     );
 
     let mut summary = LibraryBulkSetResult {
-        games_total: games.len(),
+        games_total: app_ids.len(),
         ..Default::default()
     };
     let mut completed = 0;
@@ -299,15 +463,19 @@ pub async fn set_all_owned_games_achievements(
 
     let agent_manager = agent_manager.inner();
     let account = &account;
-    let mut outcomes = stream::iter(games)
-        .map(|game| async move {
+    let mut outcomes = stream::iter(app_ids)
+        .map(|app_id| async move {
             if matches!(
-                super::web_api::confirm_empty_schema(game.app_id).await,
+                super::web_api::confirm_empty_schema(app_id).await,
                 Ok(true)
             ) {
                 return None;
             }
-            Some(set_all(agent_manager, account, game.app_id, unlock).await)
+            Some(if unlock {
+                set_all(agent_manager, account, app_id, true).await
+            } else {
+                lock_all_via_reset(agent_manager, account, app_id).await
+            })
         })
         .buffer_unordered(LIBRARY_RUN_CONCURRENCY);
 

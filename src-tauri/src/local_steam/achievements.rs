@@ -11,7 +11,9 @@ use std::sync::LazyLock;
 
 use tokio::sync::Semaphore;
 
-use crate::achievements::{AchievementData, BulkAchievementResult, StatUpdate};
+use crate::achievements::{
+    AchievementChangeInput, AchievementData, BulkAchievementResult, SetAchievementsResult, StatUpdate,
+};
 use crate::error::AppResult;
 use crate::steam_utility_exe;
 
@@ -40,6 +42,17 @@ pub async fn set_achievement(app_id: u32, achievement_id: &str, unlock: bool) ->
     };
     let _: serde_json::Value = run(&[cmd, &app_id.to_string(), achievement_id]).await?;
     Ok(())
+}
+
+/// Applies an arbitrary unlock+lock mix in one `SteamUtility.exe` spawn (one session, one
+/// StoreStats) - see `Cli/Commands/SetAchievementsCommand.cs`. JSON-encoded as a single arg, same
+/// convention as `update_stats`.
+pub async fn set_achievements(
+    app_id: u32,
+    changes: &[AchievementChangeInput],
+) -> AppResult<SetAchievementsResult> {
+    let changes_json = serde_json::to_string(changes)?;
+    run(&["set_achievements", &app_id.to_string(), &changes_json]).await
 }
 
 pub async fn unlock_all_achievements(app_id: u32) -> AppResult<BulkAchievementResult> {

@@ -10,6 +10,10 @@ namespace SteamUtility.Cli.Commands
     // SteamUserStats.ResetAllStats(true), which wipes numeric stats too, not just achievements.
     // Routes through the same safe per-achievement loop (BulkAchievementSetter) that
     // UnlockAllAchievements already used correctly, instead of a blanket reset.
+    // Known limitation: achievements backed by a progress stat can't be cleared this way (the
+    // client re-unlocks them) - so the app's "lock all" paths use reset_all_stats instead, see
+    // src-tauri/src/achievements/commands.rs's lock_all_via_reset. This verb is only reached as
+    // its fallback for games with protected achievements/stats, where a reset isn't safe.
     public sealed class LockAllAchievementsCommand : ICliCommand
     {
         private readonly ISteamStatsBackend _backend;

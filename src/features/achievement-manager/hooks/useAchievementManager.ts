@@ -1,4 +1,4 @@
-﻿import type { AchievementData, BulkAchievementResult } from '../types'
+﻿import type { AchievementData, BulkAchievementResult, SetAchievementsResult } from '../types'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { errorMessageKey } from '../utils/errorMessageKey'
@@ -114,11 +114,10 @@ export const useAchievementManager = (openGame: OpenGame | null) => {
   )
 
   // Backs AchievementsView's selection bar ("Save changes") - unlike `toggleAchievement`, this
-  // loops silently (no per-item toast, which would otherwise stack one toast per selected item) and
   // fires a single summary toast at the end, matching `bulkSetAchievements`'s one-toast convention.
-  // There's no single backend command for an arbitrary unlock+lock mix (unlike Unlock/Lock all's
-  // `unlock_all_achievements`/`lock_all_achievements`), so this replays `set_achievement` per id -
-  // a per-item failure is logged and the loop continues, never aborting the rest of the selection.
+  // One `set_achievements` call applies the whole unlock+lock mix as a single batched write (and
+  // retries any rejected item on its own, Rust-side) - replaying `set_achievement` per id made
+  // saving scale linearly with the selection size.
   const applyStagedChanges = useCallback(
     async (unlockIds: string[], lockIds: string[]) => {
       if (!account || !openGame) return
@@ -126,31 +125,22 @@ export const useAchievementManager = (openGame: OpenGame | null) => {
       const unlockedIds = new Set<string>()
       const lockedIds = new Set<string>()
       try {
-        for (const achievementId of unlockIds) {
-          try {
-            await invoke('set_achievement', {
-              account,
-              appId: openGame.appId,
-              achievementId,
-              unlock: true,
-            })
-            unlockedIds.add(achievementId)
-          } catch (error) {
-            console.error('Error in (set_achievement) during applyStagedChanges (unlock):', error)
+        const unlockSet = new Set(unlockIds)
+        try {
+          const result = await invoke<SetAchievementsResult>('set_achievements', {
+            account,
+            appId: openGame.appId,
+            changes: [
+              ...unlockIds.map(id => ({ id, unlock: true })),
+              ...lockIds.map(id => ({ id, unlock: false })),
+            ],
+          })
+          for (const id of result.succeeded) {
+            if (unlockSet.has(id)) unlockedIds.add(id)
+            else lockedIds.add(id)
           }
-        }
-        for (const achievementId of lockIds) {
-          try {
-            await invoke('set_achievement', {
-              account,
-              appId: openGame.appId,
-              achievementId,
-              unlock: false,
-            })
-            lockedIds.add(achievementId)
-          } catch (error) {
-            console.error('Error in (set_achievement) during applyStagedChanges (lock):', error)
-          }
+        } catch (error) {
+          console.error('Error in (set_achievements) during applyStagedChanges:', error)
         }
         setData(
           prev =>

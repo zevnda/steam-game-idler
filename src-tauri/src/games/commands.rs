@@ -121,6 +121,34 @@ pub async fn get_owned_games(
     })
 }
 
+/// Every app id this account owns, for the Debug tab's library-wide achievement lock/unlock -
+/// deliberately independent of `get_owned_games`'s display filtering and cache, so what gets
+/// targeted never depends on a games-list setting. Agent mode asks the daemon for every licensed
+/// app regardless of PICS type (`games_only: false`), which includes mods, tools and demos. CLI
+/// mode has no license-enumeration API at all, so it's the best available union: the local
+/// client's whitelist-based ownership check plus the Web API's `GetOwnedGames` - a mod or
+/// unlicensed-but-achievement-bearing app neither of those reports stays unreachable there.
+pub(crate) async fn all_owned_app_ids(
+    account: &GamesAccount,
+    agent_manager: &AgentManager,
+    steam_id: &str,
+) -> AppResult<Vec<u32>> {
+    let games = match account {
+        GamesAccount::Agent { username } => {
+            // Names are never shown here, so the schema language is irrelevant.
+            let raw = agent_manager.get_owned_apps(username, false, "english").await?;
+            merge::from_agent(raw)
+        }
+        GamesAccount::Local { .. } => {
+            let raw = local_steam::ownership::check_ownership().await?;
+            let api_key = crate::credential_store::load_web_api_key();
+            let fetch = web_api::fetch_owned_games(steam_id, api_key).await?;
+            merge::merge(raw, fetch.games)
+        }
+    };
+    Ok(games.into_iter().map(|game| game.app_id).collect())
+}
+
 /// Reads back the last cached owned-games list for `steam_id` without hitting the network - an
 /// empty list if nothing has been cached yet (not an error, same convention `get_user_summary_cache`
 /// already uses).

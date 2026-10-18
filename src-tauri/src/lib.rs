@@ -180,6 +180,7 @@ pub fn run() {
             customization::commands::get_custom_background_data_url,
             achievements::commands::get_achievement_data,
             achievements::commands::set_achievement,
+            achievements::commands::set_achievements,
             achievements::commands::unlock_all_achievements,
             achievements::commands::lock_all_achievements,
             achievements::commands::set_all_owned_games_achievements,
