@@ -89,6 +89,14 @@ fn main() {
 /// the same environment a .deb install runs in. The bundled lib dirs stay in `LD_LIBRARY_PATH`
 /// after the system ones, as a per-library fallback for anything the host doesn't ship.
 ///
+/// Skipped entirely while the NVIDIA proprietary driver is loaded: on NVIDIA + Wayland (KDE
+/// Plasma 6, CachyOS host WebKitGTK 2.54) the host-library path crashed on startup with
+/// "Error 71 (Protocol error) dispatching to Wayland display", and the usual workarounds either
+/// left the UI transparent (`WEBKIT_DISABLE_DMABUF_RENDERER=1`) or flickering
+/// (`__NV_DISABLE_EXPLICIT_SYNC=1`). The bundled libraries ran cleanly with neither, as did every
+/// release before this re-exec existed (issue #2163). NVIDIA users therefore keep the pre-6.2.9
+/// behavior - slower bundled WebKitGTK, animations reduced - which works rather than crashes.
+///
 /// Set `SGI_APPIMAGE_BUNDLED_LIBS=1` to skip this and force the bundled libraries (troubleshooting).
 #[cfg(target_os = "linux")]
 fn appimage_prefer_system_libraries() {
@@ -98,6 +106,12 @@ fn appimage_prefer_system_libraries() {
     // Set on the re-exec'd process so this only ever runs once.
     const REEXEC_MARKER: &str = "SGI_APPIMAGE_SYSTEM_LIBS";
     const OPT_OUT: &str = "SGI_APPIMAGE_BUNDLED_LIBS";
+    // Set (instead of re-exec'ing) when the NVIDIA check below kept the bundled libraries, so
+    // platform::log_runtime_environment can say why.
+    const NVIDIA_MARKER: &str = "SGI_APPIMAGE_NVIDIA_BUNDLED";
+    // Only exists while the NVIDIA proprietary kernel module is loaded - not for nouveau/NVK,
+    // which go through Mesa like every other GPU and weren't part of the #2163 report.
+    const NVIDIA_DRIVER_PROC: &str = "/proc/driver/nvidia/version";
     // Debian/Ubuntu multiarch, Fedora/openSUSE lib64, Arch/SteamOS plain lib. Only dirs that exist
     // are used; duplicates via /lib -> /usr/lib symlinks are harmless.
     const SYSTEM_LIB_DIRS: &[&str] = &[
@@ -134,6 +148,14 @@ fn appimage_prefer_system_libraries() {
         || std::env::var_os(REEXEC_MARKER).is_some()
         || std::env::var_os(OPT_OUT).is_some()
     {
+        return;
+    }
+
+    if Path::new(NVIDIA_DRIVER_PROC).exists() {
+        // SAFETY: single-threaded at this point (called first thing in main()).
+        unsafe {
+            std::env::set_var(NVIDIA_MARKER, "1");
+        }
         return;
     }
 

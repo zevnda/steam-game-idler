@@ -127,9 +127,12 @@ pub fn log_runtime_environment() {
     #[cfg(target_os = "linux")]
     {
         let (major, minor) = webkit_runtime_version();
-        // SGI_APPIMAGE_SYSTEM_LIBS is set by main.rs's re-exec, APPIMAGE by the AppImage runtime.
+        // SGI_APPIMAGE_SYSTEM_LIBS / SGI_APPIMAGE_NVIDIA_BUNDLED are set by main.rs's
+        // appimage_prefer_system_libraries, APPIMAGE by the AppImage runtime.
         let mode = if std::env::var_os("SGI_APPIMAGE_SYSTEM_LIBS").is_some() {
             "appimage, host libraries"
+        } else if std::env::var_os("SGI_APPIMAGE_NVIDIA_BUNDLED").is_some() {
+            "appimage, bundled libraries (nvidia driver detected)"
         } else if std::env::var_os("APPIMAGE").is_some() {
             "appimage, bundled libraries"
         } else {

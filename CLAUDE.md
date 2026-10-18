@@ -231,7 +231,11 @@ window/event/updater/clipboard permission changes.
   WebKitGTK and lagged badly vs. `.deb`/`.rpm` — that, not XWayland, was the cause of the
   long-standing AppImage lag (VM-tested 2026-10: every build was already on native Wayland via
   `main.rs`'s `GDK_BACKEND` override, and CLI 2.12's hook no longer forces `x11` anyway).
-  `SGI_APPIMAGE_BUNDLED_LIBS=1` forces the old bundled path for troubleshooting; the startup log
+  **Skipped when the NVIDIA proprietary driver is loaded** (`/proc/driver/nvidia/version`): on
+  NVIDIA + Wayland the host-library path crashed at startup ("Error 71 (Protocol error)
+  dispatching to Wayland display", issue #2163) while the bundled path ran cleanly — don't remove
+  this skip without a real NVIDIA test. `SGI_APPIMAGE_BUNDLED_LIBS=1` forces the old bundled path
+  for troubleshooting; the startup log
   line `platform: linux webview runtime` records WebKit version, mode and reduced-motion decision.
   Traps found the hard way: linuxdeploy's `AppRun` **prepends** every bundled dir to
   `LD_LIBRARY_PATH` (so a user-set one never wins — reorder it, and re-exec, since the loader only
