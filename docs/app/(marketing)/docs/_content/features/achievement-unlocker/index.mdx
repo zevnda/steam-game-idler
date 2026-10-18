@@ -1,6 +1,7 @@
 ---
 title: Achievement Unlocker
-description: Learn how to use the Steam Achievement Unlocker to automatically unlock achievements for your Steam games.
+seoTitle: 'Steam Achievement Unlocker: Free & Automatic | SGI'
+description: A free Steam achievement unlocker that works through a queue of your games, unlocking achievements with random, human-like delays or on your schedule.
 index: true
 ---
 
@@ -8,19 +9,23 @@ import DocsCTA from '@/app/(marketing)/docs/_components/DocsCTA';
 import MockButton from '@/app/(marketing)/docs/_components/MockButton';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 
-# How to Unlock Steam Achievements Automatically
+# Steam Achievement Unlocker: Unlock Achievements Automatically
 
-The Achievement Unlocker automatically unlocks achievements for your Steam games over time, with customizable delays and ordering to mimic natural gameplay.
+The Achievement Unlocker is Steam Game Idler's free Steam achievement unlocker. Add games you own to a queue, and SGI unlocks their achievements over time, waiting a random, human-like delay between each one. It works with both [Steam Sign-in and Legacy Sign-in](/docs/get-started/how-to-sign-in).
 
 <Callout type="info">
     Configure this feature's settings in [Settings → Achievement Unlocker](/docs/settings/achievement-unlocker) before using it
 </Callout>
 
-### Default Mode
+## How the Achievement Unlocker works
 
-In default mode, achievements are unlocked in order of global achievement rarity (most common first), with the delay set in [<MockButton type='context-cog' content='Settings → Achievement Unlocker → Unlock Interval' />](/docs/settings/achievement-unlocker#unlock-interval).
+By default, SGI unlocks a game's achievements in order of global rarity, starting with the most common. After each one, it waits a random amount of time within your [<MockButton type='context-cog' content='Settings → Achievement Unlocker → Unlock Interval' />](/docs/settings/achievement-unlocker#unlock-interval) range. That range can be anywhere from 1 minute to 48 hours.
 
-If you want to define a custom order, and dial in more accurate delays, use the [Custom Order & Unlock Delay](/docs/features/achievement-unlocker/custom-order-and-unlock-delay)
+While it runs, each active game shows a live countdown to its next achievement, with the next several upcoming achievements listed below it. Once the queue is empty, SGI can [start Card Farming or Auto-Idle](/docs/settings/achievement-unlocker#start-another-task-when-done) for you.
+
+Want a different order, or exact delays for specific achievements? Use [Custom Order & Unlock Delay](/docs/features/achievement-unlocker/custom-order-and-unlock-delay) instead of the default rarity order.
+
+## How to unlock Steam achievements automatically
 
 <Steps>
   <Step>
@@ -40,6 +45,36 @@ If you want to define a custom order, and dial in more accurate delays, use the 
   </Step>
 </Steps>
 
-While running, each active game shows a live countdown to its next achievement, with the next several upcoming achievements listed below it.
+## Make unlocks look natural
+
+These options are in [Settings → Achievement Unlocker](/docs/settings/achievement-unlocker) unless noted:
+
+- **Random intervals:** set a minimum and maximum wait, and SGI picks a random delay between them after every unlock.
+- **Unlock schedule:** only unlock during a time window, such as `09:00` to `17:00`. Outside it, the queue pauses and waits.
+- **Idle while unlocking:** keep the game running, so its playtime grows alongside its achievements.
+- **Skip hidden achievements:** leave the ones the developer has hidden for you to discover yourself.
+- **Custom order and delays:** set the exact order and a delay for each achievement on the [Custom Order & Unlock Delay](/docs/features/achievement-unlocker/custom-order-and-unlock-delay) page.
+- **Import timings:** copy the unlock order and delays from another Steam user's public profile with [Import Timings](/docs/features/achievement-unlocker/import-timings).
+
+## Run several games at once
+
+The free version works through your queue one game at a time. With [Run Multiple Games At Once](/docs/settings/achievement-unlocker#run-multiple-games-at-once) enabled, Pro Casual subscribers can run up to 3 games at once and Pro Gamer subscribers up to 32. Each game keeps its own schedule. Steam allows 32 games idling at once, so that limit is shared with every other idling feature.
+
+## Unlock all achievements at once
+
+The Achievement Unlocker spreads achievements out over time. To get every achievement in a game instantly, open the game in the [Achievement Manager](/docs/features/achievement-manager) and click <MockButton type='unlock-all' />. The same page can lock them again with <MockButton type='lock-all' />.
+
+## Is it safe?
+
+Steam Game Idler is legitimate software, and tools like it have been around for more than 10 years. Historically, Steam hasn't banned accounts just for using them. SGI's full source code is public on [GitHub](https://github.com/zevnda/steam-game-idler), so you can see exactly how it talks to Steam. As with any third-party tool, use it at your own discretion. The [FAQ](/docs/faq) covers more common questions.
+
+## Limitations
+
+- **Game Coordinator titles:** Team Fortress 2, Dota 2, CS2, Left 4 Dead 2 and Portal 2 keep their stats on Valve's Game Coordinator, which Steam Sign-in can't reach. On Windows, use Legacy Sign-in for these games. On Linux they can't be managed. [More in Troubleshooting](/docs/troubleshooting#achievement-game-coordinator-unsupported).
+- **Server-authoritative achievements:** if a game marks an achievement as set by its own server, no client can change it, SGI included.
+
+## Achievement Unlocker vs. Steam Achievement Manager
+
+Steam Achievement Manager (SAM) works by hand: you pick achievements and they change immediately. The Achievement Unlocker works through a queue for you and spaces them out with random delays and schedules. For SAM-style manual control, SGI has the [Achievement Manager](/docs/features/achievement-manager). See the full [Steam Game Idler vs. Steam Achievement Manager](/alternatives/steam-achievement-manager) comparison.
 
 <DocsCTA />

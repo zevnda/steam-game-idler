@@ -14,6 +14,11 @@ export const docs = defineDocs({
   docs: {
     schema: frontmatterSchema.extend({
       keywords: z.array(z.string()).optional(),
+      // Search-results title, used as-is (no " | Steam Game Idler" template suffix) for <title>,
+      // OG and Twitter. Optional: `title` alone also drives the sidebar/breadcrumb label, so this
+      // lets a page target a search query ("Steam Achievement Unlocker...") without renaming its
+      // nav entry. Keep it under 60 characters. See docs/[[...slug]]/page.tsx's generateMetadata.
+      seoTitle: z.string().optional(),
     }),
     postprocess: {
       includeProcessedMarkdown: true,
