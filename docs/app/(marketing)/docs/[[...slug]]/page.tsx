@@ -46,20 +46,24 @@ export async function generateMetadata(props: PageProps) {
   const page = source.getPage(params.slug)
   if (!page) notFound()
   const slugPath = (params.slug ?? []).join('/')
+  // An explicit search title (frontmatter `seoTitle`) is already complete, so it skips the root
+  // layout's "%s | Steam Game Idler" template; otherwise the nav title goes through it as before.
+  const { seoTitle } = page.data
+  const shareTitle = seoTitle ?? page.data.title
 
   return {
-    title: page.data.title,
+    title: seoTitle ? { absolute: seoTitle } : page.data.title,
     description: page.data.description,
     keywords: page.data.keywords,
     openGraph: {
       url: `https://steamgameidler.com/docs/${slugPath}`,
-      title: page.data.title,
+      title: shareTitle,
       description: page.data.description,
       images: 'https://steamgameidler.com/og-image.png',
       type: 'article',
     },
     twitter: {
-      title: page.data.title,
+      title: shareTitle,
       description: page.data.description,
       image: 'https://steamgameidler.com/og-image.png',
     },
