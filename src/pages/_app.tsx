@@ -21,6 +21,7 @@ import { useTraySync } from '@/shared/hooks/useTraySync'
 import { useZoomControls } from '@/shared/hooks/useZoomControls'
 import { useUpdateStore } from '@/shared/stores/updateStore'
 import { useFont } from '@/shared/theme/useFont'
+import { useHolidayDetection } from '@/shared/theme/useHolidayDetection'
 import { useTheme } from '@/shared/theme/useTheme'
 import '@/styles/globals.css'
 import '@/i18n'
@@ -56,6 +57,9 @@ const App = ({ Component, pageProps }: AppProps) => {
   // Same root-level reasoning as useZoomControls above - theme is an app-wide preference visible
   // on the pre-dashboard sign-in screens too, not just /dashboard/*. See useTheme.ts's own doc
   // comment for how it avoids flashing to `default` before subscription tier is confirmed.
+  // Before useTheme, which re-resolves whenever the detected holiday changes - see
+  // useHolidayDetection.ts for the local-midnight rollover.
+  useHolidayDetection()
   useTheme()
   // Same root-level reasoning as useTheme above, for the app-wide font choice - see useFont.ts's
   // own doc comment.

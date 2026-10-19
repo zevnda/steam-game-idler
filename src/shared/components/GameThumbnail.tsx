@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { useState } from 'react'
 import Image from 'next/image'
 import { Logo } from '@/shared/components/dashboard/Logo'
+import { HolidayThumbnailAccent } from '@/shared/components/holidays/HolidayThumbnailAccent'
 
 interface GameThumbnailProps {
   appId: number
@@ -47,6 +48,7 @@ export const GameThumbnail = ({ appId, name, children }: GameThumbnailProps) => 
           onError={() => setImageFailed(true)}
         />
       )}
+      <HolidayThumbnailAccent />
       {children}
     </div>
   )

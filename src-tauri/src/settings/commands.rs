@@ -148,6 +148,16 @@ pub fn set_disable_tooltips(app_handle: AppHandle, enabled: bool) -> AppResult<S
 }
 
 #[tauri::command]
+pub fn set_disable_holiday_themes(
+    app_handle: AppHandle,
+    disabled: bool,
+) -> AppResult<SettingsResponse> {
+    super::set_disable_holiday_themes(&app_handle, disabled)
+        .map_err(AppError::SettingsIo)
+        .map(build_response)
+}
+
+#[tauri::command]
 pub fn set_show_recommended_carousel(
     app_handle: AppHandle,
     enabled: bool,

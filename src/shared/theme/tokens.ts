@@ -20,6 +20,11 @@ export interface ThemeTokens {
   surfaceTertiary: string
   scrollbarThumb: string
   scrollbarTrack: string
+  // Optional HeroUI accent override (switches, selected tabs, progress bars, focus rings - `--focus`
+  // already resolves through `--accent`). Only the "signature" presets set these; a preset leaving
+  // them out keeps HeroUI's stock blue, and `applyTheme()` clears any previous override.
+  accent?: string
+  accentForeground?: string
 }
 
 // camelCase key -> the actual CSS custom property name it controls. Single source of truth for
@@ -38,4 +43,6 @@ export const THEME_TOKEN_CSS_VARS: Record<keyof ThemeTokens, string> = {
   surfaceTertiary: '--surface-tertiary',
   scrollbarThumb: '--scrollbar-thumb',
   scrollbarTrack: '--scrollbar-track',
+  accent: '--accent',
+  accentForeground: '--accent-foreground',
 }

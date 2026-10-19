@@ -1,5 +1,6 @@
 ﻿import type { FontPreset } from '@/shared/theme/font'
 import type { ThemePreset } from '@/shared/theme/presets'
+import type { ThemeTokens } from '@/shared/theme/tokens'
 import type { Settings } from '../types'
 import { open } from '@tauri-apps/plugin-dialog'
 import { useState } from 'react'
@@ -24,16 +25,17 @@ import { ToggleSwitch } from '@/shared/components/ToggleSwitch'
 import { useCarouselSettingsStore } from '@/shared/stores/carouselSettingsStore'
 import { useCustomBackgroundStore } from '@/shared/stores/customBackgroundStore'
 import { useDisableTooltipsStore } from '@/shared/stores/disableTooltipsStore'
+import { useHolidayStore } from '@/shared/stores/holidayStore'
 import { useProModalStore } from '@/shared/stores/proModalStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { applyFont, FONT_STORAGE_KEY } from '@/shared/theme/applyFont'
-import { applyTheme, THEME_STORAGE_KEY } from '@/shared/theme/applyTheme'
 import { FONT_CSS_VARS, FONT_DISPLAY_NAMES, FONT_KEYS } from '@/shared/theme/font'
 import {
   DEFAULT_THEME_PREVIEW_TOKENS,
-  isLightThemePreset,
   THEME_PRESETS,
+  THEME_SWATCH_BACKGROUNDS,
 } from '@/shared/theme/presets'
+import { applyResolvedTheme } from '@/shared/theme/resolveTheme'
 import { invoke } from '@/shared/utils/invoke'
 import { hasCasualAccess } from '@/shared/utils/subscriptionAccess'
 
@@ -45,6 +47,7 @@ interface CustomizationSettingsTabProps {
   onRefresh: () => void
   onSaveTheme: (theme: string) => Promise<boolean>
   onSaveDisableTooltips: (enabled: boolean) => Promise<boolean>
+  onSaveDisableHolidayThemes: (disabled: boolean) => Promise<boolean>
   onSaveShowRecommendedCarousel: (enabled: boolean) => Promise<boolean>
   onSaveShowRecentCarousel: (enabled: boolean) => Promise<boolean>
   onSaveCustomBackground: (path: string) => Promise<boolean>
@@ -54,8 +57,10 @@ interface CustomizationSettingsTabProps {
 
 // Theme keys in display order, `default` first - `THEME_PRESETS` itself has no entry for `default`
 // (see that file's header comment), so its preview tokens are read from
-// `DEFAULT_THEME_PREVIEW_TOKENS` instead of the registry.
-const THEME_KEYS: (ThemePreset | 'default')[] = [
+// `DEFAULT_THEME_PREVIEW_TOKENS` instead of the registry. Split into two rows - the animated
+// signature presets first, as the headline option, then the plain color presets - so they read as
+// their own tier of theme rather than more color swatches.
+const COLOR_THEME_KEYS: (ThemePreset | 'default')[] = [
   'default',
   'blue',
   'red',
@@ -64,6 +69,25 @@ const THEME_KEYS: (ThemePreset | 'default')[] = [
   'orange',
   'black',
   'white',
+]
+const SIGNATURE_THEME_KEYS: ThemePreset[] = [
+  'synthwave',
+  'aurora',
+  'nebula',
+  'terminal',
+  'ember',
+  'abyss',
+  'sugarDay',
+  'sugarNight',
+  'sakura',
+  'lofiRain',
+  'fireflies',
+  'holo',
+  'blackHole',
+  'lavaLamp',
+  'circuit',
+  'luxe',
+  'arcade',
 ]
 
 // The last of 11 settings categories - built once its underlying features (multi-theme system,
@@ -80,6 +104,7 @@ export const CustomizationSettingsTab = ({
   onRefresh,
   onSaveTheme,
   onSaveDisableTooltips,
+  onSaveDisableHolidayThemes,
   onSaveShowRecommendedCarousel,
   onSaveShowRecentCarousel,
   onSaveCustomBackground,
@@ -92,6 +117,9 @@ export const CustomizationSettingsTab = ({
   const openProModalWithTier = useProModalStore(state => state.openWithTier)
 
   const disableTooltips = useDisableTooltipsStore(state => state.disabled)
+  const holiday = useHolidayStore(state => state.holiday)
+  const holidayThemesDisabled = useHolidayStore(state => state.disabled)
+  const setHolidayThemesDisabled = useHolidayStore(state => state.setDisabled)
   const setDisableTooltips = useDisableTooltipsStore(state => state.setDisabled)
   const showRecommended = useCarouselSettingsStore(state => state.showRecommended)
   const setShowRecommended = useCarouselSettingsStore(state => state.setShowRecommended)
@@ -112,6 +140,20 @@ export const CustomizationSettingsTab = ({
     const ok = await onSaveDisableTooltips(next)
     if (ok) {
       setDisableTooltips(next)
+    } else {
+      reportError(actionErrorCode)
+    }
+  }
+
+  // Presented as "Show holiday themes" (on = showing), the inverse of the persisted
+  // `disableHolidayThemes` opt-out. Applies immediately either way - off swaps straight back to the
+  // user's own theme, back on (same day) brings the holiday straight back.
+  const handleToggleShowHolidayThemes = async (show: boolean) => {
+    const disabled = !show
+    const ok = await onSaveDisableHolidayThemes(disabled)
+    if (ok) {
+      setHolidayThemesDisabled(disabled)
+      if (settings) applyResolvedTheme(settings.theme, subscriptionTier, disabled)
     } else {
       reportError(actionErrorCode)
     }
@@ -190,11 +232,9 @@ export const CustomizationSettingsTab = ({
 
     const ok = await onSaveTheme(theme)
     if (ok) {
-      applyTheme(
-        theme === 'default' ? null : THEME_PRESETS[theme as ThemePreset],
-        isLightThemePreset(theme) ? 'light' : 'dark',
-      )
-      localStorage.setItem(THEME_STORAGE_KEY, theme)
+      // Through the resolver, not a direct apply - on a holiday (with holiday themes on) the new
+      // choice is saved and cached but the holiday keeps showing until tomorrow.
+      applyResolvedTheme(theme, subscriptionTier, holidayThemesDisabled)
       toast.success(t('dashboard.settings.customization.theme.saved'))
     } else {
       reportError(actionErrorCode)
@@ -219,6 +259,49 @@ export const CustomizationSettingsTab = ({
     } else {
       reportError(actionErrorCode)
     }
+  }
+
+  const renderSwatch = (key: ThemePreset | 'default') => {
+    // Widened to `ThemeTokens` - the `as const` registry's per-preset literal types don't all
+    // declare the optional `accent` key.
+    const tokens: ThemeTokens =
+      key === 'default' ? DEFAULT_THEME_PREVIEW_TOKENS : THEME_PRESETS[key]
+    const swatchBackground = key === 'default' ? undefined : THEME_SWATCH_BACKGROUNDS[key]
+    const isLocked = key !== 'default' && !canUseCasualFeatures
+    return (
+      <div key={key}>
+        {/* Not `isDisabled` - same reason as the background "Choose image" button above:
+            HeroUI's `Radio` mirrors Button's native-disabled semantics, which would silently
+            swallow the real click a locked swatch needs to open the upsell. Styled locked via a
+            plain conditional className instead of `data-disabled`, and `handleSelectTheme` (not
+            this component) is what actually stops a gated theme from being applied. */}
+        <Radio value={key}>
+          <Radio.Content
+            className={cn(
+              'flex min-w-16 flex-col items-center gap-1 rounded-lg p-2 outline-none data-focus-visible:ring-2 data-focus-visible:ring-focus data-selected:ring-2 data-selected:ring-accent',
+              isLocked ? 'opacity-50' : 'cursor-pointer',
+            )}
+          >
+            <span
+              className='relative h-8 w-8 overflow-hidden rounded-full border border-border'
+              style={{ background: swatchBackground ?? tokens.background }}
+            >
+              {/* Accent pip - signature presets also recolor HeroUI's accent, which the
+                  background circle alone wouldn't show. */}
+              {tokens.accent && (
+                <span
+                  className='absolute right-0.5 bottom-0.5 h-2.5 w-2.5 rounded-full ring-1 ring-black/40'
+                  style={{ background: tokens.accent }}
+                />
+              )}
+            </span>
+            <span className='w-full max-w-20 truncate text-center text-xs'>
+              {t(`dashboard.settings.customization.theme.names.${key}`)}
+            </span>
+          </Radio.Content>
+        </Radio>
+      </div>
+    )
   }
 
   if (loadErrorCode) {
@@ -258,6 +341,20 @@ export const CustomizationSettingsTab = ({
       <Typography type='h3' className='font-bold mb-4'>
         {t('dashboard.settings.customization.title')}
       </Typography>
+
+      {/* Only on a day a holiday theme applies - there's nothing to toggle otherwise. Shown even
+          once switched off, so the user can turn the holiday back on the same day. */}
+      {holiday && (
+        <SettingsRow
+          description={t('dashboard.settings.customization.holidayThemes.description')}
+          title={t('dashboard.settings.customization.holidayThemes.label')}
+        >
+          <ToggleSwitch
+            isSelected={!holidayThemesDisabled}
+            onChange={handleToggleShowHolidayThemes}
+          />
+        </SettingsRow>
+      )}
 
       <SettingsRow
         description={t('dashboard.settings.customization.tooltips.description')}
@@ -389,41 +486,20 @@ export const CustomizationSettingsTab = ({
           {t('dashboard.settings.customization.theme.description')}
         </Typography>
 
+        {/* One RadioGroup spanning both rows (not two groups) so arrow-key navigation and the
+            single bound `value` keep working across color and signature presets alike. */}
         <RadioGroup
           aria-label={t('dashboard.settings.customization.theme.label')}
-          className='flex flex-row flex-wrap gap-3 pt-1'
+          className='flex flex-col gap-3 pt-1'
           value={settings.theme}
           onChange={handleSelectTheme}
         >
-          {THEME_KEYS.map(key => {
-            const tokens = key === 'default' ? DEFAULT_THEME_PREVIEW_TOKENS : THEME_PRESETS[key]
-            const isLocked = key !== 'default' && !canUseCasualFeatures
-            const swatch = (
-              // Not `isDisabled` - same reason as the background "Choose image" button above:
-              // HeroUI's `Radio` mirrors Button's native-disabled semantics, which would silently
-              // swallow the real click a locked swatch needs to open the upsell. Styled locked via
-              // a plain conditional className instead of `data-disabled`, and `handleSelectTheme`
-              // (not this component) is what actually stops a gated theme from being applied.
-              <Radio value={key}>
-                <Radio.Content
-                  className={cn(
-                    'flex w-16 flex-col items-center gap-1 rounded-lg p-2 outline-none data-focus-visible:ring-2 data-focus-visible:ring-focus data-selected:ring-2 data-selected:ring-accent',
-                    isLocked ? 'opacity-50' : 'cursor-pointer',
-                  )}
-                >
-                  <span
-                    className='h-8 w-8 rounded-full border border-border'
-                    style={{ background: tokens.background }}
-                  />
-                  <span className='w-full truncate text-center text-xs'>
-                    {t(`dashboard.settings.customization.theme.names.${key}`)}
-                  </span>
-                </Radio.Content>
-              </Radio>
-            )
-
-            return <div key={key}>{swatch}</div>
-          })}
+          <div className='flex flex-row flex-wrap gap-3'>
+            {SIGNATURE_THEME_KEYS.map(key => renderSwatch(key))}
+          </div>
+          <div className='flex flex-row flex-wrap gap-3'>
+            {COLOR_THEME_KEYS.map(key => renderSwatch(key))}
+          </div>
         </RadioGroup>
       </div>
     </div>

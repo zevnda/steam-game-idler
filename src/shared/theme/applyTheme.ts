@@ -1,5 +1,8 @@
+import type { ThemePreset } from './presets'
 import type { ThemeTokens } from './tokens'
+import { isLightThemePreset, THEME_PRESETS } from './presets'
 import { THEME_TOKEN_CSS_VARS } from './tokens'
+import { useActiveThemeStore } from '@/shared/stores/activeThemeStore'
 
 // `localStorage` key the pre-hydration inline script in `_document.tsx` reads synchronously (and
 // `useTheme.ts` keeps current) so the first paint already shows the right theme instead of
@@ -26,10 +29,23 @@ export function applyTheme(tokens: ThemeTokens | null, colorScheme: 'dark' | 'li
   root.dataset.theme = colorScheme
   for (const key of Object.keys(THEME_TOKEN_CSS_VARS) as (keyof ThemeTokens)[]) {
     const cssVar = THEME_TOKEN_CSS_VARS[key]
-    if (tokens) {
-      root.style.setProperty(cssVar, tokens[key])
+    // Per-key check (not just `tokens`) - optional tokens like `accent` must be cleared when the
+    // newly-applied preset doesn't set them, or a previous signature preset's accent would linger.
+    const value = tokens?.[key]
+    if (value) {
+      root.style.setProperty(cssVar, value)
     } else {
       root.style.removeProperty(cssVar)
     }
   }
+}
+
+// Applies a named preset end to end - tokens, light/dark scheme, and `activeThemeStore` (which
+// `ThemeAmbient.tsx` reads to pick a signature preset's animated backdrop). Callers must resolve
+// tier gating first (pass `'default'` for an account without access); an unknown key also falls
+// back to `default`.
+export function applyThemePreset(theme: string) {
+  const tokens = Object.hasOwn(THEME_PRESETS, theme) ? THEME_PRESETS[theme as ThemePreset] : null
+  applyTheme(tokens, tokens && isLightThemePreset(theme) ? 'light' : 'dark')
+  useActiveThemeStore.getState().setPreset(tokens ? theme : 'default')
 }

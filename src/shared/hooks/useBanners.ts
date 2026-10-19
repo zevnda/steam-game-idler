@@ -1,8 +1,11 @@
 import type { TranslationKey } from '@/i18n'
 import type { SubscriptionDetails } from '@/shared/stores/subscriptionStore'
+import type { HolidayKey } from '@/shared/theme/holidays'
 import { useEffect, useState } from 'react'
 import { PAYPAL_BILLING_URL, STRIPE_BILLING_URL } from '@/shared/constants'
+import { useActiveThemeStore } from '@/shared/stores/activeThemeStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
+import { isHolidayKey, localDateKey } from '@/shared/theme/holidays'
 
 export type BannerVariant = 'danger' | 'warning' | 'info' | 'success' | 'promo'
 export type BannerDismissal = 'session' | 'permanent'
@@ -36,6 +39,26 @@ export interface ActiveBanner {
   asset?: string
   color?: PromoColor
   dismissal: BannerDismissal
+  // The CTA just closes the banner (a plain "Continue") instead of opening `ctaUrl`.
+  ctaDismisses?: boolean
+}
+
+// What `Banner.tsx` renders - an `ActiveBanner` whose text may come as translation keys (system
+// banners) instead of rendered strings (the remote banner).
+export type DisplayBanner = ActiveBanner & {
+  titleKey?: TranslationKey
+  messageKey?: TranslationKey
+  ctaLabelKey?: TranslationKey
+}
+
+// Each holiday's banner reuses an existing promo palette that suits it.
+const HOLIDAY_BANNER_COLORS: Record<HolidayKey, PromoColor> = {
+  christmas: 'red',
+  halloween: 'orange',
+  valentines: 'red',
+  lunarNewYear: 'gold',
+  newYearsEve: 'black-gold',
+  easter: 'rainbow',
 }
 
 interface SystemBannerDef {
@@ -88,12 +111,13 @@ function getPermanentlyDismissedBanners() {
   return dismissed
 }
 
-// Resolves the one bottom-of-screen banner to show, if any: a past-due-subscription alert takes
-// priority over the remote promo banner (both share the same slot - only one banner shows at a
-// time, matching `main`). `t()` is applied by the caller (`Banner.tsx`) since this hook only
+// Resolves the one bottom-of-screen banner to show, if any, in priority order: a past-due-
+// subscription alert, then the holiday-theme notice, then the remote promo banner (all share the
+// same slot - only one banner shows at a time, matching `main`). `t()` is applied by the caller (`Banner.tsx`) since this hook only
 // returns translation keys for system banners, not rendered strings.
 export function useBanners() {
   const subscriptionDetails = useSubscriptionStore(state => state.subscriptionDetails)
+  const activeThemePreset = useActiveThemeStore(state => state.preset)
   const [remoteBanner, setRemoteBanner] = useState<RemoteBannerDef | null>(null)
   const [sessionDismissed, setSessionDismissed] = useState<Set<string>>(new Set())
   // Starts empty and is populated from an effect, not the `useState` initializer - `localStorage`
@@ -128,8 +152,31 @@ export function useBanners() {
       ? remoteBanner
       : null
 
-  const activeBanner:
-    (ActiveBanner & { messageKey?: TranslationKey; ctaLabelKey?: TranslationKey }) | null = ready
+  // Keyed off the theme actually rendering (not just today's date), so it never shows when the user
+  // has disabled holiday themes. The id carries the holiday *and* the local date, so dismissing it
+  // permanently means "once per holiday, per year" - it doesn't come back on a relaunch later the
+  // same day, but does next year.
+  const holidayBannerId = isHolidayKey(activeThemePreset)
+    ? `holiday-${activeThemePreset}-${localDateKey(new Date())}`
+    : null
+  const eligibleHolidayBanner: DisplayBanner | null =
+    holidayBannerId &&
+    !sessionDismissed.has(holidayBannerId) &&
+    !permanentlyDismissed.includes(holidayBannerId)
+      ? {
+          id: holidayBannerId,
+          variant: 'promo',
+          color: HOLIDAY_BANNER_COLORS[activeThemePreset as HolidayKey],
+          message: '',
+          titleKey: 'common.banner.holiday.title',
+          messageKey: 'common.banner.holiday.message',
+          ctaLabelKey: 'common.actions.continue',
+          ctaDismisses: true,
+          dismissal: 'permanent',
+        }
+      : null
+
+  const activeBanner: DisplayBanner | null = ready
     ? eligibleSystemBanner
       ? {
           id: eligibleSystemBanner.id,
@@ -143,7 +190,7 @@ export function useBanners() {
               : STRIPE_BILLING_URL,
           dismissal: eligibleSystemBanner.dismissal,
         }
-      : eligibleRemoteBanner
+      : (eligibleHolidayBanner ?? eligibleRemoteBanner)
     : null
 
   const dismiss = (banner: ActiveBanner) => {

@@ -202,6 +202,21 @@ export const useSettingsModal = () => {
     }
   }, [])
 
+  // Mirrors `saveDisableTooltips` - `holidayStore.disabled` is written (and the theme re-resolved)
+  // by `CustomizationSettingsTab`'s handler after a successful save.
+  const saveDisableHolidayThemes = useCallback(async (disabled: boolean) => {
+    setActionErrorCode(null)
+    try {
+      setSettings(await invoke<Settings>('set_disable_holiday_themes', { disabled }))
+      logFrontendInfo('useSettingsModal', 'disable holiday themes setting saved', { disabled })
+      return true
+    } catch (error) {
+      console.error('Error in (set_disable_holiday_themes):', error)
+      setActionErrorCode(String(error))
+      return false
+    }
+  }, [])
+
   // Mirrors `saveAntiAway` exactly. `GamesPage`/`CardFarmingPage` read `carouselSettingsStore`
   // directly - `CustomizationSettingsTab`'s handlers write that store after a successful save.
   const saveShowRecommendedCarousel = useCallback(async (enabled: boolean) => {
@@ -277,6 +292,7 @@ export const useSettingsModal = () => {
     saveTheme,
     saveFont,
     saveDisableTooltips,
+    saveDisableHolidayThemes,
     saveShowRecommendedCarousel,
     saveShowRecentCarousel,
     saveCustomBackground,

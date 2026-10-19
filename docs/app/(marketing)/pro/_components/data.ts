@@ -71,9 +71,10 @@ export const allFeatures: Feature[] = [
   {
     icon: TbPalette,
     title: 'Exclusive Themes',
-    description: 'Customize SGI with 6 unique themes available only to PRO subscribers.',
+    description:
+      'Customize SGI with exclusive color themes and animated signature themes, available only to PRO subscribers.',
     detail:
-      'Restyle SGI with 6 hand-crafted color themes — Blue, Red, Purple, Pink, Gold, and Black. Switch between them anytime from Settings → Customization, no restart required.',
+      'Signature themes give SGI a live animated backdrop and their own accent color — from Synthwave’s neon sunset and Aurora’s northern lights to Sakura, Lo-fi Rain, Black Hole, and the pastel Sugar Day. Prefer something simpler? Classic color themes like Blue, Red, Purple, Pink, Orange, Black, and White are included too. Switch anytime from Settings → Customization, no restart required.',
     tier: 'casual',
     imgBg: `${CDN_BASE_URL}/pro-modal/pro2.webp`,
     darkText: true,

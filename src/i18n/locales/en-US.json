@@ -85,7 +85,11 @@
     },
     "banner": {
       "pastDue": "Your PRO subscription is past due. Please update your payment method to avoid losing access.",
-      "manageSubscription": "Manage Subscription"
+      "manageSubscription": "Manage Subscription",
+      "holiday": {
+        "title": "Happy Holidays",
+        "message": "You're seeing a festive theme for the holiday. If you don't like it, you can disable it in Settings → Customization."
+      }
     },
     "badges": {
       "beta": "Beta"
@@ -166,7 +170,7 @@
       },
       "themes": {
         "title": "Exclusive Themes",
-        "description": "Customize SGI with 6 unique themes available only to PRO subscribers."
+        "description": "Customize SGI with exclusive color themes and animated signature themes, available only to PRO subscribers."
       },
       "customBackground": {
         "title": "Custom Background Image"
@@ -1040,6 +1044,10 @@
           "saved": "Background updated",
           "cleared": "Background cleared"
         },
+        "holidayThemes": {
+          "label": "Show holiday themes",
+          "description": "A special theme is shown automatically for today's holiday. Turn this off to keep your usual theme."
+        },
         "theme": {
           "label": "Theme",
           "description": "Choose a color theme for the app.",
@@ -1052,7 +1060,24 @@
             "pink": "Pink",
             "orange": "Orange",
             "black": "Black",
-            "white": "White"
+            "white": "White",
+            "synthwave": "Synthwave",
+            "aurora": "Aurora",
+            "nebula": "Nebula",
+            "terminal": "Terminal",
+            "ember": "Ember",
+            "abyss": "Abyss",
+            "sugarDay": "Sugar Day",
+            "sugarNight": "Sugar Night",
+            "sakura": "Sakura",
+            "lofiRain": "Lo-fi Rain",
+            "fireflies": "Fireflies",
+            "holo": "Holo",
+            "blackHole": "Black Hole",
+            "lavaLamp": "Lava Lamp",
+            "circuit": "Circuit",
+            "luxe": "Luxe",
+            "arcade": "Arcade"
           }
         },
         "font": {
