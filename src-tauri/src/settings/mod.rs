@@ -104,6 +104,12 @@ pub struct Settings {
     /// switching never needs a download. Defaults `"inter"`.
     #[serde(default = "default_font")]
     pub font: String,
+    /// Opt-out for the automatic one-day holiday themes (`src/shared/theme/holidays.ts`) - free for
+    /// everyone, and app-wide like `theme` since it's a look-and-feel preference of this
+    /// installation. The frontend only shows its toggle on a day a holiday theme would apply.
+    /// Defaults `false` (holiday themes on).
+    #[serde(default)]
+    pub disable_holiday_themes: bool,
 }
 
 fn default_close_to_tray() -> bool {
@@ -147,6 +153,7 @@ impl Default for Settings {
             show_recommended_carousel: default_true(),
             show_recent_carousel: default_true(),
             font: default_font(),
+            disable_holiday_themes: false,
         }
     }
 }
@@ -317,6 +324,16 @@ pub fn set_disable_tooltips(
     enabled: bool,
 ) -> Result<Settings, String> {
     mutate(app_handle, |settings| settings.disable_tooltips = enabled)
+}
+
+/// Sets the holiday-themes opt-out. See [`Settings::disable_holiday_themes`].
+pub fn set_disable_holiday_themes(
+    app_handle: &tauri::AppHandle,
+    disabled: bool,
+) -> Result<Settings, String> {
+    mutate(app_handle, |settings| {
+        settings.disable_holiday_themes = disabled
+    })
 }
 
 /// Sets the "show Recommended carousel" toggle. See [`Settings::show_recommended_carousel`].

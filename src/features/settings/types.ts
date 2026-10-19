@@ -18,6 +18,7 @@ export interface Settings {
   disableTooltips: boolean
   showRecommendedCarousel: boolean
   showRecentCarousel: boolean
+  disableHolidayThemes: boolean
 }
 
 // Mirrors src-tauri/src/debug/commands.rs::SystemInfo.

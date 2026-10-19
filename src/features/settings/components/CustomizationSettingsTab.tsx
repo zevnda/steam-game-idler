@@ -25,16 +25,17 @@ import { ToggleSwitch } from '@/shared/components/ToggleSwitch'
 import { useCarouselSettingsStore } from '@/shared/stores/carouselSettingsStore'
 import { useCustomBackgroundStore } from '@/shared/stores/customBackgroundStore'
 import { useDisableTooltipsStore } from '@/shared/stores/disableTooltipsStore'
+import { useHolidayStore } from '@/shared/stores/holidayStore'
 import { useProModalStore } from '@/shared/stores/proModalStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { applyFont, FONT_STORAGE_KEY } from '@/shared/theme/applyFont'
-import { applyThemePreset, THEME_STORAGE_KEY } from '@/shared/theme/applyTheme'
 import { FONT_CSS_VARS, FONT_DISPLAY_NAMES, FONT_KEYS } from '@/shared/theme/font'
 import {
   DEFAULT_THEME_PREVIEW_TOKENS,
   THEME_PRESETS,
   THEME_SWATCH_BACKGROUNDS,
 } from '@/shared/theme/presets'
+import { applyResolvedTheme } from '@/shared/theme/resolveTheme'
 import { invoke } from '@/shared/utils/invoke'
 import { hasCasualAccess } from '@/shared/utils/subscriptionAccess'
 
@@ -46,6 +47,7 @@ interface CustomizationSettingsTabProps {
   onRefresh: () => void
   onSaveTheme: (theme: string) => Promise<boolean>
   onSaveDisableTooltips: (enabled: boolean) => Promise<boolean>
+  onSaveDisableHolidayThemes: (disabled: boolean) => Promise<boolean>
   onSaveShowRecommendedCarousel: (enabled: boolean) => Promise<boolean>
   onSaveShowRecentCarousel: (enabled: boolean) => Promise<boolean>
   onSaveCustomBackground: (path: string) => Promise<boolean>
@@ -102,6 +104,7 @@ export const CustomizationSettingsTab = ({
   onRefresh,
   onSaveTheme,
   onSaveDisableTooltips,
+  onSaveDisableHolidayThemes,
   onSaveShowRecommendedCarousel,
   onSaveShowRecentCarousel,
   onSaveCustomBackground,
@@ -114,6 +117,9 @@ export const CustomizationSettingsTab = ({
   const openProModalWithTier = useProModalStore(state => state.openWithTier)
 
   const disableTooltips = useDisableTooltipsStore(state => state.disabled)
+  const holiday = useHolidayStore(state => state.holiday)
+  const holidayThemesDisabled = useHolidayStore(state => state.disabled)
+  const setHolidayThemesDisabled = useHolidayStore(state => state.setDisabled)
   const setDisableTooltips = useDisableTooltipsStore(state => state.setDisabled)
   const showRecommended = useCarouselSettingsStore(state => state.showRecommended)
   const setShowRecommended = useCarouselSettingsStore(state => state.setShowRecommended)
@@ -134,6 +140,20 @@ export const CustomizationSettingsTab = ({
     const ok = await onSaveDisableTooltips(next)
     if (ok) {
       setDisableTooltips(next)
+    } else {
+      reportError(actionErrorCode)
+    }
+  }
+
+  // Presented as "Show holiday themes" (on = showing), the inverse of the persisted
+  // `disableHolidayThemes` opt-out. Applies immediately either way - off swaps straight back to the
+  // user's own theme, back on (same day) brings the holiday straight back.
+  const handleToggleShowHolidayThemes = async (show: boolean) => {
+    const disabled = !show
+    const ok = await onSaveDisableHolidayThemes(disabled)
+    if (ok) {
+      setHolidayThemesDisabled(disabled)
+      if (settings) applyResolvedTheme(settings.theme, subscriptionTier, disabled)
     } else {
       reportError(actionErrorCode)
     }
@@ -212,8 +232,9 @@ export const CustomizationSettingsTab = ({
 
     const ok = await onSaveTheme(theme)
     if (ok) {
-      applyThemePreset(theme)
-      localStorage.setItem(THEME_STORAGE_KEY, theme)
+      // Through the resolver, not a direct apply - on a holiday (with holiday themes on) the new
+      // choice is saved and cached but the holiday keeps showing until tomorrow.
+      applyResolvedTheme(theme, subscriptionTier, holidayThemesDisabled)
       toast.success(t('dashboard.settings.customization.theme.saved'))
     } else {
       reportError(actionErrorCode)
@@ -320,6 +341,20 @@ export const CustomizationSettingsTab = ({
       <Typography type='h3' className='font-bold mb-4'>
         {t('dashboard.settings.customization.title')}
       </Typography>
+
+      {/* Only on a day a holiday theme applies - there's nothing to toggle otherwise. Shown even
+          once switched off, so the user can turn the holiday back on the same day. */}
+      {holiday && (
+        <SettingsRow
+          description={t('dashboard.settings.customization.holidayThemes.description')}
+          title={t('dashboard.settings.customization.holidayThemes.label')}
+        >
+          <ToggleSwitch
+            isSelected={!holidayThemesDisabled}
+            onChange={handleToggleShowHolidayThemes}
+          />
+        </SettingsRow>
+      )}
 
       <SettingsRow
         description={t('dashboard.settings.customization.tooltips.description')}

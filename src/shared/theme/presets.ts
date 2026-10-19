@@ -17,7 +17,7 @@ export type ThemePreset = keyof typeof THEME_PRESETS
 // `depth` shifts the whole ladder darker (negative) while keeping every step's relative gap - the
 // signature presets use it so their animated backdrop (`ambientShaders.ts`) has a deeper canvas to glow
 // against, without changing the elevation model itself.
-function makeTokens(hue: number, chroma: number, depth = 0) {
+export function makeTokens(hue: number, chroma: number, depth = 0) {
   const oklch = (lightness: number) =>
     `oklch(${Math.round((lightness + depth) * 1000) / 1000} ${chroma} ${hue})`
   return {

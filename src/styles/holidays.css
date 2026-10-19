@@ -1,0 +1,231 @@
+/* Motion for HolidayDecorations.tsx's foreground props. Every animation here is transform/opacity
+   only (compositor-friendly), and everything long-running is a slow loop - these sit on screen all
+   day on a holiday, often behind an app the user isn't even looking at.
+
+   Three off-switches, matching the app's other ambient motion:
+   - `.holiday-paused` (window unfocused): freeze in place.
+   - `prefers-reduced-motion` / `.force-reduced-motion` (old WebKitGTK, see platformStore): no
+     motion at all, and the props that only make sense moving (sleigh, bats, floating hearts) are
+     hidden rather than frozen mid-screen. */
+
+.holiday-paused * {
+  animation-play-state: paused !important;
+}
+
+/* String lights (Christmas / New Year's Eve). */
+@keyframes holiday-bulb-twinkle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.holiday-bulb {
+  animation: holiday-bulb-twinkle 1.8s ease-in-out infinite;
+}
+
+/* Christmas: the sleigh crosses the top of the window once per 50s cycle - in view for ~12s. */
+@keyframes holiday-sleigh-fly {
+  0% {
+    transform: translate(-180px, 0);
+  }
+  12% {
+    transform: translate(50vw, -14px);
+  }
+  24%,
+  100% {
+    transform: translate(calc(100vw + 40px), 6px);
+  }
+}
+
+.holiday-sleigh {
+  animation: holiday-sleigh-fly 50s linear infinite;
+  animation-delay: 4s;
+  transform: translate(-180px, 0);
+}
+
+@keyframes holiday-snowman-wobble {
+  0%,
+  100% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+}
+
+.holiday-snowman {
+  animation: holiday-snowman-wobble 5s ease-in-out infinite;
+  transform-origin: 50% 100%;
+}
+
+/* Halloween: each bat crosses on its own cycle so they never flock in a predictable line. */
+@keyframes holiday-bat-fly {
+  0% {
+    transform: translate(-60px, 0);
+  }
+  8% {
+    transform: translate(25vw, -30px);
+  }
+  16% {
+    transform: translate(50vw, 10px);
+  }
+  24% {
+    transform: translate(75vw, -25px);
+  }
+  32%,
+  100% {
+    transform: translate(calc(100vw + 60px), 0);
+  }
+}
+
+@keyframes holiday-bat-flap {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.35);
+  }
+}
+
+.holiday-bat {
+  transform: translate(-60px, 0);
+  animation: holiday-bat-fly linear infinite;
+}
+
+.holiday-bat-1 {
+  animation-duration: 26s;
+  animation-delay: 2s;
+}
+
+.holiday-bat-2 {
+  animation-duration: 34s;
+  animation-delay: 9s;
+}
+
+.holiday-bat-3 {
+  animation-duration: 41s;
+  animation-delay: 17s;
+}
+
+.holiday-bat-wings {
+  animation: holiday-bat-flap 0.28s ease-in-out infinite;
+  transform-origin: 50% 40%;
+  transform-box: fill-box;
+}
+
+/* The spider creeps a little way along its web and back. */
+@keyframes holiday-spider-creep {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(-20deg);
+  }
+  50% {
+    transform: translate(-10px, -10px) rotate(-30deg);
+  }
+}
+
+.holiday-spider {
+  animation: holiday-spider-creep 7s ease-in-out infinite;
+}
+
+@keyframes holiday-flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 0.75;
+  }
+  45% {
+    opacity: 0.95;
+  }
+  70% {
+    opacity: 0.7;
+  }
+}
+
+.holiday-pumpkin-glow {
+  animation: holiday-flicker 2.4s ease-in-out infinite;
+}
+
+/* Valentine's: hearts rise from the bottom edge and fade out about a third of the way up. */
+@keyframes holiday-heart-rise {
+  0% {
+    transform: translateY(20px) scale(0.8);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.9;
+  }
+  60%,
+  100% {
+    transform: translateY(-34vh) scale(1);
+    opacity: 0;
+  }
+}
+
+.holiday-float-heart {
+  animation: holiday-heart-rise 11s ease-out infinite;
+  opacity: 0;
+}
+
+/* Lunar New Year: lanterns sway gently from their strings. */
+@keyframes holiday-lantern-sway {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+}
+
+.holiday-lantern {
+  animation: holiday-lantern-sway 4s ease-in-out infinite;
+  transform-origin: 50% 0;
+}
+
+/* Easter: the bunny peeks up from behind the eggs every so often, then ducks back down. */
+@keyframes holiday-bunny-peek {
+  0%,
+  70%,
+  100% {
+    transform: translateY(46px);
+  }
+  76%,
+  92% {
+    transform: translateY(0);
+  }
+}
+
+.holiday-bunny {
+  animation: holiday-bunny-peek 16s ease-in-out infinite;
+  transform: translateY(46px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .holiday-decorations * {
+    animation: none !important;
+  }
+
+  .holiday-sleigh,
+  .holiday-bat,
+  .holiday-float-heart {
+    display: none;
+  }
+}
+
+.holiday-decorations.force-reduced-motion * {
+  animation: none !important;
+}
+
+.holiday-decorations.force-reduced-motion .holiday-sleigh,
+.holiday-decorations.force-reduced-motion .holiday-bat,
+.holiday-decorations.force-reduced-motion .holiday-float-heart {
+  display: none;
+}

@@ -1,3 +1,4 @@
+import type { HolidayKey } from './holidays'
 import type { ThemePreset } from './presets'
 
 // Fragment shaders for the signature presets' animated backdrops, drawn by `ThemeAmbient.tsx` as
@@ -731,6 +732,194 @@ void main() {
 }
 `
 
+// --- Holiday backdrops (see `holidays.ts`). Foreground props (bats, snowman, lanterns...) are DOM
+// decorations in `HolidayDecorations.tsx`, not part of these shaders. ---
+
+// Christmas - snow at three depths, a soft snowbank glow along the bottom, faint stars.
+const CHRISTMAS = `
+void main() {
+  vec2 uv = gl_FragCoord.xy / u_res;
+  vec2 p = (gl_FragCoord.xy - 0.5 * u_res) / u_res.y;
+  vec3 col = vec3(0.05, 0.15, 0.12) * uv.y * 0.18;
+  col += vec3(0.9, 0.95, 1.0) * stars(p, 40.0, 0.05) * smoothstep(0.4, 0.9, uv.y) * 0.35;
+
+  for (int l = 0; l < 3; l++) {
+    float fl = float(l);
+    vec2 q = p * (4.0 + fl * 4.0);
+    q.y += u_time * (0.12 + fl * 0.08);
+    q.x += sin(q.y * 0.8 + u_time * 0.5 + fl) * 0.2;
+    vec2 id = floor(q);
+    vec2 f = fract(q) - 0.5;
+    float h = hash(id + fl * 31.0);
+    if (h > 0.55) {
+      float d = length(f - (vec2(hash(id + 1.0), hash(id + 2.0)) - 0.5) * 0.6);
+      float size = 0.07 - fl * 0.015;
+      col += vec3(0.9, 0.95, 1.0) * smoothstep(size, size * 0.3, d) * (0.35 - fl * 0.08);
+    }
+  }
+
+  float bank = smoothstep(0.12, 0.0, uv.y + (fbm(vec2(p.x * 3.0, 1.0)) - 0.5) * 0.06);
+  col += vec3(0.85, 0.92, 1.0) * bank * 0.16;
+  emit(col);
+}
+`
+
+// Halloween - a big harvest moon with clouds drifting across it, purple sky, green ground fog.
+const HALLOWEEN = `
+void main() {
+  vec2 uv = gl_FragCoord.xy / u_res;
+  vec2 p = (gl_FragCoord.xy - 0.5 * u_res) / u_res.y;
+  float aspect = u_res.x / u_res.y;
+  vec3 col = vec3(0.25, 0.08, 0.35) * uv.y * 0.18;
+
+  vec2 m = p - vec2(0.3 * aspect, 0.26);
+  float clouds = smoothstep(0.45, 0.7, fbm(p * vec2(2.0, 4.0) + vec2(u_time * 0.03, 0.0)));
+  float moon = smoothstep(0.13, 0.125, length(m));
+  float craters = fbm(m * 18.0) * 0.25;
+  col += vec3(1.0, 0.75, 0.35) * moon * (0.42 - craters * 0.4) * (1.0 - clouds * 0.75);
+  col += vec3(1.0, 0.55, 0.2) * exp(-length(m) * 6.0) * 0.12 * (1.0 - clouds * 0.5);
+  col += vec3(0.35, 0.25, 0.45) * clouds * 0.05;
+
+  float fog = fbm(vec2(p.x * 1.5 - u_time * 0.04, p.y * 3.0));
+  col += vec3(0.3, 0.75, 0.3) * fog * smoothstep(0.45, 0.0, uv.y) * 0.16;
+  emit(col);
+}
+`
+
+// Valentine's - soft glowing hearts drifting upward through a rose haze.
+const VALENTINES = `
+void main() {
+  vec2 uv = gl_FragCoord.xy / u_res;
+  vec2 p = (gl_FragCoord.xy - 0.5 * u_res) / u_res.y;
+  vec3 col = vec3(0.45, 0.08, 0.2) * (1.0 - uv.y) * 0.12;
+
+  for (int l = 0; l < 3; l++) {
+    float fl = float(l);
+    vec2 q = p * (2.5 + fl * 2.0) + vec2(fl * 7.0, 0.0);
+    q.y -= u_time * (0.06 + fl * 0.04);
+    q.x += sin(q.y * 1.1 + fl * 2.0 + u_time * 0.3) * 0.15;
+    vec2 id = floor(q);
+    vec2 f = fract(q) - 0.5;
+    float h = hash(id + fl * 11.0);
+    if (h > 0.8) {
+      vec2 d = f - (vec2(hash(id + 1.0), hash(id + 2.0)) - 0.5) * 0.4;
+      d = rot(sin(u_time + h * 20.0) * 0.25) * d;
+      float hd = sdHeart(d / 0.2 + vec2(0.0, 0.5)) * 0.2;
+      vec3 c = mix(vec3(1.0, 0.3, 0.45), vec3(1.0, 0.6, 0.75), fract(h * 9.0));
+      col += c * (smoothstep(0.012, 0.0, hd) * 0.3 + exp(-max(hd, 0.0) * 40.0) * 0.08) * (1.0 - fl * 0.25);
+    }
+  }
+  emit(col);
+}
+`
+
+// Lunar New Year - glowing sky lanterns rising at three depths, gold sparkles, a warm red glow.
+const LUNAR_NEW_YEAR = `
+void main() {
+  vec2 uv = gl_FragCoord.xy / u_res;
+  vec2 p = (gl_FragCoord.xy - 0.5 * u_res) / u_res.y;
+  vec3 col = vec3(0.5, 0.06, 0.04) * (1.0 - uv.y) * 0.16;
+
+  for (int l = 0; l < 3; l++) {
+    float fl = float(l);
+    vec2 q = p * (4.5 + fl * 3.0) + vec2(fl * 4.0, 0.0);
+    q.y -= u_time * (0.05 + fl * 0.03);
+    q.x += sin(q.y * 0.9 + fl + u_time * 0.2) * 0.12;
+    vec2 id = floor(q);
+    vec2 f = fract(q) - 0.5;
+    float h = hash(id + fl * 19.0);
+    if (h > 0.8) {
+      vec2 d = f - (vec2(hash(id + 1.0), hash(id + 2.0)) - 0.5) * 0.4;
+      // Lantern body - a rounded box slightly wider at the top.
+      vec2 b = abs(d) - vec2(0.09 - d.y * 0.15, 0.12);
+      float box = length(max(b, 0.0)) + min(max(b.x, b.y), 0.0) - 0.03;
+      float flicker = 0.8 + 0.2 * sin(u_time * 5.0 + h * 40.0);
+      vec3 c = mix(vec3(1.0, 0.35, 0.1), vec3(1.0, 0.75, 0.3), smoothstep(0.12, -0.12, d.y));
+      col += c * (smoothstep(0.01, 0.0, box) * 0.24 + exp(-max(box, 0.0) * 25.0) * 0.08) * flicker * (1.0 - fl * 0.25);
+    }
+  }
+  col += vec3(1.0, 0.82, 0.4) * stars(p, 36.0, 0.05) * 0.45;
+  emit(col);
+}
+`
+
+// New Year's Eve - fireworks: bursts of falling sparks in staggered slots over a starry sky.
+const NEW_YEARS_EVE = `
+void main() {
+  vec2 p = (gl_FragCoord.xy - 0.5 * u_res) / u_res.y;
+  float aspect = u_res.x / u_res.y;
+  vec3 col = vec3(0.85, 0.9, 1.0) * stars(p, 40.0, 0.05) * 0.35;
+
+  for (int b = 0; b < 4; b++) {
+    float fb = float(b);
+    float period = 4.0;
+    float tt = u_time + fb * period * 0.27;
+    float slot = floor(tt / period);
+    float age = fract(tt / period);
+    vec2 origin = vec2((hash(vec2(slot, fb)) - 0.5) * aspect * 0.85, hash(vec2(fb, slot + 3.0)) * 0.35 + 0.05);
+    float hue = hash(vec2(slot * 1.7, fb));
+    vec3 c = 0.55 + 0.45 * cos(6.2832 * (hue + vec3(0.0, 0.33, 0.67)));
+    if (age < 0.75) {
+      float a = age / 0.75;
+      float spread = 1.0 - pow(1.0 - a, 3.0);
+      for (int i = 0; i < 28; i++) {
+        float fi = float(i);
+        float ang = fi / 28.0 * 6.2832 + hash(vec2(slot, fi)) * 0.3;
+        float speed = 0.2 + hash(vec2(fi, slot)) * 0.08;
+        vec2 pos = origin + vec2(cos(ang), sin(ang)) * speed * spread - vec2(0.0, a * a * 0.1);
+        float d = length(p - pos);
+        col += c * exp(-d * d * 6000.0) * (1.0 - a) * 0.9;
+      }
+      col += c * exp(-length(p - origin) * 9.0) * max(0.0, 0.25 - a) * 0.8;
+    }
+  }
+  emit(col);
+}
+`
+
+// Easter - the one light holiday: a sunny spring sky, rolling pastel hills dotted with flowers,
+// petals drifting down. Painted opaque with paint(), like Sugar Day.
+const EASTER = `
+void main() {
+  vec2 uv = gl_FragCoord.xy / u_res;
+  vec2 p = (gl_FragCoord.xy - 0.5 * u_res) / u_res.y;
+  float aspect = u_res.x / u_res.y;
+
+  vec3 col = mix(vec3(1.0, 0.97, 0.88), vec3(0.82, 0.92, 1.0), smoothstep(0.1, 0.9, uv.y));
+  col += vec3(1.0, 0.95, 0.7) * exp(-length(p - vec2(-0.38 * aspect, 0.42)) * 4.0) * 0.25;
+  float cloud = smoothstep(0.52, 0.66, fbm(p * vec2(1.2, 2.4) + vec2(u_time * 0.012, 3.0)));
+  col = mix(col, vec3(1.0), cloud * 0.8 * smoothstep(0.35, 0.7, uv.y));
+
+  float far = 0.2 + 0.035 * sin(p.x * 2.2 + 1.0) + 0.02 * sin(p.x * 5.0);
+  float near = 0.11 + 0.04 * sin(p.x * 1.6 + 2.5) + 0.015 * sin(p.x * 6.0 + 1.0);
+  col = mix(col, vec3(0.8, 0.93, 0.74), smoothstep(far + 0.003, far - 0.003, uv.y));
+  col = mix(col, vec3(0.72, 0.89, 0.66), smoothstep(near + 0.003, near - 0.003, uv.y));
+
+  // Flowers on the near hill.
+  vec2 fq = p * 22.0;
+  vec2 fid = floor(fq);
+  float fh = hash(fid + 5.0);
+  if (fh > 0.8 && uv.y < near - 0.01) {
+    float d = length(fract(fq) - 0.5 - (vec2(hash(fid + 1.0), hash(fid + 2.0)) - 0.5) * 0.5);
+    col = mix(col, pastel(fract(fh * 11.0)), smoothstep(0.14, 0.1, d));
+  }
+
+  // Petals drifting down.
+  vec2 q = p * 5.0;
+  q += vec2(u_time * 0.15, u_time * 0.22);
+  q.x += sin(q.y * 0.8) * 0.3;
+  vec2 id = floor(q);
+  vec2 f = fract(q) - 0.5;
+  float h = hash(id + 13.0);
+  if (h > 0.82) {
+    vec2 d = rot(u_time * (h - 0.9) * 6.0 + h * 30.0) * (f - (vec2(hash(id + 1.0), hash(id + 2.0)) - 0.5) * 0.5);
+    float petal = length(d * vec2(1.0, 1.9)) - 0.09;
+    col = mix(col, pastel(fract(h * 7.0)), smoothstep(0.012, 0.0, petal) * 0.85);
+  }
+  paint(col, 1.0);
+}
+`
+
 export interface AmbientShader {
   source: string
   // Canvas resolution relative to CSS pixels. Soft, noise-heavy backdrops render at half
@@ -739,7 +928,7 @@ export interface AmbientShader {
   resolutionScale: number
 }
 
-export const AMBIENT_SHADERS: Partial<Record<ThemePreset, AmbientShader>> = {
+export const AMBIENT_SHADERS: Partial<Record<ThemePreset | HolidayKey, AmbientShader>> = {
   synthwave: { source: PRELUDE + SYNTHWAVE, resolutionScale: 0.75 },
   aurora: { source: PRELUDE + AURORA, resolutionScale: 0.5 },
   nebula: { source: PRELUDE + NEBULA, resolutionScale: 0.5 },
@@ -757,4 +946,11 @@ export const AMBIENT_SHADERS: Partial<Record<ThemePreset, AmbientShader>> = {
   circuit: { source: PRELUDE + CIRCUIT, resolutionScale: 1 },
   luxe: { source: PRELUDE + LUXE, resolutionScale: 0.5 },
   arcade: { source: PRELUDE + ARCADE, resolutionScale: 0.5 },
+  christmas: { source: PRELUDE + CHRISTMAS, resolutionScale: 0.5 },
+  halloween: { source: PRELUDE + HALLOWEEN, resolutionScale: 0.5 },
+  // Valentine's/Easter borrow SUGAR_LIB for its heart SDF/rot()/pastel() helpers.
+  valentines: { source: PRELUDE + SUGAR_LIB + VALENTINES, resolutionScale: 0.5 },
+  lunarNewYear: { source: PRELUDE + LUNAR_NEW_YEAR, resolutionScale: 0.5 },
+  newYearsEve: { source: PRELUDE + NEW_YEARS_EVE, resolutionScale: 0.5 },
+  easter: { source: PRELUDE + SUGAR_LIB + EASTER, resolutionScale: 0.75 },
 }

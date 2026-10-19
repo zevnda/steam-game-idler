@@ -1,3 +1,4 @@
+import type { HolidayKey } from '@/shared/theme/holidays'
 import type { ThemePreset } from '@/shared/theme/presets'
 import { useEffect, useRef, useState } from 'react'
 import { useActiveThemeStore } from '@/shared/stores/activeThemeStore'
@@ -66,7 +67,7 @@ export const ThemeAmbient = () => {
   // Bumped on `webglcontextrestored` to rebuild the GL program from scratch.
   const [contextGeneration, setContextGeneration] = useState(0)
 
-  const shader = AMBIENT_SHADERS[preset as ThemePreset]
+  const shader = AMBIENT_SHADERS[preset as ThemePreset | HolidayKey]
 
   useEffect(() => {
     const canvas = canvasRef.current
