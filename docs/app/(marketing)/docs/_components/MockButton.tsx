@@ -104,8 +104,9 @@ export default function MockButton({ type, content }: MockButtonProps) {
     )
   } else if (type === 'lock') {
     return (
-      <span className='inline-flex align-middle items-center justify-center text-icon-dark bg-red-500 text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbLock fontSize={16} className='inline' /> Lock
+      // Icon-only, matching the per-achievement quick action in the app's Achievement Manager.
+      <span className='inline-flex align-middle items-center justify-center text-icon-dark bg-red-500 w-6 h-6 rounded-full shadow-sm select-none'>
+        <TbLock fontSize={14} className='inline' />
       </span>
     )
   } else if (type === 'lock-all') {
@@ -122,8 +123,9 @@ export default function MockButton({ type, content }: MockButtonProps) {
     )
   } else if (type === 'unlock') {
     return (
-      <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbLockOpen fontSize={16} className='inline' /> Unlock
+      // Icon-only, matching the per-achievement quick action in the app's Achievement Manager.
+      <span className='inline-flex align-middle items-center justify-center bg-fd-muted w-6 h-6 rounded-full shadow-sm select-none'>
+        <TbLockOpen fontSize={14} className='inline' />
       </span>
     )
   } else if (type === 'unlock-all') {

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useActiveThemeStore } from '@/shared/stores/activeThemeStore'
 import { usePlatformStore } from '@/shared/stores/platformStore'
 import { AMBIENT_SHADERS } from '@/shared/theme/ambientShaders'
+import { THEME_PRESETS } from '@/shared/theme/presets'
 import { logFrontendWarn } from '@/shared/utils/frontendLogging'
 
 // 30fps is plenty for slow ambient motion and halves GPU time vs. a 60Hz rAF - this runs for
@@ -12,6 +13,14 @@ const FRAME_INTERVAL_MS = 1000 / 30
 // Wrap the time uniform so a multi-day session never loses float precision inside the shaders
 // (visible as stuttering/banding once seconds get large). One hour keeps the wrap seam rare.
 const TIME_WRAP_SECONDS = 3600
+// Experimental: a soft-focus blur over the signature presets' backdrops only (holiday backdrops
+// stay sharp, their props need to read clearly). Set to 0 to turn it off. A CSS filter, not a
+// shader pass - it's composited on the GPU, but re-blurs every drawn frame, so it does add some
+// cost on top of the shader itself.
+// TODO: decide keep/drop after trying it in the real app, and verify on WebKitGTK before shipping
+// - a CSS `filter` on a <video> is known to break rendering there (see CLAUDE.md), and a
+// canvas hasn't been checked.
+const SIGNATURE_BACKDROP_BLUR_PX = 8
 // Slow-device watchdog: after a warm-up, if the average gap between *drawn* frames over a sample
 // window exceeds this, the device can't hold even ~20fps of a 30fps target - the backdrop is then
 // costing more than it's worth, so it freezes to a static frame for the rest of the session.
@@ -236,15 +245,27 @@ export const ThemeAmbient = () => {
 
   if (!shader) return null
 
+  const blurPx = Object.hasOwn(THEME_PRESETS, preset) ? SIGNATURE_BACKDROP_BLUR_PX : 0
+
   // `key={preset}` gives every preset a fresh canvas - a WebGL context is bound to its canvas, and
   // reusing one across presets would leave the previous program's last frame visible until the
   // new one draws. Fades in on first appearance (e.g. once `useTheme` resolves after launch).
+  //
+  // A blurred canvas is oversized past the viewport by 3x the blur radius on every side - a blur
+  // samples transparent pixels beyond the canvas edge, which would otherwise leave a dim halo
+  // around the window border.
   return (
     <canvas
       key={preset}
       ref={canvasRef}
       aria-hidden='true'
-      className={`absolute inset-0 h-full w-full transition-opacity duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+      className={`absolute transition-opacity duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+      style={{
+        inset: -blurPx * 3,
+        width: `calc(100% + ${blurPx * 6}px)`,
+        height: `calc(100% + ${blurPx * 6}px)`,
+        filter: blurPx ? `blur(${blurPx}px)` : undefined,
+      }}
     />
   )
 }

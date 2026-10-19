@@ -24,18 +24,30 @@ The Achievement Manager lets you manually unlock and lock achievements for any g
   </Step>
 
   <Step>
-    On the achievement manager screen you will see a list of achievements for that game, if any are available
-    
-    Click <MockButton type='unlock' /> or <MockButton type='lock' /> next to an achievement to unlock or lock it individually
-    
-    Click  <MockButton type='unlock-all' /> or <MockButton type='lock-all' /> in the page header to affect every achievement at once
+    Use the left panel to pick <MockButton type='content' content='All achievements' /> to see everything, or, if the game has DLC or other achievement sets, pick a single set, for example, <MockButton type='content' content='Base game' />
+  </Step>
 
-    Use the <MockButton type='checkbox' /> next to each achievement to toggle its state, then click <MockButton type='content' content='Apply changes' /> to apply the changes
+  <Step>
+    Click <MockButton type='unlock' /> or <MockButton type='lock' /> at the end of an achievement's row to unlock or lock it immediately
+
+    Click <MockButton type='unlock-all' /> or <MockButton type='lock-all' /> in the left panel to affect every achievement in the game at once
+  </Step>
+
+  <Step>
+    To change several achievements together, click their checkboxes to select them. Selecting a locked achievement will unlock it, and selecting an unlocked one will lock it
+  </Step>
+
+  <Step>
+    A bar appears at the bottom of the list, click <MockButton type='content' content='Save changes' /> and confirm to apply them
   </Step>
 </Steps>
 
 <Callout type='info'>
     Some achievements/statistics are marked **Protected** and can't be modified. See [Special Flags](/docs/features/achievement-manager/special-flags)
+</Callout>
+
+<Callout type='info'>
+    Achievements from DLC you don't own are listed in their own set but can't be unlocked, and don't count toward the game's overall progress or <MockButton type='unlock-all' />
 </Callout>
 
 ### Statistics
@@ -50,11 +62,13 @@ The Achievement Manager lets you manually unlock and lock achievements for any g
   </Step>
 
   <Step>
-    On the achievement manager screen, click the <MockButton type='content' content='Statistics' /> tab in the page header. You will see a list of statistics for that game, if any are available
+    Click <MockButton type='content' content='Statistics' /> at the bottom of the left panel. You will see a list of statistics for that game, if any are available
   </Step>
 
   <Step>
-    Change the `value` of any statistics you want to modify and click <MockButton type='save-changes' />
+    Change the value of any statistics you want to modify, then click <MockButton type='content' content='Save changes' /> in the bar that appears at the bottom of the list
+
+    Click <MockButton type='content' content='Reset all' /> to reset every statistic for the game
   </Step>
 </Steps>
 
