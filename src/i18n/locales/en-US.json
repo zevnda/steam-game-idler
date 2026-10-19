@@ -166,7 +166,7 @@
       },
       "themes": {
         "title": "Exclusive Themes",
-        "description": "Customize SGI with 6 unique themes available only to PRO subscribers."
+        "description": "Customize SGI with exclusive color themes and animated signature themes, available only to PRO subscribers."
       },
       "customBackground": {
         "title": "Custom Background Image"
@@ -1052,7 +1052,24 @@
             "pink": "Pink",
             "orange": "Orange",
             "black": "Black",
-            "white": "White"
+            "white": "White",
+            "synthwave": "Synthwave",
+            "aurora": "Aurora",
+            "nebula": "Nebula",
+            "terminal": "Terminal",
+            "ember": "Ember",
+            "abyss": "Abyss",
+            "sugarDay": "Sugar Day",
+            "sugarNight": "Sugar Night",
+            "sakura": "Sakura",
+            "lofiRain": "Lo-fi Rain",
+            "fireflies": "Fireflies",
+            "holo": "Holo",
+            "blackHole": "Black Hole",
+            "lavaLamp": "Lava Lamp",
+            "circuit": "Circuit",
+            "luxe": "Luxe",
+            "arcade": "Arcade"
           }
         },
         "font": {

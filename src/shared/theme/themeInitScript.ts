@@ -18,5 +18,5 @@ export function buildThemeInitScript() {
   const presetsJson = JSON.stringify(THEME_PRESETS)
   const varsJson = JSON.stringify(THEME_TOKEN_CSS_VARS)
   const lightPresetsJson = JSON.stringify(Array.from(LIGHT_THEME_PRESETS))
-  return `(function(){try{var key=localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)});if(!key||key==='default')return;var presets=${presetsJson};var vars=${varsJson};var tokens=presets[key];if(!tokens)return;var root=document.documentElement;for(var k in vars){root.style.setProperty(vars[k],tokens[k]);}if(${lightPresetsJson}.indexOf(key)!==-1){root.setAttribute('data-theme','light');}}catch(e){}})();`
+  return `(function(){try{var key=localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)});if(!key||key==='default')return;var presets=${presetsJson};var vars=${varsJson};var tokens=presets[key];if(!tokens)return;var root=document.documentElement;for(var k in vars){if(tokens[k])root.style.setProperty(vars[k],tokens[k]);}if(${lightPresetsJson}.indexOf(key)!==-1){root.setAttribute('data-theme','light');}}catch(e){}})();`
 }

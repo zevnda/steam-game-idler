@@ -1,4 +1,5 @@
 ﻿import { useEffect } from 'react'
+import { ThemeAmbient } from './ThemeAmbient'
 import { useCustomBackgroundStore } from '@/shared/stores/customBackgroundStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { invoke } from '@/shared/utils/invoke'
@@ -34,6 +35,9 @@ export const CustomBackground = () => {
   return (
     <div className='pointer-events-none fixed inset-0 -z-10'>
       <div className='absolute inset-0 bg-background' />
+      {/* A user-picked image takes priority over a signature theme's animated backdrop - the two
+          would fight for the same canvas, and the image is the more deliberate choice. */}
+      {!showImage && <ThemeAmbient />}
       {showImage && (
         <>
           <div
