@@ -1,6 +1,7 @@
 ---
 title: Achievement Manager
-description: Learn how to use the Steam Achievement Manager to unlock, lock, and manage your Steam game achievements.
+seoTitle: 'Steam Achievement Manager - Unlock, Lock & Edit Stats | SGI'
+description: Unlock or lock any Steam achievement and edit game statistics with Steam Game Idler's free achievement manager, including Achievement Sets and DLC.
 index: true
 ---
 
@@ -8,11 +9,13 @@ import DocsCTA from '@/app/(marketing)/docs/_components/DocsCTA';
 import MockButton from '@/app/(marketing)/docs/_components/MockButton';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 
-# How to Manage Steam Achievements Manually
+# Steam Achievement Manager: Unlock and Lock Achievements
 
-The Achievement Manager lets you manually unlock and lock achievements for any game in your library, as well as modify game statistics. Unlike the [Achievement Unlocker](/docs/features/achievement-unlocker), this is a one-by-one manual tool: useful for targeting specific achievements without automation.
+The Achievement Manager is Steam Game Idler's free Steam achievement manager. Open any game you own to unlock or lock its achievements one at a time, several at once, or all together, and to edit its statistics. Changes apply immediately. It works with both [Steam Sign-in and Legacy Sign-in](/docs/get-started/how-to-sign-in).
 
-### Achievements
+Want achievements unlocked gradually instead, with human-like delays? That's the [Achievement Unlocker](/docs/features/achievement-unlocker). The Achievement Manager is the hands-on tool for targeting specific achievements.
+
+## How to unlock or lock Steam achievements
 
 <Steps>
   <Step>
@@ -29,8 +32,6 @@ The Achievement Manager lets you manually unlock and lock achievements for any g
 
   <Step>
     Click <MockButton type='unlock' /> or <MockButton type='lock' /> at the end of an achievement's row to unlock or lock it immediately
-
-    Click <MockButton type='unlock-all' /> or <MockButton type='lock-all' /> in the left panel to affect every achievement in the game at once
   </Step>
 
   <Step>
@@ -42,27 +43,37 @@ The Achievement Manager lets you manually unlock and lock achievements for any g
   </Step>
 </Steps>
 
-<Callout type='info'>
-    Some achievements/statistics are marked **Protected** and can't be modified. See [Special Flags](/docs/features/achievement-manager/special-flags)
-</Callout>
+## Find the achievements you want
+
+Games can have hundreds of achievements, so the list has a few ways to narrow it down:
+
+- **Search** by achievement name. Close matches count, so small typos still find it.
+- **Filter** to <MockButton type='content' content='All' />, <MockButton type='content' content='Locked' /> or <MockButton type='content' content='Unlocked' />.
+- **Sort** by <MockButton type='content' content='Global unlock %' />, locked or unlocked first, or protected or unprotected first.
+- **Rarity:** every achievement shows its global unlock percentage and a rarity label, from **Common** to **Legendary**.
+- **Hidden achievements** have their description blurred, so you don't spoil anything by accident. Hover over one to read it.
+
+## Unlock or lock all achievements
+
+Click <MockButton type='unlock-all' /> or <MockButton type='lock-all' /> in the left panel and confirm to change every achievement in the game at once. Protected achievements and achievements from DLC you don't own are skipped.
 
 <Callout type='info'>
-    Achievements from DLC you don't own are listed in their own set but can't be unlocked, and don't count toward the game's overall progress or <MockButton type='unlock-all' />. Learn more about [Steam Achievement Sets](/blog/steam-achievement-sets)
+    <MockButton type='lock-all' /> also resets the game's statistics to their defaults. Some games tie achievements to a statistic, such as kills or distance driven, and would unlock them again the next time the stat is checked if only the achievements were locked.
 </Callout>
 
-### Statistics
+## Achievement sets and DLC
+
+If a game uses Steam's Achievement Sets, the left panel lists each set separately, such as **Base game** and one entry per DLC. Achievements from DLC you don't own are still listed, but they can't be unlocked, because Steam itself refuses those unlocks. They also don't count toward the game's progress or <MockButton type='unlock-all' />. Read more in [Steam Achievement Sets explained](/blog/steam-achievement-sets).
+
+## Protected achievements
+
+Some achievements and statistics are marked **Protected**. Their values are set by the game's own servers, so no client can change them, SGI included. They show a warning icon in place of the unlock and lock buttons. [Special Flags](/docs/features/achievement-manager/special-flags) explains protected achievements, increment-only statistics and hidden achievements in more detail.
+
+## Edit game statistics
 
 <Steps>
   <Step>
-    Click <MockButton type='your-games' /> in the sidebar
-  </Step>
-
-  <Step>
-    Click the <MockButton type='achievement-manager' /> button on individual games to open them in the achievement manager
-  </Step>
-
-  <Step>
-    Click <MockButton type='content' content='Statistics' /> at the bottom of the left panel. You will see a list of statistics for that game, if any are available
+    Open a game in the Achievement Manager, then click <MockButton type='content' content='Statistics' /> at the bottom of the left panel. You will see a list of statistics for that game, if any are available
   </Step>
 
   <Step>
@@ -71,5 +82,14 @@ The Achievement Manager lets you manually unlock and lock achievements for any g
     Click <MockButton type='content' content='Reset all' /> to reset every statistic for the game
   </Step>
 </Steps>
+
+## Limitations
+
+- **Game Coordinator titles:** Team Fortress 2, Dota 2, CS2, Left 4 Dead 2 and Portal 2 keep their stats on Valve's Game Coordinator, which Steam Sign-in can't reach. On Windows, use Legacy Sign-in for these games. On Linux they can't be managed. [More in Troubleshooting](/docs/troubleshooting#achievement-game-coordinator-unsupported).
+- **Protected achievements:** set by the game's servers, so they can't be changed by any tool.
+
+## Achievement Manager vs. Steam Achievement Manager
+
+Steam Achievement Manager (SAM) is a separate, older tool that needs the Steam client running. SGI's Achievement Manager does the same manual unlocking, locking and statistics editing, also works without the Steam client through Steam Sign-in, and shows achievement sets, rarity and hidden achievements. For automatic unlocking, SGI adds the [Achievement Unlocker](/docs/features/achievement-unlocker). See the full [Steam Game Idler vs. Steam Achievement Manager](/alternatives/steam-achievement-manager) comparison.
 
 <DocsCTA />

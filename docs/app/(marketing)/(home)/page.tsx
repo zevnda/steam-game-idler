@@ -10,6 +10,7 @@ import FinalCta from '@/app/(marketing)/(home)/_components/landing/FinalCta'
 import GetStarted from '@/app/(marketing)/(home)/_components/landing/GetStarted'
 import LandingFooter from '@/app/(marketing)/(home)/_components/landing/LandingFooter'
 import LandingNav from '@/app/(marketing)/(home)/_components/landing/LandingNav'
+import LatestPosts from '@/app/(marketing)/(home)/_components/landing/LatestPosts'
 import OpenSource from '@/app/(marketing)/(home)/_components/landing/OpenSource'
 import Showcase from '@/app/(marketing)/(home)/_components/landing/showcase/Showcase'
 import JsonLd from '@/app/lib/JsonLd'
@@ -111,6 +112,12 @@ export default function HomePage() {
         <AdSlot slot='2284296837' />
         <Suspense>
           <Faq />
+        </Suspense>
+        <div className='section-divider' />
+        {/* Newest blog posts: a discovery path from the strongest page to new posts. Kept below the
+            FAQ so nothing the home page ranks for moves. Renders nothing while there are no posts. */}
+        <Suspense>
+          <LatestPosts />
         </Suspense>
         <div className='section-divider' />
         <AdSlot slot='3052629191' />

@@ -1,14 +1,25 @@
 ---
 title: Special Flags
-description: Understand Steam achievement special flags like Protected, IncrementOnly, and Hidden that restrict modifications.
+seoTitle: 'Steam Protected Achievements & Special Flags | SGI'
+description: Why some Steam achievements are protected and can't be unlocked or locked by any tool, plus what increment-only statistics and hidden achievements mean.
 ---
 
-# Special Flags
+# Protected Achievements and Special Flags
 
-Some achievements and statistics have restrictions [set by the game's developer](https://partner.steamgames.com/doc/features/achievements#game_server_stats:~:text=Stats%20and%20achievements%20that%20are%20settable%20by%20game%20servers%20cannot%20be%20set%20by%20clients) that affect what you can change. These are indicated directly in the UI.
+Some Steam achievements and statistics carry restrictions [set by the game's developer](https://partner.steamgames.com/doc/features/achievements#game_server_stats:~:text=Stats%20and%20achievements%20that%20are%20settable%20by%20game%20servers%20cannot%20be%20set%20by%20clients). The most common is **Protected**: the game's own servers control the achievement, so it can't be unlocked or locked by any client, Steam Game Idler included. Steam Game Idler shows these flags right in the [Achievement Manager](/docs/features/achievement-manager).
 
-- **Protected:** Only the game's official servers can modify these. Protected achievements show a warning icon in place of the unlock/lock button and can't be selected
-- **IncrementOnly:** This statistic can only increase in value. You can raise it from 5 to 6, but not lower it from 5 to 4
-- **Hidden:** The achievement's description is blurred by default. Hover over it to reveal the text
+## The three flags
 
-For statistics, IncrementOnly stats are labeled **Only increases** next to their name, and protected stats show their value as a read-only warning chip instead of an editable field in the Statistics view.
+- **Protected:** only the game's official servers can modify these. Protected achievements show a warning icon in place of the unlock/lock button and can't be selected. Protected statistics show their value as a read-only warning chip instead of an editable field.
+- **IncrementOnly:** this statistic can only increase in value. You can raise it from 5 to 6, but not lower it from 5 to 4. These stats are labeled **Only increases** next to their name.
+- **Hidden:** the developer keeps the achievement secret until it's unlocked. Its description is blurred by default; hover over it to reveal the text.
+
+## Why can't protected achievements be unlocked?
+
+Steam lets a developer decide that an achievement or statistic can only be set by the game's servers. Steam then rejects any change that comes from a client. That's the same mechanism every unlocking tool uses, so no achievement manager can change a protected achievement. The only way to earn one is to play the game.
+
+## How Steam Game Idler handles them
+
+- **Unlock all** and **Lock all** in the Achievement Manager skip protected achievements and change everything else.
+- The Achievement Manager can sort protected achievements first or last, so you can see at a glance what can't be changed.
+- The [Achievement Unlocker](/docs/features/achievement-unlocker) skips any game that has protected achievements.
