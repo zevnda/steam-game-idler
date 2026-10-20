@@ -43,7 +43,7 @@
     "@heroui/styles": "^3.2.4",
     "@internationalized/date": "^3.12.3",
     "@tauri-apps/api": "~2.12.4",
-    "@tauri-apps/plugin-autostart": "~2.5.1",
+    "@tauri-apps/plugin-autostart": "~2.7.0",
     "@tauri-apps/plugin-clipboard-manager": "~2.4.2",
     "@tauri-apps/plugin-dialog": "~2.7.2",
     "@tauri-apps/plugin-notification": "~2.6.0",
