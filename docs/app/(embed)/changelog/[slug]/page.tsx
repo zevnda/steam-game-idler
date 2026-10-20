@@ -32,9 +32,12 @@ export default async function Page(props: PageProps) {
     tags?: string[]
   }
 
+  // `relative` is load-bearing: the MDX output contains absolutely-positioned `sr-only` spans, and
+  // without a positioned ancestor they resolve against <body>, escape this scroll container, and
+  // stretch the document - giving the app's iframe a second, outer scrollbar.
   return (
     <main
-      className='changelog-scroll h-screen text-gray-100 overflow-auto'
+      className='changelog-scroll relative h-screen text-gray-100 overflow-auto'
       style={{
         backgroundImage: 'linear-gradient(to bottom, #1d1d1dff 0%, #000000ff 100%)',
       }}

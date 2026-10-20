@@ -38,10 +38,14 @@ export const ChangelogModal = () => {
               <Modal.CloseTrigger />
             </Modal.Header>
             <Modal.Heading className='sr-only'>{t('menu.changelog')}</Modal.Heading>
-            <Modal.Body className='p-0'>
+            {/* The embedded page (`docs/app/(embed)/changelog/[slug]`) is its own `h-screen`
+                scroll container with a themed scrollbar, so the body must never scroll itself.
+                `block` matters too: an inline iframe sits on the text baseline, and the descender
+                gap under it overflowed the body by a few px, giving a second scrollbar. */}
+            <Modal.Body className='overflow-hidden p-0'>
               {appVersion ? (
                 <iframe
-                  className='min-h-125 w-full'
+                  className='block min-h-125 w-full'
                   src={`https://steamgameidler.com/changelog/${appVersion}`}
                   title={t('menu.changelog')}
                 />
