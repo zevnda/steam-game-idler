@@ -32,6 +32,11 @@ endpoint), `rss`, `gh` (GitHub CLI/API), `render` (`$SEO/scripts/claude-seo run 
 | Steam Support FAQ article bodies | any `help.steampowered.com/en/faqs/view/...` (e.g. Limited User Accounts `71D3-35C2-AD96-AA3A`, Client Beta `276C-85A0-C531-AFA3`, Community Market `61F0-72B7-9A18-C70B`) | Body is JS-rendered: WebFetch and `render_page.py`'s extractor both return only the footer. Use a short Playwright script with `page.inner_text('body')` (the claude-seo venv's python has Playwright). Collapsed Q&As are in the DOM, so inner_text includes the answers. | render (inner_text) | 2026-10-20 |
 | Steam Subscriber Agreement | `https://store.steampowered.com/subscriber_agreement/english/` (+ Wayback `https://archive.org/wayback/available?url=...&timestamp=YYYYMMDD`, fetch with `id_` and `curl --compressed`) | Exact terms and **when a clause changed** - compare snapshots' "last updated" dates. Section 4.C "Automation" exists since the 2025-09-18 revision. | render / curl | 2026-10-20 |
 | Steam's new achievements page (Achievement Sets) | `https://steamcommunity.com/achievements/<appid>` | Public, no sign-in: per-set lists, "N from base game across X sets / N from DLC across Y sets", Global Stats toggle. Great for screenshots (`capture.py --click "All Sets (N)"`). Never reaches `networkidle` - wait for load + 6s. | render | 2026-10-20 |
+| Steam Points Shop pages | `https://store.steampowered.com/points/shop/c/steambadge`, `https://store.steampowered.com/points/howitworks?cc=us` | Seasonal Badge levels + Valve's points FAQ. JS-rendered: Playwright `inner_text`. Add `?cc=us` for the USD rate ("100 points for every $1.00"), otherwise it shows the visitor's currency. The badge page shows **running totals**, not per-level prices. | render (inner_text) | 2026-10-20 |
+| Points Shop reward API | `https://api.steampowered.com/ILoyaltyRewardsService/QueryRewardItems/v1/?community_item_classes%5B0%5D=1&count=100` | Public, no key: Seasonal Badge definitions with `point_cost` (per level) and `badge_data` (level count) | api | 2026-10-20 |
+| Steam badge/XP data | `IPlayerService/GetBadges/v1/?steamid=<id>&key=<KEY from repo .env>` (public profiles only) | Verifying XP rules (`player_xp`, per-badge `xp`/`level`). Research only - never publish anyone's profile data. badgeid 1 = Years of Service, 2 = Community, 13 = Game Collector, 64/66/68/69 = Steam Replay 2022-25 | api | 2026-10-20 |
+| Steam Support: Private Games / Profile Privacy | `help.steampowered.com/en/faqs/view/1150-C06F-4D62-4966`, `.../588C-C67D-0251-C276` | What "Mark private" hides (incl. no card drops); privacy settings path | render (inner_text) | 2026-10-20 |
+| Steamworks docs: achievements (console) | `https://partner.steamgames.com/doc/features/achievements` | `achievement_clear` / `reset_all_stats` console commands, "Set by" (protected), account-tied storage | curl | 2026-10-20 |
 | Steam Community Market search | `https://steamcommunity.com/market/search?appid=753&...` | Card prices/listings | **blocked for anonymous capture**: "You've made too many requests recently" on the first request (2026-10-20). Use a marker, or ask the user. | - | 2026-10-20 |
 | Steam Next Fest / sale pages | `https://store.steampowered.com/sale/steamnextfest` | Live event pages | curl | 2026-10-20 |
 
@@ -60,6 +65,7 @@ endpoint), `rss`, `gh` (GitHub CLI/API), `render` (`$SEO/scripts/claude-seo run 
 | SGI GitHub discussions | `gh api repos/zevnda/steam-game-idler/discussions` | User questions | gh | 2026-10-20 |
 | ArchiSteamFarm releases/issues | `gh api "repos/JustArchiNET/ArchiSteamFarm/releases?per_page=5"` / `gh issue list -R JustArchiNET/ArchiSteamFarm --search "<term>"` | Steam changes that hit card farmers | gh | 2026-10-20 |
 | Steam Achievement Manager issues | `gh issue list -R gibbed/SteamAchievementManager --search "<term>"` | Achievement-tool breakage | gh | 2026-10-20 |
+| Steam Trading Cards wiki (fandom) | `https://steamtradingcards.fandom.com/wiki/Points_Shop` | Secondary badge history | **blocked**: HTTP 402 to WebFetch (2026-10-20). Use Valve's Points Shop API instead. | - | 2026-10-20 |
 | Steam Card Exchange | `https://www.steamcardexchange.net/` | Card/badge community data (cite carefully, secondary) | curl | 2026-10-20 |
 
 ## Coverage / news outlets (secondary - for SERP context, not as primary citations)
@@ -86,4 +92,5 @@ endpoint), `rss`, `gh` (GitHub CLI/API), `render` (`$SEO/scripts/claude-seo run 
 `steam playtime`, `steam hours`, `steam hour boost`, `steam free games`, `steam free licenses`,
 `steam inventory`, `steam market`, `steam market fees`, `steam points`, `steam sale cards`,
 `steam account limited`, `steam limited account`, `steam guard`, `steam family sharing`,
-`archisteamfarm`, `idle master`, `steam achievement manager`. Add terms that prove productive.
+`archisteamfarm`, `idle master`, `steam achievement manager`, `how to level up on steam`,
+`steam protected achievement` (its suggestions surface remove/hide/reset intents). Add terms that prove productive.

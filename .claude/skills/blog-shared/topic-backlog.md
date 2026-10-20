@@ -6,7 +6,7 @@ rejected ones from coming back without new evidence, and news sweeps from re-rea
 weeks. Newest entries go first in each section. Keep entries short; full research lives in the
 gitignored `seo-blog-research-{slug}.md` files.
 
-**Last discovery sweep:** 2026-10-20 (launch-set sweep, window 2026-09-20 - 2026-10-20)
+**Last discovery sweep:** 2026-10-20 (second pass same day: GSC/autocomplete/evergreen only - news window empty)
 
 ## Queued - passed the gate, not written yet
 
@@ -47,6 +47,14 @@ published. GSC figures are 2026-07-20 to 2026-10-17; re-pull before starting.
 - **`/docs/steam-credentials`**: "sessionid steam" (123, was 31), "steamloginsecure" (111),
   "steam session id" (106, was 2) - ~490 impressions, 3 clicks, and rising. A clear "where to find
   your sessionid / steamLoginSecure" section and a title that names them would capture it.
+- **`/docs/features/achievement-manager` (protected achievements)** - added 2026-10-20: ~650
+  impressions / ~7 clicks at pos ~8 ("steam achievement manager protected achievements" 359,
+  "steam protected achievements" 99, "...how to unlock protected achievements" 38, and SAM's own
+  error text "sorry but this is a protected achievement and cannot be managed..." 44). All of it
+  lands on the index page. The dedicated `special-flags` page is indexed but had **zero**
+  impressions in 90 days. Strengthen the index page's "Protected achievements" section: answer
+  "can they be unlocked or bypassed?" directly, and quote SAM's exact error message. Alternatively,
+  retitle `special-flags` so Google prefers it. Pick one, so the two don't split the intent.
 - **`/docs/features/card-farming`**: "how to farm steam trading cards" and variants ~340
   impressions at pos 6-8, ~3 clicks. Make sure the opening answers the how-to directly.
 
@@ -54,29 +62,44 @@ published. GSC figures are 2026-07-20 to 2026-10-17; re-pull before starting.
 
 <!-- ### <title> - `docs/blog/<slug>.mdx` - written YYYY-MM-DD -->
 
-### How Steam Trading Cards Work: Drops, Badges, Booster Packs and Selling - `docs/blog/how-steam-trading-cards-work.mdx` - written 2026-10-20
-- Primary keyword: how do steam trading cards work | Research: `seo-blog-research-how-steam-trading-cards-work.md`
-- Media complete: cover, loop diagram, Steam badge page + SGI Card Farming screenshots (user-supplied).
-- Links added: `features/card-farming/card-drop-times.mdx` ("No card drops remaining" bullet).
-- Revisit: 2027-10 (yearly refresh), or if Valve changes card/booster/badge rules.
+### Can You Remove, Hide or Reset Steam Achievements? What Actually Works - `docs/blog/remove-steam-achievements.mdx` - written 2026-10-20
+- Primary keyword: can you remove steam achievements | Research: `seo-blog-research-remove-steam-achievements.md`
+- Media complete: cover, remove/hide/reset diagram, Steam Support Private Games FAQ screenshot, SGI
+  Achievement Manager "Lock all" dialog (user-supplied).
+- Links added: `features/achievement-manager/index.mdx` (sentence after the Lock all callout).
+- Revisit: 2027-10 (yearly), or if Valve changes privacy/private-game rules or adds an official reset.
 
-### Steam Achievement Sets: What the Beta Changes for Achievement Hunters - `docs/blog/steam-achievement-sets.mdx` - written 2026-10-20
-- Primary keyword: steam achievement sets | Research: `seo-blog-research-steam-achievement-sets.md`
-- Media complete: cover, Steam achievements page screenshot (ETS2), SGI Achievement Manager
-  screenshot (ATS, user-supplied). Merge before 2026-10-31 (news window); bump `date:` if merged later.
-- Links added: `features/achievement-manager/index.mdx` (DLC-sets callout).
-- Revisit: when Achievement Sets leave beta (check Steam news API), then set `updated:`.
+### How to Level Up on Steam: Every Source of XP, and What It Costs - `docs/blog/how-to-level-up-on-steam.mdx` - written 2026-10-20
+- Primary keyword: how to level up on steam | Research: `seo-blog-research-how-to-level-up-on-steam.md`
+- Media complete: cover, XP-per-level chart, Points Shop Seasonal Badge screenshot, SGI Inventory
+  Manager sorted by badge level (user-supplied).
+- Links added: `docs/blog/how-steam-trading-cards-work.mdx` ("Steam levels and XP" section).
+- Revisit: each Winter/Summer Sale (new Seasonal Badge - re-check levels/price via
+  `ILoyaltyRewardsService`), and before the 2026 Steam Awards nominations (late Nov) to confirm the badge.
 
 ## Published
 
 <!-- ### <title> - `/blog/<slug>` - published YYYY-MM-DD
 - Primary keyword: ... | Revisit: YYYY-MM-DD (why: beta ends / sale season / yearly refresh) -->
 
+### How Steam Trading Cards Work: Drops, Badges, Booster Packs and Selling - `/blog/how-steam-trading-cards-work` - published 2026-10-20
+- Primary keyword: how do steam trading cards work | Revisit: 2027-10 (yearly refresh), or if Valve changes card/booster/badge rules
+- Indexed 2026-10-20 (URL Inspection: Submitted and indexed).
+
+### Steam Achievement Sets: What the Beta Changes for Achievement Hunters - `/blog/steam-achievement-sets` - published 2026-10-20
+- Primary keyword: steam achievement sets | Revisit: when Achievement Sets leave beta (check the Steam news API), then set `updated:`
+- Indexed 2026-10-20 (URL Inspection: Submitted and indexed).
+
 ## Rejected - don't re-propose without new evidence
 
 <!-- ### <topic>
 - Rejected YYYY-MM-DD: gate H1/H5/... - one-line evidence
 - Revisit only if: <the specific change that would flip it> -->
+
+### Protected achievements post ("can you unlock protected Steam achievements?")
+- Rejected 2026-10-20: H5 - ~650 impressions already land on `/docs/features/achievement-manager`
+  and `special-flags` targets the same intent. Logged as a docs update instead.
+- Revisit only if: the docs fix lands and GSC still shows unanswered "bypass/unlock protected" demand.
 
 ### Can you get banned for idling Steam games?
 - Rejected 2026-10-20: user decision (brand/legal, not SEO). Research found the Steam Subscriber
@@ -116,7 +139,7 @@ indexed in time.
 
 | Event | Dates | Notes |
 |---|---|---|
-| Steam Winter Sale 2026 | 17 Dec 2026 - 4 Jan 2027 (confirmed 2026-10-20) | Pitch window opens ~late Nov. Verify what the sale awards (event badge, stickers, Points items, cards?) from the sale page before a cards/badges angle. |
+| Steam Winter Sale 2026 | 17 Dec 2026 - 4 Jan 2027 (confirmed 2026-10-20) | Pitch window opens ~late Nov (sale page not live as of 2026-10-20, so nothing to verify yet). Verify what the sale awards (event badge, stickers, Points items, cards?) from the sale page before a cards/badges angle. |
 | Steam Spring Sale 2027 | 18 - 25 Mar 2027 (confirmed) | Same check. |
 | Steam Summer Sale 2027 | 24 Jun - 8 Jul 2027 (confirmed) | Same check. |
 | Steam Autumn Sale | 2026 edition began 1 Oct 2026 (Steam news); 2027 TBD | Earlier than the old late-November habit - don't assume dates. |
