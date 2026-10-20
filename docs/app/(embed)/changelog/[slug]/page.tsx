@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { notFound } from 'next/navigation'
-import { blog } from '@/lib/source'
+import { changelog } from '@/lib/source'
 import { getMDXComponents } from '@/mdx-components'
 
 interface PageProps {
@@ -9,13 +9,20 @@ interface PageProps {
   }
 }
 
+// One page per release, loaded by the desktop app's ChangelogModal iframe. Every entry is already
+// on /changelog in full, so these are kept out of search (noindex here, excluded from the sitemap
+// in next-sitemap.config.mjs) to avoid ~100 thin duplicates. `follow` still lets links count.
+export const metadata = {
+  robots: { index: false, follow: true },
+}
+
 function getName(p: string) {
   return path.basename(p, path.extname(p))
 }
 
 export default async function Page(props: PageProps) {
   const params = await props.params
-  const page = blog.getPage([params.slug])
+  const page = changelog.getPage([params.slug])
 
   if (!page) notFound()
   const { body: Mdx } = await page.data.load()
@@ -85,7 +92,7 @@ export default async function Page(props: PageProps) {
 }
 
 export function generateStaticParams() {
-  return blog.getPages().map(page => ({
+  return changelog.getPages().map(page => ({
     slug: page.slugs[0],
   }))
 }

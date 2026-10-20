@@ -17,6 +17,7 @@ const COLUMNS: { title: string; links: { label: string; href: string; external?:
     title: 'Resources',
     links: [
       { label: 'Documentation', href: '/docs' },
+      { label: 'Blog', href: '/blog' },
       { label: 'FAQ', href: '/docs/faq' },
       { label: 'Troubleshooting', href: '/docs/troubleshooting' },
       { label: 'Alternatives', href: '/alternatives' },

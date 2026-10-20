@@ -18,7 +18,6 @@ export interface WhyChooseCard {
 export interface Competitor {
   slug: string
   name: string
-  shortTagline: string
   badgeLabel: string
   accentClassName: string
   accentBorderClassName: string
@@ -54,7 +53,6 @@ export const COMPETITORS: Record<string, Competitor> = {
   'archisteamfarm': {
     slug: 'archisteamfarm',
     name: 'ArchiSteamFarm',
-    shortTagline: 'ARCHISTEAMFARM',
     badgeLabel: 'Detailed Comparison',
     accentClassName: 'text-blue-300',
     accentBorderClassName: 'border-blue-500/30',
@@ -67,7 +65,7 @@ export const COMPETITORS: Record<string, Competitor> = {
     headerGlowTextColor: '#bfdbfe',
     rowTintGradient: 'linear-gradient(180deg, rgba(96,165,250,0.12), rgba(168,85,247,0.06))',
     intro:
-      'Compare core features, usability, and capabilities of Steam Game Idler against ArchiSteamFarm to make an informed choice for your Steam automation needs.',
+      'Looking for an ArchiSteamFarm alternative without config files or a command line? Compare Steam Game Idler and ASF feature by feature, from card farming to achievements.',
     comparisonData: [
       {
         category: 'Core Features',
@@ -144,7 +142,6 @@ export const COMPETITORS: Record<string, Competitor> = {
   'idle-master': {
     slug: 'idle-master',
     name: 'Idle Master',
-    shortTagline: 'IDLE MASTER',
     badgeLabel: 'Detailed Comparison',
     accentClassName: 'text-orange-300',
     accentBorderClassName: 'border-orange-500/30',
@@ -157,7 +154,7 @@ export const COMPETITORS: Record<string, Competitor> = {
     headerGlowTextColor: '#fed7aa',
     rowTintGradient: 'linear-gradient(180deg, rgba(251,146,60,0.12), rgba(248,113,113,0.06))',
     intro:
-      'Compare core features, usability, and capabilities of Steam Game Idler against Idle Master to make an informed choice for your Steam automation needs.',
+      'Looking for an Idle Master alternative? Idle Master is no longer maintained. Compare it feature by feature with Steam Game Idler, which is actively developed.',
     comparisonData: [
       {
         category: 'Core Features',
@@ -218,7 +215,6 @@ export const COMPETITORS: Record<string, Competitor> = {
   'steam-achievement-manager': {
     slug: 'steam-achievement-manager',
     name: 'Steam Achievement Manager',
-    shortTagline: 'STEAM ACHIEVEMENT MANAGER',
     badgeLabel: 'Detailed Comparison',
     accentClassName: 'text-emerald-300',
     accentBorderClassName: 'border-emerald-500/30',
@@ -231,7 +227,7 @@ export const COMPETITORS: Record<string, Competitor> = {
     headerGlowTextColor: '#a7f3d0',
     rowTintGradient: 'linear-gradient(180deg, rgba(52,211,153,0.12), rgba(16,185,129,0.06))',
     intro:
-      'Compare core features, usability, and capabilities of Steam Game Idler against Steam Achievement Manager to make an informed choice for your Steam automation needs.',
+      'Looking for a Steam Achievement Manager alternative? Compare SAM with Steam Game Idler, which adds automatic achievement unlocking, card farming and more.',
     comparisonData: [
       {
         category: 'Core Features',

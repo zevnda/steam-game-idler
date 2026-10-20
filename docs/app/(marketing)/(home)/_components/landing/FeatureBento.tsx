@@ -289,7 +289,7 @@ function ThemeTile({ col }: { col: number }) {
         <div className='p-6 sm:p-7 pt-0 sm:pt-0 flex flex-col gap-3 flex-1'>
           <h3 className='text-xl font-semibold tracking-tight text-text-primary'>Custom Themes</h3>
           <p className='text-[15px] text-text-muted leading-relaxed'>
-            Switch between built-in colour themes, pick your own font, or set a custom background.
+            Switch between built-in color themes, pick your own font, or set a custom background.
           </p>
           <div className='mt-auto pt-2 flex flex-wrap gap-2' aria-hidden='true'>
             {(Object.keys(THEMES) as ThemeId[]).map(id => (

@@ -1,0 +1,114 @@
+# Post-deploy tasks for steamgameidler.com, run after Vercel finishes a production deploy of docs/.
+#   - indexnow: tells Bing/Yandex (via IndexNow) which URLs changed. Google ignores IndexNow, so
+#     this can't affect Google. See docs/scripts/indexnow.mjs.
+#   - discord:  announces newly published blog posts in the SGI Discord. See
+#     docs/scripts/announce-discord.mjs.
+# Both work off the same "what changed since the last production deploy" range, computed once in
+# the `changes` job, and run as separate jobs so one failing never blocks the other.
+name: Docs deploy
+
+on:
+  # Vercel's GitHub integration reports each deployment's status back to GitHub.
+  deployment_status:
+
+permissions:
+  contents: read
+  deployments: read
+
+# Serialize runs so two quick deploys can't announce or submit out of order.
+concurrency:
+  group: docs-deploy
+  cancel-in-progress: false
+
+jobs:
+  changes:
+    # Only finished production deploys - previews and failed/cancelled builds never reach the live site.
+    if: github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production'
+    runs-on: ubuntu-latest
+    outputs:
+      base: ${{ steps.base.outputs.sha }}
+      head: ${{ github.event.deployment.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.deployment.sha }}
+          fetch-depth: 0
+
+      # Diff against the previous *successful* production deploy rather than the parent commit:
+      # Vercel skips builds for commits that don't touch docs/ (vercel.json's ignoreCommand) and can
+      # cancel superseded ones, so a deploy can carry several commits' worth of changes.
+      - name: Find previous production deploy
+        id: base
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.deployment.sha }}
+          DEPLOYMENT_ID: ${{ github.event.deployment.id }}
+        run: |
+          set -euo pipefail
+          base=""
+          for row in $(gh api "repos/${GITHUB_REPOSITORY}/deployments?environment=Production&per_page=30" \
+              --jq '.[] | "\(.id):\(.sha)"'); do
+            id="${row%%:*}"; sha="${row#*:}"
+            [ "$id" = "$DEPLOYMENT_ID" ] && continue
+            [ "$sha" = "$HEAD_SHA" ] && continue
+            state=$(gh api "repos/${GITHUB_REPOSITORY}/deployments/${id}/statuses?per_page=1" --jq '.[0].state // ""')
+            if [ "$state" = "success" ] && git merge-base --is-ancestor "$sha" "$HEAD_SHA"; then
+              base="$sha"; break
+            fi
+          done
+          # No usable previous deploy (first run, or history rewritten): fall back to the parent commit.
+          echo "sha=${base:-$(git rev-parse "${HEAD_SHA}^")}" >> "$GITHUB_OUTPUT"
+
+  indexnow:
+    needs: changes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.changes.outputs.head }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Submit changed URLs
+        working-directory: docs
+        run: node scripts/indexnow.mjs --base "${{ needs.changes.outputs.base }}" --head "${{ needs.changes.outputs.head }}"
+
+  discord:
+    needs: changes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.changes.outputs.head }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Re-running this workflow for the same deploy must not announce the same posts twice. A
+      # cache entry keyed by the deploy's commit marks it as announced; GitHub keeps unused cache
+      # entries for 7 days, which covers any realistic re-run.
+      - name: Check if this deploy was already announced
+        id: announced
+        uses: actions/cache/restore@v4
+        with:
+          path: .discord-announced
+          key: discord-announced-${{ needs.changes.outputs.head }}
+          lookup-only: true
+
+      - name: Announce new blog posts
+        if: steps.announced.outputs.cache-hit != 'true'
+        working-directory: docs
+        env:
+          DISCORD_BLOG_WEBHOOK_URL: ${{ secrets.DISCORD_BLOG_WEBHOOK_URL }}
+        run: node scripts/announce-discord.mjs --base "${{ needs.changes.outputs.base }}" --head "${{ needs.changes.outputs.head }}"
+
+      - name: Mark deploy as announced
+        if: steps.announced.outputs.cache-hit != 'true'
+        run: echo "${{ needs.changes.outputs.head }}" > .discord-announced
+      - uses: actions/cache/save@v4
+        if: steps.announced.outputs.cache-hit != 'true'
+        with:
+          path: .discord-announced
+          key: discord-announced-${{ needs.changes.outputs.head }}

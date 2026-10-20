@@ -5,7 +5,7 @@ import FooterSection from '@/app/(marketing)/(home)/_components/FooterSection'
 import NavBar from '@/app/(marketing)/(home)/_components/NavBar'
 
 export const metadata = {
-  title: 'Checkout Cancelled | Steam Game Idler',
+  title: 'Checkout Canceled',
   robots: { index: false, follow: false },
   alternates: { canonical: '/paypal/cancel' },
 }
@@ -41,7 +41,7 @@ export default function PayPalCancelPage() {
             </div>
 
             <h1 className='text-4xl sm:text-5xl font-bold leading-none tracking-tight mb-5 text-text-primary'>
-              Checkout cancelled
+              Checkout canceled
             </h1>
 
             <p className='text-text-muted leading-relaxed mb-10'>

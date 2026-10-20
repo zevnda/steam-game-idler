@@ -17,9 +17,9 @@ import JsonLd from '@/app/lib/JsonLd'
 const competitor = COMPETITORS['idle-master']
 
 export const metadata = {
-  title: 'Idle Master Feature Comparison',
+  title: { absolute: 'Idle Master Alternative - Idle Master vs Steam Game Idler' },
   description:
-    'See why Steam Game Idler is the best alternative to Idle Master for Steam automation. Compare features like card farming, achievement management, and user experience',
+    'Idle Master is abandoned. Steam Game Idler is a free, actively developed Idle Master alternative for card farming, achievements and more. Compare both.',
   keywords: [
     'Idle Master alternative',
     'Idle Master comparison',
@@ -34,16 +34,16 @@ export const metadata = {
   openGraph: {
     url: 'https://steamgameidler.com/alternatives/idle-master',
     siteName: 'Steam Game Idler',
-    title: 'Idle Master Feature Comparison | Steam Game Idler',
+    title: 'Idle Master Alternative - Idle Master vs Steam Game Idler',
     description:
-      'See why Steam Game Idler is the best alternative to Idle Master for Steam automation. Compare features like card farming, achievement management, and user experience',
+      'Idle Master is abandoned. Steam Game Idler is a free, actively developed Idle Master alternative for card farming, achievements and more. Compare both.',
     images: 'https://steamgameidler.com/im-og-image.png',
     type: 'article',
   },
   twitter: {
-    title: 'Idle Master Feature Comparison | Steam Game Idler',
+    title: 'Idle Master Alternative - Idle Master vs Steam Game Idler',
     description:
-      'See why Steam Game Idler is the best alternative to Idle Master for Steam automation. Compare features like card farming, achievement management, and user experience',
+      'Idle Master is abandoned. Steam Game Idler is a free, actively developed Idle Master alternative for card farming, achievements and more. Compare both.',
     image: 'https://steamgameidler.com/im-og-image.png',
   },
   alternates: {
@@ -54,9 +54,9 @@ export const metadata = {
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  'headline': 'Idle Master Feature Comparison | Steam Game Idler',
+  'headline': 'Idle Master Alternative - Idle Master vs Steam Game Idler',
   'description':
-    'See why Steam Game Idler is the best alternative to Idle Master for Steam automation. Compare features like card farming, achievement management, and user experience',
+    'Idle Master is abandoned. Steam Game Idler is a free, actively developed Idle Master alternative for card farming, achievements and more. Compare both.',
   'url': 'https://steamgameidler.com/alternatives/idle-master',
   'image': 'https://steamgameidler.com/im-og-image.png',
   'author': { '@type': 'Person', 'name': 'zevnda', 'url': 'https://github.com/zevnda' },

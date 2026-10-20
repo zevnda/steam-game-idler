@@ -179,7 +179,7 @@ const MGR_ACHS: [string, string, string, boolean][] = [
   ['Early Riser', 'Start a day before 6 AM', '52.0%', true],
   ['Master Farmer', 'Reach farming level 10', '18.3%', false],
   ['Festival Champion', 'Win the harvest festival', '9.6%', false],
-  ['Well Travelled', 'Visit every region', '6.2%', false],
+  ['Well Traveled', 'Visit every region', '6.2%', false],
   ['Perfectionist', 'Earn every other achievement', '1.8%', false],
 ]
 const INV: [string, string, InvItem['kind'], string, string][] = [
