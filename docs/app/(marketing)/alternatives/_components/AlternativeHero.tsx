@@ -29,9 +29,12 @@ export default function AlternativeHero({ competitor }: AlternativeHeroProps) {
             {competitor.badgeLabel}
           </div>
 
-          <h1 className='text-4xl sm:text-5xl md:text-6xl font-bold leading-none tracking-tight mb-6'>
-            <span className='text-text-primary'>{competitor.shortTagline}</span>
-            <span className='block text-text-muted'>VS</span>
+          {/* Real-case text with spaces between the parts, uppercased by CSS: the three `block`
+              spans look like separate lines, but without the spaces crawlers read the heading as
+              one run-on word ("ARCHISTEAMFARMVSSTEAM GAME IDLER"). */}
+          <h1 className='text-4xl sm:text-5xl md:text-6xl font-bold leading-none tracking-tight uppercase mb-6'>
+            <span className='text-text-primary'>{competitor.name}</span>{' '}
+            <span className='block text-text-muted'>vs</span>{' '}
             <span
               className='block'
               style={{
@@ -41,7 +44,7 @@ export default function AlternativeHero({ competitor }: AlternativeHeroProps) {
                 backgroundClip: 'text',
               }}
             >
-              STEAM GAME IDLER
+              Steam Game Idler
             </span>
           </h1>
 

@@ -1,7 +1,7 @@
 import type { InferPageType } from 'fumadocs-core/source'
 import { loader } from 'fumadocs-core/source'
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons'
-import { blog as blogPosts, docs } from 'fumadocs-mdx:collections/server'
+import { changelog as changelogEntries, docs, posts } from 'fumadocs-mdx:collections/server'
 import { toFumadocsSource } from 'fumadocs-mdx/runtime/server'
 
 // See https://fumadocs.dev/docs/headless/source-api for more info
@@ -11,8 +11,13 @@ export const source = loader({
   plugins: [lucideIconsPlugin()],
 })
 
-export const blog = loader(toFumadocsSource(blogPosts, []), {
+export const changelog = loader(toFumadocsSource(changelogEntries, []), {
   baseUrl: '/changelog',
+})
+
+// Every post, drafts included - use `getPublishedPosts()` from `lib/blog.ts` for anything public.
+export const blog = loader(toFumadocsSource(posts, []), {
+  baseUrl: '/blog',
 })
 
 export function getPageImage(page: InferPageType<typeof source>) {

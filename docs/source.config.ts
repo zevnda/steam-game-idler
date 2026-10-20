@@ -35,7 +35,9 @@ export default defineConfig({
   },
 })
 
-export const blog = defineCollections({
+// Release notes (`changelogs/{version}.mdx`). Named `changelog`, not `blog`: the real blog is the
+// `posts` collection below.
+export const changelog = defineCollections({
   type: 'doc',
   dir: 'changelogs',
   schema: frontmatterSchema.extend({
@@ -46,4 +48,38 @@ export const blog = defineCollections({
     includeProcessedMarkdown: true,
   },
   async: true,
+})
+
+// Blog posts (`blog/{slug}.mdx`, served at `/blog/{slug}`). Written by the `/create-blog-post`
+// skill (`.claude/skills/create-blog-post/`), which documents what each field is for - keep the
+// two in sync. Not `async`: there are few posts, and the listing page needs every post's text up
+// front for reading time.
+export const posts = defineCollections({
+  type: 'doc',
+  dir: 'blog',
+  schema: frontmatterSchema.extend({
+    // Required: the listing card, meta description and RSS summary all use it.
+    description: z.string(),
+    date: z.iso.date(),
+    // Set only on a substantive revision, never on a typo fix: it drives `dateModified` and the
+    // sitemap's `lastmod`, and Google stops trusting dates that change without real edits.
+    updated: z.iso.date().optional(),
+    // Search-results title, used as-is for <title>/OG/Twitter (no template suffix). `title` stays
+    // the on-page H1. Keep it under 60 characters.
+    seoTitle: z.string().optional(),
+    category: z.enum(['Steam News', 'Guides', 'Explainers', 'Updates']),
+    tags: z.array(z.string()).default([]),
+    keywords: z.array(z.string()).optional(),
+    // Cover image, root-relative (`/blog/{slug}/cover.webp`) or absolute. 1200x630 so it doubles
+    // as the OG image; without one the site-wide OG image is used and the card shows a gradient.
+    image: z.string().optional(),
+    imageAlt: z.string().optional(),
+    author: z.string().default('zevnda'),
+    // Drafts render in `next dev` but are left out of production builds, the RSS feed and the
+    // sitemap entirely.
+    draft: z.boolean().default(false),
+  }),
+  postprocess: {
+    includeProcessedMarkdown: true,
+  },
 })

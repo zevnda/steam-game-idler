@@ -2,7 +2,7 @@
 
 import { useRef } from 'react'
 import { FaDiscord } from 'react-icons/fa6'
-import { FiBook, FiDownload, FiFileText, FiGithub, FiMail, FiShield } from 'react-icons/fi'
+import { FiBook, FiDownload, FiEdit3, FiFileText, FiGithub, FiMail, FiShield } from 'react-icons/fi'
 import { motion, useInView } from 'motion/react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -84,6 +84,16 @@ export default function FooterSection() {
                   >
                     <FiBook className='w-3.5 h-3.5 shrink-0' aria-hidden='true' />
                     Documentation
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    prefetch={false}
+                    href='/blog'
+                    className='text-sm text-text-muted hover:text-text-primary transition-colors duration-150 flex items-center gap-2'
+                  >
+                    <FiEdit3 className='w-3.5 h-3.5 shrink-0' aria-hidden='true' />
+                    Blog
                   </Link>
                 </li>
                 <li>

@@ -46,6 +46,7 @@ export default function NavBar() {
     { href: '/alternatives', label: 'Compare' },
     { href: '/changelog', label: 'Changelog' },
     { href: '/docs', label: 'Docs' },
+    { href: '/blog', label: 'Blog' },
     { href: '/pro', label: 'PRO', bold: true },
   ]
 

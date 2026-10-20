@@ -17,9 +17,9 @@ import JsonLd from '@/app/lib/JsonLd'
 const competitor = COMPETITORS['steam-achievement-manager']
 
 export const metadata = {
-  title: 'Steam Achievement Manager Feature Comparison',
+  title: { absolute: 'Steam Achievement Manager Alternative - SAM vs SGI' },
   description:
-    'See why Steam Game Idler is the best alternative to Steam Achievement Manager for Steam automation. Compare features like card farming, achievement management, and user experience',
+    'A free Steam Achievement Manager alternative that also unlocks achievements automatically, farms cards and boosts playtime. Compare SAM and Steam Game Idler.',
   keywords: [
     'Steam Achievement Manager alternative',
     'Steam Achievement Manager comparison',
@@ -34,16 +34,16 @@ export const metadata = {
   openGraph: {
     url: 'https://steamgameidler.com/alternatives/steam-achievement-manager',
     siteName: 'Steam Game Idler',
-    title: 'Steam Achievement Manager Feature Comparison | Steam Game Idler',
+    title: 'Steam Achievement Manager Alternative - SAM vs SGI',
     description:
-      'See why Steam Game Idler is the best alternative to Steam Achievement Manager for Steam automation. Compare features like card farming, achievement management, and user experience',
+      'A free Steam Achievement Manager alternative that also unlocks achievements automatically, farms cards and boosts playtime. Compare SAM and Steam Game Idler.',
     images: 'https://steamgameidler.com/sam-og-image.png',
     type: 'article',
   },
   twitter: {
-    title: 'Steam Achievement Manager Feature Comparison | Steam Game Idler',
+    title: 'Steam Achievement Manager Alternative - SAM vs SGI',
     description:
-      'See why Steam Game Idler is the best alternative to Steam Achievement Manager for Steam automation. Compare features like card farming, achievement management, and user experience',
+      'A free Steam Achievement Manager alternative that also unlocks achievements automatically, farms cards and boosts playtime. Compare SAM and Steam Game Idler.',
     image: 'https://steamgameidler.com/sam-og-image.png',
   },
   alternates: {
@@ -54,9 +54,9 @@ export const metadata = {
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  'headline': 'Steam Achievement Manager Feature Comparison | Steam Game Idler',
+  'headline': 'Steam Achievement Manager Alternative - SAM vs SGI',
   'description':
-    'See why Steam Game Idler is the best alternative to Steam Achievement Manager for Steam automation. Compare features like card farming, achievement management, and user experience',
+    'A free Steam Achievement Manager alternative that also unlocks achievements automatically, farms cards and boosts playtime. Compare SAM and Steam Game Idler.',
   'url': 'https://steamgameidler.com/alternatives/steam-achievement-manager',
   'image': 'https://steamgameidler.com/sam-og-image.png',
   'author': { '@type': 'Person', 'name': 'zevnda', 'url': 'https://github.com/zevnda' },

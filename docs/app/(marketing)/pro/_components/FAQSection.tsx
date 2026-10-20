@@ -12,7 +12,7 @@ const faqItems = [
   },
   {
     q: 'How do I transfer my license key to a new device?',
-    a: 'Your license key is tied to one device at a time. To transfer it, open the app on your new device, go to Settings → Subscription, enter your license key, and click Activate. A prompt will ask you to confirm the transfer. Once confirmed, your new device is active and the previous device loses access on its next launch. If you reinstalled the app on the same machine, no transfer is needed — your device is recognised by its hardware ID.',
+    a: 'Your license key is tied to one device at a time. To transfer it, open the app on your new device, go to Settings → Subscription, enter your license key, and click Activate. A prompt will ask you to confirm the transfer. Once confirmed, your new device is active and the previous device loses access on its next launch. If you reinstalled the app on the same machine, no transfer is needed — your device is recognized by its hardware ID.',
   },
   {
     q: 'How do I cancel my subscription?',

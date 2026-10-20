@@ -13,6 +13,7 @@ const LINKS = [
   { href: '#compare', label: 'Compare' },
   { href: '/docs', label: 'Docs' },
   { href: '/changelog', label: 'Changelog' },
+  { href: '/blog', label: 'Blog' },
   { href: '/pro', label: 'PRO', pro: true },
 ]
 

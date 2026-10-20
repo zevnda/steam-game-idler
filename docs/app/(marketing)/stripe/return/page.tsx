@@ -5,7 +5,7 @@ import FooterSection from '@/app/(marketing)/(home)/_components/FooterSection'
 import NavBar from '@/app/(marketing)/(home)/_components/NavBar'
 
 export const metadata = {
-  title: 'Subscription Created | Steam Game Idler',
+  title: 'Subscription Created',
   robots: { index: false, follow: false },
   alternates: { canonical: '/stripe/return' },
 }

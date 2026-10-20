@@ -3,7 +3,7 @@ import { PathUtils } from 'fumadocs-core/source'
 import Link from 'next/link'
 import FooterSection from '@/app/(marketing)/(home)/_components/FooterSection'
 import NavBar from '@/app/(marketing)/(home)/_components/NavBar'
-import { blog } from '@/lib/source'
+import { changelog } from '@/lib/source'
 import { getMDXComponents } from '@/mdx-components'
 
 interface BlogData {
@@ -12,13 +12,37 @@ interface BlogData {
   tags?: string[]
 }
 
+// Without its own metadata this page inherited the home page's title and description, so it
+// showed up in brand searches as a duplicate of the home page and drew no clicks.
+const TITLE = 'Steam Game Idler Changelog - Updates & Release Notes'
+const DESCRIPTION =
+  "Every Steam Game Idler release, newest first: what's new, improved and fixed in card farming, achievements, idling and more."
+
+export const metadata = {
+  title: { absolute: TITLE },
+  description: DESCRIPTION,
+  openGraph: {
+    url: 'https://steamgameidler.com/changelog',
+    title: TITLE,
+    description: DESCRIPTION,
+    images: 'https://steamgameidler.com/og-image.png',
+    type: 'website',
+  },
+  twitter: {
+    title: TITLE,
+    description: DESCRIPTION,
+    images: 'https://steamgameidler.com/og-image.png',
+  },
+  alternates: { canonical: '/changelog' },
+}
+
 function getName(path: string) {
   return PathUtils.basename(path, PathUtils.extname(path))
 }
 
 export default async function Page() {
   const posts = await Promise.all(
-    blog.getPages().map(async post => {
+    changelog.getPages().map(async post => {
       const { body: Mdx } = await post.data.load()
       return {
         ...post,

@@ -54,6 +54,7 @@ docs/
         [[...slug]]/page.tsx # Catch-all routing — renders every doc page
         layout.tsx         # Docs layout (Fumadocs sidebar, breadcrumbs, search)
       changelog/           # Changelog list page only (/changelog) — full layout, has NavBar/FooterSection
+      blog/                # Blog listing (/blog), posts (/blog/[slug]), RSS feed (/blog/rss.xml)
       alternatives/        # Comparison pages (ASF, Idle Master, SAM)
       privacy/ tos/ pro/ download/ paypal/  # Static/other pages
       layout.tsx           # Marketing root layout — SEO metadata, analytics, ads, fonts, providers
@@ -64,9 +65,11 @@ docs/
     llms-full.txt/
     globals.css            # Global styles — imported independently by both root layouts
   lib/
-    source.ts              # Fumadocs source loaders (docs + changelogs)
+    source.ts              # Fumadocs source loaders (docs, changelogs, blog posts)
+    blog.ts                # Blog helpers: published-post filtering (drafts), reading time, authors, related posts
     layout.shared.tsx      # Shared nav options reused across layouts
   changelogs/              # Changelog MDX files (versioned, e.g. 5.3.0.mdx)
+  blog/                    # Blog post MDX files ({slug}.mdx); images in public/blog/{slug}/
   public/                  # Static assets — logos, OG images, ads.txt
   source.config.ts         # Fumadocs collection definitions (docs dir: app/(marketing)/docs/_content)
   next.config.ts           # Static export config + Fumadocs MDX plugin
@@ -84,6 +87,9 @@ docs/
 | `/docs/[...slug]`          | `app/(marketing)/docs/_content/**/*.mdx`                                                                 |
 | `/changelog`               | `app/(marketing)/changelog/page.tsx`                                                                     |
 | `/changelog/[slug]`        | `app/(embed)/changelog/[slug]/page.tsx` + `changelogs/*.mdx` — minimal layout, loaded by the desktop app |
+| `/blog`                    | `app/(marketing)/blog/page.tsx`                                                                          |
+| `/blog/[slug]`             | `app/(marketing)/blog/[slug]/page.tsx` + `blog/*.mdx`                                                    |
+| `/blog/rss.xml`            | `app/(marketing)/blog/rss.xml/route.ts`                                                                  |
 | `/alternatives`            | `app/(marketing)/alternatives/page.tsx`                                                                  |
 | `/alternatives/[tool]`     | `app/(marketing)/alternatives/[tool]/page.tsx`                                                           |
 | `/privacy`, `/tos`, `/pro` | Static page files under `app/(marketing)/`                                                               |
@@ -141,6 +147,30 @@ tags: ["New", "Improved", "Fixed"]    # tags are optional, at least one is requi
 ---
 ```
 
+### Blog MDX (`blog/`)
+
+Posts are written by the `/create-blog-post` skill (`.claude/skills/create-blog-post/`), which
+researches a topic, refuses ones that would hurt the site's SEO, and documents the frontmatter
+and components in `references/post-format.md`. `/find-blog-topics` finds and vets topics when
+there isn't one. Both share `.claude/skills/blog-shared/`: the validity gate, the research
+playbook, a registry of research sources with working fetch methods (`sources.md`), and the topic
+backlog (queued/drafted/published/rejected, `topic-backlog.md`). The schema lives in `source.config.ts` (`posts`):
+`title`, `description` (required: meta description and visible lede), `date`, optional `updated`
+(substantive revisions only - it drives `dateModified` and the sitemap `lastmod`), `seoTitle`,
+`category` (`Steam News` | `Guides` | `Explainers` | `Updates`), `tags`, `keywords`, `image`
+(1200x630 cover, doubles as the OG image), `imageAlt`, `author`, `draft`.
+
+- **Drafts** (`draft: true`) render under `next dev` only. They're excluded from the production
+  build, RSS and sitemap via `getPublishedPosts()`/`getPost()` in `lib/blog.ts`. Always go through
+  those helpers, never `blog.getPages()` directly, for anything public.
+- The post page generates BlogPosting + BreadcrumbList JSON-LD, `article:*` OG tags and the
+  canonical from frontmatter. Don't hand-write them into a post.
+- Post-only MDX components (`Figure`, `KeyTakeaways`, `YouTube`, `Steps`/`Step`, `Tabs`/`Tab`)
+  come from `app/(marketing)/blog/_components/mdx.tsx`, on top of `mdx-components.tsx`.
+- `next-sitemap.config.mjs` reads each post's `updated ?? date` for its `lastmod` (and the
+  newest one for `/blog`); `/blog` is `noindex` while there are no published posts.
+- Published posts are also appended to `/llms-full.txt`.
+
 ### Navigation (`meta.json`)
 
 Each `meta.json` in `_content/` controls sidebar ordering:
@@ -153,12 +183,14 @@ Each `meta.json` in `_content/` controls sidebar ordering:
 ### `source.config.ts`
 Defines Fumadocs collections:
 - **`docs`** — reads from `app/(marketing)/docs/_content/`, adds `keywords` frontmatter field
-- **`blog`** (changelogs) — reads from `changelogs/`, adds `date` + `tags` fields, async
+- **`changelog`** — reads from `changelogs/`, adds `date` + `tags` fields, async
+- **`posts`** — blog posts, reads from `blog/` (see "Blog MDX" above)
 
 ### `lib/source.ts`
 Creates Fumadocs source loaders used throughout the app:
 - `docs.getPage(slug)` / `docs.getPages()` — doc page access
-- `blog.getPage(slug)` / `blog.getPages()` — changelog access
+- `changelog.getPage(slug)` / `changelog.getPages()` — changelog access
+- `blog` — blog posts, drafts included (use `lib/blog.ts`'s helpers for anything public)
 - `getLLMText(page)` — generates plain-text from processed MDX (used in LLM context files)
 - `getPageImage(page)` — returns OG image path per doc page
 
@@ -256,3 +288,27 @@ AdSense slots between sections (never inside the pinned showcase).
 Deployed to Vercel as a static export (`output: 'export'` in `next.config.ts`). The `vercel.json` `ignoreCommand` skips rebuilds when no files under `docs/` changed. Sitemap and `robots.txt` are generated in the `postbuild` step via `next-sitemap`.
 
 Production URL: `https://steamgameidler.com`
+
+### Post-deploy tasks (`.github/workflows/docs-deploy.yml`)
+
+Runs after every successful **production** Vercel deploy (GitHub's `deployment_status` event). A
+`changes` job finds the previous successful production deploy, then two independent jobs use that
+range (shared helpers in `docs/scripts/lib/changes.mjs`):
+
+- **`indexnow`** - `docs/scripts/indexnow.mjs` maps changed files to public URLs (blog posts, docs
+  pages, static marketing routes - not shared components/styles, which would resubmit the whole
+  site) and POSTs only those to `api.indexnow.org` for Bing/Yandex. Google ignores IndexNow, so
+  this can't affect Google rankings. Manual use from `docs/`: `node scripts/indexnow.mjs --urls
+  blog/some-post [--dry-run]` (no leading slash - Git Bash rewrites `/blog/...` into a Windows
+  path).
+- **`discord`** - `docs/scripts/announce-discord.mjs` posts each *newly published* blog post
+  (added, or flipped from draft - never edits to live posts) to the Discord announcements channel
+  as plain markdown: one message per post, only the first pinging the announcements role. Handles
+  Discord rate limits (429 `retry_after`, empty-bucket pauses) with backoff on 5xx. Needs the repo
+  secret `DISCORD_BLOG_WEBHOOK_URL`; without it the job warns and skips. A cache key per deploy
+  commit stops a re-run from announcing twice. Test with `--slugs <slug>[,<slug>] --silent`
+  against a test webhook (`--silent` shows the role mention but notifies nobody). Webhook URLs
+  are credentials: env vars/secrets only, never committed.
+
+**Never rename or delete `public/a99bafb2fec849c3abfd6d70326b67fa.txt`** - it's the IndexNow key
+file; without it every submission fails with HTTP 403.

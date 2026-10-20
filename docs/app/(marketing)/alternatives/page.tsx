@@ -8,9 +8,9 @@ import NavBar from '@/app/(marketing)/(home)/_components/NavBar'
 import { StaggerGroup, StaggerItem } from '@/app/lib/animations'
 
 export const metadata = {
-  title: 'The Best Alternative to ArchiSteamFarm, Idle Master & Steam Achievement Manager',
+  title: { absolute: 'Steam Idler Alternatives - ASF, Idle Master & SAM Compared' },
   description:
-    'Looking for an alternative to ArchiSteamFarm, Idle Master, or Steam Achievement Manager? Steam Game Idler replaces all three with a free, modern desktop app.',
+    'Compare Steam Game Idler with ArchiSteamFarm, Idle Master and Steam Achievement Manager: one free desktop app for cards, achievements and playtime.',
   keywords: [
     'Steam automation alternatives',
     'best Steam card farming tool',
@@ -22,16 +22,16 @@ export const metadata = {
   openGraph: {
     url: 'https://steamgameidler.com/alternatives',
     siteName: 'Steam Game Idler',
-    title: 'The Best Alternative to ArchiSteamFarm, Idle Master & Steam Achievement Manager',
+    title: 'Steam Idler Alternatives - ASF, Idle Master & SAM Compared',
     description:
-      'Looking for an alternative to ArchiSteamFarm, Idle Master, or Steam Achievement Manager? Steam Game Idler replaces all three with a free, modern desktop app.',
+      'Compare Steam Game Idler with ArchiSteamFarm, Idle Master and Steam Achievement Manager: one free desktop app for cards, achievements and playtime.',
     images: 'https://steamgameidler.com/og-image.png',
     type: 'website',
   },
   twitter: {
-    title: 'Steam Automation Tool Alternatives | Steam Game Idler',
+    title: 'Steam Idler Alternatives - ASF, Idle Master & SAM Compared',
     description:
-      'Compare Steam Game Idler against ArchiSteamFarm, Idle Master, and Steam Achievement Manager.',
+      'Compare Steam Game Idler with ArchiSteamFarm, Idle Master and Steam Achievement Manager: one free desktop app for cards, achievements and playtime.',
     image: 'https://steamgameidler.com/og-image.png',
   },
   alternates: {

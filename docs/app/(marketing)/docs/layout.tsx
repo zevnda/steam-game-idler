@@ -1,4 +1,5 @@
 import { FaDiscord, FaGithub } from 'react-icons/fa6'
+import { FiClock, FiEdit3 } from 'react-icons/fi'
 import { DocsLayout } from 'fumadocs-ui/layouts/docs'
 import Image from 'next/image'
 import { baseOptions } from '@/lib/layout.shared'
@@ -17,6 +18,23 @@ export default function Layout({ children }: LayoutProps) {
       tree={source.pageTree}
       themeSwitch={{ enabled: false }}
       links={[
+        // Blog and Changelog first: docs pages get most of the site's search traffic, so these
+        // sidebar links are the main internal path from docs to both (the docs layout has no
+        // marketing NavBar). Same icons as the footer and NavBar use for them.
+        {
+          type: 'icon',
+          url: '/blog',
+          label: 'Blog',
+          text: 'Blog',
+          icon: <FiEdit3 />,
+        },
+        {
+          type: 'icon',
+          url: '/changelog',
+          label: 'Changelog',
+          text: 'Changelog',
+          icon: <FiClock />,
+        },
         {
           type: 'icon',
           url: 'https://github.com/zevnda/steam-game-idler',

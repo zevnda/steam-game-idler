@@ -210,7 +210,7 @@ export function UnlockerArt({ t }: { t: number }) {
 const MGR_ROWS = [
   { name: 'Green Thumb', hue: 150, start: true },
   { name: 'Master Farmer', hue: 30, start: false },
-  { name: 'Well Travelled', hue: 200, start: false },
+  { name: 'Well Traveled', hue: 200, start: false },
 ]
 const MGR_SELECT = [0.8, 1.35] // ticks rows 1 and 2
 const MGR_APPLY = 2.05

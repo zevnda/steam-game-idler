@@ -2557,3 +2557,70 @@ button[aria-label='Copy Link'] {
   list-style-type: decimal;
   margin-top: 0.5rem;
 }
+
+/* ─── Blog ──────────────────────────────────────────────────── */
+/* Long-form reading tweaks on top of Fumadocs' typography plugin: a slightly larger body size and
+   looser leading than docs pages, and heading anchors that clear the fixed NavBar. */
+.prose-blog {
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  color: var(--color-text-muted);
+}
+
+.prose-blog :where(h2, h3, h4) {
+  scroll-margin-top: 6rem;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+}
+
+.prose-blog :where(h2) {
+  margin-top: 2.75em;
+}
+
+.prose-blog :where(strong) {
+  color: var(--color-text-primary);
+}
+
+.prose-blog :where(a):not(:where(.not-prose *)) {
+  color: var(--color-accent);
+  text-decoration-color: rgba(0, 163, 255, 0.35);
+  text-underline-offset: 3px;
+}
+
+.prose-blog :where(a):not(:where(.not-prose *)):hover {
+  text-decoration-color: currentColor;
+}
+
+/* Fumadocs wraps each heading in a self-link anchor - keep headings looking like headings */
+.prose-blog :where(h2, h3, h4) a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* KeyTakeaways sits inside `not-prose`, so its markdown list needs its own list styling */
+.blog-takeaways ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+}
+
+.blog-takeaways li + li {
+  margin-top: 0.4rem;
+}
+
+.blog-takeaways p {
+  margin: 0;
+}
+
+.blog-takeaways a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Cover stand-in for posts without an image */
+.blog-cover-fallback {
+  background:
+    radial-gradient(ellipse 80% 70% at 85% 10%, rgba(0, 163, 255, 0.28), transparent 60%),
+    radial-gradient(ellipse 60% 60% at 10% 100%, rgba(165, 248, 76, 0.12), transparent 60%),
+    linear-gradient(135deg, #111 0%, #050505 100%);
+}

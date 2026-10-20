@@ -117,7 +117,7 @@ export default function GetStarted() {
               n={3}
               state={stepState(2, active, t)}
               title='Pick what to automate'
-              body='Switch on what you want running, minimise SGI to the tray, and get on with your day.'
+              body='Switch on what you want running, minimize SGI to the tray, and get on with your day.'
               href='/docs'
               more='about every feature in the docs'
               visual={<AutomateScene t={t} />}

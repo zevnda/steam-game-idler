@@ -17,9 +17,9 @@ import JsonLd from '@/app/lib/JsonLd'
 const competitor = COMPETITORS.archisteamfarm
 
 export const metadata = {
-  title: 'ArchiSteamFarm Feature Comparison',
+  title: { absolute: 'ArchiSteamFarm Alternative - ASF vs Steam Game Idler' },
   description:
-    'See why Steam Game Idler is the best alternative to ArchiSteamFarm for Steam automation. Compare features like card farming, achievement management, and user experience',
+    'A free ArchiSteamFarm alternative with a desktop app instead of config files and a command line. Compare ASF and Steam Game Idler feature by feature.',
   keywords: [
     'ArchiSteamFarm alternative',
     'ArchiSteamFarm comparison',
@@ -37,16 +37,16 @@ export const metadata = {
   openGraph: {
     url: 'https://steamgameidler.com/alternatives/archisteamfarm',
     siteName: 'Steam Game Idler',
-    title: 'ArchiSteamFarm Feature Comparison | Steam Game Idler',
+    title: 'ArchiSteamFarm Alternative - ASF vs Steam Game Idler',
     description:
-      'See why Steam Game Idler is the best alternative to ArchiSteamFarm for Steam automation. Compare features like card farming, achievement management, and user experience',
+      'A free ArchiSteamFarm alternative with a desktop app instead of config files and a command line. Compare ASF and Steam Game Idler feature by feature.',
     images: 'https://steamgameidler.com/asf-og-image.png',
     type: 'article',
   },
   twitter: {
-    title: 'ArchiSteamFarm Feature Comparison | Steam Game Idler',
+    title: 'ArchiSteamFarm Alternative - ASF vs Steam Game Idler',
     description:
-      'See why Steam Game Idler is the best alternative to ArchiSteamFarm for Steam automation. Compare features like card farming, achievement management, and user experience',
+      'A free ArchiSteamFarm alternative with a desktop app instead of config files and a command line. Compare ASF and Steam Game Idler feature by feature.',
     image: 'https://steamgameidler.com/asf-og-image.png',
   },
   alternates: {
@@ -57,9 +57,9 @@ export const metadata = {
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  'headline': 'ArchiSteamFarm Feature Comparison | Steam Game Idler',
+  'headline': 'ArchiSteamFarm Alternative - ASF vs Steam Game Idler',
   'description':
-    'See why Steam Game Idler is the best alternative to ArchiSteamFarm for Steam automation. Compare features like card farming, achievement management, and user experience',
+    'A free ArchiSteamFarm alternative with a desktop app instead of config files and a command line. Compare ASF and Steam Game Idler feature by feature.',
   'url': 'https://steamgameidler.com/alternatives/archisteamfarm',
   'image': 'https://steamgameidler.com/asf-og-image.png',
   'author': { '@type': 'Person', 'name': 'zevnda', 'url': 'https://github.com/zevnda' },
