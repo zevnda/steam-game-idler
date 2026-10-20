@@ -74,7 +74,7 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.63.0",
-    "@typescript-eslint/parser": "^8.63.0",
+    "@typescript-eslint/parser": "^8.71.2",
     "eslint": "^9.39.5",
     "eslint-plugin-i18next": "^6.1.5",
     "eslint-plugin-react": "^7.37.5",
