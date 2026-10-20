@@ -15,9 +15,9 @@
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
-    "fumadocs-core": "^16.14.2",
+    "fumadocs-core": "^16.17.7",
     "fumadocs-mdx": "^15.2.2",
-    "fumadocs-ui": "^16.14.2",
+    "fumadocs-ui": "^16.17.7",
     "lucide-react": "^0.563.0",
     "motion": "^12.42.2",
     "next": "^16.3.8",

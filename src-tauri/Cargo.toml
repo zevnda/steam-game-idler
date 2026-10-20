@@ -50,7 +50,7 @@ tauri-plugin-window-state = { git = "https://github.com/zevnda/plugins-workspace
 tauri-plugin-updater = "2.9.0"
 tauri-plugin-process = "2.3.0"
 tauri-plugin-single-instance = "2.4.2"
-tauri-plugin-autostart = "2.5.0"
+tauri-plugin-autostart = "2.7.0"
 tauri-plugin-notification = "2.6.0"
 tauri-plugin-clipboard-manager = "2.4.2"
 

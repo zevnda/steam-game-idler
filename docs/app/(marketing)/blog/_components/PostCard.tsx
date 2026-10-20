@@ -14,7 +14,7 @@ function Cover({ post, featured }: { post: BlogPost; featured: boolean }) {
   return (
     <div
       className={`relative overflow-hidden bg-surface-raised ${
-        featured ? 'aspect-[1200/630] md:aspect-auto md:h-full' : 'aspect-[1200/630]'
+        featured ? 'aspect-1200/630 md:aspect-auto md:h-full' : 'aspect-1200/630'
       }`}
     >
       {post.data.image ? (
