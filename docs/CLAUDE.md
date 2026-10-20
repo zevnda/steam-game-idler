@@ -292,8 +292,9 @@ Production URL: `https://steamgameidler.com`
 ### Post-deploy tasks (`.github/workflows/docs-deploy.yml`)
 
 Runs after every successful **production** Vercel deploy (GitHub's `deployment_status` event). A
-`changes` job finds the previous successful production deploy, then two independent jobs use that
-range (shared helpers in `docs/scripts/lib/changes.mjs`):
+`changes` job finds the previous successful production deploy, then the `indexnow` job uses that
+range (helpers in `docs/scripts/lib/changes.mjs`). New blog posts are announced in Discord by hand,
+not by CI:
 
 - **`indexnow`** - `docs/scripts/indexnow.mjs` maps changed files to public URLs (blog posts, docs
   pages, static marketing routes - not shared components/styles, which would resubmit the whole
@@ -301,14 +302,6 @@ range (shared helpers in `docs/scripts/lib/changes.mjs`):
   this can't affect Google rankings. Manual use from `docs/`: `node scripts/indexnow.mjs --urls
   blog/some-post [--dry-run]` (no leading slash - Git Bash rewrites `/blog/...` into a Windows
   path).
-- **`discord`** - `docs/scripts/announce-discord.mjs` posts each *newly published* blog post
-  (added, or flipped from draft - never edits to live posts) to the Discord announcements channel
-  as plain markdown: one message per post, only the first pinging the announcements role. Handles
-  Discord rate limits (429 `retry_after`, empty-bucket pauses) with backoff on 5xx. Needs the repo
-  secret `DISCORD_BLOG_WEBHOOK_URL`; without it the job warns and skips. A cache key per deploy
-  commit stops a re-run from announcing twice. Test with `--slugs <slug>[,<slug>] --silent`
-  against a test webhook (`--silent` shows the role mention but notifies nobody). Webhook URLs
-  are credentials: env vars/secrets only, never committed.
 
 **Never rename or delete `public/a99bafb2fec849c3abfd6d70326b67fa.txt`** - it's the IndexNow key
 file; without it every submission fails with HTTP 403.

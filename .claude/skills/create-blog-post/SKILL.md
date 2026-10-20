@@ -227,9 +227,8 @@ Keep it scannable:
 - Publish: it's ready as is - commit, PR, merge. Remaining `MEDIA` markers are invisible
   comments, so they never block publishing; add those images whenever convenient. If the PR will
   sit for more than a few days, say so and the `date:` gets bumped to the merge day. After it's
-  live it's announced in Discord automatically (the `discord` job in
-  `.github/workflows/docs-deploy.yml`); sharing elsewhere is manual (Steam Community threads,
-  Reddit if genuinely on-topic). For beta/news topics, note when to revisit (e.g. the feature leaving beta).
+  live, share it where the audience is: the user posts it to Discord by hand, plus Steam Community
+  threads and Reddit if genuinely on-topic. For beta/news topics, note when to revisit (e.g. the feature leaving beta).
 - **Search engine actions** - always include this section, from
   [../blog-shared/search-engines.md](../blog-shared/search-engines.md): the checklist that matches
   what happened (new post, substantial update, URL change). Spell out the exact URLs to paste

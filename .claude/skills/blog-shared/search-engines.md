@@ -15,7 +15,6 @@ changes for Bing). IndexNow is fine because Google ignores it completely.
 |---|---|---|
 | Sitemap | `next-sitemap` regenerates `sitemap.xml` on every docs deploy, with real `lastmod` for posts | Google (submitted in Search Console, re-read on its own), Bing and Yandex (both read the `Sitemap:` line in `robots.txt`) |
 | IndexNow | `.github/workflows/docs-deploy.yml` (`indexnow` job) runs `docs/scripts/indexnow.mjs` after each successful **production** Vercel deploy and submits only the URLs whose source changed | Bing, Yandex, Seznam, Naver, Yep (not Google) |
-| Discord announcement | Same workflow, `discord` job: each newly published post is posted to the Discord announcements channel (first message of a batch pings the role) | SGI's community (not a search engine, but part of every launch) |
 | RSS | `/blog/rss.xml` updates on deploy | Feed readers, aggregators |
 
 Posts go live when their PR merges; nothing to tell search engines before that.
