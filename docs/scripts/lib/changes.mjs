@@ -1,8 +1,7 @@
 /**
- * Shared helpers for the post-deploy scripts (`indexnow.mjs`, `announce-discord.mjs`): reading
- * files at a git ref, parsing blog frontmatter, and working out what changed between two deploys.
- * Both scripts run from `docs/` against the same `--base`/`--head` pair, so keeping this logic in
- * one place means they always agree on what a deploy contained.
+ * Helpers for post-deploy scripts (currently `indexnow.mjs`): reading files at a git ref, parsing
+ * blog frontmatter, and working out what changed between two deploys. Kept separate so any future
+ * post-deploy script agrees with IndexNow on what a deploy contained.
  */
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
@@ -63,25 +62,3 @@ export async function changedFiles(base, head) {
 }
 
 export const POST_FILE = /^docs\/blog\/([^/]+)\.mdx$/
-
-/**
- * Posts that became public in this deploy: added already public, or flipped from draft to
- * public. Edits to a post that was already live are not "new" - those get re-crawled (IndexNow)
- * but never re-announced.
- */
-export async function newlyPublishedPosts(base, head) {
-  const posts = []
-  for (const { status, file } of await changedFiles(base, head)) {
-    const slug = file.match(POST_FILE)?.[1]
-    if (!slug || status === 'D') continue
-    if (!(await isPublicAt(head, file))) continue
-    if (status !== 'A' && (await isPublicAt(base, file))) continue
-
-    const fields = parseFrontmatter(await readAt(head, file))
-    posts.push({ slug, url: `${SITE}/blog/${slug}`, ...fields })
-  }
-  // Oldest first, so a batch reads in the order it was written.
-  return posts.sort(
-    (a, b) => (a.date ?? '').localeCompare(b.date ?? '') || a.slug.localeCompare(b.slug),
-  )
-}
