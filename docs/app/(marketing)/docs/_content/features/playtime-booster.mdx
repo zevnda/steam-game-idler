@@ -1,21 +1,20 @@
 ---
 title: Playtime Booster
-description: Learn how to manually idle Steam games to increase their playtime, and manage everything currently idling from one page.
+seoTitle: 'Steam Hour Booster - Boost Playtime Hours Free | SGI'
+description: Boost your Steam hours without playing. Idle up to 32 games at once with Steam Game Idler's free hour booster, with optional per-game playtime limits.
 ---
 
 import DocsCTA from '@/app/(marketing)/docs/_components/DocsCTA';
 import MockButton from '@/app/(marketing)/docs/_components/MockButton';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 
-# How to Idle Steam Games and Boost Playtime
+# Steam Hour Booster: Boost Playtime Without Playing
 
-Idling a game increases its playtime hours without you needing to actually play it. This is useful for reaching the playtime needed to start receiving trading card drops, padding your Steam profile stats, or simply keeping a game "running" in the background.
+The Playtime Booster is Steam Game Idler's free Steam hour booster. Start idling a game and Steam counts it as running, so its playtime hours go up without you playing it or even having it installed. You can idle up to 32 games at once, and stop each one yourself or let it stop at a playtime limit you set.
 
-<Callout type="info">
-  You can idle a maximum of 32 games simultaneously, across every SGI feature combined. This limit is set by the Steam client.
-</Callout>
+People use it to build up hours on a game, reach the playtime some accounts need before trading cards start dropping, or keep a game "running" in the background.
 
-## Start Idling a Game
+## How to boost hours on a Steam game
 
 <Steps>
   <Step>
@@ -30,5 +29,37 @@ Idling a game increases its playtime hours without you needing to actually play 
     Click <MockButton type='idling-games' /> in the sidebar to see everything currently idling
   </Step>
 </Steps>
+
+## How idling works
+
+Steam records playtime for any game it sees running on your account. How SGI does that depends on how you [sign in](/docs/get-started/how-to-sign-in):
+
+- **Steam Sign-in:** SGI tells Steam directly which games you're playing. The Steam client doesn't need to be running, and the games don't need to be installed.
+- **Legacy Sign-in (Windows):** your Steam client must be running. SGI starts a small background process for each idling game, which you may see as `SteamUtility` in Task Manager.
+
+Steam has to be online to record playtime, so hours don't build up while your connection is down. Your Steam status shows the game as being played; with Steam Sign-in you can choose your [online status](/docs/settings/general#online-status-steam-sign-in-only), or set yourself to Invisible in Steam if you don't want friends to see it.
+
+## Boost several games at once
+
+You can idle up to **32 games at once**. That limit comes from Steam and is shared by every SGI feature, so games idling for [Card Farming](/docs/features/card-farming) or the [Achievement Unlocker](/docs/features/achievement-unlocker) count toward it too.
+
+The <MockButton type='idling-games' /> page groups everything idling by the feature that started it, with a stop button for each group and <MockButton type='content' content='Stop all' /> to stop everything.
+
+## Stop at a playtime limit
+
+To stop boosting a game at a certain number of hours, set a limit in [Settings → Game Settings](/docs/settings/game-settings):
+
+- **Max Playtime:** stop the game, and remove it from every queue, once its total playtime reaches this many minutes. Set it for all games or override it per game.
+- **Max Idle Time:** stop idling a game once it has idled for this many minutes. Applies to manual idling and Auto-Idle.
+
+## Idle automatically when SGI starts
+
+To have the same games start idling every time you open SGI, add them to [Auto-Idle](/docs/features/auto-idle) instead of starting them by hand.
+
+## Things to know before you idle
+
+- **Refunds:** idled hours are real playtime. Steam only refunds games with [less than 2 hours played](https://store.steampowered.com/steam_refunds/), so idling a game you just bought can make it non-refundable.
+- **Trading cards:** idling counts toward card drops, but [Card Farming](/docs/features/card-farming) is built for that. It finds every game with drops left and moves on when they run out.
+- **Achievements:** idling doesn't unlock achievements. Use the [Achievement Unlocker](/docs/features/achievement-unlocker) or [Achievement Manager](/docs/features/achievement-manager) for those.
 
 <DocsCTA />
