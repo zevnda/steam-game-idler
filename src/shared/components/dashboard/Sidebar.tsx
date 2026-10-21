@@ -14,37 +14,35 @@ import {
   TbSettings,
 } from 'react-icons/tb'
 import { SidebarItem } from './SidebarItem'
-import { cn, Typography } from '@heroui/react'
+import { cn } from '@heroui/react'
 import { AccountSwitcher } from '@/features/account-switcher/components/AccountSwitcher'
 import { useFreeGames } from '@/features/free-games/hooks/useFreeGames'
 import { AppTooltip } from '@/shared/components/AppTooltip'
 import { AdSlot } from '@/shared/components/pro/AdSlot'
-import { TierBadge } from '@/shared/components/TierBadge'
+import { GoPro } from '@/shared/components/pro/GoPro'
 import { useAchievementUnlockerStore } from '@/shared/stores/achievementUnlockerStore'
 import { useCardFarmingStore } from '@/shared/stores/cardFarmingStore'
 import { useIdlingStore } from '@/shared/stores/idlingStore'
-import { useProModalStore } from '@/shared/stores/proModalStore'
 import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
-import { useSidebarStore } from '@/shared/stores/sidebarStore'
-import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
+import { NARROW_WINDOW_QUERY, useSidebarStore } from '@/shared/stores/sidebarStore'
 
 interface SidebarItemConfig {
   href: string
-  icon: ComponentType<{ fontSize?: number; className?: string }>
+  icon: ComponentType<{ fontSize?: number; className?: string; strokeWidth?: number }>
   labelKey: TranslationKey
-  // Driven by `idlingStore` (kept current by `useIdlingSync`, mounted in `DashboardShell`) - see
-  // the `pulsing` render below.
-  pulseWhenIdling?: boolean
-  // Same idea as `pulseWhenIdling`, driven by `cardFarmingStore` (kept current by
+  // Driven by `idlingStore` (kept current by `useIdlingSync`, mounted in `DashboardShell`) - shows
+  // SidebarItem's running dot (see the `running` prop passed below).
+  runningWhenIdling?: boolean
+  // Same idea as `runningWhenIdling`, driven by `cardFarmingStore` (kept current by
   // `useCardFarmingSync`) - lets a user know a farming cycle is still running from any page,
   // without needing a separate persistent overlay widget (see DashboardShell's mount-point
   // comment for why card farming didn't end up needing one).
-  pulseWhenFarming?: boolean
+  runningWhenFarming?: boolean
   // Same idea again, driven by `achievementUnlockerStore` (kept current by
   // `useAchievementUnlockerSync`) - the achievement-unlocker automation loop uses the same
   // sync-hook-plus-store shape card farming already proved, see DashboardShell's mount-point
   // comment.
-  pulseWhenUnlocking?: boolean
+  runningWhenUnlocking?: boolean
   // Driven by `useFreeGames` (free games only) - golds just the icon when there's at least one
   // unowned free game still claimable, mirroring `main`'s sidebar highlight but scoped to the icon
   // rather than also recoloring the label.
@@ -52,22 +50,22 @@ interface SidebarItemConfig {
 }
 
 interface SidebarSectionConfig {
-  headerKey: TranslationKey
+  id: string
   items: SidebarItemConfig[]
 }
 
-// Data-driven, not an index-keyed header map like `main`'s fragile `{0: 'Games', 4: 'Automation',
-// ...}` approach. Route paths match the real files under `src/pages/dashboard/`.
+// Data-driven groups (games / automation / misc). Deliberately headerless - groups are separated
+// only by the gap between them. Route paths match the real files under `src/pages/dashboard/`.
 const sections: SidebarSectionConfig[] = [
   {
-    headerKey: 'dashboard.sidebar.nav.games',
+    id: 'games',
     items: [
       { href: '/dashboard', icon: TbDeviceGamepad2, labelKey: 'dashboard.sidebar.nav.games' },
       {
         href: '/dashboard/idling',
         icon: TbPlayerPlay,
         labelKey: 'dashboard.sidebar.nav.idling',
-        pulseWhenIdling: true,
+        runningWhenIdling: true,
       },
       { href: '/dashboard/favorites', icon: TbHeart, labelKey: 'dashboard.sidebar.nav.favorites' },
       {
@@ -79,19 +77,19 @@ const sections: SidebarSectionConfig[] = [
     ],
   },
   {
-    headerKey: 'dashboard.sidebar.section.automation',
+    id: 'automation',
     items: [
       {
         href: '/dashboard/card-farming',
         icon: TbCards,
         labelKey: 'dashboard.sidebar.nav.cardFarming',
-        pulseWhenFarming: true,
+        runningWhenFarming: true,
       },
       {
         href: '/dashboard/achievement-unlocker',
         icon: TbAward,
         labelKey: 'dashboard.sidebar.nav.achievementUnlocker',
-        pulseWhenUnlocking: true,
+        runningWhenUnlocking: true,
       },
       {
         href: '/dashboard/auto-idle',
@@ -101,7 +99,7 @@ const sections: SidebarSectionConfig[] = [
     ],
   },
   {
-    headerKey: 'dashboard.sidebar.section.misc',
+    id: 'misc',
     items: [
       {
         href: '/dashboard/inventory-manager',
@@ -126,20 +124,24 @@ export const Sidebar = () => {
   const { freeGames } = useFreeGames()
   const hasClaimableFreeGames = freeGames.length > 0
   const openSettings = useSettingsModalStore(state => state.open)
-  const isSubscribed = useSubscriptionStore(state => state.isSubscribed)
-  const subscriptionTier = useSubscriptionStore(state => state.subscriptionTier)
-  const openProModalWithTier = useProModalStore(state => state.openWithTier)
   const collapsed = useSidebarStore(state => state.collapsed)
   const hydrated = useSidebarStore(state => state.hydrated)
 
   useEffect(() => {
-    useSidebarStore.getState().hydrate()
+    const { hydrate, setNarrow } = useSidebarStore.getState()
+    hydrate()
+    // Auto-collapse below the `lg` breakpoint - see sidebarStore's `setNarrow`/`toggle` for how
+    // this interacts with the user's persisted preference.
+    const query = window.matchMedia(NARROW_WINDOW_QUERY)
+    const onChange = (event: MediaQueryListEvent) => setNarrow(event.matches)
+    query.addEventListener('change', onChange)
+    return () => query.removeEventListener('change', onChange)
   }, [])
 
   return (
     <nav
       className={cn(
-        'flex h-screen shrink-0 flex-col border-r border-border bg-background',
+        'relative flex h-screen shrink-0 flex-col border-r border-border bg-background',
         hydrated && 'transition-[width] duration-200',
         collapsed ? 'w-16' : 'w-64',
       )}
@@ -149,22 +151,11 @@ export const Sidebar = () => {
       <div className='h-10 shrink-0' data-tauri-drag-region />
       <div
         className={cn(
-          'flex flex-1 flex-col gap-4 overflow-y-auto overflow-x-hidden px-2 pb-2',
-          collapsed ? ' pt-6' : ' pt-9',
+          'flex flex-1 flex-col gap-4 overflow-y-auto overflow-x-hidden px-2 pt-6 pb-2',
         )}
       >
         {sections.map(section => (
-          <div key={section.headerKey} className='flex flex-col gap-0.5'>
-            {!collapsed && (
-              <Typography
-                className='px-3 pb-1 uppercase tracking-wide'
-                color='muted'
-                type='body-xs'
-                weight='semibold'
-              >
-                {t(section.headerKey)}
-              </Typography>
-            )}
+          <div key={section.id} className='flex flex-col gap-1'>
             {section.items.map(item => (
               <SidebarItem
                 key={item.href}
@@ -173,10 +164,10 @@ export const Sidebar = () => {
                 icon={item.icon}
                 iconHighlighted={item.goldWhenClaimable && hasClaimableFreeGames}
                 label={t(item.labelKey)}
-                pulsing={
-                  (item.pulseWhenIdling && isIdling) ||
-                  (item.pulseWhenFarming && isFarming) ||
-                  (item.pulseWhenUnlocking && isUnlocking)
+                running={
+                  (item.runningWhenIdling && isIdling) ||
+                  (item.runningWhenFarming && isFarming) ||
+                  (item.runningWhenUnlocking && isUnlocking)
                 }
               />
             ))}
@@ -184,44 +175,15 @@ export const Sidebar = () => {
         ))}
       </div>
 
-      {process.env.NODE_ENV === 'production' && (
+      {process.env.NODE_ENV === 'development' && (
         <div className='flex shrink-0 items-center justify-center overflow-hidden px-2 mb-2'>
           <AdSlot />
         </div>
       )}
 
-      <div className='shrink-0 border-t border-border p-2'>
-        {/* Tier indicator - clickable for `casual` only (the one tier with somewhere left to
-            upgrade to), opening GoProModal pre-scrolled to the Gamer tier card via
-            `openWithTier('gamer')` (see GoProModal's `requiredTier` scroll effect). `gamer` is
-            already the max tier so its badge stays a static label, matching the titlebar GoPro
-            button being hidden entirely at `gamer` (see GoPro.tsx). `free` (`null`) also stays
-            static here since the titlebar's GoPro button is that tier's CTA. Hidden until the
-            subscription check actually reports a result, so it never flashes an incorrect tier
-            before `useCheckSubscription` (mounted in `DashboardShell`) resolves. Dropped entirely
-            while collapsed - there's no room for a label+badge row at icon-rail width, and the
-            badge alone with no label would misread as a nav item. */}
-        {isSubscribed !== null &&
-          !collapsed &&
-          (subscriptionTier === 'casual' ? (
-            <button
-              className='flex w-full items-center justify-between rounded-lg px-3 py-2 cursor-pointer outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-focus'
-              type='button'
-              onClick={() => openProModalWithTier('gamer')}
-            >
-              <Typography color='muted' type='body-xs' weight='semibold'>
-                {t('dashboard.sidebar.tier.label')}
-              </Typography>
-              <TierBadge tier={subscriptionTier} />
-            </button>
-          ) : (
-            <div className='flex items-center justify-between rounded-lg px-3 py-2'>
-              <Typography color='muted' type='body-xs' weight='semibold'>
-                {t('dashboard.sidebar.tier.label')}
-              </Typography>
-              <TierBadge tier={subscriptionTier} />
-            </div>
-          ))}
+      <GoPro collapsed={collapsed} />
+
+      <div className='shrink-0 p-2'>
         {/* Discord-style user bar: the account switcher's avatar/name is its own popover trigger,
             Settings sits beside it as a plain icon button - not a separate full-width row. Sign-out
             no longer has a dedicated row here at all; AccountSwitcher is the app's one sign-out
@@ -257,6 +219,72 @@ export const Sidebar = () => {
           )}
         </div>
       </div>
+
+      <SidebarEdgeToggle collapsed={collapsed} />
     </nav>
+  )
+}
+
+// TEMP (design trial, replacing the titlebar's sidebar-toggle button - see Titlebar.tsx's
+// `SHOW_TITLEBAR_SIDEBAR_TOGGLE`): a Stripe-style collapse control living on the sidebar's own
+// right border. A small pill always sits centred on the border; pointing at it folds the pill
+// itself into a chevron of the same thickness (left = collapse, right = expand). No tooltip - the
+// chevron's direction already says what it does, and `aria-label` covers assistive tech. Only the 24px handle is
+// clickable, so brushing the border while reaching for page content can't toggle the sidebar by
+// accident. `z-30` keeps it above `<main>` (DashboardShell's next sibling, unpositioned) but below
+// every modal (`z-50`).
+const SidebarEdgeToggle = ({ collapsed }: { collapsed: boolean }) => {
+  const { t } = useTranslation()
+  const toggle = useSidebarStore(state => state.toggle)
+  const label = t('dashboard.settings.keybinds.toggleSidebar')
+
+  return (
+    <div className='absolute inset-y-14 -right-2 z-30 flex w-4 items-center justify-center'>
+      <button
+        aria-label={label}
+        className='group/handle flex h-8 w-6 cursor-pointer items-center justify-center rounded-md outline-none focus-visible:ring-2 focus-visible:ring-focus'
+        type='button'
+        onClick={toggle}
+      >
+        {/* The pill IS the arrow: two 14px halves (overlapping 4px - one cap's diameter - so the
+            joint is seamless at rest and reads as one 24px pill) that each rotate about that
+            shared joint on hover, folding the same bar into a chevron. Pivots sit at the centre of
+            each half's inner cap (2px in from its end), so the two arms stay joined at the tip
+            mid-rotation. The wrapper nudges the folded chevron back toward centre, since its tip
+            stays on the border line while the arms swing out to one side. The resting fade is
+            `opacity` on the wrapper, never alpha on each half - a translucent half paints twice
+            where the two overlap, leaving a brighter dot at the joint; wrapper opacity composites
+            both halves as one layer first. */}
+        <span
+          aria-hidden
+          className={cn(
+            'flex flex-col items-center opacity-50 transition-[translate,opacity] duration-200',
+            'group-hover/handle:opacity-100 group-focus-visible/handle:opacity-100',
+            collapsed
+              ? 'group-hover/handle:translate-x-0.5 group-focus-visible/handle:translate-x-0.5'
+              : 'group-hover/handle:-translate-x-0.5 group-focus-visible/handle:-translate-x-0.5',
+          )}
+        >
+          <span
+            className={cn(
+              'h-3.5 w-1 origin-[50%_calc(100%-2px)] rounded-full bg-muted transition-[rotate,background-color] duration-200',
+              'group-hover/handle:bg-foreground group-focus-visible/handle:bg-foreground',
+              collapsed
+                ? 'group-hover/handle:-rotate-35 group-focus-visible/handle:-rotate-35'
+                : 'group-hover/handle:rotate-35 group-focus-visible/handle:rotate-35',
+            )}
+          />
+          <span
+            className={cn(
+              '-mt-1 h-3.5 w-1 origin-[50%_2px] rounded-full bg-muted transition-[rotate,background-color] duration-200',
+              'group-hover/handle:bg-foreground group-focus-visible/handle:bg-foreground',
+              collapsed
+                ? 'group-hover/handle:rotate-35 group-focus-visible/handle:rotate-35'
+                : 'group-hover/handle:-rotate-35 group-focus-visible/handle:-rotate-35',
+            )}
+          />
+        </span>
+      </button>
+    </div>
   )
 }

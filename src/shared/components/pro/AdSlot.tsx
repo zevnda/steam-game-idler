@@ -1,10 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { cn } from '@heroui/react'
 import Image from 'next/image'
-import { TierBadge } from '@/shared/components/TierBadge'
 import { CDN_BASE_URL } from '@/shared/constants'
-import { useProModalStore } from '@/shared/stores/proModalStore'
 import { useSidebarStore } from '@/shared/stores/sidebarStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { openExternalLink } from '@/shared/utils/links'
@@ -19,32 +16,31 @@ const DEFAULT_HOUSE_AD_COUNT = 15
 const ROTATE_INTERVAL_MS = 60 * 1000
 
 // House-ad slot in the sidebar footer, shown only to free-tier accounts - ported from `main`'s
-// AdSlot.tsx. One fixed bug: the "Remove ads" upsell now checks `hasCasualAccess` (matching the
-// visibility gate below), not `main`'s `hasGamerAccess` - ad removal is a Casual-tier perk.
+// AdSlot.tsx. No "Remove ads with Casual" upsell row under the ad any more - the sidebar's GoPro
+// card (directly below) is the free tier's one PRO call-to-action, so a second upsell stacked
+// right above it was redundant. Visibility checks `hasCasualAccess`, not `main`'s
+// `hasGamerAccess` - ad removal is a Casual-tier perk.
 // Unlike `main`, this returns null outright for Casual/Gamer accounts instead of a
 // permanently mounted `opacity-0` box - there's no reason to reserve sidebar footer space for an
-// ad slot a paying account will never see. `.pro-fade-in` (globals.css, shared with GoPro/
+// ad slot a paying account will never see. `.pro-fade-in` (globals.css, shared with
 // GoProModal) covers the mount transition that opacity-0 previously handled.
 // Windows-only reference size (Windows' WebView2/Chromium renders this correctly via `zoom`,
 // used only as a same-frame fallback below until the real measurement lands - see `naturalSize`'s
 // own comment for why these exact numbers don't need to be exact).
-const FALLBACK_NATURAL_SIZE = { width: 318, height: 292 }
+const FALLBACK_NATURAL_SIZE = { width: 318, height: 268 }
 
 export const AdSlot = () => {
-  const { t } = useTranslation()
   const isSubscribed = useSubscriptionStore(state => state.isSubscribed)
   const subscriptionTier = useSubscriptionStore(state => state.subscriptionTier)
   const collapsed = useSidebarStore(state => state.collapsed)
-  const openProModalWithTier = useProModalStore(state => state.openWithTier)
   const scale = collapsed ? 0.16 : 0.75
 
   const innerRef = useRef<HTMLDivElement>(null)
   // The wrapper's own actual rendered box (border+padding+content, at scale 1) - measured rather
-  // than hardcoded so a locale where "Remove ads with" wraps differently still gets a correctly
-  // sized reserved footprint (see CLAUDE.md's locale-length-resilience rules). `offsetWidth`/
+  // than hardcoded so the reserved footprint always matches what actually rendered. `offsetWidth`/
   // `offsetHeight` (not getBoundingClientRect, which would report the already-transformed size)
   // and a plain ResizeObserver (not react-resize-observer or similar - genuinely this simple)
-  // since this only ever needs to react to a real layout-size change (locale text reflow), not to
+  // since this only ever needs to react to a real layout-size change, not to
   // `scale` itself changing, which is handled by the render below multiplying it directly.
   const [naturalSize, setNaturalSize] = useState(FALLBACK_NATURAL_SIZE)
   useEffect(() => {
@@ -145,7 +141,7 @@ export const AdSlot = () => {
     >
       <div
         ref={innerRef}
-        className='w-fit rounded-lg border border-border p-2 pb-1'
+        className='w-fit rounded-lg border border-border p-2'
         style={{ transform: `scale(${scale})`, transformOrigin: 'top left' }}
       >
         <div
@@ -163,16 +159,6 @@ export const AdSlot = () => {
             width={300}
             onError={handleHouseAdError}
           />
-        </div>
-
-        <div
-          className='mt-1.5 mb-1 scale-125 cursor-pointer text-center text-xs text-muted duration-150 hover:text-foreground'
-          onClick={() => openProModalWithTier('casual')}
-        >
-          <p className='flex items-center justify-center'>
-            {t('dashboard.sidebar.ads.removeAdsWith')}
-            <TierBadge className='scale-85' tier='casual' />
-          </p>
         </div>
       </div>
     </div>

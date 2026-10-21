@@ -443,9 +443,9 @@ a revenue-shaping decision, not a technical one, so raise it rather than guessin
   concurrency step for achievement-unlocker's "multiple games at once" mode.
 - **Gamer** (implies casual) — up to 10 (sanity-capped) concurrent agent-mode accounts, automated
   Steam Community cookie retrieval/revalidation (manual cookie paste stays free-tier), free-game
-  auto-redemption (manual claim stays free-tier), automatic card farming, achievement-unlocker's
-  full 32-game concurrency, inventory-manager "sell dupes", and presence's custom idle status
-  message (agent-mode only). Presence's online status picker itself (`personaState`) is **not**
+  auto-redemption (manual claim stays free-tier), Trading Card Monitor (auto-starting card farming),
+  achievement-unlocker's full 32-game concurrency, inventory-manager "sell dupes", and presence's
+  custom idle status message (agent-mode only). Presence's online status picker itself (`personaState`) is **not**
   tier-gated — free for every agent-mode account; only the custom message shown while idling
   (`customIdleStatus`) is Gamer-gated. `usePresenceProGuard` resets only `customIdleStatus` on a
   downgrade, leaving `personaState` untouched.

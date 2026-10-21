@@ -8,7 +8,7 @@ interface TierBadgeProps {
 }
 
 // Small pill labeling a Pro tier (gamer/casual) or the implicit free tier (`null`) - extracted from
-// Sidebar.tsx's plan pill and AchievementUnlockerSettingsTab's inline "Gamer" tag, which had each
+// the sidebar's former plan pill and AchievementUnlockerSettingsTab's inline "Gamer" tag, which had each
 // independently grown the exact same markup; SubscriptionSettingsTab is a third caller needing it,
 // so this is now the one shared version instead of a third copy-paste. Gradient colors/typography
 // mirror docs/app/(marketing)/pro/_components/FeatureDetailsSection.tsx's tier badge, so the same

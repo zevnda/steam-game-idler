@@ -75,172 +75,19 @@ body {
   animation: skew-scroll 30s linear infinite;
 }
 
-/* Go Pro button (src/shared/components/pro/GoPro.tsx) - ported verbatim from `main`, an animated
-   conic-gradient border + dot pattern + inner shimmer built from CSS `@property` custom properties
-   so the browser can animate them directly (no JS/framer-motion). */
+/* Go Pro sidebar card (src/shared/components/pro/GoPro.tsx) - free-tier upsell. Colours match
+   GoProModal's own "PRO" wordmark gradient (#b700ff -> #6f00ff -> #3583e2) so the card and the modal
+   it opens read as one brand. Two ambient effects, both pure CSS (no framer-motion project-wide):
+   a slowly rotating conic-gradient border (driven by the `@property --gradient-angle` below, so
+   the browser can interpolate the angle directly) and a periodic diagonal sheen sweep (`::after`).
+   The border is a `border-box` background layer under an opaque `padding-box` fill - the standard
+   gradient-border trick that keeps the card's own rounded corners. The fill layers a translucent
+   purple tint over the active theme's `--background`, so it sits correctly on every theme preset. */
 
 @property --gradient-angle {
   syntax: '<angle>';
   initial-value: 0deg;
   inherits: false;
-}
-
-@property --gradient-angle-offset {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
-}
-
-@property --gradient-percent {
-  syntax: '<percentage>';
-  initial-value: 5%;
-  inherits: false;
-}
-
-@property --gradient-shine {
-  syntax: '<color>';
-  initial-value: white;
-  inherits: false;
-}
-
-.shiny-cta {
-  --shiny-cta-bg: #000000ff;
-  --shiny-cta-bg-subtle: #1a1818;
-  --shiny-cta-fg: #ffffff;
-  --shiny-cta-highlight: #34bfffff;
-  --shiny-cta-highlight-subtle: #34bfffff;
-  --animation: gradient-angle linear infinite;
-  --duration: 3s;
-  --shadow-size: 2px;
-  --transition: 800ms cubic-bezier(0.25, 1, 0.5, 1);
-
-  isolation: isolate;
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  outline-offset: 4px;
-  padding: 0.1rem 0.25rem;
-  padding-left: 0.5rem;
-  font-size: 0.7rem;
-  line-height: 1;
-  height: 1.6rem;
-  min-width: 130px;
-  font-weight: 500;
-  border: 1px solid transparent;
-  border-radius: 9999px;
-  color: var(--shiny-cta-fg);
-  background:
-    linear-gradient(100deg, #154d66ff 0%, #227ca5ff 40%, #2eabe5ff 70%, #34bfffff 100%) padding-box,
-    conic-gradient(
-        from calc(var(--gradient-angle) - var(--gradient-angle-offset)),
-        transparent,
-        var(--shiny-cta-highlight) var(--gradient-percent),
-        var(--gradient-shine) calc(var(--gradient-percent) * 2),
-        var(--shiny-cta-highlight) calc(var(--gradient-percent) * 3),
-        transparent calc(var(--gradient-percent) * 4)
-      )
-      border-box;
-  box-shadow: inset 0 0 0 1px var(--shiny-cta-bg-subtle);
-  transition: var(--transition);
-  transition-property: --gradient-angle-offset, --gradient-percent, --gradient-shine;
-}
-
-.shiny-cta::before,
-.shiny-cta::after,
-.shiny-cta span::before {
-  content: '';
-  pointer-events: none;
-  position: absolute;
-  inset-inline-start: 50%;
-  inset-block-start: 50%;
-  translate: -50% -50%;
-  z-index: -1;
-}
-
-/* Dots pattern */
-.shiny-cta::before {
-  --size: calc(100% - var(--shadow-size) * 3);
-  --position: 2px;
-  --space: calc(var(--position) * 2);
-  width: var(--size);
-  height: var(--size);
-  background: radial-gradient(
-      circle at var(--position) var(--position),
-      white calc(var(--position) / 4),
-      transparent 0
-    )
-    padding-box;
-  background-size: var(--space) var(--space);
-  background-repeat: space;
-  mask-image: conic-gradient(
-    from calc(var(--gradient-angle) + 45deg),
-    black,
-    transparent 10% 90%,
-    black
-  );
-  border-radius: 0.5rem;
-  opacity: 0.4;
-  z-index: -1;
-}
-
-/* Inner shimmer */
-.shiny-cta::after {
-  --animation: shimmer linear infinite;
-  width: 100%;
-  aspect-ratio: 1;
-  background: linear-gradient(-50deg, transparent, var(--shiny-cta-highlight), transparent);
-  mask-image: radial-gradient(circle at bottom, transparent 40%, black);
-  opacity: 0.6;
-}
-
-.shiny-cta span {
-  z-index: 1;
-}
-
-.shiny-cta span::before {
-  --size: calc(100% + 1rem);
-  width: var(--size);
-  height: var(--size);
-  box-shadow: inset 0 -1ex 2rem 4px var(--shiny-cta-highlight);
-  opacity: 0;
-  transition: opacity var(--transition);
-  animation: calc(var(--duration) * 1.5) breathe linear infinite;
-}
-
-.shiny-cta,
-.shiny-cta::before,
-.shiny-cta::after {
-  animation:
-    var(--animation) var(--duration),
-    var(--animation) calc(var(--duration) / 0.4) reverse paused;
-  animation-composition: add;
-}
-
-.shiny-cta:is(:hover, :focus-visible) {
-  --gradient-percent: 20%;
-  --gradient-angle-offset: 95deg;
-  --gradient-shine: var(--shiny-cta-highlight-subtle);
-}
-
-.shiny-cta:is(:hover, :focus-visible),
-.shiny-cta:is(:hover, :focus-visible)::before,
-.shiny-cta:is(:hover, :focus-visible)::after {
-  animation-play-state: running;
-}
-
-.shiny-cta:is(:hover, :focus-visible) span::before {
-  opacity: 1;
-}
-
-/* Same reduced motion gating as GoProModal, this animation is expensive under older WebKitGTK too. */
-.shiny-cta.force-reduced-motion,
-.shiny-cta.force-reduced-motion::before,
-.shiny-cta.force-reduced-motion::after {
-  animation: none;
-}
-
-.shiny-cta.force-reduced-motion span::before {
-  animation: none;
 }
 
 @keyframes gradient-angle {
@@ -249,26 +96,94 @@ body {
   }
 }
 
-@keyframes shimmer {
-  0% {
+@keyframes go-pro-sheen {
+  0%,
+  65% {
     transform: translateX(-100%);
-  }
-  50% {
-    transform: translateX(100%);
   }
   100% {
     transform: translateX(100%);
   }
 }
 
-@keyframes breathe {
-  from,
+.go-pro-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid transparent;
+  /* Border blue is held as two solid bands (27-35%, 81-89%) rather than single points, which made
+     it read as a thin flash between two wide purples. */
+  background:
+    linear-gradient(135deg, rgb(183 0 255 / 0.22) 0%, rgb(53 131 226 / 0.12) 100%) padding-box,
+    linear-gradient(var(--background), var(--background)) padding-box,
+    conic-gradient(
+        from var(--gradient-angle),
+        rgb(183 0 255) 0%,
+        rgb(111 0 255) 12%,
+        rgb(53 131 226) 27% 35%,
+        rgb(111 0 255) 52%,
+        rgb(183 0 255) 64%,
+        rgb(53 131 226) 81% 89%,
+        rgb(183 0 255) 100%
+      )
+      border-box;
+  animation: gradient-angle 4s linear infinite;
+  transition: box-shadow 200ms ease-out;
+}
+
+.go-pro-card:is(:hover, :focus-visible) {
+  box-shadow: 0 0 20px -4px rgb(111 0 255 / 0.7);
+}
+
+.go-pro-card::after {
+  content: '';
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgb(255 255 255 / 0.14) 50%,
+    transparent 65%
+  );
+  transform: translateX(-100%);
+  animation: go-pro-sheen 5s ease-in-out infinite;
+}
+
+/* Both ambient loops stop under either reduced-motion mechanism (see the `.force-reduced-motion`
+   comment further down for why that one exists alongside the OS setting). The card stays fully
+   styled, just static - the hover glow is a transition, not a loop, so it's kept. */
+/* Entrance for each cycling perk name in the card's subtitle (GoPro.tsx keys the span by index,
+   so this replays on every swap). Under reduced motion the text still cycles, it just swaps
+   instantly instead of fading up. */
+@keyframes go-pro-perk-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
   to {
-    scale: 1;
+    opacity: 1;
+    transform: none;
   }
-  50% {
-    scale: 1.2;
+}
+
+.go-pro-perk {
+  animation: go-pro-perk-in 300ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .go-pro-card,
+  .go-pro-card::after,
+  .go-pro-perk {
+    animation: none;
   }
+}
+
+.go-pro-card.force-reduced-motion,
+.go-pro-card.force-reduced-motion::after,
+.go-pro-card.force-reduced-motion .go-pro-perk {
+  animation: none;
 }
 
 /* Go Pro modal (src/shared/components/pro/GoProModal/) - CSS-only replacements for `main`'s

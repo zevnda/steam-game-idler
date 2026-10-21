@@ -1,10 +1,23 @@
 import type { TranslationKey } from '@/i18n'
 import type { SettingsTab } from '@/shared/stores/settingsModalStore'
-import type { ReactNode } from 'react'
+import type { ComponentType, ReactNode } from 'react'
 import { getVersion } from '@tauri-apps/api/app'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbChevronRight } from 'react-icons/tb'
+import {
+  TbAdjustments,
+  TbAward,
+  TbBug,
+  TbBuildingStore,
+  TbCards,
+  TbChevronRight,
+  TbCreditCard,
+  TbGift,
+  TbKey,
+  TbKeyboard,
+  TbPalette,
+  TbSettings,
+} from 'react-icons/tb'
 import { useAgentOwnershipSettings } from '../hooks/useAgentOwnershipSettings'
 import { useSettingsModal } from '../hooks/useSettingsModal'
 import { useSteamCredentialsSettings } from '../hooks/useSteamCredentialsSettings'
@@ -43,18 +56,45 @@ import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
 // labels rather than duplicating the same English string under a second key - 'achievementUnlocker'/
 // 'inventoryManager' are also genuinely per-account categories living inside this otherwise
 // app-wide modal (see useAchievementUnlockerSettings.ts's doc comment for why).
-const TABS: { key: SettingsTab; labelKey: TranslationKey }[] = [
-  { key: 'general', labelKey: 'dashboard.settings.general.title' },
-  { key: 'subscription', labelKey: 'dashboard.settings.subscription.title' },
-  { key: 'customization', labelKey: 'dashboard.settings.customization.title' },
-  { key: 'steamCredentials', labelKey: 'dashboard.settings.steamCredentials.title' },
-  { key: 'cardFarming', labelKey: 'dashboard.sidebar.nav.cardFarming' },
-  { key: 'achievementUnlocker', labelKey: 'dashboard.sidebar.nav.achievementUnlocker' },
-  { key: 'inventoryManager', labelKey: 'dashboard.sidebar.nav.inventoryManager' },
-  { key: 'freeGames', labelKey: 'dashboard.sidebar.nav.freeGames' },
-  { key: 'gameSettings', labelKey: 'dashboard.settings.gameSettings.title' },
-  { key: 'keybinds', labelKey: 'dashboard.settings.keybinds.title' },
-  { key: 'debug', labelKey: 'dashboard.settings.debug.title' },
+//
+// Feature categories reuse the dashboard sidebar's own icons for the same feature, so the two
+// navs read as one system. `groupStart` opens a new visual group (app-wide / per-feature / tools)
+// with the same headerless gap the dashboard sidebar uses between its sections.
+const TABS: {
+  key: SettingsTab
+  labelKey: TranslationKey
+  icon: ComponentType<{ fontSize?: number; className?: string; strokeWidth?: number }>
+  groupStart?: boolean
+}[] = [
+  { key: 'general', labelKey: 'dashboard.settings.general.title', icon: TbSettings },
+  { key: 'subscription', labelKey: 'dashboard.settings.subscription.title', icon: TbCreditCard },
+  { key: 'customization', labelKey: 'dashboard.settings.customization.title', icon: TbPalette },
+  { key: 'steamCredentials', labelKey: 'dashboard.settings.steamCredentials.title', icon: TbKey },
+  {
+    key: 'cardFarming',
+    labelKey: 'dashboard.sidebar.nav.cardFarming',
+    icon: TbCards,
+    groupStart: true,
+  },
+  {
+    key: 'achievementUnlocker',
+    labelKey: 'dashboard.sidebar.nav.achievementUnlocker',
+    icon: TbAward,
+  },
+  {
+    key: 'inventoryManager',
+    labelKey: 'dashboard.sidebar.nav.inventoryManager',
+    icon: TbBuildingStore,
+  },
+  { key: 'freeGames', labelKey: 'dashboard.sidebar.nav.freeGames', icon: TbGift },
+  { key: 'gameSettings', labelKey: 'dashboard.settings.gameSettings.title', icon: TbAdjustments },
+  {
+    key: 'keybinds',
+    labelKey: 'dashboard.settings.keybinds.title',
+    icon: TbKeyboard,
+    groupStart: true,
+  },
+  { key: 'debug', labelKey: 'dashboard.settings.debug.title', icon: TbBug },
 ]
 
 // One `TabPanel` + a `main`-style "Settings >" breadcrumb, shared by every category below instead
@@ -174,23 +214,32 @@ export const SettingsModal = () => {
                     nav column for visual consistency with the rest of the app's chrome. */}
                 <div className='flex h-full w-64 shrink-0 flex-col border-r border-border bg-background pt-16'>
                   <TabListContainer className='min-h-0 flex-1 overflow-y-auto bg-transparent px-3'>
-                    <TabList className='w-full gap-0.5 p-0'>
-                      {TABS.map(tab => (
+                    <TabList className='w-full gap-1 p-0'>
+                      {TABS.map(({ key, labelKey, icon: Icon, groupStart }) => (
                         <Tab
+                          // Same row styling as SidebarItem.tsx (h-9, 18px/1.5-stroke icon,
+                          // semibold label, muted unless selected, `bg-surface` highlight) so the
+                          // settings nav reads as the same system as the dashboard sidebar.
+                          // `hover:opacity-100` cancels HeroUI's own `.tabs__tab` hover rule,
+                          // which fades an unselected tab to 0.7 opacity - the opposite of the
+                          // sidebar's "brighten on hover".
                           className={cn(
-                            'w-full min-w-0 justify-start rounded-lg px-3 py-2 text-left text-sm font-medium',
-                            'text-muted hover:text-foreground data-[selected=true]:font-semibold ',
-                            'data-[selected=true]:text-foreground',
+                            'h-9 w-full min-w-0 justify-start gap-3 rounded-lg px-3 text-left text-sm font-semibold',
+                            'text-muted hover:bg-surface-hover hover:text-foreground hover:opacity-100',
+                            'data-[hovered=true]:opacity-100',
+                            'data-[selected=true]:bg-surface data-[selected=true]:text-foreground',
+                            groupStart && 'mt-3',
                           )}
-                          id={tab.key}
-                          key={tab.key}
+                          id={key}
+                          key={key}
                         >
+                          <Icon className='shrink-0' fontSize={18} strokeWidth={1.5} />
                           {/* `Tab` itself renders `display:flex` (HeroUI's `.tabs__tab`), so
                               `truncate` has to live on a child span, not the `Tab` directly - a
                               flex container can't ellipsis its own anonymous-flex-item text.
                               Mirrors SidebarItem.tsx's identical `<span className='truncate'>`
                               pattern. */}
-                          <span className='truncate'>{t(tab.labelKey)}</span>
+                          <span className='truncate'>{t(labelKey)}</span>
                         </Tab>
                       ))}
                     </TabList>

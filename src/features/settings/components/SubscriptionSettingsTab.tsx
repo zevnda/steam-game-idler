@@ -50,7 +50,7 @@ export const SubscriptionSettingsTab = () => {
         title={t('dashboard.settings.subscription.status.title')}
       >
         {/* `isSubscribed === null` means the first check hasn't resolved yet - render nothing
-            rather than a flash of "Inactive" before it does, same rule Sidebar.tsx's tier pill
+            rather than a flash of "Inactive" before it does, same rule the sidebar's GoPro card
             already follows. */}
         {isSubscribed !== null && (
           <div className='flex flex-col items-end gap-2'>

@@ -10,7 +10,6 @@ import { Button, cn, Separator } from '@heroui/react'
 import { Unbounded } from 'next/font/google'
 import { useRouter } from 'next/router'
 import { Logo } from '@/shared/components/dashboard/Logo'
-import { GoPro } from '@/shared/components/pro/GoPro'
 import { GlobalSearchBar } from '@/shared/components/search/GlobalSearchBar'
 import { HelpDesk } from '@/shared/components/titlebar/HelpDesk'
 import { Menu } from '@/shared/components/titlebar/Menu'
@@ -18,8 +17,11 @@ import { Notifications } from '@/shared/components/titlebar/Notifications'
 import { UpdateButton } from '@/shared/components/UpdateButton'
 import { useTitlebar } from '@/shared/hooks/useTitlebar'
 import { useSidebarStore } from '@/shared/stores/sidebarStore'
-import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { useUpdateStore } from '@/shared/stores/updateStore'
+
+// TEMP (design trial): the sidebar toggle currently lives on the sidebar's own edge instead (see
+// Sidebar.tsx's `SidebarEdgeToggle`). Flip back to `true` (and drop SidebarEdgeToggle) to restore.
+const SHOW_TITLEBAR_SIDEBAR_TOGGLE = false
 
 const unbounded = Unbounded({
   subsets: ['latin'],
@@ -49,10 +51,6 @@ export const Titlebar = ({ minimal = false }: TitlebarProps) => {
   const collapsed = useSidebarStore(state => state.collapsed)
   const hydrated = useSidebarStore(state => state.hydrated)
   const toggleSidebar = useSidebarStore(state => state.toggle)
-  // GoPro is gated on `isSubscribed !== null` too, not just `isDashboard` - `useCheckSubscription`
-  // (mounted in DashboardShell) needs a moment to resolve on first mount, and showing the upsell
-  // pill before that would flash it for a Gamer-tier user who should never see it at all.
-  const isSubscribed = useSubscriptionStore(state => state.isSubscribed)
   const updateAvailable = useUpdateStore(state => state.updateAvailable)
 
   return (
@@ -108,7 +106,7 @@ export const Titlebar = ({ minimal = false }: TitlebarProps) => {
             </div>
 
             <div className='flex h-14 shrink-0 items-center'>
-              {isDashboard && (
+              {isDashboard && SHOW_TITLEBAR_SIDEBAR_TOGGLE && (
                 <Button
                   isIconOnly
                   aria-label={t('dashboard.settings.keybinds.toggleSidebar')}
@@ -123,7 +121,6 @@ export const Titlebar = ({ minimal = false }: TitlebarProps) => {
                   )}
                 </Button>
               )}
-              {isDashboard && isSubscribed !== null && <GoPro />}
             </div>
           </>
         )}

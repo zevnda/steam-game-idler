@@ -41,7 +41,7 @@ interface InventoryPageHeaderProps {
   onRemoveListings: () => void
 }
 
-// Small pill badge - matches Sidebar.tsx's tier pill / AchievementUnlockerSettingsTab's inline
+// Small pill badge - matches TierBadge.tsx / AchievementUnlockerSettingsTab's inline
 // "Gamer" tag styling rather than introducing HeroUI's `Chip` for a first, unproven use.
 const Badge = ({ children, tone }: { children: React.ReactNode; tone?: 'gamer' }) => (
   <span
