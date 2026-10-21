@@ -128,7 +128,6 @@ export const SettingsModal = () => {
     saveTheme,
     saveFont,
     saveDisableTooltips,
-    saveDisableHolidayThemes,
     saveShowRecommendedCarousel,
     saveShowRecentCarousel,
     saveCustomBackground,
@@ -246,7 +245,6 @@ export const SettingsModal = () => {
                     onClearCustomBackground={clearCustomBackground}
                     onRefresh={refresh}
                     onSaveCustomBackground={saveCustomBackground}
-                    onSaveDisableHolidayThemes={saveDisableHolidayThemes}
                     onSaveDisableTooltips={saveDisableTooltips}
                     onSaveShowRecentCarousel={saveShowRecentCarousel}
                     onSaveShowRecommendedCarousel={saveShowRecommendedCarousel}

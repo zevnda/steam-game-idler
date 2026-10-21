@@ -85,11 +85,7 @@
     },
     "banner": {
       "pastDue": "Your PRO subscription is past due. Please update your payment method to avoid losing access.",
-      "manageSubscription": "Manage Subscription",
-      "holiday": {
-        "title": "Happy Holidays",
-        "message": "You're seeing a festive theme for the holiday. If you don't like it, you can disable it in Settings → Customization."
-      }
+      "manageSubscription": "Manage Subscription"
     },
     "badges": {
       "beta": "Beta"
@@ -1049,10 +1045,6 @@
           "choose": "Choose image",
           "saved": "Background updated",
           "cleared": "Background cleared"
-        },
-        "holidayThemes": {
-          "label": "Show holiday themes",
-          "description": "A special theme is shown automatically for today's holiday. Turn this off to keep your usual theme."
         },
         "theme": {
           "label": "Theme",

@@ -1,4 +1,5 @@
-import type { ActiveBanner, DisplayBanner, PromoColor } from '@/shared/hooks/useBanners'
+import type { TranslationKey } from '@/i18n'
+import type { ActiveBanner, PromoColor } from '@/shared/hooks/useBanners'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbAlertTriangle, TbCircleCheck, TbInfoCircle, TbX } from 'react-icons/tb'
@@ -8,10 +9,10 @@ import { CDN_BASE_URL } from '@/shared/constants'
 import { useBanners } from '@/shared/hooks/useBanners'
 import { openExternalLink } from '@/shared/utils/links'
 
-// A system banner carries translation keys instead of rendered strings (`DisplayBanner`, see
-// `useBanners.ts`) - this is the one non-`main` shape difference, everything else (variants,
-// colors, dismissal, starfield/shimmer/float visuals) is a deliberate pixel-for-pixel port of
-// `main`'s Banner.tsx.
+// A system banner carries translation keys instead of rendered strings (see `useBanners.ts`) -
+// this is the one non-`main` shape difference, everything else (variants, colors, dismissal,
+// starfield/shimmer/float visuals) is a deliberate pixel-for-pixel port of `main`'s Banner.tsx.
+type DisplayBanner = ActiveBanner & { messageKey?: TranslationKey; ctaLabelKey?: TranslationKey }
 
 type AlertVariant = Exclude<ActiveBanner['variant'], 'promo'>
 
@@ -162,16 +163,6 @@ function PromoStarfield() {
   )
 }
 
-// A CTA either opens its link or, for a `ctaDismisses` banner (e.g. the holiday notice's plain
-// "Continue"), just closes the banner - with the same exit animation as the X button.
-function handleCta(banner: DisplayBanner, onDismiss: () => void) {
-  if (banner.ctaDismisses) {
-    onDismiss()
-  } else if (banner.ctaUrl) {
-    openExternalLink(banner.ctaUrl)
-  }
-}
-
 interface BannerVisualProps {
   banner: DisplayBanner
   message: string
@@ -243,11 +234,11 @@ function PromoBanner({
           </div>
         </div>
         <div className='flex items-center gap-3 shrink-0'>
-          {(banner.ctaUrl || banner.ctaDismisses) && ctaLabel && (
+          {banner.ctaUrl && ctaLabel && (
             <Button
               className={`bg-white ${colorStyle.ctaTextClassName} font-bold px-6 shadow-lg hover:scale-105 transition-transform duration-150`}
               size='md'
-              onPress={() => handleCta(banner, onDismiss)}
+              onPress={() => openExternalLink(banner.ctaUrl as string)}
             >
               {ctaLabel}
             </Button>
@@ -296,8 +287,12 @@ function AlertBanner({
           </p>
         </div>
         <div className='flex items-center gap-2 shrink-0'>
-          {(banner.ctaUrl || banner.ctaDismisses) && ctaLabel && (
-            <Button className={ctaClassName} size='sm' onPress={() => handleCta(banner, onDismiss)}>
+          {banner.ctaUrl && ctaLabel && (
+            <Button
+              className={ctaClassName}
+              size='sm'
+              onPress={() => openExternalLink(banner.ctaUrl as string)}
+            >
               {ctaLabel}
             </Button>
           )}
@@ -335,7 +330,7 @@ export const Banner = () => {
 
   const banner = activeBanner as DisplayBanner
   const message = banner.messageKey ? t(banner.messageKey) : banner.message
-  const title = banner.titleKey ? t(banner.titleKey) : banner.title
+  const title = banner.title
   const ctaLabel = banner.ctaLabelKey ? t(banner.ctaLabelKey) : banner.ctaLabel
 
   const handleDismiss = () => {

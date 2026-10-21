@@ -1,7 +1,6 @@
 @import 'tailwindcss';
 @import '@heroui/styles';
 @import './theme.css';
-@import './holidays.css';
 
 /* App-wide font - `--font-inter` is the next/font-generated CSS variable set on <Html> in
    _document.tsx. Overriding Tailwind's `--font-sans` token (rather than setting `font-family`
