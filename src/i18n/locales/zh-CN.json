@@ -184,7 +184,6 @@
         "description": "同时登录并管理多个 Steam 账号"
       },
       "autoFarmCards": {
-        "title": "自动挂卡",
         "description": "SGI 会监控您的游戏库，自动开始挂取仍可掉落卡牌的游戏"
       },
       "gamesList": {
@@ -325,10 +324,6 @@
   },
   "dashboard": {
     "sidebar": {
-      "section": {
-        "automation": "自动化",
-        "misc": "其他"
-      },
       "nav": {
         "games": "游戏库",
         "idling": "挂机中",
@@ -345,7 +340,6 @@
         "error": "登出清理未完全完成，但您已成功登出"
       },
       "tier": {
-        "label": "套餐",
         "free": "免费"
       },
       "accountSwitcher": {
@@ -367,9 +361,6 @@
           "sessionReplacedExplainer": "出现这种情况，通常是因为另一个 Steam Game Idler 副本或类似工具登录了此帐户，在此处重新连接，即可使其下线。",
           "useDifferentMethod": "使用其他登录方式"
         }
-      },
-      "ads": {
-        "removeAdsWith": "通过以下方式移除广告"
       }
     },
     "games": {

@@ -177,7 +177,6 @@
         "description": "Melden Sie sich an und verwalten Sie mehrere Steamkonten gleichzeitig."
       },
       "autoFarmCards": {
-        "title": "Automatisches Kartenfarmen",
         "description": "SGI überwacht Ihre Bibliothek und beginnt automatisch mit dem Farmen in allen Spielen, in denen noch Karten übrig sind."
       },
       "gamesList": {
@@ -318,10 +317,6 @@
   },
   "dashboard": {
     "sidebar": {
-      "section": {
-        "automation": "Automatisierung",
-        "misc": "Sonstiges"
-      },
       "nav": {
         "games": "Spiele",
         "idling": "Leerlauf",
@@ -338,7 +333,6 @@
         "error": "Die Abmeldebereinigung wurde nicht vollständig abgeschlossen, aber Sie wurden abgemeldet."
       },
       "tier": {
-        "label": "Plan",
         "free": "Kostenlos"
       },
       "accountSwitcher": {
@@ -358,9 +352,6 @@
           "reconnect": "Erneutes Verbinden",
           "useDifferentMethod": "Verwenden Sie eine andere Anmeldemethode"
         }
-      },
-      "ads": {
-        "removeAdsWith": "Werbung entfernen mit"
       }
     },
     "games": {
