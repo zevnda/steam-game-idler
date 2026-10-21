@@ -762,21 +762,17 @@ impl AgentManager {
         // schema language is irrelevant - always "english".
         let data = self.achievements_get(username, app_id, "english").await?;
 
-        // Unlocking only - an unowned DLC achievement in the one batched `achievement_set_bulk`
-        // write would make Steam reject every other unlock in it too (see
-        // `AchievementData::unowned_dlc_group_ids`).
-        let unowned_dlc = if unlock {
-            data.unowned_dlc_group_ids()
-        } else {
-            Default::default()
-        };
+        // Unlocking only - an unowned DLC or archived achievement in the one batched
+        // `achievement_set_bulk` write would make Steam reject every other unlock in it too (see
+        // `AchievementDto::is_unlock_blocked`). Locking an earned one stays allowed.
+        let unowned_dlc = data.unowned_dlc_group_ids();
 
         let mut skipped = Vec::new();
         let mut changes = Vec::new();
         for achievement in data.achievements {
             if achievement.achieved == unlock
                 || achievement.protected_achievement
-                || achievement.is_in_group(&unowned_dlc)
+                || (unlock && achievement.is_unlock_blocked(&unowned_dlc))
             {
                 skipped.push(achievement.id);
             } else {

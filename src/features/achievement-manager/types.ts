@@ -18,6 +18,9 @@ export interface AchievementDto {
   // `AchievementGroup.id` - absent for the implicit base-game set and for every game without
   // Achievement Sets.
   groupId?: number
+  // Archived by the developer, individually or via its whole set - absent when not. Steam won't
+  // unlock one the account hasn't already earned (see isUnlockBlocked in utils/groupAchievements.ts).
+  archived?: boolean
 }
 
 // One Steam "Achievement Set" - mirrors AchievementGroupDto in src-tauri/src/achievements/mod.rs.
@@ -29,6 +32,8 @@ export interface AchievementGroup {
   name: string
   dlcAppId?: number
   owned?: boolean
+  // The whole set is archived - display-only, since each member achievement carries `archived` too.
+  archived?: boolean
 }
 
 // `value` is a raw JSON number on the wire (int or float depending on `statType`) - typed as

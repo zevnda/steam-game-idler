@@ -1,11 +1,12 @@
 import type { AchievementDto } from '../types'
 import { useTranslation } from 'react-i18next'
-import { TbBan, TbCheck, TbLock, TbLockOpen, TbShoppingCartX } from 'react-icons/tb'
+import { TbArchive, TbBan, TbCheck, TbLock, TbLockOpen, TbShoppingCartX } from 'react-icons/tb'
 import {
   getAchievementRarityTier,
   RARITY_TIER_CLASSES,
   RARITY_TIER_LABEL_KEYS,
 } from '../utils/achievementRarity'
+import { ArchivedBadge } from './ArchivedBadge'
 import { DlcBadge } from './DlcBadge'
 import { Button, cn, Typography } from '@heroui/react'
 import Image from 'next/image'
@@ -34,8 +35,10 @@ interface AchievementListItemProps {
 // check, a locked one Steam's own greyed-out icon - no separate status text competing for attention.
 //
 // Not selectable: protected achievements (the game's server owns them) and still-locked achievements
-// from DLC the account doesn't own (Steam rejects the unlock - see groupAchievements.ts). Both show
-// an explanatory marker where the quick-action button would be, and no selection circle.
+// from DLC the account doesn't own or that are archived (Steam rejects the unlock - see
+// groupAchievements.ts's isUnlockBlocked). Each shows an explanatory marker where the quick-action
+// button would be, and no selection circle. An earned archived achievement stays lockable, with
+// its Archived badge.
 //
 // The row is a `div role="checkbox"` rather than a <button> because it contains a real Button (the
 // quick action), which can't be nested inside another button.
@@ -50,7 +53,7 @@ export const AchievementListItem = ({
   onQuickToggle,
 }: AchievementListItemProps) => {
   const { t } = useTranslation()
-  const isUnlockBlocked = isUnownedDlc && !achievement.achieved
+  const isUnlockBlocked = (isUnownedDlc || achievement.archived === true) && !achievement.achieved
   const isSelectable = !achievement.protectedAchievement && !isUnlockBlocked
   const icon = achievement.achieved ? achievement.iconNormal : achievement.iconLocked
   const rarityTier =
@@ -153,6 +156,7 @@ export const AchievementListItem = ({
 
       <div className='flex shrink-0 items-center gap-1.5'>
         {isDlc && <DlcBadge />}
+        {achievement.archived && <ArchivedBadge />}
         {rarityTier && (
           <span
             className={cn(
@@ -183,12 +187,20 @@ export const AchievementListItem = ({
             </AppTooltip.Trigger>
             <AppTooltip.Content>{t('dashboard.achievements.protectedTooltip')}</AppTooltip.Content>
           </AppTooltip.Root>
-        ) : isUnlockBlocked ? (
+        ) : isUnlockBlocked && isUnownedDlc ? (
           <span
             aria-label={t('dashboard.achievements.sets.notOwned')}
             className='flex size-8 items-center justify-center text-muted'
           >
             <TbShoppingCartX fontSize={16} />
+          </span>
+        ) : isUnlockBlocked ? (
+          // No tooltip, like the unowned-DLC marker - the Archived badge beside it says why.
+          <span
+            aria-label={t('dashboard.achievements.archived.badge')}
+            className='flex size-8 items-center justify-center text-muted'
+          >
+            <TbArchive fontSize={16} />
           </span>
         ) : (
           <AppTooltip.Root>

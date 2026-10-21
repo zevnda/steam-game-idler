@@ -42,7 +42,9 @@ namespace SteamUtility.Core.Services
             var (achievements, _, groups) = await backend.GetAchievementsAndStatsAsync(appId, ct);
             // Unlocking only: Steam rejects the whole batched write if it includes an achievement
             // from a DLC the account doesn't own (see AchievementGroupDto.Owned), so those are
-            // skipped rather than sinking every other unlock with them.
+            // skipped rather than sinking every other unlock with them. Archived achievements are
+            // skipped on unlock for the same reason (see AchievementDto.Archived); locking an earned
+            // archived one is still allowed, like any other lock.
             var unownedDlcGroupIds = unlock
                 ? AchievementGroupDto.UnownedDlcGroupIds(groups)
                 : new HashSet<int>();
@@ -55,6 +57,7 @@ namespace SteamUtility.Core.Services
                 if (
                     achievement.Achieved == unlock
                     || achievement.ProtectedAchievement
+                    || (unlock && achievement.Archived)
                     || (achievement.GroupId is int groupId && unownedDlcGroupIds.Contains(groupId))
                 )
                 {

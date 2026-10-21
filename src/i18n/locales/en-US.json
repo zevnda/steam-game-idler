@@ -511,6 +511,9 @@
         "dlc": "DLC",
         "notOwned": "Not owned"
       },
+      "archived": {
+        "badge": "Archived"
+      },
       "views": {
         "all": "All achievements"
       },
@@ -750,6 +753,9 @@
         },
         "unownedDlcSection": {
           "title": "From DLC you don't own"
+        },
+        "archivedSection": {
+          "title": "Archived achievements"
         },
         "protectedAlert": {
           "description": "The achievement unlocker skips games with any protected achievements, so this order won't be used."

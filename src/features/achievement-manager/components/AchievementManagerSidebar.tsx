@@ -4,7 +4,15 @@ import type { AchievementSection } from '../utils/groupAchievements'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SiSteam, SiSteamdb } from 'react-icons/si'
-import { TbChartBar, TbLock, TbLockOpen, TbRefresh, TbShoppingCartX, TbX } from 'react-icons/tb'
+import {
+  TbArchive,
+  TbChartBar,
+  TbLock,
+  TbLockOpen,
+  TbRefresh,
+  TbShoppingCartX,
+  TbX,
+} from 'react-icons/tb'
 import { DlcBadge } from './DlcBadge'
 import { ProgressRing } from './ProgressRing'
 import { Button, cn, Typography } from '@heroui/react'
@@ -276,16 +284,23 @@ export const AchievementManagerSidebar = ({
                         className='shrink-0 text-muted'
                         fontSize={14}
                       />
+                    ) : section.isArchived ? (
+                      <TbArchive
+                        aria-label={t('dashboard.achievements.archived.badge')}
+                        className='shrink-0 text-muted'
+                        fontSize={14}
+                      />
                     ) : undefined
                   }
                   isActive={view.kind === 'achievements' && view.setKey === section.key}
-                  isMuted={section.isUnownedDlc}
+                  isMuted={section.isUnownedDlc || section.isArchived}
                   label={section.group?.name ?? t('dashboard.achievements.sets.baseGame')}
                   meta={`${section.unlocked}/${section.total}`}
-                  // No progress line for unowned DLC - always empty, and eleven grey bars in a
-                  // row (ETS2) were pure noise; the cart icon and muted label already say it all.
+                  // No progress line for unowned DLC or an archived set - always empty or frozen,
+                  // and eleven grey bars in a row (ETS2) were pure noise; the icon and muted
+                  // label already say it all.
                   progress={
-                    section.isUnownedDlc
+                    section.isUnownedDlc || section.isArchived
                       ? undefined
                       : section.total > 0
                         ? section.unlocked / section.total

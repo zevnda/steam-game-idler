@@ -60,6 +60,7 @@ export const AchievementOrderOverlay = () => {
     hasProtectedAchievements,
     protectedAchievements,
     unownedDlcAchievements,
+    archivedAchievements,
     dlcGroupIds,
     refresh,
     reorder,
@@ -154,7 +155,8 @@ export const AchievementOrderOverlay = () => {
                   </div>
                 ) : achievements.length === 0 &&
                   protectedAchievements.length === 0 &&
-                  unownedDlcAchievements.length === 0 ? (
+                  unownedDlcAchievements.length === 0 &&
+                  archivedAchievements.length === 0 ? (
                   <EmptyState className='flex flex-col items-center justify-center gap-2 p-8 text-center'>
                     <Typography type='h3'>
                       {t('dashboard.achievementUnlocker.order.empty.title')}
@@ -182,6 +184,7 @@ export const AchievementOrderOverlay = () => {
                             onSetDelay={setDelay}
                             protectedAchievements={protectedAchievements}
                             unownedDlcAchievements={unownedDlcAchievements}
+                            archivedAchievements={archivedAchievements}
                             dlcGroupIds={dlcGroupIds}
                             onToggleSkip={toggleSkip}
                           />

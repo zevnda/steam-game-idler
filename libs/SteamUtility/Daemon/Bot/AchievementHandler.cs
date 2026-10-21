@@ -276,6 +276,7 @@ namespace SteamUtility.Daemon.Bot
                         ProtectedAchievement = (flags & StatFlags.Protected) != 0,
                         Flags = flags.ToString(),
                         GroupId = def.GroupId,
+                        Archived = def.Archived,
                     };
                 })
                 .ToList();

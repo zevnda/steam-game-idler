@@ -35,6 +35,10 @@ namespace SteamUtility.Core.SchemaParsing
                 return result;
             }
 
+            var archivedGroupIds = ArchivedGroupIds(
+                kv[appId.ToString(CultureInfo.InvariantCulture)]["groups"]
+            );
+
             foreach (var stat in stats.Children)
             {
                 if (!stat.Valid || !uint.TryParse(stat.Name, out var statId))
@@ -66,6 +70,7 @@ namespace SteamUtility.Core.SchemaParsing
                             continue;
                         }
 
+                        int? groupId = bit["groupid"].Valid ? bit["groupid"].AsInteger(0) : null;
                         result.Add(
                             new AchievementDefinition
                             {
@@ -78,9 +83,14 @@ namespace SteamUtility.Core.SchemaParsing
                                 IconNormal = bit["display"]["icon"].AsString(""),
                                 IconLocked = bit["display"]["icon_gray"].AsString(""),
                                 Hidden = bit["display"]["hidden"].AsBoolean(false),
-                                GroupId = bit["groupid"].Valid
-                                    ? bit["groupid"].AsInteger(0)
-                                    : null,
+                                GroupId = groupId,
+                                // Per-achievement `archived` is an int32 `1` on the bit itself
+                                // (confirmed in TF2's 440 schema: its four Replay "YouTube views"
+                                // achievements). An archived *set* marks every achievement in it
+                                // too - see ArchivedGroupIds for that half's caveat.
+                                Archived =
+                                    bit["archived"].AsBoolean(false)
+                                    || (groupId is int id && archivedGroupIds.Contains(id)),
                             }
                         );
                     }
@@ -130,8 +140,38 @@ namespace SteamUtility.Core.SchemaParsing
                         Id = groupId,
                         Name = ResolveLocalizedString(group["name"], language),
                         DlcAppId = dlcAppId > 0 ? (uint)dlcAppId : null,
+                        Archived = group["archived"].AsBoolean(false),
                     }
                 );
+            }
+
+            return result;
+        }
+
+        // Ids of the Achievement Sets the developer archived as a whole. TODO: the `archived` key
+        // name on a *group* is assumed, not yet seen live - no cached schema had an archived set
+        // as of 2026-10-21 (only per-achievement `archived`, see ParseAchievementDefinitions). It
+        // mirrors the per-bit key and Steamworks' `archived` definitions-CSV column, and a missing
+        // key just reads as "not archived", so a wrong guess only means sets aren't flagged as a
+        // whole; recheck against the first real archived set's schema.
+        private static HashSet<int> ArchivedGroupIds(KeyValue groups)
+        {
+            var result = new HashSet<int>();
+            if (!groups.Valid || groups.Children == null)
+            {
+                return result;
+            }
+
+            foreach (var group in groups.Children)
+            {
+                if (
+                    group.Valid
+                    && int.TryParse(group.Name, out var groupId)
+                    && group["archived"].AsBoolean(false)
+                )
+                {
+                    result.Add(groupId);
+                }
             }
 
             return result;

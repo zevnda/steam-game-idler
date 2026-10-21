@@ -54,5 +54,14 @@ namespace SteamUtility.Core.Models
         [JsonPropertyName("groupId")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public int? GroupId { get; init; }
+
+        // Archived by the developer, individually or via its whole Achievement Set (see
+        // AchievementDefinition.Archived). Steam refuses to unlock anything in an archived set, and
+        // Valve tells developers to stop awarding individually archived ones - so every unlock path
+        // skips an archived achievement the account hasn't already earned. One that *is* earned
+        // stays on the profile as normal. Omitted from JSON when false (the common case).
+        [JsonPropertyName("archived")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public bool Archived { get; init; }
     }
 }

@@ -33,6 +33,13 @@ namespace SteamUtility.Core.Models
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public bool? Owned { get; init; }
 
+        // The whole set is archived - Steam won't unlock any of its achievements. Each member
+        // achievement already carries AchievementDto.Archived for this, so this flag is only for
+        // display (muting the set in the UI). Omitted from JSON when false.
+        [JsonPropertyName("archived")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public bool Archived { get; init; }
+
         // Achievement ids whose unlock Steam would reject: everything in a DLC set this account is
         // known not to own. Shared by BulkAchievementSetter (CLI) and Rust's agent-mode equivalent
         // (achievements::AchievementData::unowned_dlc_group_ids mirrors this rule).

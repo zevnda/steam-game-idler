@@ -6,6 +6,7 @@ import { errorMessageKey } from '../utils/errorMessageKey'
 import {
   dlcGroupIdsOf,
   groupAchievementsBySet,
+  isArchivedLocked,
   isInGroups,
   unownedDlcGroupIdsOf,
 } from '../utils/groupAchievements'
@@ -56,9 +57,12 @@ export const AchievementManagerOverlay = () => {
   const derived = useMemo(() => {
     if (!data) return null
     const unownedDlcGroupIds = unownedDlcGroupIdsOf(data.groups)
-    // Unowned DLC achievements don't count toward overall progress or "Unlock all" - Steam's own
-    // rule, and Unlock all skips them backend-side (see AchievementData::unowned_dlc_group_ids).
-    const counted = data.achievements.filter(a => !isInGroups(a, unownedDlcGroupIds))
+    // Unowned DLC achievements, and archived ones not yet earned, don't count toward overall
+    // progress or "Unlock all" - Steam's own rule, and Unlock all skips them backend-side (see
+    // AchievementData::unowned_dlc_group_ids / AchievementDto::is_unlock_blocked).
+    const counted = data.achievements.filter(
+      a => !isInGroups(a, unownedDlcGroupIds) && !isArchivedLocked(a),
+    )
     return {
       sections: groupAchievementsBySet(data.achievements, data.achievements, data.groups),
       dlcGroupIds: dlcGroupIdsOf(data.groups),

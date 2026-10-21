@@ -83,6 +83,7 @@ namespace SteamUtility.Backends
                         ProtectedAchievement = (flags & StatFlags.Protected) != 0,
                         Flags = flags.ToString(),
                         GroupId = def.GroupId,
+                        Archived = def.Archived,
                     };
                 })
                 .ToList();
