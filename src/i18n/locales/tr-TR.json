@@ -162,8 +162,7 @@
         "description": "Tamamen temiz ve dikkat dağıtmayan bir arayüz için SGI'yı reklamsız kullanın."
       },
       "themes": {
-        "title": "Özel Temalar",
-        "description": "SGI'yı yalnızca PRO abonelerine özel 6 benzersiz tema ile özelleştirin."
+        "title": "Özel Temalar"
       },
       "customBackground": {
         "title": "Özel Arkaplan Resmi"

@@ -164,8 +164,7 @@
         "description": "使用 SGI 时无任何广告，享受纯净、无干扰的界面"
       },
       "themes": {
-        "title": "专属主题",
-        "description": "使用 6 个仅对 PRO 用户开放的独特主题来自定义 SGI"
+        "title": "专属主题"
       },
       "customBackground": {
         "title": "自定义背景图片"
@@ -1149,8 +1148,23 @@
           "confirmTitle": "清除所有本地数据？",
           "confirmDescription": "登出所有账号，停止所有正在运行的自动化任务，清除日志和此设备上本地存储的应用数据（最近搜索、库存锁定等），此操作不可撤销"
         },
+        "lockAllAchievements": {
+          "button": "锁定所有应用成就",
+          "confirmTitle": "要锁定所有应用中的全部成就吗？",
+          "confirmDescription": "将锁定此账号拥有的所有应用（游戏、模组、工具等）中的全部成就，此操作可能需要几分钟，库较大时甚至可能需要数小时，且无法撤销。",
+          "success": "已在 {{games}} 个应用中锁定 {{achievements}} 个成就",
+          "partial": "已在 {{games}} 个应用中锁定 {{achievements}} 个成就，有 {{failed}} 个应用未能更新，详情请查看日志。"
+        },
         "allAchievementsRun": {
-          "running": "正在处理你的游戏库，请保持应用开启，直至处理完成。"
+          "running": "正在处理你的游戏库，请保持应用开启，直至处理完成。",
+          "progress": "已完成 {{completed}}/{{total}} 个应用 · {{achievements}} 个成就已变更，请保持应用开启，直至处理完成。"
+        },
+        "unlockAllAchievements": {
+          "button": "解锁所有应用成就",
+          "confirmTitle": "要解锁所有应用中的全部成就吗？",
+          "confirmDescription": "将解锁此账号拥有的所有应用（游戏、模组、工具等）中的全部成就，此操作可能需要几分钟，库较大时甚至可能需要数小时。",
+          "success": "已在 {{games}} 个应用中解锁 {{achievements}} 个成就",
+          "partial": "已在 {{games}} 个应用中解锁 {{achievements}} 个成就，有 {{failed}} 个应用未能更新，详情请查看日志。"
         },
         "errors": {
           "logIoFailed": "无法获取日志文件",
