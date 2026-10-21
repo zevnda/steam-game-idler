@@ -182,7 +182,6 @@
         "description": "Aynı anda birden fazla Steam hesabında oturum açın ve yönetin."
       },
       "autoFarmCards": {
-        "title": "Otomatik Kart Toplama",
         "description": "SGI, kütüphanenizi izler ve hâlâ kart düşürme hakkı bulunan oyunlarda kart kasmayı otomatik olarak başlatır."
       },
       "gamesList": {
@@ -323,10 +322,6 @@
   },
   "dashboard": {
     "sidebar": {
-      "section": {
-        "automation": "Otomasyon",
-        "misc": "Çeşitli"
-      },
       "nav": {
         "games": "Oyunlar",
         "idling": "Boşta Çalıştırma",
@@ -343,7 +338,6 @@
         "error": "Oturum kapatma temizleme işlemi tamamen tamamlanamadı, ancak hesabınızdan çıkış yapıldı."
       },
       "tier": {
-        "label": "Plan",
         "free": "Bedava"
       },
       "accountSwitcher": {
@@ -363,9 +357,6 @@
           "reconnect": "Yeniden bağlan",
           "useDifferentMethod": "Farklı bir oturum açma şekli deneyin"
         }
-      },
-      "ads": {
-        "removeAdsWith": "Ile reklamları kaldırın"
       }
     },
     "games": {

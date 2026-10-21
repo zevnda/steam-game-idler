@@ -182,7 +182,6 @@
         "description": "Faça login e gerencie múltiplas contas Steam simultaneamente."
       },
       "autoFarmCards": {
-        "title": "Farm de cartas automático",
         "description": "O SGI monitora a sua biblioteca e automaticamente começa a farmar qualquer jogo que ainda possua drops restantes."
       },
       "gamesList": {
@@ -323,10 +322,6 @@
   },
   "dashboard": {
     "sidebar": {
-      "section": {
-        "automation": "Automatização",
-        "misc": "Outros"
-      },
       "nav": {
         "games": "Jogos",
         "idling": "Ocioso",
@@ -343,7 +338,6 @@
         "error": "A limpeza após sair não terminou totalmente, mas você foi desconectado."
       },
       "tier": {
-        "label": "Planejamento",
         "free": "Grátis"
       },
       "accountSwitcher": {
@@ -365,9 +359,6 @@
           "reconnect": "Reconectar",
           "useDifferentMethod": "Use um método de login diferente"
         }
-      },
-      "ads": {
-        "removeAdsWith": "Remover anúncios com"
       }
     },
     "games": {

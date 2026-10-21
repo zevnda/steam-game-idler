@@ -180,7 +180,6 @@
         "description": "Se connecter et gérer plusieurs comptes Steam en même temps."
       },
       "autoFarmCards": {
-        "title": "Farm de cartes automatiques",
         "description": "SGI surveille votre bibliothèque et commence automatiquement à farmer les jeux avec des cartes cadeau restantes."
       },
       "gamesList": {
@@ -321,10 +320,6 @@
   },
   "dashboard": {
     "sidebar": {
-      "section": {
-        "automation": "Automatisation",
-        "misc": "Divers"
-      },
       "nav": {
         "games": "Jeux",
         "idling": "Idling",
@@ -341,7 +336,6 @@
         "error": "Le nettoyage de déconnexion n'est pas entièrement fini, mais vous avez été déconnecté."
       },
       "tier": {
-        "label": "Offre",
         "free": "Gratuit"
       },
       "accountSwitcher": {
@@ -363,9 +357,6 @@
           "reconnect": "Reconnexion",
           "useDifferentMethod": "Utiliser une autre méthode de connexion"
         }
-      },
-      "ads": {
-        "removeAdsWith": "Supprimez les pubs avec"
       }
     },
     "games": {

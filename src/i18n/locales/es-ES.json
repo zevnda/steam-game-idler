@@ -180,7 +180,6 @@
         "description": "Inicia sesión y gestiona varias cuentas de Steam al mismo tiempo."
       },
       "autoFarmCards": {
-        "title": "Farmeo automático de cromos",
         "description": "SGI supervisa tu biblioteca y comienza automáticamente a cultivar cualquier juego que aún tenga cartas disponibles."
       },
       "gamesList": {
@@ -321,10 +320,6 @@
   },
   "dashboard": {
     "sidebar": {
-      "section": {
-        "automation": "Automatización",
-        "misc": "Miscelánea"
-      },
       "nav": {
         "games": "Juegos",
         "idling": "Farmeando",
@@ -341,7 +336,6 @@
         "error": "La limpieza del registro de salida no ha finalizado por completo, pero su sesión ha sido cerrada."
       },
       "tier": {
-        "label": "Plan",
         "free": "Gratis"
       },
       "accountSwitcher": {
@@ -363,9 +357,6 @@
           "reconnect": "Reconectar",
           "useDifferentMethod": "Utilice un método de inicio de sesión diferente"
         }
-      },
-      "ads": {
-        "removeAdsWith": "Eliminar anuncios con"
       }
     },
     "games": {

@@ -184,7 +184,6 @@
         "description": "Accedi e gestisci più account Steam contemporaneamente."
       },
       "autoFarmCards": {
-        "title": "Raccolta carte automatica",
         "description": "SGI monitora la tua libreria e avvia automaticamente la raccolta per qualsiasi gioco con carte ancora disponibili."
       },
       "gamesList": {
@@ -325,10 +324,6 @@
   },
   "dashboard": {
     "sidebar": {
-      "section": {
-        "automation": "Automazione",
-        "misc": "Varie"
-      },
       "nav": {
         "games": "Giochi",
         "idling": "Idle",
@@ -345,7 +340,6 @@
         "error": "La pulizia all'uscita non è stata completata del tutto, ma sei uscito dall'account."
       },
       "tier": {
-        "label": "Piano",
         "free": "Gratis"
       },
       "accountSwitcher": {
@@ -368,9 +362,6 @@
           "sessionReplacedExplainer": "Di solito succede quando un'altra istanza di Steam Game Idler, o uno strumento simile, accede a questo account. Riconnettendoti qui, disconnetterai l'altra istanza.",
           "useDifferentMethod": "Usa un metodo di accesso diverso"
         }
-      },
-      "ads": {
-        "removeAdsWith": "Rimuovi gli annunci con"
       }
     },
     "games": {
