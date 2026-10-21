@@ -1,4 +1,3 @@
-import type { HolidayKey } from '@/shared/theme/holidays'
 import type { ThemePreset } from '@/shared/theme/presets'
 import { useEffect, useRef, useState } from 'react'
 import { useActiveThemeStore } from '@/shared/stores/activeThemeStore'
@@ -13,8 +12,8 @@ const FRAME_INTERVAL_MS = 1000 / 30
 // Wrap the time uniform so a multi-day session never loses float precision inside the shaders
 // (visible as stuttering/banding once seconds get large). One hour keeps the wrap seam rare.
 const TIME_WRAP_SECONDS = 3600
-// Experimental: a soft-focus blur over the signature presets' backdrops only (holiday backdrops
-// stay sharp, their props need to read clearly). Set to 0 to turn it off. A CSS filter, not a
+// Experimental: a soft-focus blur over the signature presets' backdrops. Set to 0 to turn it
+// off. A CSS filter, not a
 // shader pass - it's composited on the GPU, but re-blurs every drawn frame, so it does add some
 // cost on top of the shader itself.
 // TODO: decide keep/drop after trying it in the real app, and verify on WebKitGTK before shipping
@@ -76,7 +75,7 @@ export const ThemeAmbient = () => {
   // Bumped on `webglcontextrestored` to rebuild the GL program from scratch.
   const [contextGeneration, setContextGeneration] = useState(0)
 
-  const shader = AMBIENT_SHADERS[preset as ThemePreset | HolidayKey]
+  const shader = AMBIENT_SHADERS[preset as ThemePreset]
 
   useEffect(() => {
     const canvas = canvasRef.current

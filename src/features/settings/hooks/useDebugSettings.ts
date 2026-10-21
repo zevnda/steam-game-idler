@@ -26,12 +26,10 @@ import { useAutoUpdateGamesListStore } from '@/shared/stores/autoUpdateGamesList
 import { useCarouselSettingsStore } from '@/shared/stores/carouselSettingsStore'
 import { useCustomBackgroundStore } from '@/shared/stores/customBackgroundStore'
 import { useDisableTooltipsStore } from '@/shared/stores/disableTooltipsStore'
-import { useHolidayStore } from '@/shared/stores/holidayStore'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
-import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { applyFont, FONT_STORAGE_KEY } from '@/shared/theme/applyFont'
-import { applyResolvedTheme } from '@/shared/theme/resolveTheme'
+import { applyThemePreset, THEME_STORAGE_KEY } from '@/shared/theme/applyTheme'
 import { logFrontendInfo } from '@/shared/utils/frontendLogging'
 import { invoke } from '@/shared/utils/invoke'
 import { preserveKeysAndClearData } from '@/shared/utils/update'
@@ -275,8 +273,8 @@ export function useDebugSettings({
       // settings tab's save handler writes it directly. Without this, a reset would silently persist
       // to defaults on disk while the running app kept showing/using the old values until the next
       // relaunch - mirror every individual save handler's own instant-apply call here instead.
-      useHolidayStore.getState().setDisabled(false)
-      applyResolvedTheme('default', useSubscriptionStore.getState().subscriptionTier, false)
+      applyThemePreset('default')
+      localStorage.setItem(THEME_STORAGE_KEY, 'default')
       applyFont(null)
       localStorage.setItem(FONT_STORAGE_KEY, 'inter')
       useDisableTooltipsStore.getState().setDisabled(false)

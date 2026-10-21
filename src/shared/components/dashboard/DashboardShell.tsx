@@ -17,7 +17,6 @@ import { useIdlingSync } from '@/features/idling/hooks/useIdlingSync'
 import { SettingsModal } from '@/features/settings/components/SettingsModal'
 import { Banner } from '@/shared/components/Banner'
 import { CustomBackground } from '@/shared/components/CustomBackground'
-import { HolidayDecorations } from '@/shared/components/holidays/HolidayDecorations'
 import { GlobalSearchModal } from '@/shared/components/search/GlobalSearchModal'
 import { SteamWarning } from '@/shared/components/SteamWarning'
 import { useAccountSummaries } from '@/shared/hooks/useAccountSummaries'
@@ -85,9 +84,6 @@ export const DashboardShell = ({ children }: DashboardShellProps) => {
           area's canvas, whether that's a plain solid layer or a Casual-tier image, see its own
           doc comment. */}
       <main className='min-w-0 flex-1 overflow-y-auto pt-16'>{children}</main>
-      {/* After <main> so it paints above page content (still below the titlebar/modals) - see its
-          own doc comment for how it stays out of the way. */}
-      <HolidayDecorations />
 
       <SettingsModal />
       <AddAccountModal />
