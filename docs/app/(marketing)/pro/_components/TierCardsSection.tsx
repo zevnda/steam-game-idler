@@ -49,7 +49,7 @@ export default function TierCardsSection({ priceData }: TierCardsSectionProps) {
     { title: 'Unlock 32 Games At Once', icon: TbAward },
     { title: 'Automatic Steam Credentials Retrieval', icon: TbKey },
     { title: 'Automatic Free Game Redemption', icon: TbGift },
-    { title: 'Automatic Card Farming', icon: TbCards },
+    { title: 'Trading Card Monitor', icon: TbCards },
     { title: 'Sell Duplicate Inventory Items', icon: TbCurrencyDollar },
     { title: 'Import Achievement Unlock Timings', icon: TbClock },
     { title: 'Custom Steam Status', icon: TbUserCircle },

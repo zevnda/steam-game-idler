@@ -77,7 +77,8 @@
     "status": {
       "saved": "Saved",
       "cleared": "Cleared",
-      "paused": "Paused"
+      "paused": "Paused",
+      "running": "Running"
     },
     "steamWarning": {
       "title": "Notice",
@@ -166,7 +167,7 @@
       },
       "themes": {
         "title": "Exclusive Themes",
-        "description": "Customize SGI with exclusive color themes and animated signature themes, available only to PRO subscribers."
+        "description": "Customize SGI with exclusive color themes and animated signature themes."
       },
       "customBackground": {
         "title": "Custom Background Image"
@@ -186,7 +187,7 @@
         "description": "Sign in and manage multiple Steam accounts at the same time."
       },
       "autoFarmCards": {
-        "title": "Automatic Card Farming",
+        "title": "Trading Card Monitor",
         "description": "SGI monitors your library and automatically starts farming any game that still has card drops remaining."
       },
       "gamesList": {
@@ -327,9 +328,8 @@
   },
   "dashboard": {
     "sidebar": {
-      "section": {
-        "automation": "Automation",
-        "misc": "Misc"
+      "goPro": {
+        "title": "Unlock PRO Perks"
       },
       "nav": {
         "games": "Games",
@@ -347,7 +347,6 @@
         "error": "Sign-out cleanup didn't fully finish, but you've been signed out."
       },
       "tier": {
-        "label": "Plan",
         "free": "Free"
       },
       "accountSwitcher": {
@@ -370,9 +369,6 @@
           "sessionReplacedExplainer": "This usually happens when another copy of Steam Game Idler, or a similar tool, signs in to this account. Reconnecting here signs that one out.",
           "useDifferentMethod": "Use a different sign-in method"
         }
-      },
-      "ads": {
-        "removeAdsWith": "Remove ads with"
       }
     },
     "games": {

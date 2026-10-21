@@ -13,7 +13,7 @@ interface ProModalStore {
   close: () => void
 }
 
-// Backs the titlebar Go Pro button's modal (see GoPro.tsx) and every gated-feature upsell
+// Backs the sidebar Go Pro card's modal (see GoPro.tsx) and every gated-feature upsell
 // (GoProModal/index.tsx auto-scrolls to and highlights `requiredTier` when set).
 export const useProModalStore = create<ProModalStore>(set => ({
   isOpen: false,

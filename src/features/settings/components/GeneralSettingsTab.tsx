@@ -101,7 +101,7 @@ export const GeneralSettingsTab = ({
   ownershipActionErrorCode,
   onSaveOwnership,
 }: GeneralSettingsTabProps) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [keyValue, setKeyValue] = useState('')
   // Header row (avatar/display name/identifier) mirrors `main`'s General settings header - reuses
   // the same account/summary stores AccountSwitcher.tsx already reads from, rather than a
@@ -437,7 +437,11 @@ export const GeneralSettingsTab = ({
                 <Select.Indicator />
               </Select.Trigger>
               <Select.Popover>
-                <ListBox items={PERSONA_STATE_OPTIONS}>
+                {/* `dependencies` is required here: React Aria caches each rendered item by the
+                    `items` array's identity, and `PERSONA_STATE_OPTIONS` is a stable module-level
+                    constant - without it, a language change never re-runs `t()` and both the list
+                    and the trigger's `Select.Value` keep the old language until the tab remounts. */}
+                <ListBox dependencies={[i18n.language]} items={PERSONA_STATE_OPTIONS}>
                   {item => (
                     <ListBox.Item id={item.id} textValue={t(item.labelKey)}>
                       {t(item.labelKey)}

@@ -30,8 +30,8 @@ interface SubscriptionStore {
   // `sortPreferencesStore`'s own hydrate-on-mount shape.
   hydrated: boolean
   // Seeds the store from the last confirmed check (see `persistSubscriptionCache`) so returning
-  // users see their real tier on first paint instead of the gated UI (Sidebar's tier row, HelpDesk,
-  // GoPro) popping in only once `useCheckSubscription`'s live API round trip resolves. The live
+  // users see their real tier on first paint instead of the gated UI (HelpDesk, the sidebar's
+  // GoPro card) popping in only once `useCheckSubscription`'s live API round trip resolves. The live
   // check still runs in the background and silently corrects this if the tier actually changed.
   // Called from a mount effect, not module init, since `localStorage` doesn't exist during Next.js's
   // SSR pass.

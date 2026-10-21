@@ -144,13 +144,16 @@ export const allFeatures: Feature[] = [
   },
   {
     icon: TbCards,
-    title: 'Automatic Card Farming',
+    title: 'Trading Card Monitor',
     description:
       'SGI monitors your library and automatically starts farming any game that still has card drops remaining.',
     detail:
       'No need to open Card Farming and hit start — SGI continuously scans your library in the background and automatically begins farming any game that still has trading cards left to drop.',
     tier: 'gamer',
     imgBg: `${CDN_BASE_URL}/pro-modal/pro6.webp`,
+    // Id kept from the perk's old name ("Automatic Card Farming") rather than renamed to match -
+    // it's the page anchor every already-shipped app build links to (GoProModal's `learnMoreUrl`),
+    // and renaming it would silently drop those links at the top of the page instead.
     id: 'automatic-card-farming',
   },
   {
@@ -258,7 +261,7 @@ export const comparisonRows: ComparisonRow[] = [
   { label: 'Automatic Games List Updates', icon: TbRefresh, tier: 'casual' },
   { label: 'Automatic Steam Credentials Retrieval', icon: TbKey, tier: 'gamer' },
   { label: 'Automatic Free Game Redemption', icon: TbGift, tier: 'gamer' },
-  { label: 'Automatic Card Farming', icon: TbCards, tier: 'gamer' },
+  { label: 'Trading Card Monitor', icon: TbCards, tier: 'gamer' },
   { label: 'Sell Duplicate Inventory Items', icon: TbCurrencyDollar, tier: 'gamer' },
   { label: 'Import Achievement Unlock Timings', icon: TbClock, tier: 'gamer' },
   { label: 'Custom Idle Status Message', icon: TbUserCircle, tier: 'gamer' },
