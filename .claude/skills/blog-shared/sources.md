@@ -45,7 +45,7 @@ endpoint), `rss`, `gh` (GitHub CLI/API), `render` (`$SEO/scripts/claude-seo run 
 | Source | URL | Good for | Method | Verified |
 |---|---|---|---|---|
 | SteamTracking (client file diffs) | `gh api "repos/SteamTracking/SteamTracking/commits?per_page=30"` | Dating client changes; new strings/feature names before announcements. Moved from `SteamDatabase/SteamTracking`. | gh | 2026-10-20 |
-| SteamTracking Protobufs | `gh api "repos/SteamTracking/Protobufs/commits?per_page=30"` | New client messages - signals SteamKit2/SGI agent-mode impact | gh | 2026-10-20 |
+| SteamTracking Protobufs | `gh api "repos/SteamTracking/Protobufs/commits?per_page=30"` | New client messages - signals SteamKit2/SGI agent-mode impact. `gh api repos/SteamTracking/Protobufs/commits/<sha> --jq '.files[]\|.patch'` shows the field-level diff. | gh | 2026-10-21 |
 | SteamKit2 releases | `gh api "repos/SteamRE/SteamKit/releases?per_page=5"` | Library SGI's agent mode is built on | gh | 2026-10-20 |
 | SteamDB (site) | `https://steamdb.info/` | Patchnotes, sale history | **blocked** - Cloudflare 403 for curl *and* headless Playwright | 2026-10-20 |
 | SteamDB on Bluesky (fallback for the above) | `https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=steamdb.info&limit=30` | SteamDB's own news posts (sales starting, notable changes) as JSON | api | 2026-10-20 |
@@ -79,7 +79,7 @@ endpoint), `rss`, `gh` (GitHub CLI/API), `render` (`$SEO/scripts/claude-seo run 
 
 | Source | How | Good for | Method | Verified |
 |---|---|---|---|---|
-| Search Console (first-party) | `"$SEO/scripts/claude-seo" run gsc_query.py query --days 90 --dimensions query,page --limit 5000 --json` (property `sc-domain:steamgameidler.com` is the default) | Queries the site already gets impressions for, and which page gets them | api | 2026-10-20 |
+| Search Console (first-party) | `"$SEO/scripts/claude-seo" run gsc_query.py query --days 90 --dimensions query,page --limit 5000 --json` (property `sc-domain:steamgameidler.com` is the default) | Queries the site already gets impressions for, and which page gets them. Data lags ~3 days (a 2026-10-21 pull ended 2026-10-18), so a sweep a day after the last one adds no new demand data - don't re-pull for that. | api | 2026-10-21 |
 | Google autocomplete | `https://suggestqueries.google.com/complete/search?client=firefox&q=<seed>` (append ` a`..` z`, and prefixes `how`, `why`, `can`, `does`) | Real phrasings and long-tail | api | 2026-10-20 |
 | YouTube | `yt-dlp "ytsearch20:<query>" --flat-playlist --print "%(id)s %(title)s"` (`-J` for full metadata incl. upload date) | What's being covered on video; video-intent queries | cli | 2026-10-20 |
 | Bing Webmaster (secondary) | `python .claude/skills/blog-shared/scripts/bing_webmaster.py queries --days 90 --filter <term>` | Bing's query data - a second opinion on demand; much smaller volume than Google, so never the deciding signal | api | 2026-10-20 |
