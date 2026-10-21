@@ -22,21 +22,37 @@ export const dlcGroupIdsOf = (groups: AchievementGroup[]) =>
 export const isInGroups = (achievement: AchievementDto, groupIds: Set<number>) =>
   achievement.groupId !== undefined && groupIds.has(achievement.groupId)
 
+// Archived and not earned: Steam refuses to unlock anything in an archived set, and Valve tells
+// games to stop awarding individually archived achievements - unlocking one anyway would put an
+// achievement nobody can earn anymore on the profile. Valve also doesn't count these toward
+// completion, so progress leaves them out. An *earned* archived achievement is ordinary.
+export const isArchivedLocked = (achievement: AchievementDto) =>
+  achievement.archived === true && !achievement.achieved
+
+// Still locked and not unlockable by this account - unowned DLC or archived. Same rule as Rust's
+// AchievementDto::is_unlock_blocked, which the unlocker/bulk-unlock paths use.
+export const isUnlockBlocked = (achievement: AchievementDto, unownedDlcGroupIds: Set<number>) =>
+  isArchivedLocked(achievement) ||
+  (!achievement.achieved && isInGroups(achievement, unownedDlcGroupIds))
+
 export interface AchievementSection<T extends AchievementDto = AchievementDto> {
   key: number
   // `null` = the base-game set.
   group: AchievementGroup | null
   isUnownedDlc: boolean
-  // Progress always counts the whole set (the sidebar nav's per-set counts and progress lines).
+  isArchived: boolean
+  // Progress counts the whole set (the sidebar nav's per-set counts and progress lines), except
+  // archived achievements not yet earned - Steam doesn't require those either.
   unlocked: number
   total: number
   visible: T[]
 }
 
 // Splits an already sorted/filtered achievement list into Steam Achievement Set sections: base game
-// first, then each schema group in its listed order, with unowned DLC sets moved to the very end
-// (they're the ones a user can't act on, so they shouldn't sit between sets they can). A `groupId`
-// that points at no listed group falls back to the base game rather than disappearing. Sections
+// first, then each schema group in its listed order, with unowned DLC and archived sets moved to
+// the very end (they're the ones a user can't act on, so they shouldn't sit between sets they
+// can). A `groupId` that points at no listed group falls back to the base game rather than
+// disappearing. Sections
 // with nothing visible (e.g. filtered out by search) are dropped. Returns `[]` for a game without
 // sets, so callers can keep rendering their flat, header-less list unchanged.
 export const groupAchievementsBySet = <T extends AchievementDto>(
@@ -52,15 +68,18 @@ export const groupAchievementsBySet = <T extends AchievementDto>(
       ? achievement.groupId
       : BASE_GAME_SECTION_KEY
 
+  const isInactiveGroup = (group: AchievementGroup) =>
+    isUnownedDlcGroup(group) || group.archived === true
   const orderedGroups = [
-    ...groups.filter(group => !isUnownedDlcGroup(group)),
-    ...groups.filter(isUnownedDlcGroup),
+    ...groups.filter(group => !isInactiveGroup(group)),
+    ...groups.filter(isInactiveGroup),
   ]
   const sections: AchievementSection<T>[] = [
     {
       key: BASE_GAME_SECTION_KEY,
       group: null,
       isUnownedDlc: false,
+      isArchived: false,
       unlocked: 0,
       total: 0,
       visible: [],
@@ -69,6 +88,7 @@ export const groupAchievementsBySet = <T extends AchievementDto>(
       key: group.id,
       group,
       isUnownedDlc: isUnownedDlcGroup(group),
+      isArchived: group.archived === true,
       unlocked: 0,
       total: 0,
       visible: [],
@@ -77,6 +97,7 @@ export const groupAchievementsBySet = <T extends AchievementDto>(
   const byKey = new Map(sections.map(section => [section.key, section]))
 
   for (const achievement of all) {
+    if (isArchivedLocked(achievement)) continue
     const section = byKey.get(sectionKeyOf(achievement))!
     section.total++
     if (achievement.achieved) section.unlocked++

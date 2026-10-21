@@ -21,5 +21,10 @@ namespace SteamUtility.Core.Models
 
         // Schema `groupid` - absent for base-game achievements (see AchievementGroupDto).
         public int? GroupId { get; init; }
+
+        // Steam no longer lets anyone earn this achievement - either the bit itself carries the
+        // schema's `archived` flag or its whole Achievement Set does (resolved once in
+        // SchemaWalker.ParseAchievementDefinitions, so consumers never need the group lookup).
+        public bool Archived { get; init; }
     }
 }

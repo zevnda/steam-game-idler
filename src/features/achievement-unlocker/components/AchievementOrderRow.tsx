@@ -2,7 +2,7 @@ import type { AchievementDto } from '@/features/achievement-manager/types'
 import type { DraggableAttributes, DraggableSyntheticListeners } from '@dnd-kit/core'
 import { useTranslation } from 'react-i18next'
 import { GoGrabber } from 'react-icons/go'
-import { TbBan, TbShoppingCartX } from 'react-icons/tb'
+import { TbArchive, TbBan, TbShoppingCartX } from 'react-icons/tb'
 import { Checkbox, cn, Typography } from '@heroui/react'
 import Image from 'next/image'
 import { DlcBadge } from '@/features/achievement-manager/components/DlcBadge'
@@ -40,8 +40,9 @@ interface AchievementOrderRowProps {
   // Achievement belongs to a DLC Achievement Set - see useAchievementOrder.ts's `dlcGroupIds`.
   isDlc?: boolean
   // Set = the read-only variant (AchievementOrderList.tsx's trailing sections), and which marker
-  // its checkbox column shows: protected (server-owned) or from DLC the account doesn't own.
-  readOnlyReason?: 'protected' | 'unownedDlc'
+  // its checkbox column shows: protected (server-owned), from DLC the account doesn't own, or
+  // archived.
+  readOnlyReason?: 'protected' | 'unownedDlc' | 'archived'
   isOverlay?: boolean
   dragHandleProps?: DragHandleProps
   onToggleSkip?: (id: string) => void
@@ -59,8 +60,9 @@ interface AchievementOrderRowProps {
 // own "no virtualized list" note - same small-count reasoning applies here) and keyed by `id`
 // instead of the display `name` (order.rs's own stable key, see its doc comment).
 // `readOnlyReason` is the read-only variant (AchievementOrderList.tsx's trailing protected and
-// unowned-DLC sections): the checkbox column shows the same marker AchievementRow.tsx uses for that
-// case (TbBan + tooltip for protected, a plain TbShoppingCartX for unowned DLC), and the drag-handle
+// unowned-DLC/archived sections): the checkbox column shows the same marker AchievementRow.tsx uses
+// for that case (TbBan + tooltip for protected, a plain TbShoppingCartX for unowned DLC, a plain
+// TbArchive for archived), and the drag-handle
 // column is left empty, so the card keeps the exact same grid and
 // height as an orderable one but offers nothing to toggle or drag.
 export const AchievementOrderRow = ({
@@ -102,6 +104,14 @@ export const AchievementOrderRow = ({
           >
             <TbShoppingCartX fontSize={16} />
           </span>
+        ) : readOnlyReason === 'archived' ? (
+          // No tooltip - the "Archived achievements" section header above already says why.
+          <span
+            aria-label={t('dashboard.achievements.archived.badge')}
+            className='inline-flex text-muted'
+          >
+            <TbArchive fontSize={16} />
+          </span>
         ) : readOnlyReason === 'protected' ? (
           <AppTooltip.Root>
             <AppTooltip.Trigger>
@@ -129,7 +139,7 @@ export const AchievementOrderRow = ({
         alt=''
         className={cn(
           'rounded-lg ring-2 ring-border/50',
-          readOnlyReason === 'unownedDlc' && 'grayscale',
+          (readOnlyReason === 'unownedDlc' || readOnlyReason === 'archived') && 'grayscale',
         )}
         height={44}
         src={icon}

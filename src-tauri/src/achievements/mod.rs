@@ -53,6 +53,12 @@ pub struct AchievementDto {
     /// base-game set and for every game without Achievement Sets (SteamUtility omits it then).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group_id: Option<i32>,
+    /// Archived by the developer, individually or via its whole set (SteamUtility resolves both
+    /// into this one flag, and omits it when false). Steam won't unlock anything in an archived
+    /// set and Valve tells games to stop awarding archived achievements, so every unlock path
+    /// skips a not-yet-earned archived achievement - see `is_unlock_blocked`.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub archived: bool,
 }
 
 /// Mirrors `libs/SteamUtility/Core/Models/AchievementGroupDto.cs` - one Steam "Achievement Set"
@@ -68,6 +74,10 @@ pub struct AchievementGroupDto {
     pub dlc_app_id: Option<u32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub owned: Option<bool>,
+    /// The whole set is archived. Display-only - each member achievement already carries
+    /// `AchievementDto::archived`, which is what the unlock paths check.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub archived: bool,
 }
 
 /// Mirrors `libs/SteamUtility/Core/Models/StatDto.cs`. Unlike `AchievementDto`, most of this DTO's
@@ -125,6 +135,14 @@ impl AchievementData {
 impl AchievementDto {
     pub fn is_in_group(&self, group_ids: &std::collections::HashSet<i32>) -> bool {
         self.group_id.is_some_and(|id| group_ids.contains(&id))
+    }
+
+    /// Still locked, and Steam won't (or shouldn't) let this account unlock it: from a DLC set the
+    /// account doesn't own (`AchievementData::unowned_dlc_group_ids`), or archived. Same rule as
+    /// the frontend's `isUnlockBlocked` (`groupAchievements.ts`) and, for CLI mode's bulk unlock,
+    /// `BulkAchievementSetter.cs`.
+    pub fn is_unlock_blocked(&self, unowned_dlc: &std::collections::HashSet<i32>) -> bool {
+        !self.achieved && (self.archived || self.is_in_group(unowned_dlc))
     }
 }
 
@@ -210,6 +228,28 @@ mod tests {
         let unowned = data.unowned_dlc_group_ids();
         assert_eq!(unowned, std::collections::HashSet::from([6]));
         assert!(data.achievements[0].is_in_group(&unowned));
+    }
+
+    // `archived` round-trips camelCase, is omitted when false, and blocks only a still-locked
+    // achievement - an earned archived one stays lockable (`is_unlock_blocked` is false for it).
+    #[test]
+    fn archived_achievements_block_unlock_only_while_locked() {
+        let wire = format!(
+            r#"{{"achievements":[{ACHIEVEMENT_JSON},"archived":true}},{ACHIEVEMENT_JSON}}}],"stats":[],"groups":[{{"id":11,"name":"Replay","archived":true}}]}}"#
+        );
+        let mut data: AchievementData = serde_json::from_str(&wire).unwrap();
+        let none = std::collections::HashSet::new();
+        assert!(data.groups[0].archived);
+        assert!(data.achievements[0].is_unlock_blocked(&none));
+        assert!(!data.achievements[1].is_unlock_blocked(&none));
+
+        data.achievements[0].achieved = true;
+        assert!(!data.achievements[0].is_unlock_blocked(&none));
+
+        let out = serde_json::to_value(&data).unwrap();
+        assert_eq!(out["achievements"][0]["archived"], true);
+        assert!(out["achievements"][1].get("archived").is_none());
+        assert_eq!(out["groups"][0]["archived"], true);
     }
 
     // A game without sets: SteamUtility omits `groupId`, and `groups` is defaulted if absent.

@@ -4,7 +4,7 @@ import type { RowComponentProps } from 'react-window'
 import type { OrderableAchievement } from '../hooks/useAchievementOrder'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbBan, TbHourglassLow, TbShoppingCartX } from 'react-icons/tb'
+import { TbArchive, TbBan, TbHourglassLow, TbShoppingCartX } from 'react-icons/tb'
 import { List } from 'react-window'
 import { AchievementOrderRow } from './AchievementOrderRow'
 import { useSortable } from '@dnd-kit/sortable'
@@ -207,15 +207,23 @@ const AchievementOrderUnit = ({
   )
 }
 
-type ReadOnlyReason = 'protected' | 'unownedDlc'
+type ReadOnlyReason = 'protected' | 'unownedDlc' | 'archived'
 
 const READ_ONLY_SECTION_TITLE_KEYS = {
   protected: 'dashboard.achievementUnlocker.order.protectedSection.title',
   unownedDlc: 'dashboard.achievementUnlocker.order.unownedDlcSection.title',
+  archived: 'dashboard.achievementUnlocker.order.archivedSection.title',
 } as const satisfies Record<ReadOnlyReason, TranslationKey>
 
+const READ_ONLY_SECTION_ICONS = {
+  protected: TbBan,
+  unownedDlc: TbShoppingCartX,
+  archived: TbArchive,
+} as const
+
 // Everything after the real order: one read-only section per reason an achievement can't be part
-// of it - protected first, then unowned DLC - each a header plus one plain card per achievement.
+// of it - protected first, then unowned DLC, then archived - each a header plus one plain card per
+// achievement.
 // Precomputed once per render of AchievementOrderList (not per Row) since Row and getRowHeight
 // both index into it.
 type TrailingRow =
@@ -225,18 +233,19 @@ type TrailingRow =
 // Labels one read-only section below the real order. Deliberately a plain label with no connecting
 // line or delay input - these achievements aren't part of the unlock sequence at all (see
 // useAchievementOrder.ts's `protectedAchievements`/`unownedDlcAchievements`), so nothing here should
-// read as a step in it. The title itself is the explanation for unowned DLC; for protected, the
+// read as a step in it. The title itself is the explanation for unowned DLC and archived; for
+// protected, the
 // longer *why* lives in a tooltip on each card's marker and the header alert in
 // AchievementOrderHeader.tsx rather than here, since this row has a fixed virtualized height and a
 // wrapping description would overflow it in longer locales.
 const ReadOnlySectionHeaderRow = ({ reason, count }: { reason: ReadOnlyReason; count: number }) => {
   const { t } = useTranslation()
-  const Icon = reason === 'unownedDlc' ? TbShoppingCartX : TbBan
+  const Icon = READ_ONLY_SECTION_ICONS[reason]
 
   return (
     <div className='flex h-full items-end gap-2 pb-2'>
       <Icon
-        className={cn('mb-0.5 shrink-0', reason === 'unownedDlc' ? 'text-muted' : 'text-warning')}
+        className={cn('mb-0.5 shrink-0', reason === 'protected' ? 'text-warning' : 'text-muted')}
         fontSize={14}
       />
       <Typography truncate type='body-xs' weight='semibold'>
@@ -365,6 +374,7 @@ const getRowHeight = (index: number, { achievements, trailingRows }: RowProps) =
 interface AchievementOrderListProps extends Omit<RowProps, 'trailingRows'> {
   protectedAchievements: AchievementDto[]
   unownedDlcAchievements: AchievementDto[]
+  archivedAchievements: AchievementDto[]
 }
 
 // Virtualized replacement for the previous plain `.map()` of AchievementOrderRow - some games ship
@@ -375,13 +385,14 @@ interface AchievementOrderListProps extends Omit<RowProps, 'trailingRows'> {
 // combining virtualization with sortable lists; dragging near either edge of the visible window
 // auto-scrolls the list (dnd-kit's default PointerSensor autoscroll targets the nearest scrollable
 // ancestor, which is this `List`'s own root), bringing the next rows into range.
-// Protected and unowned-DLC achievements render as trailing rows after the real order (see
+// Protected, unowned-DLC and archived achievements render as trailing rows after the real order (see
 // TrailingRow), outside the parent SortableContext's `items` - they're never drag sources or
 // targets, and sitting after the last orderable card means they can't be mistaken for a step
 // between two others or pick up a connector's delay.
 export const AchievementOrderList = ({
   protectedAchievements,
   unownedDlcAchievements,
+  archivedAchievements,
   ...props
 }: AchievementOrderListProps) => {
   const trailingRows = useMemo(() => {
@@ -389,6 +400,7 @@ export const AchievementOrderList = ({
     const sections: [ReadOnlyReason, AchievementDto[]][] = [
       ['protected', protectedAchievements],
       ['unownedDlc', unownedDlcAchievements],
+      ['archived', archivedAchievements],
     ]
     for (const [reason, list] of sections) {
       if (list.length === 0) continue
@@ -396,7 +408,7 @@ export const AchievementOrderList = ({
       for (const achievement of list) rows.push({ type: 'card', reason, achievement })
     }
     return rows
-  }, [protectedAchievements, unownedDlcAchievements])
+  }, [protectedAchievements, unownedDlcAchievements, archivedAchievements])
 
   return (
     <List

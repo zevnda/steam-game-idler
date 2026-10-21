@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
 import { TbChecks, TbX } from 'react-icons/tb'
-import { isInGroups } from '../utils/groupAchievements'
+import { isUnlockBlocked } from '../utils/groupAchievements'
 import { searchByName } from '../utils/searchByName'
 import {
   ACHIEVEMENT_SORT_LABEL_KEYS,
@@ -90,8 +90,7 @@ export const AchievementsView = ({
   }, [achievements, statusFilter, sortStyle, query])
 
   const isSelectable = (achievement: AchievementDto) =>
-    !achievement.protectedAchievement &&
-    !(isInGroups(achievement, unownedDlcGroupIds) && !achievement.achieved)
+    !achievement.protectedAchievement && !isUnlockBlocked(achievement, unownedDlcGroupIds)
   const selected = achievements.filter(achievement => selectedIds.has(achievement.id))
   const unlockIds = selected.filter(achievement => !achievement.achieved).map(a => a.id)
   const lockIds = selected.filter(achievement => achievement.achieved).map(a => a.id)

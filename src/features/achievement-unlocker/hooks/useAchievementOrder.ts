@@ -6,6 +6,7 @@ import { errorMessageKey, importTimingsErrorMessageKey } from '../utils/errorMes
 import { toast } from '@heroui/react'
 import {
   dlcGroupIdsOf,
+  isArchivedLocked,
   isInGroups,
   unownedDlcGroupIdsOf,
 } from '@/features/achievement-manager/utils/groupAchievements'
@@ -62,6 +63,10 @@ export const useAchievementOrder = (openGame: OpenGame | null) => {
   // list after the real order, so the editor's count still adds up. A protected achievement goes
   // in `protectedAchievements` even if it's also unowned DLC (that's the stronger reason).
   const [unownedDlcAchievements, setUnownedDlcAchievements] = useState<AchievementDto[]>([])
+  // Still-locked archived achievements - same treatment again (Steam won't unlock them, and the
+  // unlocker skips them - see isArchivedLocked in groupAchievements.ts). Protected and unowned DLC
+  // both take precedence, so each achievement lands in exactly one read-only list.
+  const [archivedAchievements, setArchivedAchievements] = useState<AchievementDto[]>([])
 
   const load = useCallback(async () => {
     if (!account || !openGame) return
@@ -87,9 +92,10 @@ export const useAchievementOrder = (openGame: OpenGame | null) => {
       const unownedDlcGroupIds = unownedDlcGroupIdsOf(data.groups)
       const locked = data.achievements.filter(achievement => !achievement.achieved)
       const unprotected = locked.filter(achievement => !achievement.protectedAchievement)
-      const orderable = unprotected.filter(
+      const ownedLocked = unprotected.filter(
         achievement => !isInGroups(achievement, unownedDlcGroupIds),
       )
+      const orderable = ownedLocked.filter(achievement => !isArchivedLocked(achievement))
       setProtectedAchievements(
         locked.filter(achievement => achievement.protectedAchievement).sort(byPercentDescending),
       )
@@ -98,6 +104,7 @@ export const useAchievementOrder = (openGame: OpenGame | null) => {
           .filter(achievement => isInGroups(achievement, unownedDlcGroupIds))
           .sort(byPercentDescending),
       )
+      setArchivedAchievements(ownedLocked.filter(isArchivedLocked).sort(byPercentDescending))
 
       if (order) {
         const savedById = new Map(
@@ -281,6 +288,7 @@ export const useAchievementOrder = (openGame: OpenGame | null) => {
     protectedAchievements,
     dlcGroupIds,
     unownedDlcAchievements,
+    archivedAchievements,
     refresh: load,
     reorder,
     toggleSkip,
