@@ -17,41 +17,6 @@ interface AdManifest {
 
 const DEFAULT_HOUSE_AD_COUNT = 15
 const ROTATE_INTERVAL_MS = 60 * 1000
-const HOUSE_ADS_PER_GOOGLE_ATTEMPT = 3
-
-// Real `/supported-games/*` slugs the sidebar iframe rotates through to request a Google ad -
-// these are dedicated marketing/SEO landing pages (docs/app/(marketing)/supported-games), each
-// carrying its own fixed-corner ad unit, kept as a static list rather than derived from the docs
-// site's data since the two are separate deployable packages. Add new game slugs here as they
-// land in `docs/app/(marketing)/supported-games/_data/games.ts`.
-const AD_HOST_GAME_SLUGS = [
-  'counter-strike-2',
-  'dota-2',
-  'team-fortress-2',
-  'pubg-battlegrounds',
-  'grand-theft-auto-v',
-  'rust',
-  'garrys-mod',
-  'left-4-dead-2',
-  'portal-2',
-  'terraria',
-  'stardew-valley',
-  'among-us',
-  'valheim',
-  'sea-of-thieves',
-  'rocket-league',
-  'payday-2',
-  'cyberpunk-2077',
-  'dead-by-daylight',
-]
-
-// AdSense's own "ad actually painted" signal - Google's ad iframe posts this straight to
-// `window.top` when it renders, which is us (the app is the outermost window, the docs page and
-// the Google ad iframe are both nested inside our own iframe below). No custom relay needed.
-const GOOGLE_AD_FILL_ORIGIN = 'https://googleads.g.doubleclick.net'
-
-const pickRandomGameSlug = () =>
-  AD_HOST_GAME_SLUGS[Math.floor(Math.random() * AD_HOST_GAME_SLUGS.length)]
 
 // House-ad slot in the sidebar footer, shown only to free-tier accounts - ported from `main`'s
 // AdSlot.tsx. One fixed bug: the "Remove ads" upsell now checks `hasCasualAccess` (matching the
@@ -95,42 +60,6 @@ export const AdSlot = () => {
   const [manifestCount, setManifestCount] = useState(DEFAULT_HOUSE_AD_COUNT)
   const [manifestLinks, setManifestLinks] = useState<Record<string, string>>({})
   const failedHouseAdsRef = useRef<Set<string>>(new Set())
-
-  const [adFilled, setAdFilled] = useState(false)
-  // Which /supported-games page the single persistent iframe below points at - reassigned (not a
-  // new iframe) each time a fresh Google ad attempt is due, which reloads the iframe and triggers
-  // a new ad request.
-  const [gameSlug, setGameSlug] = useState(pickRandomGameSlug)
-  // Only the setter is used (functional updates read the latest value) - the count itself never
-  // needs to drive a render.
-  const [, setHouseAdStreak] = useState(0)
-
-  useEffect(() => {
-    const handleAdFillMessage = (event: MessageEvent) => {
-      if (event.origin !== GOOGLE_AD_FILL_ORIGIN) return
-      try {
-        const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
-        if (data?.googMsgType === 'adpnt') {
-          setAdFilled(true)
-        }
-      } catch {
-        // ignore malformed payloads
-      }
-    }
-
-    window.addEventListener('message', handleAdFillMessage)
-    return () => window.removeEventListener('message', handleAdFillMessage)
-  }, [])
-
-  // Give a confirmed-filled Google ad 45s of visibility, then drop back to the house-ad overlay
-  // and let its own 45s shuffle (below) resume - a filled Google ad would otherwise stay shown
-  // indefinitely, permanently starving house ads of this slot. The house-ad effect below picks up
-  // the 5-ad countdown again from here, eventually swapping `gameSlug` to retry Google.
-  useEffect(() => {
-    if (!adFilled) return
-    const timeoutId = setTimeout(() => setAdFilled(false), ROTATE_INTERVAL_MS)
-    return () => clearTimeout(timeoutId)
-  }, [adFilled])
 
   useEffect(() => {
     fetch(`${CDN_BASE_URL}/ads/manifest.json`)
@@ -196,35 +125,20 @@ export const AdSlot = () => {
     setHouseAd(current => pickNextHouseAd(current))
   }, [houseAd, pickNextHouseAd])
 
-  // Rotates the house ad every 45s, but only while a house ad is actually the thing on screen -
-  // paused (interval cleared) for as long as `adFilled` is true, then resumed with a fresh 45s
-  // window once the fill-visibility effect above drops it back to false. Every 5th house ad,
-  // instead of just rotating to another one, reassigns `gameSlug` to re-request a Google ad on
-  // the same persistent iframe; if that fill never lands, nothing else happens here and house ads
-  // keep rotating/counting as normal, which is the "fall back to house ad" behavior by default.
+  // Rotates the house ad on a fixed interval.
   useEffect(() => {
-    if (adFilled) return
     const intervalId = setInterval(() => {
       setHouseAd(current => pickNextHouseAd(current))
-      setHouseAdStreak(streak => {
-        if (streak + 1 >= HOUSE_ADS_PER_GOOGLE_ATTEMPT) {
-          setGameSlug(pickRandomGameSlug())
-          return 0
-        }
-        return streak + 1
-      })
     }, ROTATE_INTERVAL_MS)
     return () => clearInterval(intervalId)
-  }, [adFilled, pickNextHouseAd])
+  }, [pickNextHouseAd])
 
   if (isSubscribed === null || hasCasualAccess(subscriptionTier)) return null
 
   return (
     // Outer wrapper reserves exactly the post-scale footprint in the sidebar's layout - the inner
     // div below is rendered at its natural (unscaled) size and visually shrunk via `transform`,
-    // not `zoom` (see this file's own AdSlot doc comment for why: `zoom` on an ancestor doesn't
-    // reliably scale a nested <iframe>'s own rendered content the same way across engines,
-    // `transform` does).
+    // not `zoom`, since CSS `zoom` renders inconsistently between WebKitGTK and WebView2.
     <div
       className='pro-fade-in overflow-hidden'
       style={{ width: naturalSize.width * scale, height: naturalSize.height * scale }}
@@ -234,33 +148,21 @@ export const AdSlot = () => {
         className='w-fit rounded-lg border border-border p-2 pb-1'
         style={{ transform: `scale(${scale})`, transformOrigin: 'top left' }}
       >
-        <div className='relative flex h-62.5 w-75 items-center justify-center overflow-hidden rounded-lg'>
-          <iframe
-            className='overflow-scroll -mt-87.5 -ml-75 h-150 w-150'
-            sandbox='allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation-by-user-activation'
-            src={`https://steamgameidler.com/supported-games/${gameSlug}`}
-            width='600'
-            height='600'
-            title='Advertisement'
-          />
-          {!adFilled && (
-            <div
-              className={cn(
-                'absolute inset-0 z-10 flex items-center justify-center bg-[#121316]',
-                houseAdLink && 'cursor-pointer',
-              )}
-              onClick={() => houseAdLink && openExternalLink(houseAdLink)}
-            >
-              <Image
-                alt='Advertisement'
-                className='h-full w-full object-fill'
-                height={250}
-                src={houseAd}
-                width={300}
-                onError={handleHouseAdError}
-              />
-            </div>
+        <div
+          className={cn(
+            'flex h-62.5 w-75 items-center justify-center overflow-hidden rounded-lg bg-[#121316]',
+            houseAdLink && 'cursor-pointer',
           )}
+          onClick={() => houseAdLink && openExternalLink(houseAdLink)}
+        >
+          <Image
+            alt='Advertisement'
+            className='h-full w-full object-fill'
+            height={250}
+            src={houseAd}
+            width={300}
+            onError={handleHouseAdError}
+          />
         </div>
 
         <div

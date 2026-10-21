@@ -6,7 +6,7 @@ rejected ones from coming back without new evidence, and news sweeps from re-rea
 weeks. Newest entries go first in each section. Keep entries short; full research lives in the
 gitignored `seo-blog-research-{slug}.md` files.
 
-**Last discovery sweep:** 2026-10-20 (second pass same day: GSC/autocomplete/evergreen only - news window empty)
+**Last discovery sweep:** 2026-10-21 (one-day window: no new Valve news; GSC data only reached 2026-10-18, so no new demand signal - nothing queued)
 
 ## Queued - passed the gate, not written yet
 
@@ -62,25 +62,18 @@ published. GSC figures are 2026-07-20 to 2026-10-17; re-pull before starting.
 
 <!-- ### <title> - `docs/blog/<slug>.mdx` - written YYYY-MM-DD -->
 
-### Can You Remove, Hide or Reset Steam Achievements? What Actually Works - `docs/blog/remove-steam-achievements.mdx` - written 2026-10-20
-- Primary keyword: can you remove steam achievements | Research: `seo-blog-research-remove-steam-achievements.md`
-- Media complete: cover, remove/hide/reset diagram, Steam Support Private Games FAQ screenshot, SGI
-  Achievement Manager "Lock all" dialog (user-supplied).
-- Links added: `features/achievement-manager/index.mdx` (sentence after the Lock all callout).
-- Revisit: 2027-10 (yearly), or if Valve changes privacy/private-game rules or adds an official reset.
-
-### How to Level Up on Steam: Every Source of XP, and What It Costs - `docs/blog/how-to-level-up-on-steam.mdx` - written 2026-10-20
-- Primary keyword: how to level up on steam | Research: `seo-blog-research-how-to-level-up-on-steam.md`
-- Media complete: cover, XP-per-level chart, Points Shop Seasonal Badge screenshot, SGI Inventory
-  Manager sorted by badge level (user-supplied).
-- Links added: `docs/blog/how-steam-trading-cards-work.mdx` ("Steam levels and XP" section).
-- Revisit: each Winter/Summer Sale (new Seasonal Badge - re-check levels/price via
-  `ILoyaltyRewardsService`), and before the 2026 Steam Awards nominations (late Nov) to confirm the badge.
-
 ## Published
 
 <!-- ### <title> - `/blog/<slug>` - published YYYY-MM-DD
 - Primary keyword: ... | Revisit: YYYY-MM-DD (why: beta ends / sale season / yearly refresh) -->
+
+### Can You Remove, Hide or Reset Steam Achievements? What Actually Works - `/blog/remove-steam-achievements` - published 2026-10-20
+- Primary keyword: can you remove steam achievements | Revisit: 2027-10 (yearly), or if Valve changes privacy/private-game rules or adds an official reset
+- Indexed 2026-10-20 (URL Inspection 2026-10-21: Submitted and indexed, canonical matches).
+
+### How to Level Up on Steam: Every Source of XP, and What It Costs - `/blog/how-to-level-up-on-steam` - published 2026-10-20
+- Primary keyword: how to level up on steam | Revisit: each Winter/Summer Sale (new Seasonal Badge), and before the 2026 Steam Awards nominations (late Nov) to confirm the badge
+- Indexed 2026-10-20 (URL Inspection 2026-10-21: Submitted and indexed, canonical matches).
 
 ### How Steam Trading Cards Work: Drops, Badges, Booster Packs and Selling - `/blog/how-steam-trading-cards-work` - published 2026-10-20
 - Primary keyword: how do steam trading cards work | Revisit: 2027-10 (yearly refresh), or if Valve changes card/booster/badge rules
@@ -95,6 +88,13 @@ published. GSC figures are 2026-07-20 to 2026-10-17; re-pull before starting.
 <!-- ### <topic>
 - Rejected YYYY-MM-DD: gate H1/H5/... - one-line evidence
 - Revisit only if: <the specific change that would flip it> -->
+
+### `GetOwnedGames` "include all free games" flag
+- Rejected 2026-10-21: H2 - datamined only (`include_all_free_games` added to
+  `CPlayer_GetOwnedGames_Request`, SteamTracking/Protobufs commit 2026-10-21), no announcement or
+  visible behaviour. Dev-relevant: SGI calls `GetOwnedGames` in both modes (`games/web_api.rs`,
+  `OwnershipManager.cs`).
+- Revisit only if: Valve announces a change to how free games show in libraries/playtime.
 
 ### Protected achievements post ("can you unlock protected Steam achievements?")
 - Rejected 2026-10-20: H5 - ~650 impressions already land on `/docs/features/achievement-manager`
