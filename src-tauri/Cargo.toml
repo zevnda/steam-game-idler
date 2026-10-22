@@ -13,7 +13,9 @@ edition = "2021"
 # to make the lib name unique and wouldn't conflict with the bin name.
 # This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
 name = "steam_game_idler_lib"
-crate-type = ["staticlib", "cdylib", "rlib"]
+# Desktop-only app (Windows + Linux): the exe only links the rlib. Tauri's
+# Android/iOS targets need "staticlib"/"cdylib" re-added if mobile is ever added.
+crate-type = ["rlib"]
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
