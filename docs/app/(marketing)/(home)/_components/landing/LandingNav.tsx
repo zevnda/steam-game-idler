@@ -122,7 +122,7 @@ export default function LandingNav() {
                   aria-label={s.label}
                   className={iconButtonClass}
                 >
-                  <s.icon className='w-[18px] h-[18px]' />
+                  <s.icon className='w-4.5 h-4.5' />
                 </a>
               ))}
             </div>
