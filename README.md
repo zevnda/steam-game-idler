@@ -23,6 +23,8 @@ See how it stacks up against other software, such as **[ArchiSteamFarm](https://
 <a href="./public/example_3.webp"><img src="./public/example_3.webp" width="172" alt="example image 3"></a>
 <a href="./public/example_4.webp"><img src="./public/example_4.webp" width="172" alt="example image 4"></a>
 <a href="./public/example_5.webp"><img src="./public/example_5.webp" width="172" alt="example image 5"></a>
+
+<sub>Click a thumbnail to view it full size</sub>
 </div>
 
 # Installation
