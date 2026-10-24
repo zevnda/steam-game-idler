@@ -6,6 +6,7 @@ import { errorMessageKey } from '../utils/errorMessageKey'
 import { Alert, Button, Modal, Separator, Skeleton, toast, Typography } from '@heroui/react'
 import { BetaBadge } from '@/shared/components/BetaBadge'
 import { InputField } from '@/shared/components/InputField'
+import { ModalDragRegion } from '@/shared/components/ModalDragRegion'
 import { SettingsRow } from '@/shared/components/SettingsRow'
 import { TierBadge } from '@/shared/components/TierBadge'
 import { ToggleSwitch } from '@/shared/components/ToggleSwitch'
@@ -294,6 +295,7 @@ export const CardFarmingSettingsTab = ({
         }}
       >
         <Modal.Backdrop>
+          <ModalDragRegion placement='backdrop' />
           <Modal.Container size='sm'>
             <Modal.Dialog>
               <Modal.Header>

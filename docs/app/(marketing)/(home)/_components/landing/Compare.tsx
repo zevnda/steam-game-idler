@@ -81,7 +81,6 @@ export default function Compare() {
       <div className='landing-container'>
         <SectionHeading
           id='compare-heading'
-          eyebrow='Compare'
           title={
             <>
               Everything the others do. <span className='gradient-text'>In one app.</span>

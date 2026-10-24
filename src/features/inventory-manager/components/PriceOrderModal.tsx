@@ -2,6 +2,7 @@ import type { InventoryItem, OrderGraphEntry } from '../types'
 import { useTranslation } from 'react-i18next'
 import { formatCurrency } from '../utils/currency'
 import { cn, Modal, Skeleton, Typography } from '@heroui/react'
+import { ModalDragRegion } from '@/shared/components/ModalDragRegion'
 
 interface OrderTableProps {
   title: string
@@ -78,6 +79,7 @@ export const PriceOrderModal = ({
   return (
     <Modal isOpen={item !== null} onOpenChange={onOpenChange}>
       <Modal.Backdrop>
+        <ModalDragRegion placement='backdrop' />
         <Modal.Container size='lg'>
           <Modal.Dialog>
             <Modal.Header>

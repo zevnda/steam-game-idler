@@ -32,6 +32,7 @@ import { SectionHeading } from './SectionHeading'
 import { TierCard } from './TierCard'
 import { Modal } from '@heroui/react'
 import Image from 'next/image'
+import { ModalDragRegion } from '@/shared/components/ModalDragRegion'
 import { CDN_BASE_URL } from '@/shared/constants'
 import { usePlatformStore } from '@/shared/stores/platformStore'
 import { useProModalStore } from '@/shared/stores/proModalStore'
@@ -131,6 +132,7 @@ export const GoProModal = () => {
                 starfield with no header chrome (see this file's top doc comment). `Modal.Heading`
                 still renders (visually hidden) so the dialog keeps a real accessible name for
                 screen readers/automation instead of none at all. */}
+            <ModalDragRegion placement='dialog' />
             <Modal.CloseTrigger className='absolute left-5 top-5 z-50 h-8 w-8 bg-field text-muted duration-150 hover:bg-field-hover rounded-full' />
 
             <Modal.Body className='select-none overflow-x-hidden overflow-y-auto p-0'>
@@ -190,14 +192,9 @@ export const GoProModal = () => {
                     <div className='relative z-10 flex flex-col items-center px-8 pb-28 pt-28 text-center'>
                       <p className='pro-fade-in-up mb-3 text-xl font-black uppercase tracking-[0.2em] text-foreground'>
                         Steam Game Idler{' '}
-                        <span
-                          className='bg-clip-text text-transparent'
-                          style={{
-                            backgroundImage:
-                              'linear-gradient(135deg, #b700ff 0%, #6f00ff 45%, #3583e2 100%)',
-                          }}
-                        >
-                          PRO
+                        {/* the website navbar's rainbow PRO pill (globals.css `.pro-pill`) */}
+                        <span className='pro-pill'>
+                          <span className='pro-pill__inner'>PRO</span>
                         </span>
                       </p>
 

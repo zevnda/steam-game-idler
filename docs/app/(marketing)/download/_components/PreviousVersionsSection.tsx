@@ -248,7 +248,6 @@ export default function PreviousVersionsSection() {
         <div className='mb-12'>
           <SectionHeading
             id='older-heading'
-            eyebrow='Older releases'
             title={
               <>
                 Need an <span className='gradient-text'>older version?</span>

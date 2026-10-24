@@ -132,7 +132,7 @@ export default async function BlogPostPage(props: PageProps) {
       <JsonLd data={schema} />
       <LandingNav />
 
-      <main className='container mx-auto max-w-6xl px-4 pb-20 pt-28 sm:px-6 sm:pt-32 md:px-8'>
+      <main className='landing-container pb-20 pt-28 sm:pt-32'>
         <nav aria-label='Breadcrumb' className='mb-8'>
           <ol className='flex flex-wrap items-center gap-1.5 text-sm text-text-muted'>
             <li>
@@ -171,7 +171,7 @@ export default async function BlogPostPage(props: PageProps) {
             <span>{minutes} min read</span>
           </div>
 
-          <h1 className='mb-5 text-4xl font-bold leading-tight tracking-tight text-text-primary sm:text-5xl'>
+          <h1 className='gradient-text w-fit mb-5 text-4xl font-bold leading-tight tracking-tight sm:text-5xl'>
             {title}
           </h1>
           <p className='text-lg leading-relaxed text-text-muted sm:text-xl'>{description}</p>

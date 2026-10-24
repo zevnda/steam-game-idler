@@ -11,7 +11,7 @@ export default function FeaturesSection() {
 
   return (
     <section className='py-12 sm:py-16 relative'>
-      <div className='container mx-auto px-4 sm:px-6 md:px-8'>
+      <div className='landing-container'>
         <div className='max-w-5xl mx-auto'>
           <SectionHeading label='Top Features' />
 

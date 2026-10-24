@@ -73,7 +73,7 @@ export default function AlternativesPage() {
             page's actions. */}
         <section className='landing-container pt-36 pb-24 sm:pt-44 sm:pb-32'>
           <header className='page-enter max-w-2xl mx-auto text-center lg:mx-0 lg:text-left'>
-            <h1 className='text-[clamp(2.6rem,5.6vw,4.8rem)] font-semibold leading-[0.98] tracking-[-0.04em] text-balance text-text-primary'>
+            <h1 className='gradient-text w-fit mx-auto lg:mx-0 text-[clamp(2.6rem,5.6vw,4.8rem)] font-semibold leading-[0.98] tracking-[-0.04em] text-balance'>
               The better Steam tool alternative
             </h1>
             <p className='mt-6 text-lg leading-relaxed text-text-muted'>
@@ -111,14 +111,11 @@ export default function AlternativesPage() {
             ))}
           </StaggerGroup>
         </section>
-        <div className='section-divider' />
 
         {/* the home page's four-tool table: every competitor on one screen */}
         <Compare />
-        <div className='section-divider' />
 
         <FinalCta />
-        <div className='section-divider' />
       </main>
 
       <LandingFooter />

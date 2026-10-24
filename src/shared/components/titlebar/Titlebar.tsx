@@ -16,7 +16,9 @@ import { Menu } from '@/shared/components/titlebar/Menu'
 import { Notifications } from '@/shared/components/titlebar/Notifications'
 import { UpdateButton } from '@/shared/components/UpdateButton'
 import { useTitlebar } from '@/shared/hooks/useTitlebar'
+import { usePlatformStore } from '@/shared/stores/platformStore'
 import { useSidebarStore } from '@/shared/stores/sidebarStore'
+import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { useUpdateStore } from '@/shared/stores/updateStore'
 
 // TEMP (design trial): the sidebar toggle currently lives on the sidebar's own edge instead (see
@@ -50,6 +52,32 @@ export const Titlebar = ({ minimal = false }: TitlebarProps) => {
   const isDashboard = router.pathname.startsWith('/dashboard')
   const collapsed = useSidebarStore(state => state.collapsed)
   const hydrated = useSidebarStore(state => state.hydrated)
+  // A paying user's PRO pill beside the brand. `isSubscribed !== null` waits out the subscription
+  // check's first pass (useCheckSubscription, mounted in DashboardShell), so a free user never sees
+  // it flash in from a stale default.
+  const isSubscribed = useSubscriptionStore(state => state.isSubscribed)
+  const subscriptionTier = useSubscriptionStore(state => state.subscriptionTier)
+  const hasPro = isSubscribed !== null && subscriptionTier !== null
+  const forceReducedMotion = usePlatformStore(state => state.forceReducedMotion) === true
+  // the brand slot narrowed to the collapsed sidebar's width - logo only (see the slot below)
+  const brandCollapsed = isDashboard && collapsed
+
+  // Casual or Gamer alike - the rainbow PRO pill every PRO surface shares (globals.css `.pro-pill`).
+  // Beside the wordmark when the sidebar's expanded, just past the logo-only slot when it's
+  // collapsed (both placements below). Draggable like the rest of the brand area.
+  const proPill = (
+    <span
+      className={cn(
+        'pro-pill ml-2 shrink-0 text-[10px] font-black tracking-[0.12em] text-white',
+        forceReducedMotion && 'force-reduced-motion',
+      )}
+      data-tauri-drag-region
+    >
+      <span className='pro-pill__inner' data-tauri-drag-region>
+        PRO
+      </span>
+    </span>
+  )
   const toggleSidebar = useSidebarStore(state => state.toggle)
   const updateAvailable = useUpdateStore(state => state.updateAvailable)
 
@@ -103,7 +131,11 @@ export const Titlebar = ({ minimal = false }: TitlebarProps) => {
                   Steam Game Idler
                 </p>
               )}
+              {hasPro && !brandCollapsed && proPill}
             </div>
+            {/* Collapsed, the brand slot is the sidebar's 64px - only room for the logo - so the pill
+                sits just past it instead, at the edge of the collapsed sidebar column */}
+            {hasPro && brandCollapsed && proPill}
 
             <div className='flex h-14 shrink-0 items-center'>
               {isDashboard && SHOW_TITLEBAR_SIDEBAR_TOGGLE && (

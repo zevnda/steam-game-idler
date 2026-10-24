@@ -16,7 +16,6 @@ export default function WhyChooseSection({ competitor }: WhyChooseSectionProps) 
       <div className='landing-container'>
         <SectionHeading
           id='why-heading'
-          eyebrow='Why switch'
           title={
             <>
               Why people <span className='gradient-text'>switch.</span>

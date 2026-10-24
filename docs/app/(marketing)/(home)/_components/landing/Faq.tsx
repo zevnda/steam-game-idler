@@ -19,7 +19,6 @@ export default function Faq() {
           <SectionHeading
             id='faq-heading'
             align='left'
-            eyebrow='FAQ'
             title={
               <>
                 Questions about SGI, <span className='gradient-text'>answered.</span>

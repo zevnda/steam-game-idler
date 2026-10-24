@@ -46,6 +46,7 @@ import { useCardFarmingSettings } from '@/features/card-farming/hooks/useCardFar
 import { useFreeGamesSettings } from '@/features/free-games/hooks/useFreeGamesSettings'
 import { InventorySettingsTab } from '@/features/inventory-manager/components/InventorySettingsTab'
 import { useInventorySettings } from '@/features/inventory-manager/hooks/useInventorySettings'
+import { ModalDragRegion } from '@/shared/components/ModalDragRegion'
 import { SocialButtons } from '@/shared/components/SocialButtons'
 import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
 
@@ -200,6 +201,7 @@ export const SettingsModal = () => {
               hidden) so the dialog keeps a real accessible name for screen readers. */}
           <Modal.Dialog className='overflow-hidden p-0'>
             <Modal.Heading className='sr-only'>{t('dashboard.settings.title')}</Modal.Heading>
+            <ModalDragRegion placement='dialog' />
             <Modal.CloseTrigger className='absolute left-5 top-5 z-50 h-8 w-8 bg-field text-muted duration-150 hover:bg-field-hover rounded-full' />
 
             <Modal.Body className='flex h-full min-h-0 overflow-hidden p-0'>

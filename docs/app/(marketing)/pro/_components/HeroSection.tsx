@@ -24,21 +24,18 @@ export default function HeroSection({ priceData }: HeroSectionProps) {
         }}
       />
 
-      <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
+      <div className='landing-container relative z-10'>
         <div className='page-enter max-w-2xl mx-auto text-center'>
           <p className='text-sm font-black uppercase tracking-[0.2em] text-text-primary mb-4'>
             Steam Game Idler{' '}
-            <span
-              className='text-transparent bg-clip-text'
-              style={{
-                backgroundImage: 'linear-gradient(135deg, #b700ff 0%, #6f00ff 45%, #3583e2 100%)',
-              }}
-            >
-              PRO
+            {/* the navbar's PRO pill, at this line's size (globals.css .pro-wordmark) - mirrored by
+                the desktop app's GoProModal title (src/styles/globals.css .pro-pill) */}
+            <span className='rainbow-chip pro-wordmark'>
+              <span className='rainbow-chip__inner pro-wordmark__inner'>PRO</span>
             </span>
           </p>
 
-          <h1 className='text-5xl sm:text-6xl md:text-7xl font-black leading-none tracking-tight uppercase mb-5 text-text-primary'>
+          <h1 className='gradient-text w-fit mx-auto text-5xl sm:text-6xl md:text-7xl font-black leading-none tracking-tight uppercase mb-5'>
             Unlock more features
           </h1>
 

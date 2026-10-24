@@ -2,7 +2,7 @@
 
 import type { SheetGroup } from './sheetTree'
 import { useState } from 'react'
-import { FiChevronDown, FiChevronRight } from 'react-icons/fi'
+import { FiChevronRight, FiMinus, FiPlus } from 'react-icons/fi'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -49,16 +49,16 @@ export default function DocsSheetTree({ groups }: { groups: SheetGroup[] }) {
           const holdsCurrent = row.url === pathname || row.pages.some(p => p.url === pathname)
           const open = toggled[key] ?? holdsCurrent
           const toggle = () => setToggled(t => ({ ...t, [key]: !open }))
-          const chevron = (
-            <FiChevronDown
-              className={`sheet-link__chevron transition-transform ${open ? '' : '-rotate-90'}`}
-              aria-hidden='true'
-            />
+          // + / − like the desktop sidebar's folders
+          const toggleIcon = open ? (
+            <FiMinus className='sheet-link__chevron' aria-hidden='true' />
+          ) : (
+            <FiPlus className='sheet-link__chevron' aria-hidden='true' />
           )
 
           return (
             <li key={key}>
-              {/* a folder with its own page: the name goes there, the chevron only toggles */}
+              {/* a folder with its own page: the name goes there, the + / − only toggles */}
               {row.url ? (
                 <div className='flex'>
                   <Link
@@ -76,7 +76,7 @@ export default function DocsSheetTree({ groups }: { groups: SheetGroup[] }) {
                     aria-label={`${open ? 'Collapse' : 'Expand'} ${row.name}`}
                     className='sheet-folder__toggle'
                   >
-                    {chevron}
+                    {toggleIcon}
                   </button>
                 </div>
               ) : (
@@ -87,7 +87,7 @@ export default function DocsSheetTree({ groups }: { groups: SheetGroup[] }) {
                   className='sheet-link w-full'
                 >
                   {row.name}
-                  {chevron}
+                  {toggleIcon}
                 </button>
               )}
 

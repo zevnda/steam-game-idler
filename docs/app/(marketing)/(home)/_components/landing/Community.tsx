@@ -68,7 +68,6 @@ export default function Community() {
       <div className='landing-container'>
         <SectionHeading
           id='community-heading'
-          eyebrow='Community'
           title={
             <>
               Built with, and for, <span className='gradient-text'>gamers.</span>

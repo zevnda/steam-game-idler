@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbRefresh, TbSettings } from 'react-icons/tb'
-import { AlertDialog, Button, cn, Typography } from '@heroui/react'
+import { AlertDialog, Button, Typography } from '@heroui/react'
+import { TierBadge } from '@/shared/components/TierBadge'
 import { useProModalStore } from '@/shared/stores/proModalStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { formatDuration } from '@/shared/utils/formatDuration'
@@ -40,19 +41,6 @@ interface InventoryPageHeaderProps {
   onSellDupes: () => void
   onRemoveListings: () => void
 }
-
-// Small pill badge - matches TierBadge.tsx / AchievementUnlockerSettingsTab's inline
-// "Gamer" tag styling rather than introducing HeroUI's `Chip` for a first, unproven use.
-const Badge = ({ children, tone }: { children: React.ReactNode; tone?: 'gamer' }) => (
-  <span
-    className={cn(
-      'rounded-full px-2 py-0.5 text-[10px] font-bold uppercase',
-      tone === 'gamer' ? 'bg-purple-500/20 text-purple-400' : 'bg-surface-hover text-foreground',
-    )}
-  >
-    {children}
-  </span>
-)
 
 // Title/count, bulk actions (list selected / sell all / sell dupes / remove listings), a
 // refresh button, and the settings-gear shortcut - mirrors `main`'s PageHeader scope minus
@@ -140,7 +128,7 @@ export const InventoryPageHeader = ({
                 }
               >
                 {t('dashboard.inventoryManager.actions.sellDupes')}
-                {!canSellDupes && <Badge tone='gamer'>{t('proMode.tier.gamer.name')}</Badge>}
+                {!canSellDupes && <TierBadge tier='gamer' />}
               </Button>
 
               <Button

@@ -31,7 +31,6 @@ export default async function LatestPosts() {
       <div className='landing-container'>
         <SectionHeading
           id='blog-heading'
-          eyebrow='From the blog'
           title={
             <>
               Steam news, <span className='gradient-text'>explained.</span>

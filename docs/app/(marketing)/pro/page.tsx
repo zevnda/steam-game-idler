@@ -52,7 +52,6 @@ export default async function ProPage() {
         <ComparisonSection priceData={priceData} />
         <FeatureDetailsSection />
         <FAQSection />
-        <div className='section-divider' />
         <LandingFooter />
       </div>
     </div>

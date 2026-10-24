@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { FiChevronRight, FiMenu, FiX } from 'react-icons/fi'
-import { scrollBehavior, scrollToPlayground } from './demoStore'
+import { scrollBehavior } from './demoStore'
 import { LINKS, SOCIALS } from './navLinks'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -28,13 +28,12 @@ const iconButtonClass =
   'p-2 rounded-full text-text-muted hover:text-text-primary hover:bg-white/5 transition-colors'
 
 /**
- * The marketing site's navigation, shared by the home page and every inner marketing page: a
- * floating pill that firms up once you scroll. On the home page the in-page links scroll smoothly
- * ("Demo" jumps straight to the docked playground rather than the top of the showcase); anywhere
- * else they point back at the home page's sections.
+ * The marketing site's navigation, shared by the home page and every inner marketing page: a flat,
+ * full-width bar on the page's own black, pinned to the top, that never changes on scroll. On the
+ * home page the in-page links scroll smoothly; anywhere else they point back at the home page's
+ * sections.
  */
 export default function LandingNav({ actions, sheetLead }: LandingNavProps) {
-  const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
   const onHome = pathname === '/'
@@ -45,13 +44,6 @@ export default function LandingNav({ actions, sheetLead }: LandingNavProps) {
     current: !l.href.startsWith('#') && (pathname === l.href || pathname.startsWith(`${l.href}/`)),
   }))
   const pro = links.find(l => l.group === 'pro')
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24)
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
@@ -69,7 +61,6 @@ export default function LandingNav({ actions, sheetLead }: LandingNavProps) {
     setOpen(false)
     if (!href.startsWith('#')) return
     e.preventDefault()
-    if (href === '#demo') return scrollToPlayground()
     document.querySelector(href)?.scrollIntoView({ behavior: scrollBehavior(), block: 'start' })
   }
 
@@ -79,30 +70,44 @@ export default function LandingNav({ actions, sheetLead }: LandingNavProps) {
 
   return (
     <>
-      <header className='landing-header fixed inset-x-0 top-3 z-50 px-3 sm:px-5 pointer-events-none'>
-        <div className={`landing-nav pointer-events-auto ${scrolled ? 'landing-nav--solid' : ''}`}>
-          <Link prefetch={false} href='/' className='flex items-center gap-2.5 pl-1.5 shrink-0'>
+      <header className='landing-header fixed inset-x-0 top-0 z-50'>
+        <div className='landing-nav'>
+          <Link prefetch={false} href='/' className='flex items-center gap-2.5 shrink-0'>
             <Image src='/logo.png' alt='' width={22} height={22} loading='eager' />
             <span className='font-semibold tracking-tight text-text-primary'>Steam Game Idler</span>
           </Link>
 
           <nav aria-label='Main' className='hidden md:flex items-center gap-0.5'>
-            {links.map(l => (
-              <Link
-                key={l.href}
-                prefetch={false}
-                href={l.href}
-                onClick={e => onLink(e, l.href)}
-                aria-current={l.current ? 'page' : undefined}
-                className={`landing-nav__link ${'pro' in l ? 'landing-nav__link--pro' : ''}`}
-              >
-                {l.label}
-              </Link>
-            ))}
+            {links.map(l =>
+              'pro' in l ? (
+                // the rainbow rim the release banner and the mobile sheet's PRO card use
+                <Link
+                  key={l.href}
+                  prefetch={false}
+                  href={l.href}
+                  onClick={() => setOpen(false)}
+                  aria-current={l.current ? 'page' : undefined}
+                  className='rainbow-chip landing-nav__pro'
+                >
+                  <span className='rainbow-chip__inner landing-nav__pro-inner'>{l.label}</span>
+                </Link>
+              ) : (
+                <Link
+                  key={l.href}
+                  prefetch={false}
+                  href={l.href}
+                  onClick={e => onLink(e, l.href)}
+                  aria-current={l.current ? 'page' : undefined}
+                  className='landing-nav__link'
+                >
+                  {l.label}
+                </Link>
+              ),
+            )}
           </nav>
 
           <div className='flex items-center gap-2'>
-            {/* lg+ only: between md and lg the seven links already fill the pill - smaller
+            {/* lg+ only: between md and lg the six links already fill the bar - smaller
                 screens get these in the menu sheet instead */}
             <div className='hidden lg:flex items-center'>
               {SOCIALS.map(s => (
@@ -149,16 +154,14 @@ export default function LandingNav({ actions, sheetLead }: LandingNavProps) {
         aria-label='Menu'
         inert={!open}
       >
-        <div className='landing-sheet__glow' aria-hidden='true' />
-
-        {/* the same row, at the same spot, as the nav pill - opening reads as the pill unfolding */}
-        <div className='relative px-3 sm:px-5 pt-3'>
+        {/* the same row, at the same spot, as the nav bar - the menu opens over it seamlessly */}
+        <div className='relative'>
           <div className='landing-nav'>
             <Link
               prefetch={false}
               href='/'
               onClick={() => setOpen(false)}
-              className='flex items-center gap-2.5 pl-1.5 shrink-0'
+              className='flex items-center gap-2.5 shrink-0'
             >
               <Image src='/logo.png' alt='' width={22} height={22} />
               <span className='font-semibold tracking-tight text-text-primary'>

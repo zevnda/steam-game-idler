@@ -37,6 +37,22 @@
   --radius-button: 6px;
 }
 
+:root {
+  /* The site's muted rainbow, top to bottom, for accents that trace a line: the changelog
+     timeline and the docs sidebar's current-page edge. The docs/blog TOC's trace is SVG and has
+     its own, more saturated take on these hues in _components/RainbowDefs.tsx. */
+  --sgi-rainbow: linear-gradient(
+    to bottom,
+    hsl(200, 70%, 62%),
+    hsl(265, 70%, 66%),
+    hsl(315, 70%, 64%),
+    hsl(20, 70%, 62%),
+    hsl(50, 70%, 58%),
+    hsl(140, 60%, 56%),
+    hsl(200, 70%, 62%)
+  );
+}
+
 .dark {
   --color-fd-background: #000000;
   --color-fd-card: #0d0d0d;
@@ -125,45 +141,6 @@
     transform: scale(0.97);
   }
 
-  /* ── Glowing section divider ───────────────────────────────── */
-  .section-divider {
-    position: relative;
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(
-      to right,
-      transparent 0%,
-      rgba(255, 255, 255, 0.04) 15%,
-      rgba(255, 255, 255, 0.18) 35%,
-      rgba(255, 255, 255, 0.45) 46%,
-      rgba(255, 255, 255, 0.65) 50%,
-      rgba(255, 255, 255, 0.45) 54%,
-      rgba(255, 255, 255, 0.18) 65%,
-      rgba(255, 255, 255, 0.04) 85%,
-      transparent 100%
-    );
-    margin: 0;
-  }
-
-  /* Glow centered on the divider line — top half clipped, bottom half visible */
-  .section-divider::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    height: 200px;
-    background: radial-gradient(
-      ellipse 50% 50% at 50% 50%,
-      rgba(151, 151, 151, 0.18) 0%,
-      transparent 45%
-    );
-    filter: blur(20px);
-    /* clip-path: inset(50% 0 0 0); */
-    pointer-events: none;
-  }
-
   /* ── Premium download button ────────────────────────────────── */
   .btn-download {
     display: inline-flex;
@@ -226,11 +203,20 @@
   }
 
   /* ── Gradient heading text ─────────────────────────────────── */
+  /* Every page title takes this (the docs' MDX titles mirror it in #nd-page .prose > h1). It
+     spans the element's box, so a title also gets w-fit - otherwise a short title in a wide
+     column only ever shows the white end. */
   .gradient-text {
     background: linear-gradient(135deg, #f5f5f5 20%, #909090);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    /* The fill is the element's background, which stops at its box - and the display titles'
+       tight leading (0.98) puts descenders below it, so g/p/y lost their bottoms. The padding
+       grows the painted box over them; the matching negative margin keeps the layout where it
+       was (a title's own mb-* utility wins over it, leaving just 0.12em extra there). */
+    padding-bottom: 0.12em;
+    margin-bottom: -0.12em;
   }
 }
 
@@ -249,13 +235,326 @@
   background: #0d0d0f;
 }
 
-/* Changelog: entries separated by space rather than a rule */
-.changelog-entry {
-  padding-top: 72px;
+/* ── Checkout return pages (_components/CheckoutResult.tsx) ───────── */
+/* numbered steps, each number in a small round badge */
+.checkout-steps {
+  display: grid;
+  gap: 14px;
+  counter-reset: step;
+  color: var(--color-text-muted);
 }
 
-.changelog-entry:first-child {
-  padding-top: 0;
+.checkout-steps li {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  line-height: 1.6;
+  counter-increment: step;
+}
+
+.checkout-steps li::before {
+  content: counter(step);
+  flex-shrink: 0;
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.checkout-link {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.3);
+  text-underline-offset: 4px;
+  transition: text-decoration-color 150ms ease;
+}
+
+.checkout-link:hover {
+  text-decoration-color: currentColor;
+}
+
+/* ── Changelog (/changelog - changelog/client.tsx) ─────────────── */
+/* Tag pills on each release, and the matching filter chips */
+.changelog-tag {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-text-muted);
+}
+
+.changelog-tag--new {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+}
+
+.changelog-tag--improved {
+  background: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+}
+
+.changelog-tag--fixed {
+  background: rgba(6, 182, 212, 0.15);
+  color: #22d3ee;
+}
+
+.changelog-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+}
+
+/* Chips: outlined and muted until chosen, then filled in their tag's colour (the pills' tones) */
+.changelog-chip {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+
+.changelog-chip:hover {
+  color: var(--color-text-primary);
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.changelog-chip[aria-pressed='true'] {
+  border-color: transparent;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-primary);
+}
+
+.changelog-chip.changelog-tag--new[aria-pressed='true'] {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+}
+
+.changelog-chip.changelog-tag--improved[aria-pressed='true'] {
+  background: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+}
+
+.changelog-chip.changelog-tag--fixed[aria-pressed='true'] {
+  background: rgba(6, 182, 212, 0.15);
+  color: #22d3ee;
+}
+
+/* unpressed, a tag chip drops its tag's fill (its text is already muted by .changelog-chip) */
+.changelog-chip.changelog-tag--new,
+.changelog-chip.changelog-tag--improved,
+.changelog-chip.changelog-tag--fixed {
+  background: transparent;
+}
+
+.changelog-chip:focus-visible,
+.changelog-search:focus-within {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
+}
+
+.changelog-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: min(100%, 280px);
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--color-text-muted);
+  transition: border-color 150ms ease;
+}
+
+.changelog-search:focus-within {
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.changelog-search__input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  outline: none;
+}
+
+.changelog-search__input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* the browser's own clear button on type=search - .changelog-search__clear replaces it */
+.changelog-search__input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.changelog-search__clear {
+  display: inline-flex;
+  flex-shrink: 0;
+  /* a bigger target than the icon, without growing the field */
+  margin: -4px -6px -4px 0;
+  padding: 4px;
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease;
+}
+
+.changelog-search__clear:hover {
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.changelog-count {
+  min-height: 1.25rem;
+  margin: 14px 0 40px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* The timeline. The rail runs down the left (phones) or between the date column and the notes
+   (md+); each release has a node on it, level with its title. client.tsx sets --cl-start and
+   --cl-end (px from the list's top: the first and last visible nodes' centres - the rail runs
+   between them), and moves the trail and the head itself with inline transforms (see the comment
+   there on why not through vars). The trail is the rail's colour fading out behind the head; the
+   head glows in whatever colour the rail has where it is. */
+.changelog-timeline {
+  --cl-meta: 11.25rem;
+  --cl-gap: 3rem;
+  --cl-pad: 2rem;
+  --cl-rail-x: 5px;
+  --cl-start: 0px;
+  --cl-end: 0px;
+  /* one cycle of the rail's hues; the trail and head both sample it in list coordinates */
+  --cl-period: 1600px;
+  --cl-rail-colors: var(--sgi-rainbow);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  /* the gap between releases (hidden ones take no part in it) */
+  gap: 72px;
+  padding-left: var(--cl-pad);
+}
+
+@media (min-width: 768px) {
+  .changelog-timeline {
+    --cl-pad: 0px;
+    --cl-rail-x: calc(var(--cl-meta) + var(--cl-gap) / 2);
+  }
+}
+
+.changelog-entry {
+  position: relative;
+  /* clear of the fixed nav bar when jumped to from a #version link */
+  scroll-margin-top: 104px;
+}
+
+/* The rail and head stay hidden until client.tsx has measured and placed them - the
+   server-rendered page has no positions yet, and showing them then flashed a trail before the
+   first real frame. */
+.changelog-rail,
+.changelog-head {
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+
+.changelog-timeline[data-ready] :is(.changelog-rail, .changelog-head) {
+  opacity: 1;
+}
+
+.changelog-rail {
+  position: absolute;
+  top: var(--cl-start);
+  height: calc(var(--cl-end) - var(--cl-start));
+  left: var(--cl-rail-x);
+  width: 1px;
+  translate: -50% 0;
+  background: rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+  /* clips the trail at the first node; sideways it's free, the trail is wider than the rail */
+  overflow-y: clip;
+}
+
+/* a fixed-length strip whose bottom end is the head (client.tsx slides it); fades out upward */
+.changelog-rail__trail {
+  position: absolute;
+  top: 0;
+  left: -0.5px;
+  width: 2px;
+  height: 520px;
+  background: var(--cl-rail-colors);
+  background-size: 100% var(--cl-period);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000);
+  mask-image: linear-gradient(to bottom, transparent, #000);
+  opacity: 0;
+}
+
+/* The head: a white-hot core in a glow of the rail's colour where it is (client.tsx keeps its
+   background-position in step with the rail's, and the glow inherits it). */
+.changelog-head {
+  position: absolute;
+  top: 0;
+  left: var(--cl-rail-x);
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--cl-rail-colors);
+  background-size: 100% var(--cl-period);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.85);
+  pointer-events: none;
+}
+
+.changelog-head::before {
+  content: '';
+  position: absolute;
+  inset: -10px;
+  z-index: -1;
+  border-radius: inherit;
+  background: inherit;
+  filter: blur(8px);
+  opacity: 0.9;
+}
+
+/* each release's node on the rail - lit while the head is on that release */
+.changelog-entry__node {
+  position: absolute;
+  top: 0.7rem;
+  left: calc(var(--cl-rail-x) - var(--cl-pad));
+  width: 9px;
+  height: 9px;
+  translate: -50% 0;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: #000;
+  transition:
+    border-color 250ms ease,
+    box-shadow 250ms ease;
+}
+
+@media (min-width: 768px) {
+  .changelog-entry__node {
+    /* level with the version title's first line */
+    top: 1rem;
+  }
+}
+
+.changelog-entry[data-current] .changelog-entry__node {
+  border-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.35);
 }
 
 /* ─── Landing page ──────────────────────────────────────────── */
@@ -286,11 +585,12 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
 /* Spacing + container shared by every landing section */
 .landing-section {
   position: relative;
-  padding-block: clamp(5rem, 11vw, 9.5rem);
+  /* the gap between sections - there's no divider line, just this space */
+  padding-block: clamp(3rem, 6.6vw, 5.7rem);
 }
 
 /* Unlayered, so it beats Tailwind's max-w-* utilities - narrow it with [--container-max:...]
-   instead (e.g. the changelog's reading column). */
+   instead. */
 .landing-container {
   width: 100%;
   max-width: var(--container-max, 1240px);
@@ -298,30 +598,22 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   padding-inline: clamp(1rem, 4vw, 2rem);
 }
 
-/* Floating glass nav pill */
+/* The nav bar (LandingNav.tsx): flat and full width on the page's own black, pinned to the top,
+   unchanged on scroll - no border, blur or shadow. Its row lines up with .landing-container's
+   content edges. */
+.landing-header {
+  background: #000;
+}
+
 .landing-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  max-width: 1120px;
+  max-width: 1240px;
+  height: 64px;
   margin-inline: auto;
-  height: 52px;
-  padding: 0 6px 0 10px;
-  border-radius: 999px;
-  border: 1px solid transparent;
-  transition:
-    background-color 300ms ease,
-    border-color 300ms ease,
-    box-shadow 300ms ease;
-}
-
-.landing-nav--solid {
-  background: rgba(10, 10, 12, 0.94);
-  border-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+  padding-inline: clamp(1rem, 4vw, 2rem);
 }
 
 .landing-nav__link {
@@ -344,9 +636,103 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.08);
 }
 
-.landing-nav__link--pro {
+/* PRO: a small .rainbow-chip, deliberately a touch shorter than its neighbours so the rim reads
+   as a badge rather than a boxed-in link. Doubled class selectors beat .rainbow-chip's own
+   padding/type. A faint glow in the rim's hues lifts it off the pill; hovering brightens both. */
+.rainbow-chip.landing-nav__pro {
+  margin-left: 6px;
+  box-shadow:
+    0 0 14px -4px hsla(265, 60%, 60%, 0.45),
+    0 0 14px -6px hsla(160, 60%, 55%, 0.35);
+  transition: box-shadow 200ms ease;
+}
+
+.rainbow-chip.landing-nav__pro:hover {
+  box-shadow:
+    0 0 18px -3px hsla(265, 70%, 62%, 0.6),
+    0 0 18px -5px hsla(160, 70%, 55%, 0.5);
+}
+
+.rainbow-chip__inner.landing-nav__pro-inner {
+  padding: 3px 10px;
+  font-size: 12px;
   font-weight: 700;
-  color: var(--color-text-primary);
+  letter-spacing: 0.04em;
+}
+
+.landing-nav__pro[aria-current='page'] .landing-nav__pro-inner {
+  background: rgba(5, 5, 5, 0.7);
+}
+
+/* Tier badges ("Casual"/"Gamer", pro/_components/FeatureDetailsSection.tsx): the PRO pill's shape
+   in each tier's own colours instead of the rainbow - casual's deep blue -> light cyan, gamer's
+   dark purple -> hot pink (further apart than the tier cards' accents, so the turn shows on a 1px rim)
+   - turning around that rim over an almost-clear tint of the same colours. Mirrors the desktop app's TierBadge (src/styles/globals.css `.tier-badge`); keep the two
+   in step. The fill is see-through, so the rim is a gradient masked to a 1px ring (content box
+   excluded from the border box) rather than one hidden behind an opaque fill. */
+.tier-badge {
+  position: relative;
+  display: inline-flex;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tier-to) 10%, transparent);
+}
+
+.tier-badge::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--angle), var(--tier-from), var(--tier-to), var(--tier-from));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  animation: rainbow-border 8s linear infinite;
+  pointer-events: none;
+}
+
+.tier-badge--casual {
+  /* a deep and a light blue, far apart in lightness so the turn is visible - two similar blues
+     read as one solid rim */
+  --tier-from: #1d4ed8;
+  --tier-to: #67e8f9;
+  color: #8fd8fb;
+}
+
+.tier-badge--gamer {
+  /* dark purple into hot pink, ~55deg of hue apart: far enough that purple and pink both read
+     (fuchsia at ~35deg blurred into one), close enough not to look two-tone (blurple at ~100deg),
+     and dark-to-light like casual's pair so the turn shows */
+  --tier-from: #7e22ce;
+  --tier-to: #ff3fa4;
+  color: #f0abfc;
+}
+
+/* The same PRO pill inline in /pro's "Steam Game Idler PRO" line (pro/_components/HeroSection.tsx),
+   taking that line's type instead of the nav's 13px. The right padding is a touch smaller than the
+   left because the line's letter-spacing already trails the last letter. */
+.rainbow-chip.pro-wordmark {
+  /* baseline, not middle: middle centres on lowercase x-height, which sat the pill (and its PRO)
+     visibly low beside an all-caps line. On the baseline, PRO's letters line up exactly with the
+     line's, and the pill's even padding wraps them. */
+  vertical-align: baseline;
+  box-shadow:
+    0 0 14px -4px hsla(265, 60%, 60%, 0.45),
+    0 0 14px -6px hsla(160, 60%, 55%, 0.35);
+}
+
+.rainbow-chip__inner.pro-wordmark__inner {
+  /* Even top/bottom: an uneven split to centre the rim on the capitals was tried, but at these
+     sizes it rounds to whole pixels and pushed PRO's letters off the line's baseline instead */
+  padding: 0.15em 0.45em 0.15em 0.65em;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  line-height: 1.2;
 }
 
 .landing-sheet {
@@ -355,37 +741,26 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   z-index: 60;
   display: flex;
   flex-direction: column;
-  /* solid, not translucent: the bright 3D stage behind bled through even a 96% black */
-  background: #050505;
-  /* closed (and the exit): a quick fade, then visibility flips once it's invisible */
+  /* the nav bar's black all the way down, so its row at the top (the bar's twin) doesn't read as
+     a separate band. Solid, not translucent: the bright 3D stage behind bled through even a 96%
+     black. */
+  background: #000;
+  /* closed (and the exit): a quick fade, then visibility flips once it's invisible. Fades only -
+     the bar it opens over never moves, so its copy of the bar shouldn't either. */
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-6px);
   transition:
     opacity 150ms ease-in,
-    transform 150ms ease-in,
     visibility 0s linear 150ms;
 }
 
-/* open (and the enter): fades in while settling down from just under the nav */
+/* open (and the enter): fades in */
 .landing-sheet--open {
   opacity: 1;
   visibility: visible;
-  transform: none;
   transition:
     opacity 220ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
     visibility 0s;
-}
-
-/* the home hero's ambient glow (.showcase__glow), low in the sheet */
-.landing-sheet__glow {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(70% 40% at 50% 100%, rgba(90, 120, 255, 0.14), transparent 70%),
-    radial-gradient(45% 30% at 80% 90%, rgba(200, 90, 255, 0.08), transparent 70%);
 }
 
 /* the sheet's groups rise in one after another (--i, set in LandingNav.tsx) */
@@ -432,12 +807,25 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.05);
 }
 
+/* The current-page edge on a nav row (the docs sidebar's, and the phone menu's): the rainbow
+   tiled every --sgi-edge-period, far taller than a row, so a row only ever shows 2-3 neighbouring
+   hues - the whole rainbow squeezed into one row read as busy. sgi-edge-cycle then slides it
+   down one tile, slowly, so the hues drift; the tiles repeat, so the loop has no seam. */
+@keyframes sgi-edge-cycle {
+  from {
+    background-position-y: 0;
+  }
+  to {
+    background-position-y: 160px;
+  }
+}
+
 .sheet-link[aria-current='page'] {
-  /* the accent edge, as on the docs sidebar's current page - painted as a background layer since
-     rows already use border-top for their rule */
+  /* painted as a background layer since rows already use border-top for their rule */
   background:
-    linear-gradient(var(--color-accent), var(--color-accent)) left / 2px 100% no-repeat,
+    var(--sgi-rainbow) left top / 2px 160px repeat-y,
     rgba(255, 255, 255, 0.06);
+  animation: sgi-edge-cycle 8s linear infinite;
 }
 
 /* Docs sections in the sheet (DocsSheetTree): a folder's chevron as its own tap target beside the
@@ -624,27 +1012,40 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
 /* ── Showcase: pinned hero -> playground. `--t` (0..1) is the hand-over progress, set from JS. */
 .showcase {
   --t: 0;
+  /* how far the stage runs below the pinned viewport (stage.ts frames the camera to the viewport
+     and renders this strip as extra rows underneath) */
+  --stage-spill: 240px;
 }
 
-/* The pinned stage's bottom edge dissolves (rather than clipping the window's rim glow) - both
-   while docked and as the section scrolls away.
+/* The stage runs --stage-spill past the bottom of the pinned viewport and dissolves across that
+   strip, so the window's rim glow spills over the next section as this one scrolls away rather
+   than being cut off at the section's edge (the sticky .showcase only clips sideways). While
+   pinned, the strip is below the fold. Being later in the page, the next section still paints -
+   and takes clicks - above it.
 
    The canvas itself deliberately has no fade-in: the hand-over is one-sided. The live canvas is
    already fully drawn underneath (Showcase.tsx waits for the stage's first rendered frame), and
    only the placeholder on top fades out. Fading both at once let the two dip transparent
    together, which read as a blink. */
 .showcase__stage {
-  mask-image: linear-gradient(to bottom, #000 calc(100% - 150px), transparent);
-  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 150px), transparent);
+  bottom: calc(-1 * var(--stage-spill));
+  mask-image: linear-gradient(to bottom, #000 calc(100% - var(--stage-spill)), transparent);
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - var(--stage-spill)), transparent);
 }
 
+/* Runs into the same --stage-spill strip as the stage and dissolves across it - it's still
+   visibly lit at the viewport's bottom edge, so stopping there drew a hard line across the next
+   section. Sizes and positions are in svh (the pinned viewport's height), not %, so the box
+   growing doesn't move the glow. */
 .showcase__glow {
   position: absolute;
-  inset: 0;
+  inset: 0 0 calc(-1 * var(--stage-spill));
   pointer-events: none;
   background:
-    radial-gradient(60% 45% at 50% 78%, rgba(90, 120, 255, 0.12), transparent 70%),
-    radial-gradient(40% 30% at 70% 70%, rgba(200, 90, 255, 0.07), transparent 70%);
+    radial-gradient(60% 45svh at 50% 78svh, rgba(90, 120, 255, 0.12), transparent 70%),
+    radial-gradient(40% 30svh at 70% 70svh, rgba(200, 90, 255, 0.07), transparent 70%);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - var(--stage-spill)), transparent);
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - var(--stage-spill)), transparent);
   opacity: calc(1 - var(--t) * 0.6);
 }
 
@@ -796,6 +1197,10 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   display: block;
   width: 100%;
   height: auto;
+  /* Browsers paint the alt text in the image's box until the image itself paints (Firefox while
+     it's still loading, any browser if it fails) - a sentence flashing over the hero. The alt
+     stays for image search; transparent text just keeps it from ever being drawn. */
+  color: transparent;
 }
 
 .hero-ph--off {
@@ -2649,6 +3054,7 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   .page-enter,
   .fallback-shot__img,
   .rainbow-chip::before,
+  .tier-badge::before,
   .cta-rim::before,
   .cta-rim::after,
   .quote-wall__col,
@@ -2771,14 +3177,14 @@ button[aria-label='Copy Link'] {
 }
 
 /* ─── Docs portal ──────────────────────────────────────────── */
-/* The docs inside the marketing shell (docs/layout.tsx): LandingNav's pill on a black band, the
+/* The docs inside the marketing shell (docs/layout.tsx): LandingNav's bar on top, the
    home page's card tone for every raised surface, its display type for page titles. Everything is
    scoped to .docs-shell so the blog's prose and the marketing pages are untouched. Fumadocs ships
    its chrome as utility classes with no hooks of their own, so the selectors lean on its stable
    ids (#nd-sidebar, #nd-page, #nd-toc...) and data attributes instead. */
 .docs-shell {
-  /* the pill: 12px from the top, 52px tall, 12px clear underneath (LandingNav) */
-  --fd-banner-height: 76px;
+  /* the nav bar's height (LandingNav, .landing-nav) */
+  --fd-banner-height: 64px;
   --docs-surface: #0c0c0f;
   --docs-surface-hover: #131317;
   --docs-outline: rgba(255, 255, 255, 0.08);
@@ -2790,16 +3196,7 @@ button[aria-label='Copy Link'] {
   background: #000;
 }
 
-.docs-band {
-  position: fixed;
-  inset-inline: 0;
-  top: 0;
-  z-index: 30;
-  height: var(--fd-banner-height);
-  background: #000;
-}
-
-/* above the band, below Fumadocs' mobile drawer (z-40) so an open page tree covers the pill */
+/* below Fumadocs' mobile drawer (z-40), so an open page tree covers the bar */
 .docs-shell .landing-header {
   z-index: 31;
 }
@@ -2817,7 +3214,112 @@ button[aria-label='Copy Link'] {
   border-radius: 20px;
 }
 
-/* items read as the pill's links: rounded, muted, white on a faint fill when current */
+/* Collapsed sidebar (md+): DocsCollapsedRail's pill replaces Fumadocs' own two-icon panel. It sits
+   where that panel did (the page content already leaves room for it) and steps aside while the
+   hover-peeked sidebar covers that corner. */
+.docs-shell [data-sidebar-panel] {
+  display: none;
+}
+
+.docs-rail {
+  position: fixed;
+  top: calc(var(--fd-docs-row-3) + 12px);
+  left: 16px;
+  z-index: 20;
+  display: none;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid var(--docs-outline);
+  background: rgba(10, 10, 12, 0.94);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-8px);
+  transition:
+    opacity 200ms ease,
+    transform 200ms ease,
+    visibility 0s linear 200ms;
+}
+
+@media (min-width: 768px) {
+  .docs-rail {
+    display: flex;
+  }
+}
+
+.docs-rail--on {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity 250ms ease,
+    transform 250ms ease;
+}
+
+.docs-shell:has(#nd-sidebar[data-hovered='true']) .docs-rail--on {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 150ms ease,
+    visibility 0s linear 150ms;
+}
+
+.docs-rail__btn,
+.docs-rail__search {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  transition:
+    color 150ms ease,
+    background-color 150ms ease;
+}
+
+.docs-rail__btn {
+  justify-content: center;
+  width: 34px;
+}
+
+.docs-rail__search {
+  gap: 8px;
+  padding: 0 6px 0 12px;
+  font-size: 13px;
+}
+
+:is(.docs-rail__btn, .docs-rail__search):hover {
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.docs-rail__sep {
+  width: 1px;
+  height: 18px;
+  margin-inline: 2px;
+  background: var(--docs-outline);
+}
+
+.docs-rail__keys {
+  display: inline-flex;
+  gap: 2px;
+  margin-left: 6px;
+}
+
+.docs-rail__keys kbd {
+  padding: 1px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--docs-outline);
+  background: #000;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  line-height: 18px;
+}
+
+/* items read as the nav bar's links: rounded, muted, white on a faint fill when current */
 :is(#nd-sidebar, #nd-sidebar-mobile) :is(a, button)[data-active] {
   border-radius: 999px;
   padding-inline-end: 12px;
@@ -2834,9 +3336,11 @@ button[aria-label='Copy Link'] {
   background: rgba(255, 255, 255, 0.08);
 }
 
-/* nested pages' current-item tick, in the accent rather than a second shade of white */
+/* nested pages' current-item tick, in the drifting rainbow edge (see sgi-edge-cycle) rather than
+   a second shade of white */
 :is(#nd-sidebar, #nd-sidebar-mobile) a[data-active='true']::before {
-  background: var(--color-accent);
+  background: var(--sgi-rainbow) left top / 100% 160px repeat-y;
+  animation: sgi-edge-cycle 8s linear infinite;
 }
 
 /* the full search field, as a pill on the card tone */
@@ -2996,7 +3500,7 @@ button[aria-label='Copy Link'] {
   background: rgba(255, 255, 255, 0.04);
 }
 
-/* current page, at any depth: a filled row with the accent along its edge. Painted as a
+/* current page, at any depth: a filled row with the rainbow along its edge. Painted as a
    background layer, not an inset box-shadow - the row divider above already uses box-shadow and
    would override it. Includes the viewport attribute purely for specificity: it has to beat the
    "every top-level row" surface rule above, or top-level pages lose the indicator. */
@@ -3004,9 +3508,19 @@ button[aria-label='Copy Link'] {
   :is(#nd-sidebar, #nd-sidebar-mobile)
   [data-radix-scroll-area-viewport]
   a[data-active='true'] {
+  /* the drifting rainbow edge - see sgi-edge-cycle */
   background:
-    linear-gradient(var(--color-accent), var(--color-accent)) left / 2px 100% no-repeat,
+    var(--sgi-rainbow) left top / 2px 160px repeat-y,
     rgba(255, 255, 255, 0.06);
+  animation: sgi-edge-cycle 8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet-link[aria-current='page'],
+  :is(#nd-sidebar, #nd-sidebar-mobile) a[data-active='true'],
+  :is(#nd-sidebar, #nd-sidebar-mobile) a[data-active='true']::before {
+    animation: none;
+  }
 }
 
 /* the sheet-link chevron: plain pages only (folders already have their own), slides in on hover */
@@ -3045,6 +3559,31 @@ button[aria-label='Copy Link'] {
   a:hover::after {
   opacity: 0.6;
   transform: none;
+}
+
+/* Folders show + / − (closed / open) instead of Fumadocs' rotating chevron. The chevron
+   (svg[data-icon]) is hidden and the mark drawn as a masked ::after on the folder's row (its link
+   or its toggle button), keyed off the folder's own [data-state]. */
+:is(#nd-sidebar, #nd-sidebar-mobile) [data-state] > :is(a, button) > svg[data-icon] {
+  display: none;
+}
+
+:is(#nd-sidebar, #nd-sidebar-mobile) [data-state] > :is(a, button)::after {
+  content: '';
+  width: 14px;
+  height: 14px;
+  margin-inline-start: auto;
+  flex-shrink: 0;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+}
+
+:is(#nd-sidebar, #nd-sidebar-mobile) [data-state='open'] > :is(a, button)::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M5 12h14'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M5 12h14'/%3E%3C/svg%3E");
 }
 
 /* Fumadocs' own tree marks - the grey line down an open folder and the 1px blue tick on its
@@ -3102,63 +3641,76 @@ button[aria-label='Copy Link'] {
 /* ── TOC ("On this page"). Fumadocs' clerk style draws the rail per item and one active path
    (an SVG clipped to --track-top/--track-bottom) that follows the reader. Kept as is; restyled
    into a glowing trace that eases between sections and fades out behind the reader, so its
-   bright end marks where you are. */
+   bright end marks where you are. The blog's TOC is the same component (blog/_components/
+   TableOfContents.tsx) and shares every rule here through .blog-toc. */
+/* the blog sits outside .docs-shell, so it takes the docs' text tones here */
+.blog-toc {
+  --color-fd-muted-foreground: #a3a3a3;
+  --color-fd-foreground: #f5f5f5;
+}
+
 #nd-toc-title,
-#toc-title {
+#toc-title,
+.blog-toc__title {
   font-size: 13px;
   font-weight: 500;
   color: var(--color-text-primary);
 }
 
 /* the thumb's wrapper carries the range vars - ease them here instead of snapping */
-#nd-toc div:has(> svg[style*='--track-top']) {
+:is(#nd-toc, .blog-toc) div:has(> svg[style*='--track-top']) {
   transition:
     --track-top 420ms cubic-bezier(0.22, 1, 0.36, 1),
     --track-bottom 420ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-#nd-toc svg[style*='--track-top'] {
+:is(#nd-toc, .blog-toc) svg[style*='--track-top'] {
   /* the vars now animate, so the clip follows them every frame - its own transition would lag */
   transition: none;
   overflow: visible;
-  filter: drop-shadow(0 0 3px rgba(0, 163, 255, 0.9)) drop-shadow(0 0 8px rgba(0, 163, 255, 0.45));
+  /* fades in toward the bright end, from a floor high enough to keep the colours vivid (at 25% the
+     trace read as washed out) */
   -webkit-mask-image: linear-gradient(
     to bottom,
     transparent var(--track-top),
-    rgba(0, 0, 0, 0.25) var(--track-top),
+    rgba(0, 0, 0, 0.6) var(--track-top),
     #000 var(--track-bottom)
   );
   mask-image: linear-gradient(
     to bottom,
     transparent var(--track-top),
-    rgba(0, 0, 0, 0.25) var(--track-top),
+    rgba(0, 0, 0, 0.6) var(--track-top),
     #000 var(--track-bottom)
   );
 }
 
-#nd-toc svg[style*='--track-top'] path {
-  stroke: var(--color-accent);
+/* the trace in the site's rainbow (the changelog timeline's colours), glowing in its own colours -
+   both SVG paint servers from _components/RainbowDefs.tsx, since an SVG stroke can't take a CSS
+   gradient and a drop-shadow can only glow in one colour */
+:is(#nd-toc, .blog-toc) svg[style*='--track-top'] path {
+  stroke: url(#sgi-rainbow);
   stroke-width: 2px;
+  filter: url(#sgi-glow);
 }
 
 /* the idle rail, a touch quieter so the trace reads against it */
-#nd-toc a > svg :is(line, path) {
+:is(#nd-toc, .blog-toc) a > svg :is(line, path) {
   stroke: rgba(255, 255, 255, 0.12);
 }
 
 /* No sideways nudge for active items: each link draws its own slice of the rail, so moving the
    link would break the line. Colour only. */
-#nd-toc a {
+:is(#nd-toc, .blog-toc) a {
   transition: color 200ms ease;
 }
 
-#nd-toc a:hover,
-#nd-toc a[data-active='true'] {
+:is(#nd-toc, .blog-toc) a:hover,
+:is(#nd-toc, .blog-toc) a[data-active='true'] {
   color: var(--color-text-primary);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  #nd-toc div:has(> svg[style*='--track-top']) {
+  :is(#nd-toc, .blog-toc) div:has(> svg[style*='--track-top']) {
     transition: none;
   }
 }
@@ -3187,7 +3739,16 @@ button[aria-label='Copy Link'] {
   font-size: clamp(2.1rem, 4vw, 3.25rem);
   line-height: 1.04;
   letter-spacing: -0.04em;
-  margin-bottom: 0.6em;
+  /* 0.6em below the title, less the descender padding (see .gradient-text) */
+  padding-bottom: 0.12em;
+  margin-bottom: 0.48em;
+  /* the site's title gradient (.gradient-text, which MDX headings can't take as a class). Sized
+     to the text so the gradient spans the title itself, not the whole column. */
+  width: fit-content;
+  background: linear-gradient(135deg, #f5f5f5 20%, #909090);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* the paragraph under the title reads as the page's sub, like a marketing header */

@@ -45,7 +45,6 @@ export default function FeatureBento() {
       <div className='landing-container'>
         <SectionHeading
           id='features-heading'
-          eyebrow='Features'
           title={
             <>
               Cards, hours and achievements, <span className='gradient-text'>handled.</span>

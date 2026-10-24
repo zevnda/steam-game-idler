@@ -1,32 +1,37 @@
 'use client'
 
 import type { TOCItemType } from 'fumadocs-core/toc'
-import { AnchorProvider, TOCItem } from 'fumadocs-core/toc'
+import { TOCProvider, TOCScrollArea } from 'fumadocs-ui/components/toc'
+import { TOCItem, TOCItems } from 'fumadocs-ui/components/toc/clerk'
+import { Text } from 'lucide-react'
 
 /**
- * Desktop-only "On this page" rail with scroll-spy (Fumadocs' AnchorProvider marks the heading in
- * view with `data-active`). Mobile gets the collapsible InlineTOC above the article instead - see
- * `[slug]/page.tsx`.
+ * Desktop-only "On this page" rail, built from the same Fumadocs pieces as the docs' TOC (the
+ * "clerk" style the docs layout picks in docs/[[...slug]]/page.tsx): a rail that bends with heading
+ * depth and an active trace that follows the reader. The docs' restyle of it in globals.css is
+ * shared through `.blog-toc`, so the two stay identical. Mobile gets the collapsible InlineTOC
+ * above the article instead - see `[slug]/page.tsx`.
  */
 export default function TableOfContents({ items }: { items: TOCItemType[] }) {
   return (
-    <AnchorProvider toc={items} single>
-      <nav aria-label='On this page'>
-        <p className='mb-3 text-sm font-semibold text-text-primary'>On this page</p>
-        <ul className='space-y-1 border-l border-border'>
-          {items.map(item => (
-            <li key={item.url}>
-              <TOCItem
-                href={item.url}
-                className='-ml-px block border-l border-transparent py-1 text-sm leading-snug text-text-muted transition-colors duration-150 hover:text-text-primary data-[active=true]:border-accent data-[active=true]:text-text-primary'
-                style={{ paddingLeft: `${0.75 + (item.depth - 2) * 0.75}rem` }}
-              >
-                {item.title}
-              </TOCItem>
-            </li>
-          ))}
-        </ul>
+    <TOCProvider toc={items}>
+      <nav
+        aria-labelledby='blog-toc-title'
+        className='blog-toc flex flex-col max-h-[calc(100svh-8rem)]'
+      >
+        {/* a <p>, not the docs' <h3>: a heading here would join the article's own outline */}
+        <p id='blog-toc-title' className='blog-toc__title inline-flex items-center gap-1.5 text-sm'>
+          <Text className='size-4' aria-hidden='true' />
+          On this page
+        </p>
+        <TOCScrollArea>
+          <TOCItems>
+            {items.map(item => (
+              <TOCItem key={item.url} item={item} />
+            ))}
+          </TOCItems>
+        </TOCScrollArea>
       </nav>
-    </AnchorProvider>
+    </TOCProvider>
   )
 }

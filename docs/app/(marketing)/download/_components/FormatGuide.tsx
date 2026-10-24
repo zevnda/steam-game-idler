@@ -49,7 +49,6 @@ export default function FormatGuide() {
           <SectionHeading
             id='formats-heading'
             align='left'
-            eyebrow='Formats'
             title={
               <>
                 Which file <span className='gradient-text'>do I need?</span>

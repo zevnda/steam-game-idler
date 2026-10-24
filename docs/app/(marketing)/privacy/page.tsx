@@ -12,7 +12,7 @@ export default function PrivacyPolicy() {
       <LandingNav />
 
       <div className='container mx-auto px-4 sm:px-6 md:px-8 max-w-3xl pt-36 pb-24'>
-        <h1 className='page-enter text-4xl sm:text-5xl font-bold text-text-primary mb-10 text-center tracking-tight'>
+        <h1 className='page-enter gradient-text w-fit mx-auto text-4xl sm:text-5xl font-bold mb-10 text-center tracking-tight'>
           Privacy Policy
         </h1>
 
@@ -602,7 +602,6 @@ export default function PrivacyPolicy() {
         </div>
       </div>
 
-      <div className='section-divider' />
       <LandingFooter />
     </div>
   )

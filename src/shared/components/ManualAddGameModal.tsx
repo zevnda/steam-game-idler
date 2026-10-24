@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, Input, Modal, Typography } from '@heroui/react'
+import { ModalDragRegion } from '@/shared/components/ModalDragRegion'
 
 interface ManualAddGameModalProps {
   isOpen: boolean
@@ -49,6 +50,7 @@ export const ManualAddGameModal = ({
   return (
     <Modal isOpen={isOpen} onOpenChange={open => !open && handleClose()}>
       <Modal.Backdrop>
+        <ModalDragRegion placement='backdrop' />
         <Modal.Container>
           <Modal.Dialog>
             <Modal.Header>

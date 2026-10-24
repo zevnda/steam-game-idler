@@ -44,11 +44,8 @@ export default function DownloadPage() {
       <LandingNav />
       {/* sections separated as on the home page: landing-section spacing + a glow divider */}
       <DownloadHero />
-      <div className='section-divider' />
       <FormatGuide />
-      <div className='section-divider' />
       <PreviousVersionsSection />
-      <div className='section-divider' />
       <LandingFooter />
       <StoreLoader />
     </div>

@@ -175,8 +175,8 @@ export const Sidebar = () => {
         ))}
       </div>
 
-      {process.env.NODE_ENV === 'development' && (
-        <div className='flex shrink-0 items-center justify-center overflow-hidden px-2 mb-2'>
+      {process.env.NODE_ENV === 'production' && (
+        <div className='flex shrink-0 items-center justify-center overflow-hidden px-2 mb-5'>
           <AdSlot />
         </div>
       )}

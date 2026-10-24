@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, Input, Modal, Typography } from '@heroui/react'
+import { ModalDragRegion } from '@/shared/components/ModalDragRegion'
 
 interface ImportTimingsModalProps {
   isOpen: boolean
@@ -35,6 +36,7 @@ export const ImportTimingsModal = ({
   return (
     <Modal isOpen={isOpen} onOpenChange={open => !open && handleClose()}>
       <Modal.Backdrop>
+        <ModalDragRegion placement='backdrop' />
         <Modal.Container>
           <Modal.Dialog>
             <Modal.Header>

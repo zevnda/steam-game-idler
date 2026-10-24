@@ -1,6 +1,7 @@
 import { RootProvider } from 'fumadocs-ui/provider/next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import Script from 'next/script'
+import RainbowDefs from '@/app/(marketing)/_components/RainbowDefs'
 import OSDetector from '@/app/(marketing)/(home)/_components/OSDetector'
 import VercelAnalytics from '@/app/(marketing)/(home)/_components/VercelAnalytics'
 import SearchDialog from '@/app/(marketing)/(home)/search'
@@ -135,6 +136,7 @@ export default function Layout({ children }: LayoutProps) {
           {children}
         </RootProvider>
 
+        <RainbowDefs />
         <VercelAnalytics />
         <OSDetector />
       </body>

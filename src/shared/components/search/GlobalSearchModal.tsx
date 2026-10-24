@@ -7,6 +7,7 @@ import { TbX } from 'react-icons/tb'
 import { cn, InputGroup, Modal, Typography } from '@heroui/react'
 import { useGamesList } from '@/features/games-list/hooks/useGamesList'
 import { GameThumbnail } from '@/shared/components/GameThumbnail'
+import { ModalDragRegion } from '@/shared/components/ModalDragRegion'
 import { searchGames } from '@/shared/search/fuzzySearch'
 import { useSearchStore } from '@/shared/stores/searchStore'
 
@@ -109,6 +110,7 @@ export const GlobalSearchModal = () => {
   return (
     <Modal isOpen={activeScope !== null} onOpenChange={open => !open && close()}>
       <Modal.Backdrop>
+        <ModalDragRegion placement='backdrop' />
         <Modal.Container placement='top' size='md'>
           <Modal.Dialog className='mt-6' style={{ padding: 0 }}>
             <Modal.Header className='border-b border-border p-2'>
