@@ -57,7 +57,7 @@ export default function DownloadHero() {
       <div className='landing-container page-enter grid gap-14 lg:gap-12 lg:grid-cols-[minmax(0,6fr)_minmax(0,7fr)] items-center'>
         {/* centred until the copy/screenshot split at lg - the home hero's phone layout */}
         <div className='max-w-xl mx-auto text-center lg:mx-0 lg:text-left'>
-          <h1 className='text-[clamp(2.6rem,4.6vw,4.1rem)] font-semibold leading-[0.98] tracking-[-0.04em] text-balance text-text-primary'>
+          <h1 className='gradient-text w-fit mx-auto lg:mx-0 text-[clamp(2.6rem,4.6vw,4.1rem)] font-semibold leading-[0.98] tracking-[-0.04em] text-balance'>
             Download Steam Game Idler
           </h1>
 

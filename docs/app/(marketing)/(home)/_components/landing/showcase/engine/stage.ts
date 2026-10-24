@@ -396,11 +396,23 @@ export async function createStage(container: HTMLElement, opts: StageOptions) {
   let onFirstRender: (() => void) | null = null
   const firstRender = new Promise<void>(resolve => (onFirstRender = resolve))
 
+  // The host runs past the bottom of the pinned viewport it's framed for (.showcase__stage's
+  // --stage-spill), so the window's rim glow carries on over the next section as the showcase
+  // scrolls away instead of being squeezed into a fade at the section's edge. `width`/`height`
+  // stay the viewport's - every bit of layout maths below is in those - and the camera keeps that
+  // framing through a view offset: the extra canvas rows just render what lies below it.
+  let canvasHeight = 1
   const resize = () => {
     width = Math.max(1, container.clientWidth)
-    height = Math.max(1, container.clientHeight)
-    renderer.setSize(width, height, false)
+    canvasHeight = Math.max(1, container.clientHeight)
+    // the host's parent is the pinned, viewport-sized .showcase
+    height = Math.max(
+      1,
+      Math.min(canvasHeight, container.parentElement?.clientHeight ?? canvasHeight),
+    )
+    renderer.setSize(width, canvasHeight, false)
     camera.aspect = width / height
+    camera.setViewOffset(width, height, 0, 0, width, canvasHeight)
     camera.updateProjectionMatrix()
   }
   const ro = new ResizeObserver(resize)
@@ -419,6 +431,9 @@ export async function createStage(container: HTMLElement, opts: StageOptions) {
     const r = canvas.getBoundingClientRect()
     pointer.px = e.clientX - r.left
     pointer.py = e.clientY - r.top
+    // Against the whole canvas, spill strip included: the view offset (see resize) makes the
+    // camera's projection span every canvas row, so that's the range NDC has to cover for the
+    // raycast to land under the cursor. Normalising by the viewport's `height` put hits low.
     ndc.set((pointer.px / r.width) * 2 - 1, -(pointer.py / r.height) * 2 + 1)
     pointer.x = ndc.x
     pointer.y = ndc.y
@@ -521,7 +536,7 @@ export async function createStage(container: HTMLElement, opts: StageOptions) {
     qualityTimer = 0
     pixelRatio = Math.max(1, pixelRatio - 0.25)
     renderer.setPixelRatio(pixelRatio)
-    renderer.setSize(width, height, false)
+    renderer.setSize(width, canvasHeight, false)
     dustMat.uniforms.uPixelRatio.value = pixelRatio
     sparks.setPixelRatio(pixelRatio)
   }

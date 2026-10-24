@@ -452,9 +452,11 @@ export default function Showcase() {
       className={`relative ${inter.variable} ${unbounded.variable}`}
       style={{ height: `${100 + TRANSITION * 100 + 30}svh` }}
     >
+      {/* clipped sideways only: the stage runs past the bottom (--stage-spill) so its glow can
+          spill over the next section as this one scrolls away */}
       <div
         ref={stickyRef}
-        className='showcase sticky top-0 h-svh w-full overflow-hidden'
+        className='showcase sticky top-0 h-svh w-full overflow-x-clip'
         data-docked={docked || undefined}
       >
         <div className='showcase__glow' aria-hidden='true' />

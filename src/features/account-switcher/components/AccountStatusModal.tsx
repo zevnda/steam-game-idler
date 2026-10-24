@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { Modal } from '@heroui/react'
+import { ModalDragRegion } from '@/shared/components/ModalDragRegion'
 
 interface AccountStatusModalProps {
   isOpen: boolean
@@ -21,6 +22,7 @@ export const AccountStatusModal = ({
 }: AccountStatusModalProps) => (
   <Modal isOpen={isOpen} onOpenChange={open => !open && onClose()}>
     <Modal.Backdrop>
+      <ModalDragRegion placement='backdrop' />
       <Modal.Container size='md'>
         <Modal.Dialog>
           <Modal.Header>

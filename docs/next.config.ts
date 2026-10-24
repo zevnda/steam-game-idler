@@ -9,4 +9,7 @@ export default withMDX({
     unoptimized: true,
   },
   reactStrictMode: true,
+  experimental: {
+    agentUpgrade: 'security',
+  },
 })

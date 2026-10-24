@@ -40,7 +40,6 @@ export default function GetStarted() {
       <div className='landing-container'>
         <SectionHeading
           id='start-heading'
-          eyebrow='Get started'
           title={
             <>
               Start idling in <span className='gradient-text'>three steps.</span>

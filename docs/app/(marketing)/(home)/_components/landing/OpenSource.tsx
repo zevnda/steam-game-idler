@@ -46,7 +46,6 @@ export default function OpenSource() {
           <SectionHeading
             id='trust-heading'
             align='left'
-            eyebrow='Open & secure'
             title={
               <>
                 Is it safe? <span className='gradient-text'>See for yourself.</span>

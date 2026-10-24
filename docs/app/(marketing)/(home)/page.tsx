@@ -81,41 +81,32 @@ export default function HomePage() {
         {/* Hero + live 3D playground (pinned). Keep anything else out of it - a block scrolling
             over the pinned stage would break the hand-over from hero to playground. */}
         <Showcase />
-        <div className='section-divider' />
         <Suspense>
           <FeatureBento />
         </Suspense>
-        <div className='section-divider' />
         <Suspense>
           <GetStarted />
         </Suspense>
-        <div className='section-divider' />
         <Suspense>
           <Compare />
         </Suspense>
-        <div className='section-divider' />
         <Suspense>
           <Community />
         </Suspense>
-        <div className='section-divider' />
         <Suspense>
           <OpenSource />
         </Suspense>
-        <div className='section-divider' />
         <Suspense>
           <Faq />
         </Suspense>
-        <div className='section-divider' />
         {/* Newest blog posts: a discovery path from the strongest page to new posts. Kept below the
             FAQ so nothing the home page ranks for moves. Renders nothing while there are no posts. */}
         <Suspense>
           <LatestPosts />
         </Suspense>
-        <div className='section-divider' />
         <Suspense>
           <FinalCta />
         </Suspense>
-        <div className='section-divider' />
       </main>
       <Suspense>
         <LandingFooter />

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FaStar } from 'react-icons/fa6'
 import { Button, Modal, Spinner } from '@heroui/react'
+import { ModalDragRegion } from '@/shared/components/ModalDragRegion'
 import { useUpdateStore } from '@/shared/stores/updateStore'
 import { openExternalLink } from '@/shared/utils/links'
 
@@ -31,6 +32,7 @@ export const ChangelogModal = () => {
   return (
     <Modal isOpen={showChangelog} onOpenChange={open => setShowChangelog(open)}>
       <Modal.Backdrop>
+        <ModalDragRegion placement='backdrop' />
         <Modal.Container size='lg'>
           <Modal.Dialog className='overflow-hidden p-0 bg-[#1d1d1dff]'>
             <Modal.Header className='p-4'>

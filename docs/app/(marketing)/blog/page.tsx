@@ -77,7 +77,7 @@ export default async function BlogIndexPage() {
       <main className='landing-container pb-28 pt-36 sm:pb-36 sm:pt-44'>
         <header className='page-enter mb-12 flex flex-col gap-6 sm:mb-16 sm:flex-row sm:items-end sm:justify-between'>
           <div className='max-w-2xl'>
-            <h1 className='mb-6 text-[clamp(2.6rem,5.6vw,4.8rem)] font-semibold leading-[0.98] tracking-[-0.04em] text-text-primary'>
+            <h1 className='gradient-text w-fit mb-6 text-[clamp(2.6rem,5.6vw,4.8rem)] font-semibold leading-[0.98] tracking-[-0.04em]'>
               Steam news, explained.
             </h1>
             <p className='text-lg leading-relaxed text-text-muted'>

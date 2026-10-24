@@ -1,10 +1,9 @@
 import type { TranslationKey } from '@/i18n'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbChevronRight, TbCrown } from 'react-icons/tb'
+import { TbChevronRight } from 'react-icons/tb'
 import { cn } from '@heroui/react'
 import { AppTooltip } from '@/shared/components/AppTooltip'
-import { Logo } from '@/shared/components/dashboard/Logo'
 import { usePlatformStore } from '@/shared/stores/platformStore'
 import { useProModalStore } from '@/shared/stores/proModalStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
@@ -68,8 +67,23 @@ export const GoPro = ({ collapsed }: { collapsed: boolean }) => {
 
   return (
     // `flex-col` so the collapsed button's tooltip trigger wrapper stretches to full width (a
-    // plain block parent lets that wrapper shrink to the icon's width instead).
-    <div className='flex shrink-0 flex-col px-2 mb-2'>
+    // plain block parent lets that wrapper shrink to the icon's width instead). `relative` anchors
+    // the rim glow below.
+    <div className='go-pro relative flex shrink-0 flex-col px-2 mb-2'>
+      {/* The CTA rim's soft glow (globals.css `.go-pro-glow`) - a sibling behind the button, not
+          part of it: the card clips its own overflow (for the perk text's slide-in), which would
+          cut a glow off.
+          Earlier in the DOM, so the button paints over it. */}
+      <span
+        aria-hidden='true'
+        className={cn(
+          'go-pro-glow',
+          // the card's own corners: the collapsed icon button matches the other sidebar icons
+          // (SidebarItem's rounded-lg); the expanded card, the website mobile menu's PRO card
+          collapsed ? 'rounded-lg' : 'rounded-[20px]',
+          forceReducedMotion && 'force-reduced-motion',
+        )}
+      />
       {collapsed ? (
         <AppTooltip.Root delay={300}>
           <AppTooltip.Trigger>
@@ -85,9 +99,16 @@ export const GoPro = ({ collapsed }: { collapsed: boolean }) => {
               type='button'
               onClick={() => openProModal()}
             >
-              {/* No crown here (unlike the expanded card) - the collapsed button's `py-2` leaves
-                  too little room above the logo for it. */}
-              <Logo className='text-white!' height={18} width={18} />
+              {/* The word rather than the logo: on its own among the sidebar's icons, the logo
+                  didn't say what the button was. A brand word, so not translated (CLAUDE.md's i18n
+                  exceptions); the button's accessible name and tooltip stay the translated title.
+                  aria-hidden so screen readers get that name, not "PRO" read out as well. */}
+              <span
+                aria-hidden='true'
+                className='text-xs leading-[18px] font-bold tracking-[0.06em]'
+              >
+                PRO
+              </span>
             </button>
           </AppTooltip.Trigger>
           <AppTooltip.Content placement='right'>{title}</AppTooltip.Content>
@@ -95,7 +116,7 @@ export const GoPro = ({ collapsed }: { collapsed: boolean }) => {
       ) : (
         <button
           className={cn(
-            'go-pro-card group flex w-full cursor-pointer items-center gap-3 rounded-md px-3 py-2.5 text-left outline-none',
+            'go-pro-card group flex w-full cursor-pointer items-center gap-3 rounded-[20px] px-3 py-2.5 text-left outline-none',
             'focus-visible:ring-2 focus-visible:ring-focus',
             forceReducedMotion && 'force-reduced-motion',
           )}
@@ -109,24 +130,15 @@ export const GoPro = ({ collapsed }: { collapsed: boolean }) => {
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
-          {/* The app's own logo, bare with a purple glow rather than sitting on a solid gradient
-              tile - lighter visually, and the card's own tinted fill + animated border already
-              carry the brand colour. `!` on the colour because Logo's own default `text-foreground`
-              is on the same element, and without it whichever rule Tailwind emits later wins. */}
-          {/* TEMP (design test): crown perched on top of the logo - remove the wrapper span +
-              TbCrown (and its import) to revert. */}
-          <span className='relative shrink-0 transition-transform duration-200 group-hover:scale-110'>
-            {/* Crown after Logo in DOM order (+ z-10) so it paints on top where they overlap -
-                the S's top edge widens fast enough that the logo otherwise covers it entirely. */}
-            <Logo
-              className='text-[#d9a6ff]! drop-shadow-[0_0_6px_rgb(183_0_255/0.9)]'
-              height={22}
-              width={22}
-            />
-            <TbCrown
-              className='absolute -top-2.5 left-1/2 z-10 -translate-x-1/2 -rotate-12 text-[#ffd36e] drop-shadow-[0_0_4px_rgb(255_200_80/0.8)]'
-              fontSize={12}
-            />
+          {/* The rainbow PRO pill every PRO surface shares (globals.css `.pro-pill` - the GoProModal
+              title, the website's navbar and /pro). Not the app logo: that already sits at the top
+              of the sidebar, and a second copy this close read as a repeat. aria-hidden: the
+              button's name is already the title. */}
+          <span
+            aria-hidden='true'
+            className='pro-pill shrink-0 text-[11px] font-black tracking-[0.12em] text-white'
+          >
+            <span className='pro-pill__inner'>PRO</span>
           </span>
           {/* Single-line + truncated, not wrapping: this renders the moment the sidebar starts
               expanding, while it's still mid-width-transition, so wrapping copy would balloon the

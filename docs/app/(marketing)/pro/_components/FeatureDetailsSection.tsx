@@ -6,8 +6,8 @@ import { FadeIn, StaggerGroup, StaggerItem } from '@/app/lib/animations'
 
 export default function FeatureDetailsSection() {
   return (
-    <section id='feature-details' className='py-12 sm:py-16 relative'>
-      <div className='container mx-auto px-4 sm:px-6 md:px-8'>
+    <section id='feature-details' className='py-12 sm:py-16 relative scroll-mt-20'>
+      <div className='landing-container'>
         <div className='max-w-3xl mx-auto'>
           <SectionHeading label='Every Feature, Explained' />
 
@@ -38,13 +38,9 @@ export default function FeatureDetailsSection() {
                             <h3 className='text-base sm:text-lg font-black text-white'>
                               {f.title}
                             </h3>
+                            {/* the tier badge - mirrors the app's TierBadge (globals.css .tier-badge) */}
                             <span
-                              className='text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full text-white'
-                              style={{
-                                background: isCasual
-                                  ? 'linear-gradient(90deg, #3b82f6, #38bdf8)'
-                                  : 'linear-gradient(90deg, #8a60ff, #ab26d3)',
-                              }}
+                              className={`tier-badge ${isCasual ? 'tier-badge--casual' : 'tier-badge--gamer'} text-[9px] font-black uppercase tracking-widest px-2 py-0.5`}
                             >
                               {isCasual ? 'Casual' : 'Gamer'}
                             </span>

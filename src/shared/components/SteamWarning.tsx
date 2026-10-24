@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, Modal } from '@heroui/react'
+import { ModalDragRegion } from '@/shared/components/ModalDragRegion'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 import { useSteamWarningStore } from '@/shared/stores/steamWarningStore'
 import { invoke } from '@/shared/utils/invoke'
@@ -76,6 +77,7 @@ export const SteamWarning = () => {
   return (
     <Modal isOpen={isOpen}>
       <Modal.Backdrop isDismissable={false} isKeyboardDismissDisabled>
+        <ModalDragRegion placement='backdrop' />
         <Modal.Container size='sm'>
           <Modal.Dialog>
             <Modal.Header>

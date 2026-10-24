@@ -10,6 +10,7 @@ import { useAgentSignIn } from '@/features/agent-sign-in/hooks/useAgentSignIn'
 import AccountPicker from '@/features/local-sign-in/components/AccountPicker'
 import { useLocalSignIn } from '@/features/local-sign-in/hooks/useLocalSignIn'
 import SignInLanding from '@/features/sign-in-landing/components/SignInLanding'
+import { ModalDragRegion } from '@/shared/components/ModalDragRegion'
 import { useAddAccountModalStore } from '@/shared/stores/addAccountModalStore'
 import { useProModalStore } from '@/shared/stores/proModalStore'
 import { useSessionStore } from '@/shared/stores/sessionStore'
@@ -215,6 +216,7 @@ export const AddAccountModal = () => {
   return (
     <Modal isOpen={isOpen} onOpenChange={open => !open && close()}>
       <Modal.Backdrop>
+        <ModalDragRegion placement='backdrop' />
         <Modal.Container size='md'>
           <Modal.Dialog>
             <Modal.Header>

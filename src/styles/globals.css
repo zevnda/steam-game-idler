@@ -75,14 +75,18 @@ body {
   animation: skew-scroll 30s linear infinite;
 }
 
-/* Go Pro sidebar card (src/shared/components/pro/GoPro.tsx) - free-tier upsell. Colours match
-   GoProModal's own "PRO" wordmark gradient (#b700ff -> #6f00ff -> #3583e2) so the card and the modal
-   it opens read as one brand. Two ambient effects, both pure CSS (no framer-motion project-wide):
-   a slowly rotating conic-gradient border (driven by the `@property --gradient-angle` below, so
-   the browser can interpolate the angle directly) and a periodic diagonal sheen sweep (`::after`).
-   The border is a `border-box` background layer under an opaque `padding-box` fill - the standard
-   gradient-border trick that keeps the card's own rounded corners. The fill layers a translucent
-   purple tint over the active theme's `--background`, so it sits correctly on every theme preset. */
+/* Go Pro sidebar card (src/shared/components/pro/GoPro.tsx) - free-tier upsell. Styled as the
+   website's CTA rim (docs/app/globals.css `.cta-rim`), so the upsell reads as the same brand moment
+   as steamgameidler.com's: a slowly turning border in the site's muted rainbow (same hues and 36%
+   saturation, same 8s turn) with a soft blurred glow of it around the card (`.go-pro-glow`, a
+   sibling element - the card clips its own overflow, which keeps the cycling perk text's slide-in
+   inside it but would cut a glow drawn from it off), over a neutral fill. The ambient effect is
+   pure CSS (no framer-motion project-wide): the turning border, driven by the `@property
+   --gradient-angle` below so the browser can interpolate the angle directly. (A diagonal sheen
+   sweep was dropped - next to the turning rim it was one effect too many.) The border is a
+   `border-box` background layer under an opaque `padding-box` fill - the standard gradient-border
+   trick that keeps the card's own rounded corners. The fill sits on the active theme's `--background`, so it
+   works on every theme preset. */
 
 @property --gradient-angle {
   syntax: '<angle>';
@@ -96,59 +100,66 @@ body {
   }
 }
 
-@keyframes go-pro-sheen {
-  0%,
-  65% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-
 .go-pro-card {
   position: relative;
   isolation: isolate;
   overflow: hidden;
   border: 1px solid transparent;
-  /* Border blue is held as two solid bands (27-35%, 81-89%) rather than single points, which made
-     it read as a thin flash between two wide purples. */
   background:
-    linear-gradient(135deg, rgb(183 0 255 / 0.22) 0%, rgb(53 131 226 / 0.12) 100%) padding-box,
+    linear-gradient(180deg, rgb(255 255 255 / 0.06), transparent 70%) padding-box,
     linear-gradient(var(--background), var(--background)) padding-box,
-    conic-gradient(
-        from var(--gradient-angle),
-        rgb(183 0 255) 0%,
-        rgb(111 0 255) 12%,
-        rgb(53 131 226) 27% 35%,
-        rgb(111 0 255) 52%,
-        rgb(183 0 255) 64%,
-        rgb(53 131 226) 81% 89%,
-        rgb(183 0 255) 100%
-      )
-      border-box;
-  animation: gradient-angle 4s linear infinite;
-  transition: box-shadow 200ms ease-out;
+    var(--go-pro-rainbow) border-box;
+  animation: gradient-angle 8s linear infinite;
 }
 
+/* Hovered or focused, the rainbow fills in faintly: the fill turns 8% see-through so the turning
+   rim behind it washes through - the website's PRO nav pill does the same when it's the current
+   page (docs/app/globals.css `.landing-nav__pro[aria-current='page']`). Fainter than the site's
+   70% fill, which read as too strong across a card this size. Mixed from the theme's own
+   --background, so it tints correctly on every theme preset. */
 .go-pro-card:is(:hover, :focus-visible) {
-  box-shadow: 0 0 20px -4px rgb(111 0 255 / 0.7);
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.06), transparent 70%) padding-box,
+    linear-gradient(
+        color-mix(in srgb, var(--background) 92%, transparent),
+        color-mix(in srgb, var(--background) 92%, transparent)
+      )
+      padding-box,
+    var(--go-pro-rainbow) border-box;
 }
 
-.go-pro-card::after {
-  content: '';
-  pointer-events: none;
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(
-    105deg,
-    transparent 35%,
-    rgb(255 255 255 / 0.14) 50%,
-    transparent 65%
+/* The site CTA's rim colours, a conic turn of the muted rainbow - shared by the border and glow */
+.go-pro-card,
+.go-pro-glow {
+  --go-pro-rainbow: conic-gradient(
+    from var(--gradient-angle),
+    hsl(0 36% 50%),
+    hsl(50 36% 50%),
+    hsl(100 36% 50%),
+    hsl(160 36% 50%),
+    hsl(210 36% 50%),
+    hsl(265 36% 50%),
+    hsl(315 36% 50%),
+    hsl(360 36% 50%)
   );
-  transform: translateX(-100%);
-  animation: go-pro-sheen 5s ease-in-out infinite;
+}
+
+/* The rim's soft glow, behind the card (GoPro.tsx places it under the button, inset by the
+   wrapper's px-2). Brightens on hover/focus in place of the old purple box-shadow. */
+.go-pro-glow {
+  position: absolute;
+  inset: 0 0.5rem;
+  /* no border-radius here: GoPro.tsx rounds it to match whichever shape the card is in */
+  background: var(--go-pro-rainbow);
+  filter: blur(12px);
+  opacity: 0.35;
+  pointer-events: none;
+  animation: gradient-angle 8s linear infinite;
+  transition: opacity 200ms ease-out;
+}
+
+.go-pro:has(.go-pro-card:is(:hover, :focus-visible)) .go-pro-glow {
+  opacity: 0.6;
 }
 
 /* Both ambient loops stop under either reduced-motion mechanism (see the `.force-reduced-motion`
@@ -174,14 +185,14 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .go-pro-card,
-  .go-pro-card::after,
+  .go-pro-glow,
   .go-pro-perk {
     animation: none;
   }
 }
 
 .go-pro-card.force-reduced-motion,
-.go-pro-card.force-reduced-motion::after,
+.go-pro-glow.force-reduced-motion,
 .go-pro-card.force-reduced-motion .go-pro-perk {
   animation: none;
 }
@@ -279,6 +290,143 @@ body {
   animation-name: pro-float;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
+}
+
+/* The "PRO" pill: in GoProModal's "Steam Game Idler PRO" title and the sidebar's GoPro card
+   (GoPro.tsx). The website navbar's PRO pill (docs/app/globals.css `.rainbow-chip.landing-nav__pro`)
+   - a 1px rim of the site's muted rainbow turning every 8s around a dark pill, with a faint glow in
+   the rim's hues. The website's /pro hero mirrors this one; keep the two in step. Sized in em so it
+   takes its context's text size; the right padding is a touch smaller than the left because the
+   letter-spacing already trails the last letter. */
+.pro-pill {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex;
+  /* baseline, not middle: middle centres on lowercase x-height, which sat the pill (and its PRO)
+     visibly low beside the all-caps title. On the baseline, PRO's letters line up exactly with the
+     title's, and the pill's even padding wraps them. */
+  vertical-align: baseline;
+  padding: 1px;
+  border-radius: 999px;
+  box-shadow:
+    0 0 14px -4px hsl(265 60% 60% / 0.45),
+    0 0 14px -6px hsl(160 60% 55% / 0.35);
+}
+
+.pro-pill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: conic-gradient(
+    from var(--gradient-angle),
+    hsl(0 36% 50%),
+    hsl(50 36% 50%),
+    hsl(100 36% 50%),
+    hsl(160 36% 50%),
+    hsl(210 36% 50%),
+    hsl(265 36% 50%),
+    hsl(315 36% 50%),
+    hsl(360 36% 50%)
+  );
+  animation: gradient-angle 8s linear infinite;
+}
+
+.pro-pill__inner {
+  /* Even top/bottom: an uneven split to centre the rim on the capitals was tried, but at these
+     sizes it rounds to whole pixels and pushed PRO's letters off the line's baseline instead */
+  padding: 0.15em 0.45em 0.15em 0.65em;
+  border-radius: 999px;
+  background: var(--background);
+  color: #fff;
+  line-height: 1.2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pro-pill::before {
+    animation: none;
+  }
+}
+
+/* the flag on an ancestor (GoProModal, the GoPro card) or on the pill itself (Titlebar) */
+.force-reduced-motion .pro-pill::before,
+.pro-pill.force-reduced-motion::before {
+  animation: none;
+}
+
+/* Tier badges (TierBadge.tsx): the PRO pill's shape in each tier's own colours instead of the
+   rainbow - casual's deep blue -> light cyan, gamer's dark purple -> hot pink (deliberately further
+   apart than the tier cards' accents, so the turn shows on a 1px rim), turning around that rim over
+   an almost-clear tint of the same colours. The
+   website's tier badges (docs/app/globals.css `.tier-badge`) mirror these; keep them in step.
+
+   Unlike .pro-pill, the fill here is see-through, so the rim can't be a gradient hidden behind an
+   opaque fill: it's masked to a 1px ring instead (the content box excluded from the border box),
+   which lets the badge sit on any surface - settings rows, cards, the GoPro modal - and tint with
+   whatever's behind it. Free (no tier) is a plain, static rim. */
+.tier-badge {
+  --tier-from: rgb(255 255 255 / 0.18);
+  --tier-to: rgb(255 255 255 / 0.18);
+  position: relative;
+  display: inline-flex;
+  vertical-align: baseline;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tier-to) 10%, transparent);
+}
+
+.tier-badge::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--gradient-angle),
+    var(--tier-from),
+    var(--tier-to),
+    var(--tier-from)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+
+.tier-badge--casual::before,
+.tier-badge--gamer::before {
+  animation: gradient-angle 8s linear infinite;
+}
+
+.tier-badge--casual {
+  /* a deep and a light blue, far apart in lightness so the turn is visible - two similar blues
+     read as one solid rim */
+  --tier-from: #1d4ed8;
+  --tier-to: #67e8f9;
+  color: #8fd8fb;
+}
+
+.tier-badge--gamer {
+  /* dark purple into hot pink, ~55deg of hue apart: far enough that purple and pink both read
+     (fuchsia at ~35deg blurred into one), close enough not to look two-tone (blurple at ~100deg),
+     and dark-to-light like casual's pair so the turn shows */
+  --tier-from: #7e22ce;
+  --tier-to: #ff3fa4;
+  color: #f0abfc;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tier-badge::before {
+    animation: none;
+  }
+}
+
+.tier-badge.force-reduced-motion::before {
+  animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

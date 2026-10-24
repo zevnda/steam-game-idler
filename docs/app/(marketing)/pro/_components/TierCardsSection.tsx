@@ -58,7 +58,7 @@ export default function TierCardsSection({ priceData }: TierCardsSectionProps) {
 
   return (
     <section id='tiers' className='py-12 sm:py-16 relative scroll-mt-20'>
-      <div className='container mx-auto px-4 sm:px-6 md:px-8'>
+      <div className='landing-container'>
         <div className='max-w-4xl mx-auto'>
           <SectionHeading label='Choose Your Tier' />
 

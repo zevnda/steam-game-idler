@@ -11,7 +11,7 @@ interface ComparisonSectionProps {
 export default function ComparisonSection({ priceData }: ComparisonSectionProps) {
   return (
     <section id='compare' className='py-12 sm:py-16 relative scroll-mt-20'>
-      <div className='container mx-auto px-4 sm:px-6 md:px-8'>
+      <div className='landing-container'>
         <div className='max-w-3xl mx-auto'>
           <SectionHeading label='Compare Tiers' />
 

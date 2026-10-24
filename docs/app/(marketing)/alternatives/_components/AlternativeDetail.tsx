@@ -17,7 +17,7 @@ interface AlternativeDetailProps {
 export default function AlternativeDetail({ competitor }: AlternativeDetailProps) {
   return (
     <main>
-      <AlternativeHero title={`${competitor.name} vs Steam Game Idler`} sub={competitor.intro} />
+      <AlternativeHero competitor={competitor.name} sub={competitor.intro} />
 
       {/* The table follows the header directly - the header already says what it compares. Only
           bottom padding (landing-section's), so it sits close under the header. */}
@@ -28,13 +28,10 @@ export default function AlternativeDetail({ competitor }: AlternativeDetailProps
           </div>
         </div>
       </section>
-      <div className='section-divider' />
 
       <NarrativeSection competitor={competitor} />
-      <div className='section-divider' />
 
       <WhyChooseSection competitor={competitor} />
-      <div className='section-divider' />
 
       <FinalCta
         title={
@@ -44,7 +41,6 @@ export default function AlternativeDetail({ competitor }: AlternativeDetailProps
         }
         sub={competitor.ctaDescription}
       />
-      <div className='section-divider' />
     </main>
   )
 }
