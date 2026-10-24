@@ -1,5 +1,5 @@
-import FooterSection from '@/app/(marketing)/(home)/_components/FooterSection'
-import NavBar from '@/app/(marketing)/(home)/_components/NavBar'
+import LandingFooter from '@/app/(marketing)/(home)/_components/landing/LandingFooter'
+import LandingNav from '@/app/(marketing)/(home)/_components/landing/LandingNav'
 
 export const metadata = {
   title: 'Terms of Service | Steam Game Idler',
@@ -8,11 +8,11 @@ export const metadata = {
 
 export default function TermsOfService() {
   return (
-    <div className='min-h-screen bg-background'>
-      <NavBar />
+    <div className='landing min-h-screen bg-background'>
+      <LandingNav />
 
       <div className='container mx-auto px-4 sm:px-6 md:px-8 max-w-3xl pt-36 pb-24'>
-        <h1 className='text-4xl sm:text-5xl font-bold text-text-primary mb-10 text-center tracking-tight'>
+        <h1 className='page-enter text-4xl sm:text-5xl font-bold text-text-primary mb-10 text-center tracking-tight'>
           Terms of Service
         </h1>
 
@@ -603,7 +603,7 @@ export default function TermsOfService() {
       </div>
 
       <div className='section-divider' />
-      <FooterSection />
+      <LandingFooter />
     </div>
   )
 }

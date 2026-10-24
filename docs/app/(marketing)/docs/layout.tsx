@@ -1,7 +1,8 @@
-import { FaDiscord, FaGithub } from 'react-icons/fa6'
-import { FiClock, FiEdit3 } from 'react-icons/fi'
+import DocsNavActions from './_components/DocsNavActions'
+import DocsSheetTree from './_components/DocsSheetTree'
+import { toSheetGroups } from './_components/sheetTree'
 import { DocsLayout } from 'fumadocs-ui/layouts/docs'
-import Image from 'next/image'
+import LandingNav from '@/app/(marketing)/(home)/_components/landing/LandingNav'
 import { baseOptions } from '@/lib/layout.shared'
 import { source } from '@/lib/source'
 
@@ -13,56 +14,38 @@ export default function Layout({ children }: LayoutProps) {
   const base = baseOptions()
 
   return (
-    <DocsLayout
-      {...base}
-      tree={source.pageTree}
-      themeSwitch={{ enabled: false }}
-      links={[
-        // Blog and Changelog first: docs pages get most of the site's search traffic, so these
-        // sidebar links are the main internal path from docs to both (the docs layout has no
-        // marketing NavBar). Same icons as the footer and NavBar use for them.
-        {
-          type: 'icon',
-          url: '/blog',
-          label: 'Blog',
-          text: 'Blog',
-          icon: <FiEdit3 />,
-        },
-        {
-          type: 'icon',
-          url: '/changelog',
-          label: 'Changelog',
-          text: 'Changelog',
-          icon: <FiClock />,
-        },
-        {
-          type: 'icon',
-          url: 'https://github.com/zevnda/steam-game-idler',
-          label: 'github',
-          text: 'Github',
-          icon: <FaGithub />,
-          external: true,
-        },
-        {
-          type: 'icon',
-          url: 'https://discord.com/invite/5kY2ZbVnZ8',
-          label: 'discord',
-          text: 'Discord',
-          icon: <FaDiscord />,
-          external: true,
-        },
-      ]}
-      nav={{
-        ...base.nav,
-        title: (
-          <>
-            <Image src='/logo.png' alt='Steam Game Idler' width={24} height={24} loading='eager' />
-            <span className='font-bold tracking-tight'>Steam Game Idler</span>
-          </>
-        ),
-      }}
-    >
-      {children}
-    </DocsLayout>
+    // The docs sit inside the marketing shell: the same LandingNav pill as every other page. (Not
+    // LandingFooter - its column titles are h2s, which would change every doc's heading outline.)
+    // `.docs-shell` sets --fd-banner-height to the pill's band, which Fumadocs' grid reads as its
+    // first sticky row, so the sidebar and TOC stick just under the pill.
+    // `docs-sidebar-cards`: the grouped-card sidebar (see globals.css) - remove it for the plain one
+    <div className='docs-shell docs-sidebar-cards landing'>
+      {/* opaque strip behind the fixed pill, so docs content doesn't show through around it */}
+      <div className='docs-band' aria-hidden='true' />
+      <DocsLayout
+        {...base}
+        tree={source.pageTree}
+        themeSwitch={{ enabled: false }}
+        // No `links`: Blog, Changelog, GitHub and Discord all live in the LandingNav pill (and its
+        // phone menu sheet), so the sidebar's icon-link row only repeated them.
+        nav={{
+          ...base.nav,
+          // The brand lives in the pill now, so the sidebar's title row names the section instead.
+          title: <span className='font-semibold tracking-tight'>Documentation</span>,
+          url: '/docs',
+          // Replaces Fumadocs' own mobile header. On phones the pill carries the docs' search, and
+          // its menu sheet - the same one every other page has - lists the docs' sections at the
+          // top, so Fumadocs' separate page-tree drawer isn't used there.
+          component: (
+            <LandingNav
+              actions={<DocsNavActions />}
+              sheetLead={<DocsSheetTree groups={toSheetGroups(source.pageTree)} />}
+            />
+          ),
+        }}
+      >
+        {children}
+      </DocsLayout>
+    </div>
   )
 }

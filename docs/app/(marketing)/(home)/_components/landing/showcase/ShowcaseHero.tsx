@@ -4,6 +4,7 @@ import type { Ref } from 'react'
 import { FaGithub, FaStar } from 'react-icons/fa6'
 import { TbArrowDown } from 'react-icons/tb'
 import { scrollToPlayground } from '../demoStore'
+import ReleaseBanner from './ReleaseBanner'
 import Link from 'next/link'
 import DownloadButton from '@/app/(marketing)/(home)/_components/DownloadButton'
 import { useGlobalStore } from '@/app/lib/globalStore'
@@ -33,26 +34,12 @@ export default function ShowcaseHero({
   placeholderRef,
   live,
 }: ShowcaseHeroProps) {
-  const { latestVersion, repoStars, totalDownloads } = useGlobalStore(state => state)
+  const { repoStars, totalDownloads } = useGlobalStore(state => state)
 
   return (
     <div ref={ref} className='showcase__hero'>
       <div ref={textRef}>
-        <Link
-          prefetch={false}
-          href={`https://github.com/zevnda/steam-game-idler/releases/${latestVersion}`}
-          target='_blank'
-          className='rainbow-chip hero-recede'
-          style={{ '--i': 0 } as React.CSSProperties}
-        >
-          <span className='rainbow-chip__inner'>
-            {/* static on purpose: the rotating rim already draws the eye - a pulse on top
-                of it was a second, competing loop */}
-            <span className='w-1.5 h-1.5 rounded-full bg-emerald-400' aria-hidden='true' />v
-            {latestVersion} is out
-            <span className='text-text-muted'>· Windows & Linux</span>
-          </span>
-        </Link>
+        <ReleaseBanner />
 
         <h1 className='mt-7'>
           {/* The H1's keyword half: carries the page's primary query ("steam idler"), while the

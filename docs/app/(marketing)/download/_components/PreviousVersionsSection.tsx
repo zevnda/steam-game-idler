@@ -3,9 +3,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { FiChevronDown, FiDownload } from 'react-icons/fi'
 import Link from 'next/link'
+import SectionHeading from '@/app/(marketing)/(home)/_components/landing/SectionHeading'
 import { FadeIn } from '@/app/lib/animations'
 import { formatBytes } from '@/app/lib/format'
 import { useGlobalStore } from '@/app/lib/globalStore'
+import { useSwapKey } from '@/app/lib/useSwapKey'
+
+/** the section's id - DownloadHero's "Previous versions" button scrolls here */
+export const OLDER_VERSIONS_ID = 'older-versions'
 
 const REPO = 'zevnda/steam-game-idler'
 const TAGS_PAGE_SIZE = 100
@@ -230,21 +235,28 @@ export default function PreviousVersionsSection() {
   }, [isDropdownOpen])
 
   const isLinux = selectedOS === 'linux'
+  const swap = useSwapKey(isLinux)
   const currentGroupState = selectedGroup ? groupData[selectedGroup] : undefined
 
   return (
-    <section className='py-20 sm:py-24 relative'>
-      <div className='container mx-auto px-4 sm:px-6 md:px-8 max-w-2xl'>
-        <FadeIn className='text-center mb-12'>
-          <h2 className='text-3xl sm:text-4xl font-bold text-text-primary mb-4 tracking-tight'>
-            Need an <span className='gradient-text'>older version?</span>
-          </h2>
-          <p className='text-text-muted leading-relaxed'>
-            {isLinux ? '.deb ' : 'Portable .zip '} downloads of past releases, kept around for
-            compatibility. They no longer receive bug fixes or security updates, and won&apos;t
-            automatically update.
-          </p>
-        </FadeIn>
+    <section
+      id={OLDER_VERSIONS_ID}
+      aria-labelledby='older-heading'
+      className='landing-section scroll-mt-16'
+    >
+      <div className='landing-container [--container-max:44rem]'>
+        <div className='mb-12'>
+          <SectionHeading
+            id='older-heading'
+            eyebrow='Older releases'
+            title={
+              <>
+                Need an <span className='gradient-text'>older version?</span>
+              </>
+            }
+            sub={`${isLinux ? '.deb' : 'Portable .zip'} downloads of past releases, kept around for compatibility. They no longer get bug fixes or security updates, and won't update themselves.`}
+          />
+        </div>
 
         <FadeIn delay={0.1}>
           <div className='flex items-center justify-center gap-3 mb-4'>
@@ -256,7 +268,7 @@ export default function PreviousVersionsSection() {
                 onClick={() => setIsDropdownOpen(prev => !prev)}
                 aria-haspopup='listbox'
                 aria-expanded={isDropdownOpen}
-                className='inline-flex items-center gap-2 bg-white/5 border border-white/15 text-text-primary text-sm rounded-lg px-3 py-2 hover:border-white/25 transition-colors duration-150 disabled:opacity-60 disabled:cursor-default cursor-pointer'
+                className='inline-flex items-center gap-2 bg-white/5 border border-white/8 text-text-primary text-sm font-semibold rounded-full px-4 py-2 hover:bg-white/8 transition-colors duration-150 disabled:opacity-60 disabled:cursor-default cursor-pointer'
               >
                 {selectedGroup ? `${selectedGroup}.x` : 'Loading…'}
                 <FiChevronDown
@@ -267,7 +279,7 @@ export default function PreviousVersionsSection() {
               {isDropdownOpen && groups && groups.length > 0 && (
                 <div
                   role='listbox'
-                  className='absolute z-20 left-1/2 -translate-x-1/2 mt-2 w-32 max-h-48 overflow-y-auto rounded-lg border border-white/15 bg-surface-raised py-1 shadow-lg'
+                  className='absolute z-20 left-1/2 -translate-x-1/2 mt-2 w-32 max-h-48 overflow-y-auto rounded-2xl border border-white/10 bg-[#0e0e11] p-1 shadow-lg'
                 >
                   {groups.map(group => (
                     <button
@@ -279,7 +291,7 @@ export default function PreviousVersionsSection() {
                         setSelectedGroup(group)
                         setIsDropdownOpen(false)
                       }}
-                      className={`block w-full text-left px-3 py-1.5 text-sm transition-colors duration-150 cursor-pointer ${
+                      className={`block w-full text-left rounded-xl px-3 py-1.5 text-sm transition-colors duration-150 cursor-pointer ${
                         group === selectedGroup
                           ? 'text-text-primary bg-white/10'
                           : 'text-text-muted hover:text-text-primary hover:bg-white/5'
@@ -293,7 +305,8 @@ export default function PreviousVersionsSection() {
             </div>
           </div>
 
-          <div className='card'>
+          {/* the home comparison table's container (.cmp); the list crossfades on an OS switch */}
+          <div key={swap.key} className={`cmp ${swap.className}`}>
             {!currentGroupState ||
             (currentGroupState.loading && currentGroupState.items.length === 0) ? (
               <div className='p-6 text-center text-sm text-text-muted'>
@@ -313,10 +326,10 @@ export default function PreviousVersionsSection() {
                     style={i > 0 ? { borderTop: '1px solid var(--color-border)' } : undefined}
                   >
                     <div>
-                      <div className='font-mono font-semibold text-text-primary'>
+                      <div className='font-semibold tabular-nums text-text-primary'>
                         v{release.version}
                       </div>
-                      <div className='text-xs text-text-muted mt-0.5'>
+                      <div className='text-sm text-text-muted mt-0.5'>
                         {release.date}
                         {asset.sizeLabel ? ` · ${asset.sizeLabel}` : ''}
                       </div>
@@ -325,13 +338,13 @@ export default function PreviousVersionsSection() {
                       <Link
                         prefetch={false}
                         href={asset.url}
-                        className='btn-ghost text-xs px-3 py-2 shrink-0'
+                        className='btn-ghost text-sm px-3.5 py-2 rounded-full shrink-0'
                       >
                         <FiDownload className='w-3.5 h-3.5' />
                         {isLinux ? '.deb' : 'Portable .zip'}
                       </Link>
                     ) : (
-                      <span className='text-xs text-text-muted/50 shrink-0'>Unavailable</span>
+                      <span className='text-sm text-text-muted/60 shrink-0'>Unavailable</span>
                     )}
                   </div>
                 )
@@ -354,7 +367,7 @@ export default function PreviousVersionsSection() {
                     )
                   }
                   disabled={currentGroupState.loading}
-                  className='btn-ghost text-xs px-4 py-2 cursor-pointer disabled:opacity-60 disabled:cursor-default'
+                  className='btn-ghost text-sm px-5 py-2.5 rounded-full cursor-pointer disabled:opacity-60 disabled:cursor-default'
                 >
                   {currentGroupState.loading ? 'Loading…' : 'Load more'}
                 </button>

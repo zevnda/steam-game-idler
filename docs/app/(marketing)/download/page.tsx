@@ -1,7 +1,8 @@
-import FooterSection from '@/app/(marketing)/(home)/_components/FooterSection'
-import NavBar from '@/app/(marketing)/(home)/_components/NavBar'
+import LandingFooter from '@/app/(marketing)/(home)/_components/landing/LandingFooter'
+import LandingNav from '@/app/(marketing)/(home)/_components/landing/LandingNav'
 import StoreLoader from '@/app/(marketing)/(home)/_components/StoreLoader'
 import DownloadHero from '@/app/(marketing)/download/_components/DownloadHero'
+import FormatGuide from '@/app/(marketing)/download/_components/FormatGuide'
 import PreviousVersionsSection from '@/app/(marketing)/download/_components/PreviousVersionsSection'
 
 export const metadata = {
@@ -39,13 +40,16 @@ export const metadata = {
 
 export default function DownloadPage() {
   return (
-    <div className='min-h-screen bg-background'>
-      <NavBar />
+    <div className='landing min-h-screen bg-background'>
+      <LandingNav />
+      {/* sections separated as on the home page: landing-section spacing + a glow divider */}
       <DownloadHero />
+      <div className='section-divider' />
+      <FormatGuide />
       <div className='section-divider' />
       <PreviousVersionsSection />
       <div className='section-divider' />
-      <FooterSection />
+      <LandingFooter />
       <StoreLoader />
     </div>
   )

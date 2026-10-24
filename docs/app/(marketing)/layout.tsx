@@ -21,12 +21,6 @@ const mono = Geist_Mono({
   subsets: ['latin'],
 })
 
-declare global {
-  interface Window {
-    adsbygoogle: Record<string, unknown>[]
-  }
-}
-
 export const metadata = {
   title: {
     // Leads with the brand (already #1 for it) and carries the home page's primary non-brand query,
@@ -75,7 +69,7 @@ export const metadata = {
   other: {
     'msapplication-TileColor': '#fff',
     'google-site-verification': 'gOZEIhRh4BCNzE1r4etZeuJoex3aVaUrATjMnsnyYuY',
-    'google-adsense-account': 'ca-pub-8915288433444527',
+    // 'google-adsense-account': 'ca-pub-8915288433444527',
     'bdbfaa2fd4578c4db1970a32318ef980869bbd26': 'bdbfaa2fd4578c4db1970a32318ef980869bbd26',
     'referrer': 'strict-origin-when-cross-origin',
   },
@@ -110,12 +104,6 @@ export default function Layout({ children }: LayoutProps) {
       <head>
         <link rel='preconnect' href='https://cdn-steamgameidler.com' />
         <link rel='preconnect' href='https://www.googletagmanager.com' />
-        <link
-          rel='preconnect'
-          href='https://pagead2.googlesyndication.com'
-          crossOrigin='anonymous'
-        />
-        <link rel='dns-prefetch' href='https://cmp.gatekeeperconsent.com' />
 
         <JsonLd data={schemaData} />
 

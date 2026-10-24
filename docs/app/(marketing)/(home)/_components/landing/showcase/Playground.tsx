@@ -147,7 +147,7 @@ export default function Playground({
         <span className='gradient-text'>on autopilot.</span>
       </div>
       <p
-        className='pg-reveal mt-3 text-[15px] text-text-muted leading-relaxed'
+        className='pg-reveal mt-3 text-base text-text-muted leading-relaxed'
         style={reveal(WIDE_AT.intro)}
       >
         That&apos;s a working replica of SGI. Pick a feature, or just click around the app.
@@ -207,7 +207,7 @@ function FeatureFooter({ feature }: { feature: (typeof FEATURES)[number] }) {
     <Link
       prefetch={false}
       href={feature.href}
-      className='mt-3 inline-flex w-fit items-center gap-1 text-[13px] text-text-muted hover:text-text-primary transition-colors'
+      className='mt-3 inline-flex w-fit items-center gap-1 text-sm text-text-muted hover:text-text-primary transition-colors'
     >
       How it works
       {/* see the stacked layout's link above */}

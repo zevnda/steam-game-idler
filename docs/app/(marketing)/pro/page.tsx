@@ -1,5 +1,5 @@
-import FooterSection from '@/app/(marketing)/(home)/_components/FooterSection'
-import NavBar from '@/app/(marketing)/(home)/_components/NavBar'
+import LandingFooter from '@/app/(marketing)/(home)/_components/landing/LandingFooter'
+import LandingNav from '@/app/(marketing)/(home)/_components/landing/LandingNav'
 import ComparisonSection from '@/app/(marketing)/pro/_components/ComparisonSection'
 import { fetchProData } from '@/app/(marketing)/pro/_components/data'
 import FAQSection from '@/app/(marketing)/pro/_components/FAQSection'
@@ -43,8 +43,8 @@ export default async function ProPage() {
   const priceData = await fetchProData()
 
   return (
-    <div className='min-h-screen bg-background'>
-      <NavBar />
+    <div className='landing min-h-screen bg-background'>
+      <LandingNav />
       <div className='relative'>
         <HeroSection priceData={priceData} />
         <FeaturesSection />
@@ -53,7 +53,7 @@ export default async function ProPage() {
         <FeatureDetailsSection />
         <FAQSection />
         <div className='section-divider' />
-        <FooterSection />
+        <LandingFooter />
       </div>
     </div>
   )

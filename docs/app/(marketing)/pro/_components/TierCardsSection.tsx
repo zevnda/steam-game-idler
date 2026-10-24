@@ -18,7 +18,7 @@ import {
 } from 'react-icons/tb'
 import SectionHeading from '@/app/(marketing)/pro/_components/SectionHeading'
 import TierCard from '@/app/(marketing)/pro/_components/TierCard'
-import { FadeIn, StaggerGroup, StaggerItem } from '@/app/lib/animations'
+import { StaggerGroup, StaggerItem } from '@/app/lib/animations'
 
 interface TierCardsSectionProps {
   priceData: ProPriceData
@@ -60,9 +60,7 @@ export default function TierCardsSection({ priceData }: TierCardsSectionProps) {
     <section id='tiers' className='py-12 sm:py-16 relative scroll-mt-20'>
       <div className='container mx-auto px-4 sm:px-6 md:px-8'>
         <div className='max-w-4xl mx-auto'>
-          <FadeIn>
-            <SectionHeading label='Choose Your Tier' />
-          </FadeIn>
+          <SectionHeading label='Choose Your Tier' />
 
           <StaggerGroup className='grid md:grid-cols-2 gap-6 items-stretch'>
             <StaggerItem className='h-full'>

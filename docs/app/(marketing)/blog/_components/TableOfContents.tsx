@@ -12,9 +12,7 @@ export default function TableOfContents({ items }: { items: TOCItemType[] }) {
   return (
     <AnchorProvider toc={items} single>
       <nav aria-label='On this page'>
-        <p className='mb-3 text-xs font-semibold uppercase tracking-wider text-text-muted'>
-          On this page
-        </p>
+        <p className='mb-3 text-sm font-semibold text-text-primary'>On this page</p>
         <ul className='space-y-1 border-l border-border'>
           {items.map(item => (
             <li key={item.url}>

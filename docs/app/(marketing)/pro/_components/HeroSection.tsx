@@ -25,7 +25,7 @@ export default function HeroSection({ priceData }: HeroSectionProps) {
       />
 
       <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
-        <div className='max-w-2xl mx-auto text-center'>
+        <div className='page-enter max-w-2xl mx-auto text-center'>
           <p className='text-sm font-black uppercase tracking-[0.2em] text-text-primary mb-4'>
             Steam Game Idler{' '}
             <span

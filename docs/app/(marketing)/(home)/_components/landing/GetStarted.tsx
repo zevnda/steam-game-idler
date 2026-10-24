@@ -186,7 +186,7 @@ function Step({
           <h3 className='text-lg font-semibold text-text-primary'>{title}</h3>
           <p
             key={`${swapKey}-body`}
-            className={`text-[15px] text-text-muted leading-relaxed ${swap ?? ''}`}
+            className={`text-base text-text-muted leading-relaxed ${swap ?? ''}`}
           >
             {body}
           </p>

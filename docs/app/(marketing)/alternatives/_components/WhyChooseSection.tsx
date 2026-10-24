@@ -1,53 +1,48 @@
 import type { Competitor } from '@/app/(marketing)/alternatives/_data/competitors'
-import { FiRefreshCw } from 'react-icons/fi'
-import { TbAward, TbCards, TbEye, TbShield, TbTrendingUp, TbUsers } from 'react-icons/tb'
-import SectionHeading from '@/app/(marketing)/pro/_components/SectionHeading'
-import { FadeIn, StaggerGroup, StaggerItem } from '@/app/lib/animations'
+import SectionHeading from '@/app/(marketing)/(home)/_components/landing/SectionHeading'
+import { StaggerGroup, StaggerItem } from '@/app/lib/animations'
 
-const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
-  TbUsers,
-  TbCards,
-  TbShield,
-  FiRefreshCw,
-  TbEye,
-  TbAward,
-  TbTrendingUp,
-}
+// one glow hue per card position, from the home bento's palette (landing/features.ts)
+const ACCENTS = ['#34d399', '#f0abfc', '#facc15']
 
 interface WhyChooseSectionProps {
   competitor: Competitor
 }
 
+/** Reasons to switch, on the home page's bento surfaces (`.bento-tile`, FeatureBento.tsx). */
 export default function WhyChooseSection({ competitor }: WhyChooseSectionProps) {
   return (
-    <div className='max-w-5xl mx-auto'>
-      <FadeIn>
-        <SectionHeading label='Why Choose Steam Game Idler' />
-      </FadeIn>
+    <section aria-labelledby='why-heading' className='landing-section'>
+      <div className='landing-container'>
+        <SectionHeading
+          id='why-heading'
+          eyebrow='Why switch'
+          title={
+            <>
+              Why people <span className='gradient-text'>switch.</span>
+            </>
+          }
+          sub={competitor.whyChooseSummary}
+        />
 
-      <StaggerGroup className='grid sm:grid-cols-3 gap-4 mb-8'>
-        {competitor.whyChooseCards.map(card => {
-          const Icon = ICONS[card.icon]
-          return (
-            <StaggerItem key={card.title}>
-              <div className='rounded-3xl p-6 text-center h-full border border-white/5 bg-[#101013]'>
-                <Icon className={`w-7 h-7 mx-auto mb-4 ${competitor.accentTextClassName}`} />
-                <h3 className='font-semibold text-white mb-2'>{card.title}</h3>
-                <p className='text-sm text-white/60 leading-relaxed'>{card.description}</p>
-              </div>
+        <StaggerGroup className='mt-16 grid sm:grid-cols-3 gap-4'>
+          {competitor.whyChooseCards.map((card, i) => (
+            <StaggerItem key={card.title} className='h-full'>
+              <article
+                className='bento-tile'
+                style={{ '--accent': ACCENTS[i % ACCENTS.length] } as React.CSSProperties}
+              >
+                <div className='relative p-7 sm:p-8'>
+                  <h3 className='text-lg font-semibold text-text-primary'>{card.title}</h3>
+                  <p className='mt-2 text-base text-text-muted leading-relaxed'>
+                    {card.description}
+                  </p>
+                </div>
+              </article>
             </StaggerItem>
-          )
-        })}
-      </StaggerGroup>
-
-      <FadeIn
-        delay={0.15}
-        className='rounded-3xl p-8 text-center border border-white/5 bg-[#101013]'
-      >
-        <p className='text-white/60 leading-relaxed max-w-2xl mx-auto'>
-          {competitor.whyChooseSummary}
-        </p>
-      </FadeIn>
-    </div>
+          ))}
+        </StaggerGroup>
+      </div>
+    </section>
   )
 }

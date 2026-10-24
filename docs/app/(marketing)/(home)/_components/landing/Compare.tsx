@@ -2,7 +2,7 @@
 
 import type { ComparisonFeatureRow } from '@/app/(marketing)/alternatives/_data/competitors'
 import { useState } from 'react'
-import { TbCheck, TbMinus } from 'react-icons/tb'
+import CompareCell from './CompareCell'
 import SectionHeading from './SectionHeading'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -69,23 +69,6 @@ function ToolLink({ tool }: { tool: ToolKey }) {
     >
       {t.name}
     </Link>
-  )
-}
-
-function Cell({ value, sgi }: { value: Value; sgi?: boolean }) {
-  if (typeof value === 'string') {
-    return (
-      <span className='text-[11px] font-semibold text-text-muted text-center leading-tight'>
-        {value}
-      </span>
-    )
-  }
-  return value ? (
-    <span className={`cmp-yes ${sgi ? 'cmp-yes--sgi' : ''}`} aria-label='Supported'>
-      <TbCheck />
-    </span>
-  ) : (
-    <TbMinus className='text-white/15 w-4 h-4' aria-label='Not supported' />
   )
 }
 
@@ -156,11 +139,11 @@ export default function Compare() {
               <div key={r.feature} className='cmp__row'>
                 <div className='cmp__feature'>{r.feature}</div>
                 <div className='cmp__sgi'>
-                  <Cell value={r.sgi} sgi />
+                  <CompareCell value={r.sgi} sgi />
                 </div>
                 {TOOLS.map(t => (
                   <div key={t.key} className='cmp__cell' data-off={focus !== t.key || undefined}>
-                    <Cell value={r[t.key]} />
+                    <CompareCell value={r[t.key]} />
                   </div>
                 ))}
               </div>

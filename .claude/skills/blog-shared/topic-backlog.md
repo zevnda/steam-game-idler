@@ -6,7 +6,7 @@ rejected ones from coming back without new evidence, and news sweeps from re-rea
 weeks. Newest entries go first in each section. Keep entries short; full research lives in the
 gitignored `seo-blog-research-{slug}.md` files.
 
-**Last discovery sweep:** 2026-10-21 (one-day window: no new Valve news; GSC data only reached 2026-10-18, so no new demand signal - nothing queued)
+**Last discovery sweep:** 2026-10-23 (two-day window: only Valve item was the Oct 21 client update - bug fixes only; Protobufs changes were Remote Play/audio; no seasonal event in the next 6 weeks fits - nothing queued)
 
 ## Queued - passed the gate, not written yet
 
@@ -55,6 +55,17 @@ published. GSC figures are 2026-07-20 to 2026-10-17; re-pull before starting.
   impressions in 90 days. Strengthen the index page's "Protected achievements" section: answer
   "can they be unlocked or bypassed?" directly, and quote SAM's exact error message. Alternatively,
   retitle `special-flags` so Google prefers it. Pick one, so the two don't split the intent.
+- **Review the six `| SGI` docs titles - on/after 2026-11-17** (added 2026-10-23): the
+  keyword-first `seoTitle`s from #2167/#2175 (achievement-manager, special-flags,
+  achievement-unlocker, card-farming, playtime-booster, steam-credentials) use `| SGI` because
+  `| Steam Game Idler` would push them to 63-72 chars. Title rule: keyword phrase first, then
+  `| Steam Game Idler`; `| SGI` only when the full brand would overrun ~60 chars. Don't switch
+  every page to `| SGI` (the site gets ~4,400 impressions for "steam game idler" vs ~44 for
+  "sgi steam"). After 4 weeks of data, compare each page's CTR/position with the 4 weeks before
+  2026-10-20 and check whether Google rewrites the titles shown in results. Change one only if
+  it underperforms or Google rewrites it, and keep the keyword phrase as-is. The
+  achievement-unlocker title's `:` (vs ` - ` elsewhere) is cosmetic only; switch it to ` - `
+  only if that title is being edited anyway.
 - **`/docs/features/card-farming`**: "how to farm steam trading cards" and variants ~340
   impressions at pos 6-8, ~3 clicks. Make sure the opening answers the how-to directly.
 
@@ -69,19 +80,19 @@ published. GSC figures are 2026-07-20 to 2026-10-17; re-pull before starting.
 
 ### Can You Remove, Hide or Reset Steam Achievements? What Actually Works - `/blog/remove-steam-achievements` - published 2026-10-20
 - Primary keyword: can you remove steam achievements | Revisit: 2027-10 (yearly), or if Valve changes privacy/private-game rules or adds an official reset
-- Indexed 2026-10-20 (URL Inspection 2026-10-21: Submitted and indexed, canonical matches).
+- Indexed 2026-10-20 (URL Inspection 2026-10-21: Submitted and indexed, canonical matches; re-checked 2026-10-23: PASS).
 
 ### How to Level Up on Steam: Every Source of XP, and What It Costs - `/blog/how-to-level-up-on-steam` - published 2026-10-20
 - Primary keyword: how to level up on steam | Revisit: each Winter/Summer Sale (new Seasonal Badge), and before the 2026 Steam Awards nominations (late Nov) to confirm the badge
-- Indexed 2026-10-20 (URL Inspection 2026-10-21: Submitted and indexed, canonical matches).
+- Indexed 2026-10-20 (URL Inspection 2026-10-21: Submitted and indexed, canonical matches; re-checked 2026-10-23: PASS).
 
 ### How Steam Trading Cards Work: Drops, Badges, Booster Packs and Selling - `/blog/how-steam-trading-cards-work` - published 2026-10-20
 - Primary keyword: how do steam trading cards work | Revisit: 2027-10 (yearly refresh), or if Valve changes card/booster/badge rules
-- Indexed 2026-10-20 (URL Inspection: Submitted and indexed).
+- Indexed 2026-10-20 (URL Inspection: Submitted and indexed; re-checked 2026-10-23: PASS).
 
 ### Steam Achievement Sets: What the Beta Changes for Achievement Hunters - `/blog/steam-achievement-sets` - published 2026-10-20
 - Primary keyword: steam achievement sets | Revisit: when Achievement Sets leave beta (check the Steam news API), then set `updated:`
-- Indexed 2026-10-20 (URL Inspection: Submitted and indexed).
+- Indexed 2026-10-20 (URL Inspection: Submitted and indexed; re-checked 2026-10-23: PASS).
 
 ## Rejected - don't re-propose without new evidence
 

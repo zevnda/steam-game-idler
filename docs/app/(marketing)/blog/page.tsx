@@ -1,7 +1,7 @@
 import { FiRss } from 'react-icons/fi'
 import PostCard from './_components/PostCard'
-import FooterSection from '@/app/(marketing)/(home)/_components/FooterSection'
-import NavBar from '@/app/(marketing)/(home)/_components/NavBar'
+import LandingFooter from '@/app/(marketing)/(home)/_components/landing/LandingFooter'
+import LandingNav from '@/app/(marketing)/(home)/_components/landing/LandingNav'
 import JsonLd from '@/app/lib/JsonLd'
 import { absoluteUrl, getPublishedPosts, getReadingTime, SITE_URL } from '@/lib/blog'
 
@@ -70,23 +70,25 @@ export default async function BlogIndexPage() {
   ]
 
   return (
-    <div className='min-h-screen bg-background'>
+    <div className='landing min-h-screen bg-background'>
       <JsonLd data={schema} />
-      <NavBar />
+      <LandingNav />
 
-      <main className='container mx-auto max-w-6xl px-4 pb-24 pt-28 sm:px-6 sm:pt-32 md:px-8'>
-        <header className='mb-12 flex flex-col gap-6 sm:mb-16 sm:flex-row sm:items-end sm:justify-between'>
+      <main className='landing-container pb-28 pt-36 sm:pb-36 sm:pt-44'>
+        <header className='page-enter mb-12 flex flex-col gap-6 sm:mb-16 sm:flex-row sm:items-end sm:justify-between'>
           <div className='max-w-2xl'>
-            <p className='mb-3 text-sm font-semibold uppercase tracking-wider text-accent'>Blog</p>
-            <h1 className='mb-4 text-4xl font-bold leading-tight tracking-tight text-text-primary sm:text-5xl'>
-              Steam news, <span className='gradient-text'>explained.</span>
+            <h1 className='mb-6 text-[clamp(2.6rem,5.6vw,4.8rem)] font-semibold leading-[0.98] tracking-[-0.04em] text-text-primary'>
+              Steam news, explained.
             </h1>
             <p className='text-lg leading-relaxed text-text-muted'>
               What Steam&apos;s changes mean for idling, trading cards and achievements, plus guides
               from the people who build Steam Game Idler.
             </p>
           </div>
-          <a href='/blog/rss.xml' className='btn-ghost shrink-0 self-start px-4 py-2 sm:self-auto'>
+          <a
+            href='/blog/rss.xml'
+            className='btn-ghost shrink-0 self-start rounded-full px-5 py-2.5 sm:self-auto'
+          >
             <FiRss className='h-4 w-4' aria-hidden='true' />
             RSS feed
           </a>
@@ -113,8 +115,7 @@ export default async function BlogIndexPage() {
         )}
       </main>
 
-      <div className='section-divider' />
-      <FooterSection />
+      <LandingFooter />
     </div>
   )
 }

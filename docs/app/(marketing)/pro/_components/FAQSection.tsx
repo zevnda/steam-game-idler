@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import FAQItem from '@/app/(marketing)/pro/_components/FAQItem'
 import SectionHeading from '@/app/(marketing)/pro/_components/SectionHeading'
-import { FadeIn, StaggerGroup, StaggerItem } from '@/app/lib/animations'
+import { StaggerGroup, StaggerItem } from '@/app/lib/animations'
 
 const faqItems = [
   {
@@ -43,9 +43,7 @@ export default function FAQSection() {
     <section className='py-12 sm:py-16 relative'>
       <div className='container mx-auto px-4 sm:px-6 md:px-8'>
         <div className='max-w-3xl mx-auto'>
-          <FadeIn>
-            <SectionHeading label='FAQ' />
-          </FadeIn>
+          <SectionHeading label='FAQ' />
 
           <StaggerGroup className='space-y-3'>
             {faqItems.map((item, i) => (

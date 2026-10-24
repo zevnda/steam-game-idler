@@ -27,7 +27,7 @@ export default function Faq() {
             }
             sub='The things people ask most before downloading.'
           />
-          <div className='mt-8 flex flex-wrap gap-3'>
+          <div className='mt-8 flex flex-wrap justify-center lg:justify-start gap-3'>
             <Link prefetch={false} href='/docs/faq' className='btn-ghost px-5 py-2.5 rounded-full'>
               All FAQs <FiArrowUpRight className='w-4 h-4' />
             </Link>

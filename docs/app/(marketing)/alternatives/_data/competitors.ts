@@ -10,7 +10,6 @@ export interface ComparisonCategory {
 }
 
 export interface WhyChooseCard {
-  icon: string
   title: string
   description: string
 }
@@ -18,23 +17,6 @@ export interface WhyChooseCard {
 export interface Competitor {
   slug: string
   name: string
-  badgeLabel: string
-  accentClassName: string
-  accentBorderClassName: string
-  accentBgClassName: string
-  accentTextClassName: string
-  gradientFrom: string
-  gradientTo: string
-  // Glow treatment for the "Steam Game Idler" comparison-table header column, mirroring /pro's
-  // ComparisonTable "Gamer" tier glow (dark saturated gradient + colored box-shadow bloom) - kept
-  // per-competitor so each page's glow matches its own accent hue instead of one fixed color.
-  headerGlowGradient: string
-  headerGlowShadow: string
-  headerGlowTextColor: string
-  // Subtle persistent tint carried down every row's "Steam Game Idler" column, mirroring /pro's
-  // Gamer column background - makes the highlighted column read as one continuous lane rather
-  // than just a highlighted header. Check icons/values in that column use headerGlowTextColor.
-  rowTintGradient: string
   intro: string
   comparisonData: ComparisonCategory[]
   narrativeHeading: string
@@ -53,17 +35,6 @@ export const COMPETITORS: Record<string, Competitor> = {
   'archisteamfarm': {
     slug: 'archisteamfarm',
     name: 'ArchiSteamFarm',
-    badgeLabel: 'Detailed Comparison',
-    accentClassName: 'text-blue-300',
-    accentBorderClassName: 'border-blue-500/30',
-    accentBgClassName: 'bg-blue-500/10',
-    accentTextClassName: 'text-blue-400',
-    gradientFrom: '#60a5fa',
-    gradientTo: '#a855f7',
-    headerGlowGradient: 'linear-gradient(180deg, #1e3a8a 0%, #4c1d95 100%)',
-    headerGlowShadow: '0 0 24px 6px rgba(96, 165, 250, 0.25)',
-    headerGlowTextColor: '#bfdbfe',
-    rowTintGradient: 'linear-gradient(180deg, rgba(96,165,250,0.12), rgba(168,85,247,0.06))',
     intro:
       'Looking for an ArchiSteamFarm alternative without config files or a command line? Compare Steam Game Idler and ASF feature by feature, from card farming to achievements.',
     comparisonData: [
@@ -119,17 +90,14 @@ export const COMPETITORS: Record<string, Competitor> = {
     ],
     whyChooseCards: [
       {
-        icon: 'TbUsers',
         title: 'User-Friendly',
         description: 'No complex configuration files or command line knowledge required',
       },
       {
-        icon: 'TbCards',
         title: 'All-in-One',
         description: 'Card farming, achievements, and playtime boosting in one app',
       },
       {
-        icon: 'TbShield',
         title: 'Secure',
         description: 'Public source code with transparent security practices',
       },
@@ -142,17 +110,6 @@ export const COMPETITORS: Record<string, Competitor> = {
   'idle-master': {
     slug: 'idle-master',
     name: 'Idle Master',
-    badgeLabel: 'Detailed Comparison',
-    accentClassName: 'text-orange-300',
-    accentBorderClassName: 'border-orange-500/30',
-    accentBgClassName: 'bg-orange-500/10',
-    accentTextClassName: 'text-orange-400',
-    gradientFrom: '#fb923c',
-    gradientTo: '#f87171',
-    headerGlowGradient: 'linear-gradient(180deg, #7c2d12 0%, #7f1d1d 100%)',
-    headerGlowShadow: '0 0 24px 6px rgba(251, 146, 60, 0.25)',
-    headerGlowTextColor: '#fed7aa',
-    rowTintGradient: 'linear-gradient(180deg, rgba(251,146,60,0.12), rgba(248,113,113,0.06))',
     intro:
       'Looking for an Idle Master alternative? Idle Master is no longer maintained. Compare it feature by feature with Steam Game Idler, which is actively developed.',
     comparisonData: [
@@ -192,17 +149,14 @@ export const COMPETITORS: Record<string, Competitor> = {
     ],
     whyChooseCards: [
       {
-        icon: 'FiRefreshCw',
         title: 'Active Development',
         description: "Regular updates and new features versus Idle Master's abandoned status",
       },
       {
-        icon: 'TbEye',
         title: 'Modern Interface',
         description: 'Beautiful, intuitive design with real-time progress tracking',
       },
       {
-        icon: 'TbShield',
         title: 'Enhanced Security',
         description: 'Modern safety practices and a publicly auditable codebase',
       },
@@ -215,17 +169,6 @@ export const COMPETITORS: Record<string, Competitor> = {
   'steam-achievement-manager': {
     slug: 'steam-achievement-manager',
     name: 'Steam Achievement Manager',
-    badgeLabel: 'Detailed Comparison',
-    accentClassName: 'text-emerald-300',
-    accentBorderClassName: 'border-emerald-500/30',
-    accentBgClassName: 'bg-emerald-500/10',
-    accentTextClassName: 'text-emerald-400',
-    gradientFrom: '#34d399',
-    gradientTo: '#10b981',
-    headerGlowGradient: 'linear-gradient(180deg, #064e3b 0%, #065f46 100%)',
-    headerGlowShadow: '0 0 24px 6px rgba(52, 211, 153, 0.25)',
-    headerGlowTextColor: '#a7f3d0',
-    rowTintGradient: 'linear-gradient(180deg, rgba(52,211,153,0.12), rgba(16,185,129,0.06))',
     intro:
       'Looking for a Steam Achievement Manager alternative? Compare SAM with Steam Game Idler, which adds automatic achievement unlocking, card farming and more.',
     comparisonData: [
@@ -266,19 +209,16 @@ export const COMPETITORS: Record<string, Competitor> = {
     ],
     whyChooseCards: [
       {
-        icon: 'TbAward',
         title: 'Automated Unlocker',
         description:
           'Automatically unlocks achievements over time with configurable delays — dripping them in the order real players earn them to mimic natural progression',
       },
       {
-        icon: 'TbCards',
         title: 'All-in-One',
         description:
           'Card farming, inventory selling, and playtime boosting alongside full achievement management — no need to run separate tools',
       },
       {
-        icon: 'TbTrendingUp',
         title: 'Custom Control',
         description:
           'Set a custom unlock order, per-achievement delays, and an initial wait period — or let the default mode handle everything automatically',

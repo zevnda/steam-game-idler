@@ -9,6 +9,20 @@
   inherits: false;
 }
 
+/* The docs TOC's active range (set inline by Fumadocs' clerk TOC). Registered so the range itself
+   can transition - the clip-path and the fading trail both read it, so they glide in step. */
+@property --track-top {
+  syntax: '<length>';
+  initial-value: 0px;
+  inherits: true;
+}
+
+@property --track-bottom {
+  syntax: '<length>';
+  initial-value: 0px;
+  inherits: true;
+}
+
 /* ─── Design tokens ─────────────────────────────────────────── */
 @theme {
   --color-background: #000000;
@@ -26,7 +40,10 @@
 .dark {
   --color-fd-background: #000000;
   --color-fd-card: #0d0d0d;
-  --color-fd-primary: #a5f84cff;
+  /* the marketing accent (--color-accent), so Fumadocs' active states, TOC thumb and step
+     markers speak the same colour as the rest of the site */
+  --color-fd-primary: #00a3ff;
+  --color-fd-primary-foreground: #ffffff;
   --color-fd-secondary: #1d1d1d;
   --color-fd-accent: #151515;
   --color-fd-muted: #1d1d1d;
@@ -179,8 +196,10 @@
 
   .btn-download:hover {
     background-color: #f2f2f2;
+    /* no offset, so the glow sits evenly on every side: a tight halo plus a wider soft one */
     box-shadow:
-      0 8px 32px rgba(255, 255, 255, 0.14),
+      0 0 12px rgba(255, 255, 255, 0.12),
+      0 0 32px rgba(255, 255, 255, 0.12),
       0 0 0 1px rgba(255, 255, 255, 0.25);
     /* a wide pill grows a lot of pixels per percent - 1.05 read as a jump, 1.03 as a lift */
     transform: scale(1.03);
@@ -215,6 +234,30 @@
   }
 }
 
+/* ─── Inner marketing pages ─────────────────────────────────── */
+/* The page header's entrance on every inner marketing page - the home hero's (.showcase__hero):
+   the whole header (title, sub, actions, hero picture) rises once as one block, transform only so
+   the title still counts as painted on the first frame (LCP). Section headings below never animate
+   and the content under them reveals on scroll (FadeIn/StaggerGroup), as on the home page. */
+.page-enter {
+  animation: hero-enter 1s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+/* Download page: the app snapshot beside the hero copy */
+.download-shot {
+  border-radius: 14px;
+  background: #0d0d0f;
+}
+
+/* Changelog: entries separated by space rather than a rule */
+.changelog-entry {
+  padding-top: 72px;
+}
+
+.changelog-entry:first-child {
+  padding-top: 0;
+}
+
 /* ─── Landing page ──────────────────────────────────────────── */
 /* Fast scrolling past the pinned WebGL stage makes Chrome briefly paint not-yet-rastered tiles
    with the root background - which was never set, so it flashed white. */
@@ -246,9 +289,11 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   padding-block: clamp(5rem, 11vw, 9.5rem);
 }
 
+/* Unlayered, so it beats Tailwind's max-w-* utilities - narrow it with [--container-max:...]
+   instead (e.g. the changelog's reading column). */
 .landing-container {
   width: 100%;
-  max-width: 1240px;
+  max-width: var(--container-max, 1240px);
   margin-inline: auto;
   padding-inline: clamp(1rem, 4vw, 2rem);
 }
@@ -294,6 +339,11 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.06);
 }
 
+.landing-nav__link[aria-current='page'] {
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .landing-nav__link--pro {
   font-weight: 700;
   color: var(--color-text-primary);
@@ -303,9 +353,10 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   position: fixed;
   inset: 0;
   z-index: 60;
-  background: rgba(0, 0, 0, 0.96);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  /* solid, not translucent: the bright 3D stage behind bled through even a 96% black */
+  background: #050505;
   /* closed (and the exit): a quick fade, then visibility flips once it's invisible */
   opacity: 0;
   visibility: hidden;
@@ -325,6 +376,133 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
     opacity 220ms cubic-bezier(0.22, 1, 0.36, 1),
     transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
     visibility 0s;
+}
+
+/* the home hero's ambient glow (.showcase__glow), low in the sheet */
+.landing-sheet__glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(70% 40% at 50% 100%, rgba(90, 120, 255, 0.14), transparent 70%),
+    radial-gradient(45% 30% at 80% 90%, rgba(200, 90, 255, 0.08), transparent 70%);
+}
+
+/* the sheet's groups rise in one after another (--i, set in LandingNav.tsx) */
+.landing-sheet__item {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.landing-sheet--open .landing-sheet__item {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(var(--i, 0) * 50ms + 60ms);
+}
+
+/* a group of links on one surface - the home page's card tone and outline */
+.sheet-group {
+  border-radius: 20px;
+  background: #0c0c0f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.sheet-group li + li {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sheet-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 15px 18px;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--color-text-primary);
+  transition: background-color 150ms ease;
+}
+
+.sheet-link:active {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.sheet-link[aria-current='page'] {
+  /* the accent edge, as on the docs sidebar's current page - painted as a background layer since
+     rows already use border-top for their rule */
+  background:
+    linear-gradient(var(--color-accent), var(--color-accent)) left / 2px 100% no-repeat,
+    rgba(255, 255, 255, 0.06);
+}
+
+/* Docs sections in the sheet (DocsSheetTree): a folder's chevron as its own tap target beside the
+   folder's page link, and its pages as a recessed sub-list - the docs sidebar card's treatment */
+.sheet-folder__toggle {
+  display: flex;
+  align-items: center;
+  padding: 15px 18px;
+}
+
+.sheet-folder__toggle:active {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.sheet-sub {
+  background: rgba(0, 0, 0, 0.35);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-block: 4px;
+}
+
+/* nested rows sit in one strip, no rule between them (.sheet-group li + li would add one) */
+.sheet-group .sheet-sub li + li {
+  border-top: 0;
+}
+
+.sheet-link--sub {
+  padding: 11px 18px 11px 32px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.sheet-link--sub[aria-current='page'] {
+  color: var(--color-text-primary);
+}
+
+.sheet-link__chevron {
+  width: 18px;
+  height: 18px;
+  color: var(--color-text-muted);
+  transition: transform 150ms ease;
+}
+
+.sheet-link[aria-current='page'] .sheet-link__chevron {
+  color: var(--color-text-primary);
+}
+
+/* PRO: a full-width .rainbow-chip laid out as one more .sheet-link row - same corners, tone, text
+   inset and chevron as the groups above. Doubled class selectors: .rainbow-chip's own pill radius
+   and padding come later in this file and would otherwise win. */
+.rainbow-chip.sheet-pro {
+  display: flex;
+  width: 100%;
+  border-radius: 20px;
+}
+
+/* 1px rim + 18px = the groups' 1px border + 18px row padding, so the text lines up with theirs */
+.rainbow-chip__inner.sheet-pro__inner {
+  flex: 1;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 18px;
+  border-radius: 19px;
+  background: #0c0c0f;
+  color: var(--color-text-primary);
 }
 
 /* Rainbow-rimmed chip (hero release badge) */
@@ -374,6 +552,73 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
 
 .rainbow-chip:hover .rainbow-chip__inner {
   background: rgba(5, 5, 5, 0.82);
+}
+
+/* The hero's release banner (ReleaseBanner.tsx): a .rainbow-chip with a link and a dismiss button.
+   Always laid out (its slot is reserved so the hero never moves); hidden it's invisible, which
+   also keeps it out of the tab order. Fades in once the real version has loaded. */
+.release-banner {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 300ms ease,
+    visibility 0s linear 300ms;
+}
+
+.release-banner--on {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 500ms ease;
+}
+
+.release-banner__inner {
+  gap: 4px;
+  padding: 4px 4px 4px 14px;
+}
+
+.release-banner__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 6px;
+}
+
+.release-banner__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  transition: gap 200ms ease;
+}
+
+.release-banner__link:hover .release-banner__more {
+  gap: 7px;
+}
+
+.release-banner__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease;
+}
+
+.release-banner__close:hover {
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.release-banner__close:focus-visible,
+.release-banner__link:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
+  border-radius: 999px;
 }
 
 /* ── Showcase: pinned hero -> playground. `--t` (0..1) is the hand-over progress, set from JS. */
@@ -1961,6 +2206,22 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   border-top: 0;
 }
 
+/* two-tool form (SGI vs one competitor) used on /alternatives/[tool]; every column stays visible on
+   phones, so it carries no [data-off] switching */
+.cmp__row.cmp__row--duo {
+  grid-template-columns: minmax(0, 1.6fr) repeat(2, minmax(0, 1fr));
+}
+
+/* a per-category table's heading, sitting in the header row's feature column */
+.cmp__category {
+  display: flex;
+  align-items: center;
+  padding: 18px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
 @media (max-width: 767px) {
   .cmp__row {
     grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr));
@@ -2275,7 +2536,7 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
 
 .faq-card__answer {
   padding: 0 72px 22px 22px;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.7;
   color: var(--color-text-muted);
   opacity: 0;
@@ -2385,6 +2646,7 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
    state feedback, not movement. */
 @media (prefers-reduced-motion: reduce) {
   .showcase__hero,
+  .page-enter,
   .fallback-shot__img,
   .rainbow-chip::before,
   .cta-rim::before,
@@ -2417,7 +2679,8 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   }
 
   .landing-sheet,
-  .landing-sheet--open {
+  .landing-sheet--open,
+  .landing-sheet__item {
     transform: none;
   }
 
@@ -2448,18 +2711,6 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   to {
     transform: translateX(100%);
   }
-}
-
-/* AdSense — hide ad units that didn't fill so they don't show as blank boxes */
-.ad-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;
-}
-
-.ad-wrapper:has(ins.adsbygoogle[data-ad-status='unfilled']) {
-  display: none;
 }
 
 /* ─── Prevent double scrollbar ─────────────────────────── */
@@ -2517,6 +2768,543 @@ a[data-active='true'].relative.flex.flex-row.items-center.gap-2.rounded-lg.p-2 {
 
 button[aria-label='Copy Link'] {
   cursor: pointer;
+}
+
+/* ─── Docs portal ──────────────────────────────────────────── */
+/* The docs inside the marketing shell (docs/layout.tsx): LandingNav's pill on a black band, the
+   home page's card tone for every raised surface, its display type for page titles. Everything is
+   scoped to .docs-shell so the blog's prose and the marketing pages are untouched. Fumadocs ships
+   its chrome as utility classes with no hooks of their own, so the selectors lean on its stable
+   ids (#nd-sidebar, #nd-page, #nd-toc...) and data attributes instead. */
+.docs-shell {
+  /* the pill: 12px from the top, 52px tall, 12px clear underneath (LandingNav) */
+  --fd-banner-height: 76px;
+  --docs-surface: #0c0c0f;
+  --docs-surface-hover: #131317;
+  --docs-outline: rgba(255, 255, 255, 0.08);
+  --color-fd-card: var(--docs-surface);
+  --color-fd-border: var(--docs-outline);
+  --color-fd-muted-foreground: #a3a3a3;
+  --color-fd-foreground: #f5f5f5;
+  padding-top: var(--fd-banner-height);
+  background: #000;
+}
+
+.docs-band {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 30;
+  height: var(--fd-banner-height);
+  background: #000;
+}
+
+/* above the band, below Fumadocs' mobile drawer (z-40) so an open page tree covers the pill */
+.docs-shell .landing-header {
+  z-index: 31;
+}
+
+/* Sidebar: no panel or edge line - it sits on the page's own black, like the marketing pages'
+   columns. Only the collapsed hover-peek, which genuinely floats, gets a surface. */
+#nd-sidebar {
+  background: transparent;
+  border-color: transparent;
+}
+
+#nd-sidebar[data-collapsed='true'] {
+  background: var(--docs-surface);
+  border-color: var(--docs-outline);
+  border-radius: 20px;
+}
+
+/* items read as the pill's links: rounded, muted, white on a faint fill when current */
+:is(#nd-sidebar, #nd-sidebar-mobile) :is(a, button)[data-active] {
+  border-radius: 999px;
+  padding-inline-end: 12px;
+  color: var(--color-text-muted);
+}
+
+:is(#nd-sidebar, #nd-sidebar-mobile) :is(a, button)[data-active]:hover {
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+:is(#nd-sidebar, #nd-sidebar-mobile) a[data-active='true'] {
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* nested pages' current-item tick, in the accent rather than a second shade of white */
+:is(#nd-sidebar, #nd-sidebar-mobile) a[data-active='true']::before {
+  background: var(--color-accent);
+}
+
+/* the full search field, as a pill on the card tone */
+:is(#nd-sidebar, #nd-sidebar-mobile) [data-search-full] {
+  border-radius: 999px;
+  background: var(--docs-surface);
+  border-color: var(--docs-outline);
+  padding-inline: 14px;
+}
+
+:is(#nd-sidebar, #nd-sidebar-mobile) [data-search-full]:hover {
+  background: var(--docs-surface-hover);
+}
+
+/* An always-visible scrollbar. Fumadocs' Radix scroll area (type "scroll") unmounts its own
+   scrollbar whenever you aren't scrolling, so it can't be kept on screen with CSS - instead the
+   viewport's native scrollbar comes back (Radix hides it with an injected stylesheet), themed like
+   the marketing pages' own page scrollbar, and the Radix one is hidden so there's only ever one. */
+:is(#nd-sidebar, #nd-sidebar-mobile) [data-radix-scroll-area-viewport] {
+  scrollbar-width: thin;
+  scrollbar-color: #2e2e33 transparent;
+}
+
+/* older WebKit (no standard scrollbar properties) */
+:is(#nd-sidebar, #nd-sidebar-mobile) [data-radix-scroll-area-viewport]::-webkit-scrollbar {
+  display: block;
+  width: 8px;
+}
+
+:is(#nd-sidebar, #nd-sidebar-mobile) [data-radix-scroll-area-viewport]::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: #2e2e33;
+}
+
+:is(#nd-sidebar, #nd-sidebar-mobile) [data-radix-scroll-area-viewport] ~ [data-orientation] {
+  display: none;
+}
+
+/* Section headers ("Get Started", "Features"...) in the marketing nav sheet's group-label style
+   (LandingNav), so a header can't be mistaken for a page or folder - those stay sentence case and
+   pill-shaped on hover. Fumadocs renders these separators as the sidebar's only <p>s. */
+:is(#nd-sidebar, #nd-sidebar-mobile) p {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: var(--color-text-muted);
+  margin-top: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+:is(#nd-sidebar, #nd-sidebar-mobile) p:first-child {
+  margin-top: 0.25rem;
+}
+
+/* ── Sidebar, grouped-card variant (.docs-sidebar-cards on the shell). The site's phone menu
+   sheet (.sheet-group/.sheet-link) as a docs sidebar: each section's pages sit on one rounded card
+   with a quiet rule between rows, the label above it, and a chevron that slides in on hover.
+   Fumadocs renders the tree flat - labels (<p>), pages (<a>) and folders (<div>) are siblings -
+   so the "card" is drawn per row: every row gets the surface, and only the first row after a
+   label and the last row before the next one round their corners. */
+.docs-sidebar-cards {
+  --docs-row-x: 14px;
+}
+
+.docs-sidebar-cards :is(#nd-sidebar, #nd-sidebar-mobile) p {
+  padding-inline: var(--docs-row-x);
+  margin-top: 1.6rem;
+  margin-bottom: 0.6rem;
+}
+
+.docs-sidebar-cards :is(#nd-sidebar, #nd-sidebar-mobile) p:first-child {
+  margin-top: 0.25rem;
+}
+
+/* every top-level row: page or folder */
+.docs-sidebar-cards
+  :is(#nd-sidebar, #nd-sidebar-mobile)
+  [data-radix-scroll-area-viewport]
+  > div
+  > :is(a, div) {
+  background: var(--docs-surface);
+  border-radius: 0;
+}
+
+/* the rule between rows, inset like the sheet's */
+.docs-sidebar-cards
+  :is(#nd-sidebar, #nd-sidebar-mobile)
+  [data-radix-scroll-area-viewport]
+  > div
+  > :is(a, div)
+  + :is(a, div) {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  /* rows must touch, but the tree root has Fumadocs' 2px gap as a layered !important utility,
+     which an unlayered rule can't override (layered !important wins) - so cancel it here */
+  margin-top: -2px;
+}
+
+.docs-sidebar-cards
+  :is(#nd-sidebar, #nd-sidebar-mobile)
+  [data-radix-scroll-area-viewport]
+  > div
+  > :is(p + a, p + div, :first-child) {
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+
+.docs-sidebar-cards
+  :is(#nd-sidebar, #nd-sidebar-mobile)
+  [data-radix-scroll-area-viewport]
+  > div
+  > :is(a, div):is(:has(+ p), :last-child) {
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
+
+/* a folder clips its own trigger/children to the card's corners */
+.docs-sidebar-cards
+  :is(#nd-sidebar, #nd-sidebar-mobile)
+  [data-radix-scroll-area-viewport]
+  > div
+  > div {
+  overflow: hidden;
+}
+
+/* rows: taller, square inside the card (the card supplies the corners), and touching - the
+   "Fumadocs step styles" rule above gives every sidebar item 3px of vertical margin */
+.docs-sidebar-cards :is(#nd-sidebar, #nd-sidebar-mobile) :is(a, button)[data-active] {
+  margin-block: 0;
+  border-radius: 0;
+  padding-block: 10px;
+  padding-inline-end: var(--docs-row-x);
+}
+
+/* top-level rows and folder triggers start at the card's text inset (nested rows keep
+   Fumadocs' depth-based inline offset) */
+.docs-sidebar-cards
+  :is(#nd-sidebar, #nd-sidebar-mobile)
+  [data-radix-scroll-area-viewport]
+  > div
+  > a,
+.docs-sidebar-cards
+  :is(#nd-sidebar, #nd-sidebar-mobile)
+  [data-radix-scroll-area-viewport]
+  > div
+  > div
+  > :is(a, button) {
+  padding-inline-start: var(--docs-row-x) !important;
+}
+
+/* hover - restated here for the same specificity reason as the active row below */
+.docs-sidebar-cards
+  :is(#nd-sidebar, #nd-sidebar-mobile)
+  [data-radix-scroll-area-viewport]
+  :is(a, button)[data-active]:not([data-active='true']):hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* current page, at any depth: a filled row with the accent along its edge. Painted as a
+   background layer, not an inset box-shadow - the row divider above already uses box-shadow and
+   would override it. Includes the viewport attribute purely for specificity: it has to beat the
+   "every top-level row" surface rule above, or top-level pages lose the indicator. */
+.docs-sidebar-cards
+  :is(#nd-sidebar, #nd-sidebar-mobile)
+  [data-radix-scroll-area-viewport]
+  a[data-active='true'] {
+  background:
+    linear-gradient(var(--color-accent), var(--color-accent)) left / 2px 100% no-repeat,
+    rgba(255, 255, 255, 0.06);
+}
+
+/* the sheet-link chevron: plain pages only (folders already have their own), slides in on hover */
+.docs-sidebar-cards
+  :is(#nd-sidebar, #nd-sidebar-mobile)
+  [data-radix-scroll-area-viewport]
+  > div
+  > a::after,
+.docs-sidebar-cards
+  :is(#nd-sidebar, #nd-sidebar-mobile)
+  [data-radix-scroll-area-viewport]
+  [data-state]
+  > div
+  > div
+  > a::after {
+  content: '';
+  width: 14px;
+  height: 14px;
+  margin-inline-start: auto;
+  flex-shrink: 0;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9 18 6-6-6-6'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9 18 6-6-6-6'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition:
+    opacity 150ms ease,
+    transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.docs-sidebar-cards
+  :is(#nd-sidebar, #nd-sidebar-mobile)
+  [data-radix-scroll-area-viewport]
+  a:hover::after {
+  opacity: 0.6;
+  transform: none;
+}
+
+/* Fumadocs' own tree marks - the grey line down an open folder and the 1px blue tick on its
+   active child - would double up with the row indicator above, so the cards drop them */
+.docs-sidebar-cards
+  :is(#nd-sidebar, #nd-sidebar-mobile)
+  [data-radix-scroll-area-viewport]
+  :is(a, div)::before {
+  content: none;
+}
+
+/* an open folder's pages: a recessed strip inside the card, no rules between them */
+.docs-sidebar-cards
+  :is(#nd-sidebar, #nd-sidebar-mobile)
+  [data-radix-scroll-area-viewport]
+  [data-state='open']
+  > div {
+  background: rgba(0, 0, 0, 0.35);
+  padding-block: 4px;
+}
+
+.docs-sidebar-cards
+  :is(#nd-sidebar, #nd-sidebar-mobile)
+  [data-radix-scroll-area-viewport]
+  [data-state]
+  > div
+  > div {
+  gap: 0;
+}
+
+.docs-sidebar-cards
+  :is(#nd-sidebar, #nd-sidebar-mobile)
+  [data-radix-scroll-area-viewport]
+  [data-state]
+  > div
+  a[data-active] {
+  padding-block: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .docs-sidebar-cards
+    :is(#nd-sidebar, #nd-sidebar-mobile)
+    [data-radix-scroll-area-viewport]
+    a::after {
+    transition: none;
+    transform: none;
+  }
+}
+
+#nd-sidebar-mobile {
+  background: #050505;
+  border-color: var(--docs-outline);
+}
+
+/* ── TOC ("On this page"). Fumadocs' clerk style draws the rail per item and one active path
+   (an SVG clipped to --track-top/--track-bottom) that follows the reader. Kept as is; restyled
+   into a glowing trace that eases between sections and fades out behind the reader, so its
+   bright end marks where you are. */
+#nd-toc-title,
+#toc-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+/* the thumb's wrapper carries the range vars - ease them here instead of snapping */
+#nd-toc div:has(> svg[style*='--track-top']) {
+  transition:
+    --track-top 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    --track-bottom 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#nd-toc svg[style*='--track-top'] {
+  /* the vars now animate, so the clip follows them every frame - its own transition would lag */
+  transition: none;
+  overflow: visible;
+  filter: drop-shadow(0 0 3px rgba(0, 163, 255, 0.9)) drop-shadow(0 0 8px rgba(0, 163, 255, 0.45));
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent var(--track-top),
+    rgba(0, 0, 0, 0.25) var(--track-top),
+    #000 var(--track-bottom)
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent var(--track-top),
+    rgba(0, 0, 0, 0.25) var(--track-top),
+    #000 var(--track-bottom)
+  );
+}
+
+#nd-toc svg[style*='--track-top'] path {
+  stroke: var(--color-accent);
+  stroke-width: 2px;
+}
+
+/* the idle rail, a touch quieter so the trace reads against it */
+#nd-toc a > svg :is(line, path) {
+  stroke: rgba(255, 255, 255, 0.12);
+}
+
+/* No sideways nudge for active items: each link draws its own slice of the rail, so moving the
+   link would break the line. Colour only. */
+#nd-toc a {
+  transition: color 200ms ease;
+}
+
+#nd-toc a:hover,
+#nd-toc a[data-active='true'] {
+  color: var(--color-text-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #nd-toc div:has(> svg[style*='--track-top']) {
+    transition: none;
+  }
+}
+
+/* the phones' "on this page" bar: a solid strip under the band, no blur, no rule */
+.docs-shell [class*='grid-area:toc-popover'] > div {
+  border-color: transparent;
+  background: #000;
+  backdrop-filter: none;
+}
+
+/* ── Page */
+#nd-page .prose {
+  color: #c4c4c4;
+}
+
+#nd-page .prose :where(h1, h2, h3, h4) {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+/* page titles at the inner marketing pages' display size, a step down (docs titles run long).
+   Direct children only (`>`), here and for h2/h3: components like the FAQ accordions carry their
+   own h3s, which should keep their compact size. */
+#nd-page .prose > h1 {
+  font-size: clamp(2.1rem, 4vw, 3.25rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+  margin-bottom: 0.6em;
+}
+
+/* the paragraph under the title reads as the page's sub, like a marketing header */
+#nd-page .prose > h1 + p {
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+}
+
+#nd-page .prose > h2 {
+  font-size: clamp(1.5rem, 2.4vw, 1.875rem);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  margin-top: 2.6em;
+}
+
+#nd-page .prose > h3 {
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
+}
+
+#nd-page .prose :where(strong) {
+  color: var(--color-text-primary);
+}
+
+/* links as the blog has them: the accent, with a quiet underline that firms up on hover */
+#nd-page .prose :where(a):not(:where(.not-prose *, h1 *, h2 *, h3 *, h4 *)) {
+  color: var(--color-accent);
+  font-weight: 500;
+  text-decoration-color: rgba(0, 163, 255, 0.35);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 150ms ease;
+}
+
+#nd-page .prose :where(a):not(:where(.not-prose *, h1 *, h2 *, h3 *, h4 *)):hover {
+  text-decoration-color: currentColor;
+}
+
+#nd-page .prose :not(pre) > code {
+  background: #16161a;
+  border: 0;
+  border-radius: 6px;
+  padding: 0.15em 0.4em;
+  color: var(--color-text-primary);
+}
+
+#nd-page .prose img {
+  border-radius: 14px;
+}
+
+/* code blocks and callouts: the card tone, rounder, and no outline - a tone step separates them */
+#nd-page figure.shiki {
+  border-radius: 16px;
+  border-color: transparent;
+  background: var(--docs-surface);
+}
+
+#nd-page [style*='--callout-color'] {
+  border-color: transparent;
+  border-radius: 16px;
+  background: var(--docs-surface);
+  padding-block: 14px;
+  color: #c4c4c4;
+}
+
+/* step markers: a raised dot on the card tone, white numeral */
+.docs-shell .fd-step::before {
+  background: #18181c;
+  color: var(--color-text-primary);
+  border: 0;
+}
+
+/* previous / next page */
+#nd-page a[href].\@max-lg\:col-span-full {
+  border-radius: 20px;
+  border-color: transparent;
+  background: var(--docs-surface);
+  padding: 18px 20px;
+  transition: background-color 150ms ease;
+}
+
+#nd-page a[href].\@max-lg\:col-span-full:hover {
+  background: var(--docs-surface-hover);
+}
+
+/* CardLink (docs/_components): a home-page card in miniature */
+.docs-card {
+  width: 100%;
+  padding: 15px 16px;
+  border-radius: 18px;
+  background: var(--docs-surface);
+  border: 1px solid var(--docs-outline);
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+
+.docs-card:hover {
+  background: var(--docs-surface-hover);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.docs-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #18181c;
+  color: var(--color-text-muted);
+  transition: color 150ms ease;
+}
+
+.docs-card:hover .docs-card__icon {
+  color: var(--color-text-primary);
 }
 
 /* ─── Markdown body ────────────────────────────────────── */
