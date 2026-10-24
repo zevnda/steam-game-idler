@@ -1,36 +1,28 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { FaDiscord, FaGithub } from 'react-icons/fa6'
 import { FiChevronRight, FiMenu, FiX } from 'react-icons/fi'
 import { scrollBehavior, scrollToPlayground } from './demoStore'
+import { LINKS, SOCIALS } from './navLinks'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import DownloadButton from '@/app/(marketing)/(home)/_components/DownloadButton'
-
-// `group` only matters to the mobile sheet, which lists the home page's sections and the site's
-// pages separately (and gives PRO its own card); the desktop pill shows them all in one row.
-const LINKS = [
-  { href: '#demo', label: 'Demo', group: 'explore' },
-  { href: '#features', label: 'Features', group: 'explore' },
-  { href: '#compare', label: 'Compare', group: 'explore' },
-  { href: '/docs', label: 'Docs', group: 'resources' },
-  { href: '/changelog', label: 'Changelog', group: 'resources' },
-  { href: '/blog', label: 'Blog', group: 'resources' },
-  { href: '/pro', label: 'PRO', group: 'pro', pro: true },
-] as const
 
 const SHEET_GROUPS = [
   { id: 'explore', label: 'Explore' },
   { id: 'resources', label: 'Resources' },
 ] as const
 
-// Same destinations and icons as the footer's social links (LandingFooter.tsx)
-const SOCIALS = [
-  { href: 'https://github.com/zevnda/steam-game-idler', label: 'GitHub', icon: FaGithub },
-  { href: 'https://discord.com/invite/5kY2ZbVnZ8', label: 'Discord', icon: FaDiscord },
-]
+interface LandingNavProps {
+  /** extra controls shown below md, before the menu button - the docs use it for their search
+   *  trigger, which the docs layout's own mobile header used to hold */
+  actions?: React.ReactNode
+  /** content at the top of the phone menu sheet, above the site's own groups - the docs put
+   *  their sections here (DocsSheetTree), so docs pages keep this one menu rather than adding a
+   *  second. Any link clicked inside it closes the sheet. */
+  sheetLead?: React.ReactNode
+}
 
 const iconButtonClass =
   'p-2 rounded-full text-text-muted hover:text-text-primary hover:bg-white/5 transition-colors'
@@ -41,7 +33,7 @@ const iconButtonClass =
  * ("Demo" jumps straight to the docked playground rather than the top of the showcase); anywhere
  * else they point back at the home page's sections.
  */
-export default function LandingNav() {
+export default function LandingNav({ actions, sheetLead }: LandingNavProps) {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
@@ -87,7 +79,7 @@ export default function LandingNav() {
 
   return (
     <>
-      <header className='fixed inset-x-0 top-3 z-50 px-3 sm:px-5 pointer-events-none'>
+      <header className='landing-header fixed inset-x-0 top-3 z-50 px-3 sm:px-5 pointer-events-none'>
         <div className={`landing-nav pointer-events-auto ${scrolled ? 'landing-nav--solid' : ''}`}>
           <Link prefetch={false} href='/' className='flex items-center gap-2.5 pl-1.5 shrink-0'>
             <Image src='/logo.png' alt='' width={22} height={22} loading='eager' />
@@ -132,6 +124,7 @@ export default function LandingNav() {
               iconClassName='w-3.5 h-3.5'
               style={{ padding: '0.5rem 1.1rem', fontSize: '0.8125rem' }}
             />
+            {actions && <div className='flex md:hidden items-center'>{actions}</div>}
             <button
               type='button'
               className={`md:hidden ${iconButtonClass}`}
@@ -184,6 +177,19 @@ export default function LandingNav() {
         </div>
 
         <nav aria-label='Mobile' className='relative flex-1 overflow-y-auto px-4 pt-6 pb-4'>
+          {sheetLead && (
+            // one entrance step for the whole block; closes the sheet on any link inside it
+            // (its own buttons, like a folder toggle, leave it open)
+            <div
+              className='landing-sheet__item'
+              style={stagger()}
+              onClick={e => {
+                if ((e.target as Element).closest('a')) setOpen(false)
+              }}
+            >
+              {sheetLead}
+            </div>
+          )}
           {SHEET_GROUPS.map(g => (
             <div key={g.id} className='landing-sheet__item mb-5' style={stagger()}>
               <p className='px-2 mb-2 font-mono text-[11px] uppercase tracking-[0.24em] text-text-muted'>

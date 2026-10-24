@@ -13,17 +13,18 @@ export default function CardLink({
   description?: string
 }) {
   return (
-    <div className='bg-fd-card border border-fd-border hover:bg-fd-accent/80 p-4 rounded-lg w-full duration-150 group'>
-      <a href={href} className='flex items-center gap-2 no-underline'>
-        <div className='p-2 bg-fd-muted text-fd-muted-foreground border border-fd-border rounded-md'>
-          {React.createElement(icon)}
-        </div>
-        <div className='no-underline!'>{title}</div>
-        <div>
-          <FaArrowRight size={14} className='group-hover:translate-x-1 duration-150' />
-        </div>
+    <div className='docs-card group'>
+      <a href={href} className='flex items-center gap-2.5 font-medium text-text-primary'>
+        <div className='docs-card__icon'>{React.createElement(icon)}</div>
+        <div>{title}</div>
+        <FaArrowRight
+          size={13}
+          className='-ml-1 shrink-0 text-text-muted transition-transform duration-150 group-hover:translate-x-1 group-hover:text-text-primary'
+        />
       </a>
-      {description && <p className='mb-0! mt-2 text-fd-muted-foreground text-sm'>{description}</p>}
+      {description && (
+        <p className='mt-2.5 text-text-muted text-sm leading-relaxed'>{description}</p>
+      )}
     </div>
   )
 }
