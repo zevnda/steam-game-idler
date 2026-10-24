@@ -24,7 +24,7 @@ export const TierBadge = ({ tier, className }: TierBadgeProps) => {
   return (
     <span
       className={cn(
-        'tier-badge px-2 py-0.5 text-[9px] font-black uppercase tracking-widest leading-3.5',
+        'tier-badge select-none px-2 py-0.5 text-[9px] font-black uppercase tracking-widest leading-3.5',
         tier === 'gamer' && 'tier-badge--gamer',
         tier === 'casual' && 'tier-badge--casual',
         tier === null && 'text-muted',

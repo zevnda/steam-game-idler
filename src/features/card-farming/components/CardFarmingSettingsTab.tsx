@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { TbExternalLink } from 'react-icons/tb'
 import { errorMessageKey } from '../utils/errorMessageKey'
 import { Alert, Button, Modal, Separator, Skeleton, toast, Typography } from '@heroui/react'
-import { BetaBadge } from '@/shared/components/BetaBadge'
 import { InputField } from '@/shared/components/InputField'
 import { ModalDragRegion } from '@/shared/components/ModalDragRegion'
 import { SettingsRow } from '@/shared/components/SettingsRow'
@@ -173,12 +172,7 @@ export const CardFarmingSettingsTab = ({
 
       <SettingsRow
         description={t('dashboard.cardFarming.settings.allowMultiGameFarming.description')}
-        title={
-          <span className='flex items-center gap-2'>
-            {t('dashboard.cardFarming.settings.allowMultiGameFarming.title')}
-            <BetaBadge />
-          </span>
-        }
+        title={t('dashboard.cardFarming.settings.allowMultiGameFarming.title')}
       >
         <ToggleSwitch
           isSelected={draft.allowMultiGameFarming}
@@ -215,12 +209,7 @@ export const CardFarmingSettingsTab = ({
       {isAgentMode && (
         <SettingsRow
           description={t('dashboard.cardFarming.settings.skipRefundableGames.description')}
-          title={
-            <span className='flex items-center gap-2'>
-              {t('dashboard.cardFarming.settings.skipRefundableGames.title')}
-              <BetaBadge />
-            </span>
-          }
+          title={t('dashboard.cardFarming.settings.skipRefundableGames.title')}
         >
           <ToggleSwitch
             isSelected={draft.skipRefundableGames}

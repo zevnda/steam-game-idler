@@ -18,7 +18,7 @@ export const BetaBadge = ({ className }: BetaBadgeProps) => {
   return (
     <span
       className={cn(
-        'rounded-full bg-[linear-gradient(90deg,#616161,#5c5c5c)] px-2 py-0.5 text-[9px] font-black uppercase tracking-widest leading-3.5 text-white',
+        'select-none rounded-full bg-[linear-gradient(90deg,#616161,#5c5c5c)] px-2 py-0.5 text-[9px] font-black uppercase tracking-widest leading-3.5 text-white',
         className,
       )}
     >
