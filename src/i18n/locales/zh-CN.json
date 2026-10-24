@@ -77,7 +77,8 @@
     "status": {
       "saved": "已保存",
       "cleared": "已清除",
-      "paused": "已暂停"
+      "paused": "已暂停",
+      "running": "运行中"
     },
     "steamWarning": {
       "title": "提示",
@@ -164,7 +165,8 @@
         "description": "使用 SGI 时无任何广告，享受纯净、无干扰的界面"
       },
       "themes": {
-        "title": "专属主题"
+        "title": "专属主题",
+        "description": "使用专属配色主题和动态签名主题，打造个性化的 SGI。"
       },
       "customBackground": {
         "title": "自定义背景图片"
@@ -184,6 +186,7 @@
         "description": "同时登录并管理多个 Steam 账号"
       },
       "autoFarmCards": {
+        "title": "集换式卡牌监控",
         "description": "SGI 会监控您的游戏库，自动开始挂取仍可掉落卡牌的游戏"
       },
       "gamesList": {
@@ -324,6 +327,9 @@
   },
   "dashboard": {
     "sidebar": {
+      "goPro": {
+        "title": "解锁 PRO 特权"
+      },
       "nav": {
         "games": "游戏库",
         "idling": "挂机中",
@@ -488,6 +494,9 @@
         "baseGame": "游戏本体",
         "dlc": "DLC",
         "notOwned": "未拥有"
+      },
+      "archived": {
+        "badge": "已归档"
       },
       "views": {
         "all": "全部成就"
@@ -722,6 +731,9 @@
         },
         "unownedDlcSection": {
           "title": "来自您未拥有的 DLC"
+        },
+        "archivedSection": {
+          "title": "已归档成就"
         },
         "protectedAlert": {
           "description": "成就解锁器会跳过带有任何受保护成就的游戏，因此该顺序不会生效。"
@@ -1021,7 +1033,24 @@
             "pink": "粉色",
             "orange": "橙色",
             "black": "黑色",
-            "white": "白色"
+            "white": "白色",
+            "synthwave": "合成波",
+            "aurora": "极光",
+            "nebula": "星云",
+            "terminal": "终端",
+            "ember": "余烬",
+            "abyss": "深渊",
+            "sugarDay": "糖果日",
+            "sugarNight": "糖果夜",
+            "sakura": "樱花",
+            "lofiRain": "低保真雨",
+            "fireflies": "萤火虫",
+            "holo": "全息",
+            "blackHole": "黑洞",
+            "lavaLamp": "熔岩灯",
+            "circuit": "电路",
+            "luxe": "奢华",
+            "arcade": "街机"
           }
         },
         "font": {
