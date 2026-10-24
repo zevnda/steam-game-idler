@@ -1,6 +1,7 @@
 import { createRelativeLink } from 'fumadocs-ui/mdx'
 import { DocsBody, DocsPage } from 'fumadocs-ui/page'
 import { notFound } from 'next/navigation'
+import TocHead from '@/app/(marketing)/_components/TocHead'
 import { source } from '@/lib/source'
 import { getMDXComponents } from '@/mdx-components'
 
@@ -18,7 +19,12 @@ export default async function Page(props: PageProps) {
   const MDX = page.data.body
 
   return (
-    <DocsPage toc={page.data.toc} full={page.data.full} tableOfContent={{ style: 'clerk' }}>
+    <DocsPage
+      toc={page.data.toc}
+      full={page.data.full}
+      // the footer slot only hosts TocHead's marker, inside #nd-toc - the head itself is CSS
+      tableOfContent={{ style: 'clerk', footer: <TocHead /> }}
+    >
       <DocsBody>
         {/* eslint-disable-next-line */}
         <MDX

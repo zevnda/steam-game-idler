@@ -28,7 +28,9 @@ function writeDismissed(version: string) {
 }
 
 /**
- * The hero's "vX.Y.Z is out" banner, in the rainbow rim the 3D window glows with (`.rainbow-chip`).
+ * The hero's "vX.Y.Z is out" banner, in the rainbow rim the 3D window glows with (`.rainbow-chip`),
+ * with the nav PRO's glow (`.rainbow-chip--glow`). The whole chip links to the changelog - the
+ * link's hit area is stretched over it in CSS - except the dismiss button.
  *
  * It sits in the hero's own flow (ShowcaseHero.tsx) and that slot is always reserved, so showing
  * or dismissing it never moves the headline - the hero -> playground hand-over measures the copy's
@@ -60,18 +62,14 @@ export default function ReleaseBanner() {
     <div className='hero-recede' style={{ '--i': 0 } as React.CSSProperties}>
       {/* hidden (incl. before the version loads), `visibility: hidden` in .release-banner also takes
           it out of the tab order and the accessibility tree */}
-      <div className={`release-banner rainbow-chip ${visible ? 'release-banner--on' : ''}`}>
+      <div
+        className={`release-banner rainbow-chip rainbow-chip--glow ${visible ? 'release-banner--on' : ''}`}
+      >
         <span className='rainbow-chip__inner release-banner__inner'>
           <Link prefetch={false} href='/changelog' className='release-banner__link'>
             v{hasVersion ? latestVersion : ''} is out
-            {/* Every piece - text and each dot - is its own flex item, so the link's one gap spaces
-                them all evenly (a dot typed inside the text got a narrow space on one side only).
-                The platform pair is dropped on phones so the banner stays on one line; its inner
-                gap matches the link's. */}
-            <span className='hidden sm:inline-flex items-center gap-2 text-text-muted'>
-              <span aria-hidden='true'>·</span>
-              Windows & Linux
-            </span>
+            {/* Every piece - text and the dot - is its own flex item, so the link's one gap spaces
+                them evenly (a dot typed inside the text got a narrow space on one side only) */}
             <span className='text-text-muted' aria-hidden='true'>
               ·
             </span>

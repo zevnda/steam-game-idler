@@ -1,5 +1,5 @@
 import type { Competitor } from '@/app/(marketing)/alternatives/_data/competitors'
-import Image from 'next/image'
+import { Logo } from '@/app/(marketing)/_components/Logo'
 import CompareCell from '@/app/(marketing)/(home)/_components/landing/CompareCell'
 import { StaggerGroup, StaggerItem } from '@/app/lib/animations'
 
@@ -25,7 +25,7 @@ export default function AlternativeComparisonTable({
                 {section.category}
               </h2>
               <div className='cmp__sgi-head' role='columnheader'>
-                <Image src='/logo.png' alt='' width={20} height={20} />
+                <Logo size={20} />
                 <span>Steam Game Idler</span>
               </div>
               <div className='cmp__tool-head' role='columnheader'>

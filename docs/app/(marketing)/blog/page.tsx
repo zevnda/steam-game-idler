@@ -1,5 +1,6 @@
 import { FiRss } from 'react-icons/fi'
 import PostCard from './_components/PostCard'
+import FinalCta from '@/app/(marketing)/(home)/_components/landing/FinalCta'
 import LandingFooter from '@/app/(marketing)/(home)/_components/landing/LandingFooter'
 import LandingNav from '@/app/(marketing)/(home)/_components/landing/LandingNav'
 import JsonLd from '@/app/lib/JsonLd'
@@ -115,6 +116,8 @@ export default async function BlogIndexPage() {
         )}
       </main>
 
+      {/* the articles' closing CTA (blog/[slug]/page.tsx), so the listing ends the same way */}
+      <FinalCta />
       <LandingFooter />
     </div>
   )

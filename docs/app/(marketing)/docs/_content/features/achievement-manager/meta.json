@@ -1,4 +1,5 @@
 {
   "title": "Achievement Manager",
+  "icon": "TbTrophy",
   "pages": ["special-flags"]
 }

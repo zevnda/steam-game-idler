@@ -4,12 +4,13 @@ import type { TOCItemType } from 'fumadocs-core/toc'
 import { TOCProvider, TOCScrollArea } from 'fumadocs-ui/components/toc'
 import { TOCItem, TOCItems } from 'fumadocs-ui/components/toc/clerk'
 import { Text } from 'lucide-react'
+import TocHead from '@/app/(marketing)/_components/TocHead'
 
 /**
  * Desktop-only "On this page" rail, built from the same Fumadocs pieces as the docs' TOC (the
  * "clerk" style the docs layout picks in docs/[[...slug]]/page.tsx): a rail that bends with heading
- * depth and an active trace that follows the reader. The docs' restyle of it in globals.css is
- * shared through `.blog-toc`, so the two stay identical. Mobile gets the collapsible InlineTOC
+ * depth and an active trace that follows the reader, led by the changelog timeline's head (TocHead).
+ * The docs' restyle of it in globals.css is shared through `.blog-toc`, so the two stay identical. Mobile gets the collapsible InlineTOC
  * above the article instead - see `[slug]/page.tsx`.
  */
 export default function TableOfContents({ items }: { items: TOCItemType[] }) {
@@ -31,6 +32,7 @@ export default function TableOfContents({ items }: { items: TOCItemType[] }) {
             ))}
           </TOCItems>
         </TOCScrollArea>
+        <TocHead />
       </nav>
     </TOCProvider>
   )

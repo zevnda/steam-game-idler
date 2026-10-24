@@ -1,5 +1,8 @@
 <div align="center">
-<img src="./public/logo.png" width="80" alt="app logo">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./public/logo-white.svg">
+  <img src="./public/logo-black.svg" width="80" alt="app logo">
+</picture>
 
 <h1>Steam Game Idler</h1>
 

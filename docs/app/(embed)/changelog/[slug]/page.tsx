@@ -16,6 +16,14 @@ export const metadata = {
   robots: { index: false, follow: true },
 }
 
+// Same soft-tint pill as the app's own status chips (bg-<color>/10 + text-<color>); the colors
+// live in globals.css (`.changelog-tag--*`) so they can shift for the light scheme.
+const TAG_CLASSES: Record<string, string> = {
+  New: 'changelog-tag--new',
+  Improved: 'changelog-tag--improved',
+  Fixed: 'changelog-tag--fixed',
+}
+
 function getName(p: string) {
   return path.basename(p, path.extname(p))
 }
@@ -32,63 +40,48 @@ export default async function Page(props: PageProps) {
     tags?: string[]
   }
 
-  // `relative` is load-bearing: the MDX output contains absolutely-positioned `sr-only` spans, and
-  // without a positioned ancestor they resolve against <body>, escape this scroll container, and
-  // stretch the document - giving the app's iframe a second, outer scrollbar.
+  // Fixed-height column: the title/date/tags header stays put and only the notes list scrolls.
+  // The colors come from `.changelog-embed` in globals.css (the app's own theme tokens, no
+  // background of its own - see that rule's comment).
   return (
-    <main
-      className='changelog-scroll relative h-screen text-gray-100 overflow-auto'
-      style={{
-        backgroundImage: 'linear-gradient(to bottom, #1d1d1dff 0%, #000000ff 100%)',
-      }}
-    >
-      <div className='max-w-4xl mx-auto px-6 pt-3 pb-4'>
-        {/* Single Post */}
-        <article className='flex flex-col md:flex-row items-start'>
-          {/* Date and Tags */}
-          <div className='flex flex-row-reverse md:flex-col items-center justify-between md:items-start gap-3 mb-4 w-full md:w-45 shrink-0'>
-            <time className='text-xs text-[#979797]'>
-              {new Date(data.date ?? getName(page.path)).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </time>
+    <main className='changelog-embed flex h-screen flex-col'>
+      <header className='shrink-0 border-b border-(--cl-separator) px-4 pt-1 pb-4'>
+        <div className='flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1'>
+          <h2 id={data.title} className='text-2xl font-semibold tracking-tight'>
+            v{data.title}
+          </h2>
 
-            {data.tags && (
-              <div className='flex gap-2 flex-wrap'>
-                {data.tags.map(tag => (
-                  <span
-                    key={tag}
-                    className={`text-xs px-2.5 py-1 rounded-md font-medium ${
-                      tag === 'New'
-                        ? 'bg-green-500/15 text-green-400'
-                        : tag === 'Improved'
-                          ? 'bg-purple-500/15 text-purple-400'
-                          : tag === 'Fixed'
-                            ? 'bg-cyan-500/15 text-cyan-400'
-                            : 'bg-gray-700 text-gray-300'
-                    }`}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
+          <time className='text-xs text-(--cl-muted)'>
+            {new Date(data.date ?? getName(page.path)).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </time>
+        </div>
+
+        {data.tags && (
+          <div className='mt-3 flex flex-wrap gap-2'>
+            {data.tags.map(tag => (
+              <span
+                key={tag}
+                className={`rounded-full px-2.5 py-1 text-xs font-semibold changelog-tag ${TAG_CLASSES[tag] ?? ''}`}
+              >
+                {tag}
+              </span>
+            ))}
           </div>
+        )}
+      </header>
 
-          <div>
-            {/* Title */}
-            <h2 id={data.title} className='text-3xl font-bold mb-4'>
-              v{data.title}
-            </h2>
-
-            {/* Rendered Markdown (MDX) */}
-            <div className='prose text-gray-300 leading-relaxed mb-4'>
-              <Mdx components={getMDXComponents()} />
-            </div>
-          </div>
-        </article>
+      {/* `relative` is load-bearing: the MDX output contains absolutely-positioned `sr-only`
+          spans, and without a positioned ancestor they resolve against <body>, escape this scroll
+          container, and stretch the document - giving the app's iframe a second, outer
+          scrollbar. `min-h-0` lets this flex child shrink below its content so it scrolls. */}
+      <div className='changelog-embed__scroll relative min-h-0 flex-1 overflow-auto px-4 py-4'>
+        <div className='prose leading-relaxed'>
+          <Mdx components={getMDXComponents()} />
+        </div>
       </div>
     </main>
   )

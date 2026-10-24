@@ -21,7 +21,7 @@ import {
 import { game, GAMES } from '../showcase/engine/games'
 import { THEMES } from '../showcase/engine/palette'
 import { Burst, easeBack, easeInOut, easeOut, FakeCursor, prog } from './storyboard'
-import Image from 'next/image'
+import { Logo } from '@/app/(marketing)/_components/Logo'
 
 const grad = (name: string, deg = 150) => {
   const g = game(name)
@@ -64,7 +64,7 @@ export function FarmArt({ t }: { t: number }) {
                 <span>{n}</span>
               </div>
               <div className='farm-card__face farm-card__face--back'>
-                <Image src='/logo.png' alt='' width={34} height={34} />
+                <Logo size={34} />
               </div>
             </div>
           </div>

@@ -103,11 +103,15 @@ Covers: `scale=1200:630`, quality 88. Keep files small (< ~150 KB). Insert finis
 
 ### Covers - `templates/cover.html` + `scripts/render_html.py`
 
-Copy the template to the scratchpad and edit only the marked spots: CATEGORY, TITLE (3-8 words,
-1-3 key words in `<span class="hl">`), and the VISUAL slot plus its styles. The visual is an
+Copy the template to the scratchpad and edit only the marked spots: CATEGORY (the frontmatter
+category), TITLE (3-8 words, 1-3 key words in `<span class="hl">`), and the VISUAL slot plus its
+styles. The brand pill, background and layout are fixed so every cover matches the site. The
+title sizes and wraps itself (largest size that fits 2 balanced lines, else 3; a highlighted
+phrase never splits), so don't set font sizes or add `<br>`s. The visual is an
 original, abstract illustration of the topic built in HTML/CSS (cards, progress bars, trophies,
-icons as inline SVG). Never real game art, never a fake Steam/SGI UI screenshot, never Steam/Valve
-logos. Render with `"$PY" -I render_html.py cover.html cover.png` (2x), check it at full size and
+icons as inline SVG), ideally one `.glass` card plus at most one floating accent (`.orb`). Never
+real game art, never a fake Steam/SGI UI screenshot, never Steam/Valve logos. `imageAlt`
+describes the visual, so keep the two in step. Render with `"$PY" -I render_html.py cover.html cover.png` (2x), check it at full size and
 imagine it at thumbnail size: the headline must be readable, nothing clipped, nothing overlapping.
 Iterate until it's good enough to be the face of the post.
 

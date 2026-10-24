@@ -3,6 +3,7 @@ import { FaDiscord, FaGithub } from 'react-icons/fa6'
 // `group` only matters to the mobile sheet, which lists the home page's sections and the site's
 // pages separately (and gives PRO its own card); the desktop pill shows them all in one row.
 export const LINKS = [
+  { href: '/', label: 'Home', group: 'explore' },
   { href: '#features', label: 'Features', group: 'explore' },
   { href: '#compare', label: 'Compare', group: 'explore' },
   { href: '/docs', label: 'Docs', group: 'resources' },

@@ -1,7 +1,7 @@
 'use client'
 
 import type { Ref } from 'react'
-import { FaGithub, FaStar } from 'react-icons/fa6'
+import { FaGithub, FaLinux, FaStar, FaWindows } from 'react-icons/fa6'
 import { TbArrowDown } from 'react-icons/tb'
 import { scrollToPlayground } from '../demoStore'
 import ReleaseBanner from './ReleaseBanner'
@@ -100,6 +100,12 @@ export default function ShowcaseHero({
           <span>
             <strong className='text-text-primary font-semibold'>{totalDownloads || '100K+'}</strong>{' '}
             downloads
+          </span>
+          <span className='w-1 h-1 rounded-full bg-white/25' aria-hidden='true' />
+          <span className='inline-flex items-center gap-1.5'>
+            <FaWindows className='w-3.5 h-3.5' aria-hidden='true' />
+            <FaLinux className='w-3.5 h-3.5' aria-hidden='true' />
+            Windows & Linux
           </span>
           <span className='w-1 h-1 rounded-full bg-white/25' aria-hidden='true' />
           <Link

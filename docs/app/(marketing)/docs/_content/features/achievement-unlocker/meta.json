@@ -1,4 +1,5 @@
 {
   "title": "Achievement Unlocker",
+  "icon": "TbAward",
   "pages": ["custom-order-and-unlock-delay", "import-timings"]
 }

@@ -4,8 +4,8 @@ import type { ComparisonFeatureRow } from '@/app/(marketing)/alternatives/_data/
 import { useState } from 'react'
 import CompareCell from './CompareCell'
 import SectionHeading from './SectionHeading'
-import Image from 'next/image'
 import Link from 'next/link'
+import { Logo } from '@/app/(marketing)/_components/Logo'
 import { COMPETITORS } from '@/app/(marketing)/alternatives/_data/competitors'
 import { FadeIn } from '@/app/lib/animations'
 
@@ -119,7 +119,7 @@ export default function Compare() {
             <div className='cmp__row cmp__row--head'>
               <div />
               <div className='cmp__sgi-head'>
-                <Image src='/logo.png' alt='' width={20} height={20} />
+                <Logo size={20} />
                 <span>Steam Game Idler</span>
               </div>
               {TOOLS.map(t => (

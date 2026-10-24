@@ -6,8 +6,8 @@ import { FiArrowUpRight } from 'react-icons/fi'
 import { TbAward, TbCards, TbCheck, TbDownload, TbPlayerPlay } from 'react-icons/tb'
 import { easeBack, easeOut, prog, useElapsed, useInViewPlay } from './art/storyboard'
 import SectionHeading from './SectionHeading'
-import Image from 'next/image'
 import Link from 'next/link'
+import { Logo } from '@/app/(marketing)/_components/Logo'
 import { FadeIn } from '@/app/lib/animations'
 import { useGlobalStore } from '@/app/lib/globalStore'
 
@@ -261,7 +261,7 @@ function DownloadScene({ t }: { t: number }) {
         className='scene-dl__app'
         style={{ transform: `scale(${0.6 + pop * 0.4})`, opacity: ready ? 1 : 0.25 }}
       >
-        <Image src='/logo.png' alt='' width={30} height={30} />
+        <Logo size={30} />
         {ready && (
           <span className='scene-dl__badge'>
             <TbCheck />
@@ -375,7 +375,7 @@ function AutomateScene({ t }: { t: number }) {
       })}
       <div className={`scene-auto__tray ${tray ? 'scene-auto__tray--on' : ''}`}>
         <span className='scene-auto__tray-icon'>
-          <Image src='/logo.png' alt='' width={14} height={14} />
+          <Logo size={14} />
         </span>
         Running in the background
       </div>
