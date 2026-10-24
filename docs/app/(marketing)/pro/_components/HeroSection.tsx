@@ -14,13 +14,14 @@ export default function HeroSection({ priceData }: HeroSectionProps) {
         className='absolute inset-0 pointer-events-none'
         style={{
           background: [
-            'radial-gradient(ellipse 55% 45% at 36% 40%, rgba(124,58,237,0.25) 0%, transparent 70%)',
-            'radial-gradient(ellipse 50% 40% at 68% 58%, rgba(217,70,239,0.18) 0%, transparent 70%)',
-            'radial-gradient(ellipse 45% 40% at 52% 30%, rgba(56,189,248,0.18) 0%, transparent 72%)',
+            'radial-gradient(ellipse 55% 45% at 36% 55%, rgba(124,58,237,0.25) 0%, transparent 70%)',
+            'radial-gradient(ellipse 50% 40% at 68% 72%, rgba(217,70,239,0.18) 0%, transparent 70%)',
+            'radial-gradient(ellipse 45% 40% at 52% 45%, rgba(56,189,248,0.18) 0%, transparent 72%)',
           ].join(', '),
           filter: 'blur(6px)',
-          maskImage: 'linear-gradient(to bottom, black 0%, transparent 100%)',
-          WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 100%)',
+          // the fade starts below the top third, so the lowered blobs keep their strength
+          maskImage: 'linear-gradient(to bottom, black 35%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 35%, transparent 100%)',
         }}
       />
 

@@ -41,5 +41,12 @@ fn main() {
     }
     println!("cargo:rerun-if-env-changed=STEAM_API_KEY");
 
+    // tauri_build embeds icons/icon.ico as the exe's Windows icon resource, which is also what
+    // the window/taskbar icon is loaded from - but it emits no rerun trigger for the icons, and
+    // the explicit rerun-if-changed lines above stop Cargo's default "rerun on any file change".
+    // Without this, a replaced icon never reached a dev build until a `cargo clean -p`.
+    // A directory path makes Cargo rerun when any file inside it changes.
+    println!("cargo:rerun-if-changed=icons");
+
     tauri_build::build()
 }

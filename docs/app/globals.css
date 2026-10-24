@@ -51,6 +51,14 @@
     hsl(140, 60%, 56%),
     hsl(200, 70%, 62%)
   );
+
+  /* RainbowDefs.tsx's saturated TOC stops, for thin CSS-drawn lines and dots where the muted
+     rainbow reads washed out: the TOC's head (a CSS dot, glowing in the trace's colour where it
+     sits) and the nav links' hover line. Just the stops, so each use picks its own direction -
+     keep the list in step with RainbowDefs' STOPS. First and last match, so it tiles seamlessly. */
+  --sgi-rainbow-vivid-stops:
+    hsl(190, 90%, 58%), hsl(225, 90%, 68%), hsl(270, 95%, 70%), hsl(310, 90%, 66%),
+    hsl(345, 90%, 65%), hsl(25, 95%, 62%), hsl(48, 95%, 58%), hsl(140, 75%, 55%), hsl(190, 90%, 58%);
 }
 
 .dark {
@@ -229,7 +237,21 @@
   animation: hero-enter 1s cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 
-/* Download page: the app snapshot beside the hero copy */
+/* Download page: the app snapshot beside the hero copy, in the home hero window's rim glow
+   (.hero-ph::before, which this shares). Isolated, so the glow's z-index: -1 stays behind the
+   snapshot but above the page. */
+.download-shot-glow {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Turns like the live 3D window's rim: counter-clockwise, one turn per ~28.6s (the shader's
+   `uTime * 0.035` turns per second - keep in step). The home hero's placeholder stays still: it
+   only shows before the stage loads, and has to match the stage's opening frame. */
+.download-shot-glow::before {
+  animation: rainbow-border 28.6s linear infinite;
+}
+
 .download-shot {
   border-radius: 14px;
   background: #0d0d0f;
@@ -617,51 +639,73 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
 }
 
 .landing-nav__link {
+  position: relative;
   padding: 6px 12px;
   border-radius: 999px;
   font-size: 14px;
   color: var(--color-text-muted);
-  transition:
-    color 150ms ease,
-    background-color 150ms ease;
+  transition: color 150ms ease;
 }
 
+/* No pill, and no current-page indicator: hovering alone draws a
+   rainbow line under the label that opens out from its centre (a clip, so the colours don't
+   squash the way a scaleX would) while the hues flow left to right along it (rainbow-flow,
+   below). PRO has its own chip and doesn't use this. */
+.landing-nav__link::after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 1px;
+  height: 2px;
+  border-radius: 1px;
+  --flow-tile: 160px;
+  background: linear-gradient(to right, var(--sgi-rainbow-vivid-stops)) 0 0 / var(--flow-tile) 100%
+    repeat-x;
+  clip-path: inset(0 50%);
+  transition: clip-path 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  animation: rainbow-flow 4s linear infinite;
+  pointer-events: none;
+}
+
+.landing-nav__link:hover::after {
+  clip-path: inset(0 0);
+}
+
+/* The flowing rainbow lines' loop (the nav's hover line, the Get started beam): the stops,
+   tiled every --flow-tile across the line, slide right by one tile per loop - so the flow never
+   jumps. Each line sets its own tile and duration. */
+@keyframes rainbow-flow {
+  to {
+    background-position-x: var(--flow-tile);
+  }
+}
+
+/* no current-page state at all (aria-current stays, for screen readers) - hover only */
 .landing-nav__link:hover {
   color: var(--color-text-primary);
-  background: rgba(255, 255, 255, 0.06);
 }
 
-.landing-nav__link[aria-current='page'] {
-  color: var(--color-text-primary);
-  background: rgba(255, 255, 255, 0.08);
+.landing-nav__link:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
 }
 
-/* PRO: a small .rainbow-chip, deliberately a touch shorter than its neighbours so the rim reads
-   as a badge rather than a boxed-in link. Doubled class selectors beat .rainbow-chip's own
-   padding/type. A faint glow in the rim's hues lifts it off the pill; hovering brightens both. */
+/* PRO: a small .rainbow-chip, the /pro page's wordmark pill at nav size, so the rim reads as a
+   badge rather than a boxed-in link. Doubled class selectors beat .rainbow-chip's own
+   padding/type. Its glow is the shared .rainbow-chip--glow. */
 .rainbow-chip.landing-nav__pro {
   margin-left: 6px;
-  box-shadow:
-    0 0 14px -4px hsla(265, 60%, 60%, 0.45),
-    0 0 14px -6px hsla(160, 60%, 55%, 0.35);
-  transition: box-shadow 200ms ease;
-}
-
-.rainbow-chip.landing-nav__pro:hover {
-  box-shadow:
-    0 0 18px -3px hsla(265, 70%, 62%, 0.6),
-    0 0 18px -5px hsla(160, 70%, 55%, 0.5);
 }
 
 .rainbow-chip__inner.landing-nav__pro-inner {
-  padding: 3px 10px;
+  /* the /pro page's pill (.pro-wordmark__inner) at nav size: the same em-based padding (the
+     wider left side balances the tracking's trailing space after the O), weight and tracking */
+  padding: 0.15em 0.45em 0.15em 0.65em;
   font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-}
-
-.landing-nav__pro[aria-current='page'] .landing-nav__pro-inner {
-  background: rgba(5, 5, 5, 0.7);
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  line-height: 1.2;
 }
 
 /* Tier badges ("Casual"/"Gamer", pro/_components/FeatureDetailsSection.tsx): the PRO pill's shape
@@ -942,6 +986,22 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   background: rgba(5, 5, 5, 0.82);
 }
 
+/* The clickable chips' glow (the nav's PRO and the hero's release banner - one rule, so the two
+   never drift apart): a faint glow in the rim's hues lifts the chip off the page; hovering
+   brightens it, alongside the shared fill change above. */
+.rainbow-chip--glow {
+  box-shadow:
+    0 0 14px -4px hsla(265, 60%, 60%, 0.45),
+    0 0 14px -6px hsla(160, 60%, 55%, 0.35);
+  transition: box-shadow 200ms ease;
+}
+
+.rainbow-chip--glow:hover {
+  box-shadow:
+    0 0 18px -3px hsla(265, 70%, 62%, 0.6),
+    0 0 18px -5px hsla(160, 70%, 55%, 0.5);
+}
+
 /* The hero's release banner (ReleaseBanner.tsx): a .rainbow-chip with a link and a dismiss button.
    Always laid out (its slot is reserved so the hero never moves); hidden it's invisible, which
    also keeps it out of the tab order. Fades in once the real version has loaded. */
@@ -971,6 +1031,15 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   padding-right: 6px;
 }
 
+/* The whole chip is the link's hit area (a stretched ::after over the chip, the nearest
+   positioned ancestor), not just its text; the dismiss button sits above it. */
+.release-banner__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
 .release-banner__more {
   display: inline-flex;
   align-items: center;
@@ -984,6 +1053,8 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
 }
 
 .release-banner__close {
+  position: relative;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1172,15 +1243,18 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
    shader puts them, or the hand-over to the live stage flashes from one colour scheme to another:
    both start red at the right (90deg) and rise clockwise - purple at the top, cyan at the left,
    yellow-green at the bottom - so the visible top edge reads blue -> purple. Change one, change
-   both (rimMaterial's `hue` in landing/showcase/engine/shaders.ts). */
-.hero-ph::before {
+   both (rimMaterial's `hue` in landing/showcase/engine/shaders.ts). Also the /download page's
+   snapshot glow (.download-shot-glow), so the two windows glow alike. --angle (0 unless animated)
+   turns it: only /download's does, see below. */
+.hero-ph::before,
+.download-shot-glow::before {
   content: '';
   position: absolute;
   inset: -3%;
   z-index: -1;
   border-radius: 6%;
   background: conic-gradient(
-    from 90deg,
+    from calc(90deg - var(--angle)),
     hsl(0, 36%, 55%),
     hsl(60, 36%, 55%),
     hsl(120, 36%, 55%),
@@ -1488,7 +1562,7 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
 }
 
 .bento-try__dot {
-  width: 6px;
+  width: 4px;
   height: 6px;
   border-radius: 999px;
   background: var(--accent);
@@ -2147,7 +2221,7 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   position: absolute;
   left: -3px;
   top: -3px;
-  width: 6px;
+  width: 4px;
   height: 6px;
   border-radius: 999px;
   animation: burst 750ms cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -2209,13 +2283,29 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.08);
   }
 
+  /* The fill: the nav hover line's flowing rainbow (rainbow-flow), in px tiles so the hues stay
+     put as the fill grows rather than stretching with its width - a longer tile than the nav's,
+     for a longer line. Glows in its own colours (::before, the same paint blurred) rather than
+     one flat shadow colour. */
   .pipeline__beam i {
+    --flow-tile: 480px;
     position: absolute;
     inset: 0 auto 0 0;
     border-radius: 2px;
-    background: linear-gradient(90deg, #60a5fa, #c084fc, #34d399);
-    box-shadow: 0 0 16px rgba(147, 197, 253, 0.6);
+    background: linear-gradient(to right, var(--sgi-rainbow-vivid-stops)) 0 0 / var(--flow-tile)
+      100% repeat-x;
+    animation: rainbow-flow 8s linear infinite;
     transition: width 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .pipeline__beam i::before {
+    content: '';
+    position: absolute;
+    inset: -2px 0;
+    border-radius: inherit;
+    background: inherit;
+    filter: blur(6px);
+    opacity: 0.8;
   }
 
   .pipeline__beam i::after {
@@ -3029,6 +3119,12 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   border-color: rgba(255, 255, 255, 0.25);
 }
 
+/* Outlined in the hero release chip's turning rainbow (.rainbow-chip::before - same hues, same
+   8s tempo). CSS can't paint a gradient straight onto -webkit-text-stroke, so the gradient is the
+   background clipped to the glyphs (stroke included) and an opaque fill in the page's own black
+   covers each glyph's inside, leaving only the outer half of the stroke showing the rainbow.
+   That means the fill must stay the colour behind the footer (html:has(.landing)'s #000).
+   The mask keeps the old wordmark's fade toward the bottom edge it bleeds off. */
 .footer-wordmark {
   margin-top: 40px;
   text-align: center;
@@ -3037,10 +3133,23 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   font-weight: 700;
   letter-spacing: -0.05em;
   line-height: 0.8;
-  color: transparent;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+  -webkit-text-fill-color: #000;
+  -webkit-text-stroke: 2px transparent;
+  background: conic-gradient(
+    from var(--angle),
+    hsl(0, 36%, 50%),
+    hsl(50, 36%, 50%),
+    hsl(100, 36%, 50%),
+    hsl(160, 36%, 50%),
+    hsl(210, 36%, 50%),
+    hsl(265, 36%, 50%),
+    hsl(315, 36%, 50%),
+    hsl(360, 36%, 50%)
+  );
   -webkit-background-clip: text;
   background-clip: text;
+  mask-image: linear-gradient(180deg, #000 10%, transparent 85%);
+  animation: rainbow-border 8s linear infinite;
   user-select: none;
   transform: translateY(18%);
 }
@@ -3053,7 +3162,11 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   .showcase__hero,
   .page-enter,
   .fallback-shot__img,
+  .download-shot-glow::before,
   .rainbow-chip::before,
+  .footer-wordmark,
+  .landing-nav__link::after,
+  .pipeline__beam i,
   .tier-badge::before,
   .cta-rim::before,
   .cta-rim::after,
@@ -3129,18 +3242,84 @@ body {
   overflow-x: clip;
 }
 
-/* ─── Scrollbar ──────────────────────────────────────────── */
-.changelog-scroll::-webkit-scrollbar {
+/* ─── Embedded changelog (/changelog/[slug]) ───────────── */
+/*
+ * Loaded inside the desktop app's ChangelogModal iframe, so it borrows the app's own tokens
+ * (src/styles/theme.css + HeroUI's dark/light defaults) rather than the site's. The page paints no
+ * background of its own: the modal's themed `--overlay` shows through, so it matches whichever
+ * theme preset the user picked. That only works while the iframe's color-scheme matches the app's
+ * (Chromium paints an opaque canvas behind a cross-origin iframe whose scheme differs), which is
+ * why the app passes `?scheme=light` for its light presets - see the embed layout's init script.
+ */
+html:has(.changelog-embed),
+html:has(.changelog-embed) body {
+  background: transparent;
+}
+
+.changelog-embed {
+  --cl-foreground: oklch(0.9911 0 0);
+  --cl-muted: oklch(70.5% 0.015 286.067);
+  --cl-separator: oklch(0.31 0.006 285.89);
+  --cl-scrollbar-thumb: oklch(0.4 0.006 285.89);
+
+  /* drives the `prose` typography inside the scrolling list */
+  --color-fd-foreground: var(--cl-foreground);
+  --color-fd-muted-foreground: var(--cl-muted);
+  --color-fd-border: var(--cl-separator);
+
+  color: var(--cl-foreground);
+}
+
+html[data-scheme='light'] .changelog-embed {
+  --cl-foreground: oklch(0.2103 0.0059 285.89);
+  --cl-muted: oklch(0.5517 0.0138 285.94);
+  --cl-separator: oklch(0.91 0.003 285.89);
+  --cl-scrollbar-thumb: oklch(0.84 0.004 285.89);
+}
+
+/* release tags - HeroUI's success/accent/warning hues, as soft-tint pills like the app's chips */
+.changelog-tag {
+  --tag: var(--cl-muted);
+  background: color-mix(in oklch, var(--tag) 14%, transparent);
+  color: var(--tag);
+}
+
+.changelog-tag--new {
+  --tag: oklch(0.7329 0.1935 150.81);
+}
+
+.changelog-tag--improved {
+  --tag: oklch(0.7 0.16 253.83);
+}
+
+.changelog-tag--fixed {
+  --tag: oklch(0.8203 0.1388 76.34);
+}
+
+/* darker text on a light canvas, where the dark-theme hues wash out */
+html[data-scheme='light'] .changelog-tag--new {
+  --tag: oklch(0.55 0.17 150.81);
+}
+
+html[data-scheme='light'] .changelog-tag--improved {
+  --tag: oklch(0.55 0.2 253.83);
+}
+
+html[data-scheme='light'] .changelog-tag--fixed {
+  --tag: oklch(0.6 0.14 70);
+}
+
+/* same thin scrollbar as the app's own scroll areas */
+.changelog-embed__scroll::-webkit-scrollbar {
   width: 4px;
-  background: linear-gradient(to bottom, #1d1d1dff 0%, #000000ff 100%);
 }
 
-.changelog-scroll::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 5px;
+.changelog-embed__scroll::-webkit-scrollbar-thumb {
+  background: var(--cl-scrollbar-thumb);
+  border-radius: 6px;
 }
 
-.changelog-scroll::-webkit-scrollbar-track {
+.changelog-embed__scroll::-webkit-scrollbar-track {
   background: transparent;
 }
 
@@ -3639,14 +3818,21 @@ button[aria-label='Copy Link'] {
 }
 
 /* ── TOC ("On this page"). Fumadocs' clerk style draws the rail per item and one active path
-   (an SVG clipped to --track-top/--track-bottom) that follows the reader. Kept as is; restyled
-   into a glowing trace that eases between sections and fades out behind the reader, so its
-   bright end marks where you are. The blog's TOC is the same component (blog/_components/
-   TableOfContents.tsx) and shares every rule here through .blog-toc. */
+   (an SVG clipped to --track-top/--track-bottom) that follows the reader. Restyled into the
+   changelog timeline's look: a sharp trail of the rainbow fading out behind a glowing head, which
+   sits at the bottom of the range (where you are) and eases after it like the changelog's chases
+   the scroll. The head's x follows the rail's bends - TocHead.tsx sets --toc-head-x. The blog's
+   TOC is the same component (blog/_components/TableOfContents.tsx) and shares every rule here
+   through .blog-toc. */
 /* the blog sits outside .docs-shell, so it takes the docs' text tones here */
 .blog-toc {
   --color-fd-muted-foreground: #a3a3a3;
   --color-fd-foreground: #f5f5f5;
+}
+
+:is(#nd-toc, .blog-toc) {
+  /* the trail's length behind the head; the changelog's 520px would cover most of a TOC */
+  --toc-trail: 160px;
 }
 
 #nd-toc-title,
@@ -3657,6 +3843,13 @@ button[aria-label='Copy Link'] {
   color: var(--color-text-primary);
 }
 
+/* Room for the head's glow: the scroll area clips sideways, and the rail is only 8px in. Padded
+   and pulled back by the same amount (on top of Fumadocs' own 1px), so nothing moves. */
+:is(#nd-toc, .blog-toc) > div.overflow-auto {
+  padding-inline-start: 12px;
+  margin-inline-start: -11px;
+}
+
 /* the thumb's wrapper carries the range vars - ease them here instead of snapping */
 :is(#nd-toc, .blog-toc) div:has(> svg[style*='--track-top']) {
   transition:
@@ -3665,37 +3858,81 @@ button[aria-label='Copy Link'] {
 }
 
 :is(#nd-toc, .blog-toc) svg[style*='--track-top'] {
-  /* the vars now animate, so the clip follows them every frame - its own transition would lag */
+  /* the vars now animate, so the mask follows them every frame - a transition would lag */
   transition: none;
   overflow: visible;
-  /* fades in toward the bright end, from a floor high enough to keep the colours vivid (at 25% the
-     trace read as washed out) */
+  /* Fumadocs clips the path to the active range; the trail instead runs up from the head
+     whatever is active above it, so the inline clip goes and the mask does the cutting: the
+     trail fades in over --toc-trail and stops dead at the head, like the changelog's */
+  clip-path: none !important;
   -webkit-mask-image: linear-gradient(
     to bottom,
-    transparent var(--track-top),
-    rgba(0, 0, 0, 0.6) var(--track-top),
-    #000 var(--track-bottom)
+    transparent calc(var(--track-bottom) - var(--toc-trail)),
+    #000 var(--track-bottom),
+    transparent var(--track-bottom)
   );
   mask-image: linear-gradient(
     to bottom,
-    transparent var(--track-top),
-    rgba(0, 0, 0, 0.6) var(--track-top),
-    #000 var(--track-bottom)
+    transparent calc(var(--track-bottom) - var(--toc-trail)),
+    #000 var(--track-bottom),
+    transparent var(--track-bottom)
   );
 }
 
-/* the trace in the site's rainbow (the changelog timeline's colours), glowing in its own colours -
-   both SVG paint servers from _components/RainbowDefs.tsx, since an SVG stroke can't take a CSS
-   gradient and a drop-shadow can only glow in one colour */
+/* the trace in the site's rainbow (the changelog timeline's colours) - an SVG paint server from
+   _components/RainbowDefs.tsx, since an SVG stroke can't take a CSS gradient. Sharp, no glow:
+   only the head glows, as on the changelog. */
 :is(#nd-toc, .blog-toc) svg[style*='--track-top'] path {
   stroke: url(#sgi-rainbow);
   stroke-width: 2px;
-  filter: url(#sgi-glow);
 }
 
-/* the idle rail, a touch quieter so the trace reads against it */
+/* The head: the changelog's dot, a white-hot core (::after, over the trail) in a glow (::before,
+   under it), both in the trace's colour where they sit - the gradient is the stroke's, sampled
+   at --track-bottom in the same px-down-the-list units RainbowDefs' PERIOD (600) uses. */
+:is(#nd-toc, .blog-toc) div:has(> svg[style*='--track-top']) {
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    translate: calc(var(--toc-head-x, 0px) - 4.5px) calc(var(--track-bottom) - 4.5px);
+    background: linear-gradient(to bottom, var(--sgi-rainbow-vivid-stops));
+    background-size: 100% 600px;
+    background-position: 0 calc(4.5px - var(--track-bottom));
+    pointer-events: none;
+    /* hidden until TocHead has placed it (and while nothing is active) */
+    opacity: 0;
+    transition: opacity 400ms ease;
+  }
+
+  /* smaller than the changelog's (inset -10px, blur 8px) - a TOC's line is shorter and closer
+     to its text */
+  &::before {
+    scale: 1.75;
+    filter: blur(4px);
+  }
+
+  &::after {
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.85);
+  }
+
+  &[data-head]::before {
+    opacity: 0.85;
+  }
+
+  &[data-head]::after {
+    opacity: 1;
+  }
+}
+
+/* the idle rail, as quiet as the changelog's so the trail reads against it */
 :is(#nd-toc, .blog-toc) a > svg :is(line, path) {
-  stroke: rgba(255, 255, 255, 0.12);
+  stroke: rgba(255, 255, 255, 0.1);
 }
 
 /* No sideways nudge for active items: each link draws its own slice of the rail, so moving the

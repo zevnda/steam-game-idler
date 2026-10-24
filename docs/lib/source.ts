@@ -1,6 +1,6 @@
 import type { InferPageType } from 'fumadocs-core/source'
+import { tablerIconsPlugin } from './docsIcons'
 import { loader } from 'fumadocs-core/source'
-import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons'
 import { changelog as changelogEntries, docs, posts } from 'fumadocs-mdx:collections/server'
 import { toFumadocsSource } from 'fumadocs-mdx/runtime/server'
 
@@ -8,7 +8,8 @@ import { toFumadocsSource } from 'fumadocs-mdx/runtime/server'
 export const source = loader({
   baseUrl: '/docs',
   source: docs.toFumadocsSource(),
-  plugins: [lucideIconsPlugin()],
+  // the app's own Tabler icons for the sidebar - see lib/docsIcons.ts
+  plugins: [tablerIconsPlugin()],
 })
 
 export const changelog = loader(toFumadocsSource(changelogEntries, []), {

@@ -3,9 +3,9 @@
 import type { ReactNode } from 'react'
 import { TbArrowUp, TbBook } from 'react-icons/tb'
 import { scrollToPlayground } from './demoStore'
-import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { Logo } from '@/app/(marketing)/_components/Logo'
 import DownloadButton from '@/app/(marketing)/(home)/_components/DownloadButton'
 import { FadeIn } from '@/app/lib/animations'
 import { useGlobalStore } from '@/app/lib/globalStore'
@@ -43,13 +43,7 @@ export default function FinalCta({
       <div className='landing-container'>
         <FadeIn className='cta-rim max-w-5xl mx-auto'>
           <div className='cta-rim__inner px-6 py-16 sm:px-12 sm:py-24 text-center'>
-            <Image
-              src='/logo.png'
-              alt=''
-              width={56}
-              height={56}
-              className='relative mx-auto mb-8'
-            />
+            <Logo size={56} className='text-white relative mx-auto mb-8' />
             <h2
               id='cta-heading'
               className='relative text-[clamp(2.2rem,5vw,4rem)] font-semibold leading-[1.02] tracking-[-0.04em] text-text-primary'

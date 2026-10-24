@@ -92,7 +92,7 @@ export const GoPro = ({ collapsed }: { collapsed: boolean }) => {
               // and never shows a hover popup (only a native `title` attribute would).
               aria-label={title}
               className={cn(
-                'go-pro-card flex w-full cursor-pointer items-center justify-center rounded-lg py-2 text-white outline-none',
+                'go-pro-card flex w-full cursor-pointer items-center justify-center rounded-lg py-2 text-foreground outline-none',
                 'focus-visible:ring-2 focus-visible:ring-focus',
                 forceReducedMotion && 'force-reduced-motion',
               )}
@@ -136,7 +136,7 @@ export const GoPro = ({ collapsed }: { collapsed: boolean }) => {
               button's name is already the title. */}
           <span
             aria-hidden='true'
-            className='pro-pill shrink-0 text-[11px] font-black tracking-[0.12em] text-white'
+            className='pro-pill shrink-0 text-[11px] font-black tracking-[0.12em]'
           >
             <span className='pro-pill__inner'>PRO</span>
           </span>
@@ -146,15 +146,15 @@ export const GoPro = ({ collapsed }: { collapsed: boolean }) => {
           <span className='flex min-w-0 flex-1 flex-col'>
             {/* No native `title` tooltips on either line - a browser tooltip popping up over
                 the card's own text just reads as noise. */}
-            <span className='truncate text-sm font-bold text-white'>{title}</span>
+            <span className='truncate text-sm font-bold text-foreground'>{title}</span>
             {/* Keyed by index so each swap remounts the span and replays `.go-pro-perk`'s entrance
                 animation (globals.css). */}
-            <span key={perkIndex} className='go-pro-perk truncate text-xs text-white/70'>
+            <span key={perkIndex} className='go-pro-perk truncate text-xs text-foreground/70'>
               {t(PERK_KEYS[perkIndex])}
             </span>
           </span>
           <TbChevronRight
-            className='shrink-0 text-white/70 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-white'
+            className='shrink-0 text-foreground/70 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-foreground'
             fontSize={16}
           />
         </button>

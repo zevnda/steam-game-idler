@@ -1,7 +1,7 @@
 import { FaDiscord, FaGithub } from 'react-icons/fa6'
 import { FiMail } from 'react-icons/fi'
-import Image from 'next/image'
 import Link from 'next/link'
+import { Logo } from '@/app/(marketing)/_components/Logo'
 
 const COLUMNS: { title: string; links: { label: string; href: string; external?: boolean }[] }[] = [
   {
@@ -40,7 +40,7 @@ export default function LandingFooter() {
         <div className='grid gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,2fr)]'>
           <div>
             <Link prefetch={false} href='/' className='inline-flex items-center gap-2.5'>
-              <Image src='/logo.png' alt='' width={26} height={26} />
+              <Logo size={26} />
               <span className='font-semibold text-text-primary tracking-tight'>
                 Steam Game Idler
               </span>

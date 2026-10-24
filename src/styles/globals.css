@@ -128,9 +128,12 @@ body {
     var(--go-pro-rainbow) border-box;
 }
 
-/* The site CTA's rim colours, a conic turn of the muted rainbow - shared by the border and glow */
+/* The site CTA's rim colours, a conic turn of the muted rainbow - shared by the border and glow
+   (and by the sign-in screen's logo tile below) */
 .go-pro-card,
-.go-pro-glow {
+.go-pro-glow,
+.auth-logo,
+.auth-logo-glow {
   --go-pro-rainbow: conic-gradient(
     from var(--gradient-angle),
     hsl(0 36% 50%),
@@ -194,6 +197,40 @@ body {
 .go-pro-card.force-reduced-motion,
 .go-pro-glow.force-reduced-motion,
 .go-pro-card.force-reduced-motion .go-pro-perk {
+  animation: none;
+}
+
+/* Sign-in screen logo (AuthLayout.tsx): the mark on a squircle tile with the Go Pro card's
+   turning rainbow rim and a blurred glow of the same hues behind it - the app's one "look here"
+   treatment, reused so the first screen a user sees carries the same brand moment. Same
+   gradient-border trick as `.go-pro-card` (opaque `padding-box` fill over a `border-box`
+   rainbow), just a thicker rim so it holds up at the tile's larger size. */
+.auth-logo {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.08), transparent 70%) padding-box,
+    linear-gradient(var(--background), var(--background)) padding-box,
+    var(--go-pro-rainbow) border-box;
+  animation: gradient-angle 8s linear infinite;
+}
+
+.auth-logo-glow {
+  background: var(--go-pro-rainbow);
+  filter: blur(18px);
+  opacity: 0.5;
+  pointer-events: none;
+  animation: gradient-angle 8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-logo,
+  .auth-logo-glow {
+    animation: none;
+  }
+}
+
+.auth-logo.force-reduced-motion,
+.auth-logo-glow.force-reduced-motion {
   animation: none;
 }
 
@@ -339,8 +376,19 @@ body {
   padding: 0.15em 0.45em 0.15em 0.65em;
   border-radius: 999px;
   background: var(--background);
-  color: #fff;
+  /* the theme's own text colour, not white: the fill is the theme's background, so on the light
+     preset white text vanished into it */
+  color: var(--foreground);
   line-height: 1.2;
+}
+
+/* The titlebar's pill (Titlebar.tsx): at its 10px size the shared glow above all but vanished
+   against the bar, so it gets a stronger one in the same two hues - the website navbar PRO pill's
+   hover glow (docs/app/globals.css `.rainbow-chip--glow:hover`), a touch wider */
+.pro-pill.pro-pill--glow {
+  box-shadow:
+    0 0 16px -2px hsl(265 70% 62% / 0.6),
+    0 0 16px -4px hsl(160 70% 55% / 0.5);
 }
 
 @media (prefers-reduced-motion: reduce) {

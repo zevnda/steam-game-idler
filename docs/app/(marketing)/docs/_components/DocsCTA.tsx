@@ -1,6 +1,6 @@
 import { FiGithub } from 'react-icons/fi'
-import { Logo } from './Logo'
 import Link from 'next/link'
+import { Logo } from '@/app/(marketing)/_components/Logo'
 import DownloadButton from '@/app/(marketing)/(home)/_components/DownloadButton'
 
 /**
@@ -15,8 +15,8 @@ export default function DocsCTA() {
     <div className='not-prose my-20'>
       <div className='cta-rim'>
         <div className='cta-rim__inner px-6 py-9 sm:px-10 sm:py-11'>
-          <div className='absolute -right-4 -bottom-8 pointer-events-none -rotate-20'>
-            <Logo width='48' height='48' />
+          <div className='absolute -right-4 -bottom-8 pointer-events-none'>
+            <Logo size={150} className='text-[#1d1d1d]' />
           </div>
 
           <div className='relative z-10'>

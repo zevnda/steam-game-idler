@@ -1,4 +1,5 @@
 {
   "title": "Inventory Manager",
+  "icon": "TbBuildingStore",
   "pages": ["pricing-details", "marketplace-fees"]
 }

@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react'
 import { FiChevronRight, FiMenu, FiX } from 'react-icons/fi'
 import { scrollBehavior } from './demoStore'
 import { LINKS, SOCIALS } from './navLinks'
-import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { Logo } from '@/app/(marketing)/_components/Logo'
 import DownloadButton from '@/app/(marketing)/(home)/_components/DownloadButton'
 
 const SHEET_GROUPS = [
@@ -59,6 +59,12 @@ export default function LandingNav({ actions, sheetLead }: LandingNavProps) {
 
   const onLink = (e: React.MouseEvent, href: string) => {
     setOpen(false)
+    // Home while already home: back to the top (a same-route link would otherwise do nothing)
+    if (href === '/' && onHome) {
+      e.preventDefault()
+      window.scrollTo({ top: 0, behavior: scrollBehavior() })
+      return
+    }
     if (!href.startsWith('#')) return
     e.preventDefault()
     document.querySelector(href)?.scrollIntoView({ behavior: scrollBehavior(), block: 'start' })
@@ -73,7 +79,7 @@ export default function LandingNav({ actions, sheetLead }: LandingNavProps) {
       <header className='landing-header fixed inset-x-0 top-0 z-50'>
         <div className='landing-nav'>
           <Link prefetch={false} href='/' className='flex items-center gap-2.5 shrink-0'>
-            <Image src='/logo.png' alt='' width={22} height={22} loading='eager' />
+            <Logo size={22} />
             <span className='font-semibold tracking-tight text-text-primary'>Steam Game Idler</span>
           </Link>
 
@@ -87,7 +93,7 @@ export default function LandingNav({ actions, sheetLead }: LandingNavProps) {
                   href={l.href}
                   onClick={() => setOpen(false)}
                   aria-current={l.current ? 'page' : undefined}
-                  className='rainbow-chip landing-nav__pro'
+                  className='rainbow-chip rainbow-chip--glow landing-nav__pro'
                 >
                   <span className='rainbow-chip__inner landing-nav__pro-inner'>{l.label}</span>
                 </Link>
@@ -98,7 +104,9 @@ export default function LandingNav({ actions, sheetLead }: LandingNavProps) {
                   href={l.href}
                   onClick={e => onLink(e, l.href)}
                   aria-current={l.current ? 'page' : undefined}
-                  className='landing-nav__link'
+                  // Home is dropped between md and lg, where the bar can't fit it beside the
+                  // Download button - the logo beside it links home anyway
+                  className={`landing-nav__link ${l.href === '/' ? 'max-lg:hidden' : ''}`}
                 >
                   {l.label}
                 </Link>
@@ -163,7 +171,7 @@ export default function LandingNav({ actions, sheetLead }: LandingNavProps) {
               onClick={() => setOpen(false)}
               className='flex items-center gap-2.5 shrink-0'
             >
-              <Image src='/logo.png' alt='' width={22} height={22} />
+              <Logo size={22} />
               <span className='font-semibold tracking-tight text-text-primary'>
                 Steam Game Idler
               </span>

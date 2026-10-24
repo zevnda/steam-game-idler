@@ -68,7 +68,7 @@ export const Titlebar = ({ minimal = false }: TitlebarProps) => {
   const proPill = (
     <span
       className={cn(
-        'pro-pill ml-2 shrink-0 text-[10px] font-black tracking-[0.12em] text-white',
+        'pro-pill pro-pill--glow ml-2 shrink-0 text-[10px] font-black tracking-[0.12em]',
         forceReducedMotion && 'force-reduced-motion',
       )}
       data-tauri-drag-region

@@ -20,6 +20,12 @@ export const metadata = {
   metadataBase: new URL('https://steamgameidler.com/'),
 }
 
+// Runs before first paint: the desktop app passes `?scheme=light` while a light theme preset is
+// active, so the page's text/tag colors flip and its color-scheme matches the app's - a mismatched
+// scheme makes the browser paint an opaque canvas behind this (otherwise transparent) iframe.
+const schemeInitScript =
+  '(function(){try{if(new URLSearchParams(location.search).get("scheme")==="light"){var h=document.documentElement;h.classList.remove("dark");h.style.colorScheme="light";h.dataset.scheme="light"}}catch(e){}})()'
+
 export default function Layout({ children }: LayoutProps) {
   return (
     <html
@@ -28,6 +34,9 @@ export default function Layout({ children }: LayoutProps) {
       style={{ colorScheme: 'dark' }}
       suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: schemeInitScript }} />
+      </head>
       <body>{children}</body>
     </html>
   )

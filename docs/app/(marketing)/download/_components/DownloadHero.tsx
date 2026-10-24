@@ -159,7 +159,7 @@ export default function DownloadHero() {
           </button>
         </div>
 
-        <div>
+        <div className='download-shot-glow'>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={SCREENSHOT}
