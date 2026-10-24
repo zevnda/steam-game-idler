@@ -1,8 +1,5 @@
 <div align="center">
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./public/logo-white.svg">
-  <img src="./public/logo-black.svg" width="80" alt="app logo">
-</picture>
+<img src="./src-tauri/icons/icon.png" width="80" alt="app logo">
 
 <h1>Steam Game Idler</h1>
 
@@ -21,7 +18,11 @@ See how it stacks up against other software, such as **[ArchiSteamFarm](https://
 [![Linux][linux]](https://github.com/zevnda/steam-game-idler/releases/latest)
 
 <img src="./public/example.webp" width="700" alt="example image"><br />
-</div>
+
+<a href="./public/example_2.webp"><img src="./public/example_2.webp" width="172" alt="example image 2"></a>
+<a href="./public/example_3.webp"><img src="./public/example_3.webp" width="172" alt="example image 3"></a>
+<a href="./public/example_4.webp"><img src="./public/example_4.webp" width="172" alt="example image 4"></a>
+<a href="./public/example_5.webp"><img src="./public/example_5.webp" width="172" alt="example image 5"></a>
 
 # Installation
 
@@ -81,11 +82,11 @@ Refer to the **[documentation](https://steamgameidler.com/docs/)** for a detaile
 # Supported Languages
 Help contribute to this project by adding new translations or improving existing ones. **[Read more here](https://github.com/zevnda/steam-game-idler/discussions/148)**
 
-| Language             | Flag | Language | Flag | Language | Flag |
-| -------------------- | ---- | -------- | ---- | -------- | ---- |
-| Chinese (Simplified) | 🇨🇳    | English  | 🇬🇧    | French   | 🇫🇷    |
-| German               | 🇩🇪    | Italian  | 🇮🇹    | Portuguese (Brazil) | 🇧🇷 |
-| Russian              | 🇷🇺    | Spanish  | 🇪🇸    | Turkish  | 🇹🇷    |
+| Language             | Flag | Language | Flag | Language            | Flag |
+| -------------------- | ---- | -------- | ---- | ------------------- | ---- |
+| Chinese (Simplified) | 🇨🇳    | English  | 🇬🇧    | French              | 🇫🇷    |
+| German               | 🇩🇪    | Italian  | 🇮🇹    | Portuguese (Brazil) | 🇧🇷    |
+| Russian              | 🇷🇺    | Spanish  | 🇪🇸    | Turkish             | 🇹🇷    |
 
 # License
 Copyright © 2024-2026 zevnda — **[Elastic-2.0 License](./LICENSE)**
