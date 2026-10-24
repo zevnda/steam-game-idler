@@ -9,9 +9,7 @@ export default function FeatureDetailsSection() {
     <section id='feature-details' className='py-12 sm:py-16 relative'>
       <div className='container mx-auto px-4 sm:px-6 md:px-8'>
         <div className='max-w-3xl mx-auto'>
-          <FadeIn>
-            <SectionHeading label='Every Feature, Explained' />
-          </FadeIn>
+          <SectionHeading label='Every Feature, Explained' />
 
           <FadeIn delay={0.1}>
             <div className='rounded-3xl overflow-hidden bg-[#101013] border border-white/5'>

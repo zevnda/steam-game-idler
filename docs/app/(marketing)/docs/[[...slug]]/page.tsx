@@ -1,8 +1,6 @@
 import { createRelativeLink } from 'fumadocs-ui/mdx'
 import { DocsBody, DocsPage } from 'fumadocs-ui/page'
 import { notFound } from 'next/navigation'
-import AdScripts from '@/app/(marketing)/(home)/_components/AdScripts'
-import AdSlot from '@/app/(marketing)/(home)/_components/AdSlot'
 import { source } from '@/lib/source'
 import { getMDXComponents } from '@/mdx-components'
 
@@ -21,9 +19,7 @@ export default async function Page(props: PageProps) {
 
   return (
     <DocsPage toc={page.data.toc} full={page.data.full} tableOfContent={{ style: 'clerk' }}>
-      <AdScripts />
       <DocsBody>
-        <AdSlot slot='1265004536' />
         {/* eslint-disable-next-line */}
         <MDX
           components={getMDXComponents({
@@ -31,7 +27,6 @@ export default async function Page(props: PageProps) {
             a: createRelativeLink(source, page),
           })}
         />
-        <AdSlot slot='3005445709' />
       </DocsBody>
     </DocsPage>
   )
@@ -45,7 +40,9 @@ export async function generateMetadata(props: PageProps) {
   const params = await props.params
   const page = source.getPage(params.slug)
   if (!page) notFound()
-  const slugPath = (params.slug ?? []).join('/')
+  // The docs index has no slug, so it must be `/docs`, not `/docs/`: Vercel 308-redirects the
+  // trailing-slash form, and a canonical pointing at a redirect makes Google override it.
+  const docsPath = ['/docs', ...(params.slug ?? [])].join('/')
   // An explicit search title (frontmatter `seoTitle`) is already complete, so it skips the root
   // layout's "%s | Steam Game Idler" template; otherwise the nav title goes through it as before.
   const { seoTitle } = page.data
@@ -56,7 +53,7 @@ export async function generateMetadata(props: PageProps) {
     description: page.data.description,
     keywords: page.data.keywords,
     openGraph: {
-      url: `https://steamgameidler.com/docs/${slugPath}`,
+      url: `https://steamgameidler.com${docsPath}`,
       title: shareTitle,
       description: page.data.description,
       images: 'https://steamgameidler.com/og-image.png',
@@ -68,7 +65,7 @@ export async function generateMetadata(props: PageProps) {
       image: 'https://steamgameidler.com/og-image.png',
     },
     alternates: {
-      canonical: `/docs/${slugPath}`,
+      canonical: docsPath,
     },
   }
 }

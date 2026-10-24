@@ -1,8 +1,8 @@
 import ChangelogClient from './client'
 import { PathUtils } from 'fumadocs-core/source'
 import Link from 'next/link'
-import FooterSection from '@/app/(marketing)/(home)/_components/FooterSection'
-import NavBar from '@/app/(marketing)/(home)/_components/NavBar'
+import LandingFooter from '@/app/(marketing)/(home)/_components/landing/LandingFooter'
+import LandingNav from '@/app/(marketing)/(home)/_components/landing/LandingNav'
 import { changelog } from '@/lib/source'
 import { getMDXComponents } from '@/mdx-components'
 
@@ -71,19 +71,18 @@ export default async function Page() {
   })
 
   return (
-    <div className='min-h-screen bg-background'>
-      <NavBar />
+    <div className='landing min-h-screen bg-background'>
+      <LandingNav />
 
-      <div className='max-w-4xl mx-auto px-4 sm:px-6 pt-28 sm:pt-32 pb-24'>
-        {/* Header */}
-        <div className='mb-16'>
-          <h1 className='text-4xl sm:text-5xl font-bold text-text-primary mb-4 leading-tight tracking-tight'>
+      <main className='landing-container [--container-max:68rem] pt-36 sm:pt-44 pb-28 sm:pb-36'>
+        <header className='page-enter mb-16 max-w-2xl'>
+          <h1 className='text-[clamp(2.6rem,5.6vw,4.8rem)] font-semibold leading-[0.98] tracking-[-0.04em] text-text-primary'>
             Changelog
           </h1>
-          <p className='text-text-muted'>
-            See what&apos;s new, improved, and fixed in each release of Steam Game Idler.
+          <p className='mt-6 text-lg text-text-muted leading-relaxed'>
+            What&apos;s new, improved and fixed in every release of Steam Game Idler, newest first.
           </p>
-        </div>
+        </header>
 
         {/* Posts */}
         <ChangelogClient totalPosts={posts.length}>
@@ -92,12 +91,11 @@ export default async function Page() {
               key={post.url}
               data-index={index}
               id={post.data.title}
-              className='flex flex-col md:flex-row gap-4 items-start pt-12'
-              style={{ borderTop: '1px solid var(--color-border)' }}
+              className='changelog-entry flex flex-col md:flex-row gap-4 items-start'
             >
               {/* Date and Tags */}
               <div className='flex flex-row-reverse md:flex-col items-center justify-between md:items-start gap-3 mb-4 w-full md:w-45 shrink-0'>
-                <time className='text-xs text-text-muted'>
+                <time className='text-sm text-text-muted'>
                   {new Date(post.data.date ?? getName(post.path)).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
@@ -110,7 +108,7 @@ export default async function Page() {
                     {post.data.tags.map(tag => (
                       <span
                         key={tag}
-                        className={`text-xs px-2.5 py-1 rounded-md font-medium ${
+                        className={`text-[13px] px-2.5 py-1 rounded-full font-medium ${
                           tag === 'New'
                             ? 'bg-green-500/15 text-green-400'
                             : tag === 'Improved'
@@ -129,12 +127,12 @@ export default async function Page() {
 
               <div>
                 <Link href={`/changelog/${post.data.title}`} prefetch={false}>
-                  <h2 className='text-3xl font-bold text-text-primary mb-4 hover:text-text-muted transition-colors duration-150'>
+                  <h2 className='text-3xl sm:text-4xl font-semibold tracking-[-0.03em] text-text-primary mb-4 hover:text-text-muted transition-colors duration-150'>
                     v{post.data.title}
                   </h2>
                 </Link>
 
-                <div className='prose text-text-muted leading-relaxed mb-4'>
+                <div className='prose max-w-[68ch] text-text-muted leading-relaxed mb-4'>
                   <post.Mdx components={getMDXComponents()} />
                 </div>
               </div>
@@ -147,10 +145,9 @@ export default async function Page() {
             <p className='text-text-muted text-lg'>No changelog entries yet.</p>
           </div>
         )}
-      </div>
+      </main>
 
-      <div className='section-divider' />
-      <FooterSection />
+      <LandingFooter />
     </div>
   )
 }

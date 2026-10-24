@@ -110,7 +110,7 @@ export default function Community() {
                   {col.map(t => (
                     <figure key={`${copy}-${t.username}`} className='quote'>
                       <FaQuoteLeft className='w-4 h-4 text-white/15' aria-hidden='true' />
-                      <blockquote className='mt-3 text-[15px] text-text-primary/90 leading-relaxed'>
+                      <blockquote className='mt-3 text-base text-text-primary/90 leading-relaxed'>
                         {t.content}
                       </blockquote>
                       <figcaption className='mt-4 flex items-center gap-2.5 text-sm'>

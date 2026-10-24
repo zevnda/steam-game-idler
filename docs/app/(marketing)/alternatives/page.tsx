@@ -1,10 +1,9 @@
-import { FaArrowRight } from 'react-icons/fa'
-import { FiAward, FiClock, FiTerminal } from 'react-icons/fi'
+import { FiArrowRight } from 'react-icons/fi'
 import Link from 'next/link'
-import AdScripts from '@/app/(marketing)/(home)/_components/AdScripts'
-import AdSlot from '@/app/(marketing)/(home)/_components/AdSlot'
-import FooterSection from '@/app/(marketing)/(home)/_components/FooterSection'
-import NavBar from '@/app/(marketing)/(home)/_components/NavBar'
+import Compare from '@/app/(marketing)/(home)/_components/landing/Compare'
+import FinalCta from '@/app/(marketing)/(home)/_components/landing/FinalCta'
+import LandingFooter from '@/app/(marketing)/(home)/_components/landing/LandingFooter'
+import LandingNav from '@/app/(marketing)/(home)/_components/landing/LandingNav'
 import { StaggerGroup, StaggerItem } from '@/app/lib/animations'
 
 export const metadata = {
@@ -42,25 +41,22 @@ export const metadata = {
 const comparisons = [
   {
     slug: 'archisteamfarm',
+    accent: '#60a5fa',
     name: 'ArchiSteamFarm',
-    abbr: 'ASF',
-    Icon: FiTerminal,
     summary:
       'Steam Game Idler is the go-to ArchiSteamFarm alternative for users who want a visual desktop app instead of a CLI. Get card farming, achievement management, inventory selling, and playtime boosting — no config files, no command line.',
   },
   {
     slug: 'steam-achievement-manager',
+    accent: '#c084fc',
     name: 'Steam Achievement Manager',
-    abbr: 'SAM',
-    Icon: FiAward,
     summary:
       'Steam Game Idler is a full Steam Achievement Manager alternative that goes beyond achievements. Manage, unlock, and lock achievements — plus card farming, inventory selling, and playtime boosting — all in one actively maintained app.',
   },
   {
     slug: 'idle-master',
+    accent: '#fb923c',
     name: 'Idle Master',
-    abbr: 'IM',
-    Icon: FiClock,
     summary:
       'Steam Game Idler is the modern Idle Master replacement. Idle Master is abandoned and no longer maintained — Steam Game Idler picks up where it left off with active development, achievement management, and a clean interface.',
   },
@@ -68,81 +64,64 @@ const comparisons = [
 
 export default function AlternativesPage() {
   return (
-    <div className='min-h-screen bg-background'>
-      <AdScripts />
-      <NavBar />
+    <div className='landing min-h-screen bg-background'>
+      <LandingNav />
 
-      <div className='container mx-auto px-4 sm:px-6 md:px-8 max-w-4xl pt-36 pb-24 sm:pt-44 sm:pb-32'>
-        <AdSlot slot='1265004536' />
+      <main>
+        {/* A secondary-page header (same shape as /blog and /changelog), not a home-style hero:
+            left-aligned, a size down, no hero buttons - the tool cards right under it are the
+            page's actions. */}
+        <section className='landing-container pt-36 pb-24 sm:pt-44 sm:pb-32'>
+          <header className='page-enter max-w-2xl mx-auto text-center lg:mx-0 lg:text-left'>
+            <h1 className='text-[clamp(2.6rem,5.6vw,4.8rem)] font-semibold leading-[0.98] tracking-[-0.04em] text-balance text-text-primary'>
+              The better Steam tool alternative
+            </h1>
+            <p className='mt-6 text-lg leading-relaxed text-text-muted'>
+              Looking for an alternative to ArchiSteamFarm, Steam Achievement Manager or Idle
+              Master? Steam Game Idler replaces all three, with a modern interface, active
+              development and no configuration files. Pick the tool you use today for a full
+              comparison.
+            </p>
+          </header>
 
-        {/* Header */}
-        <div className='mb-16 text-center'>
-          <h1 className='text-4xl sm:text-5xl font-bold text-text-primary mb-6 leading-tight tracking-tight'>
-            The better alternative to popular <span className='gradient-text'>Steam tools</span>
-          </h1>
-          <p className='text-lg text-text-muted max-w-2xl mx-auto leading-relaxed'>
-            Looking for an alternative to ArchiSteamFarm, Steam Achievement Manager, or Idle Master?
-            Steam Game Idler replaces all three — with a modern interface, active development, and
-            no complex configuration required.
-          </p>
-        </div>
-
-        {/* Comparison cards */}
-        <StaggerGroup className='flex flex-col gap-5'>
-          {comparisons.map(alt => (
-            <StaggerItem key={alt.slug}>
-              <Link
-                prefetch={false}
-                href={`/alternatives/${alt.slug}`}
-                className='card group block'
-              >
-                <div className='p-6 sm:p-8'>
-                  {/* Card header */}
-                  <div className='flex items-start justify-between gap-4 mb-5'>
-                    <div className='flex items-center gap-4'>
-                      <div
-                        className='w-10 h-10 rounded-lg flex items-center justify-center shrink-0'
-                        style={{
-                          background: 'rgba(255,255,255,0.04)',
-                          border: '1px solid rgba(255,255,255,0.08)',
-                        }}
-                      >
-                        <alt.Icon className='w-5 h-5 text-text-muted' />
-                      </div>
-                      <div>
-                        <span className='text-xs font-mono font-semibold text-text-muted uppercase tracking-widest'>
-                          {alt.abbr}
-                        </span>
-                        <h2 className='text-lg font-bold text-text-primary leading-snug'>
-                          {alt.name}
-                        </h2>
-                      </div>
-                    </div>
-                    <div className='flex items-center gap-1.5 text-accent text-sm font-medium shrink-0 pt-1'>
-                      <span className='hidden sm:inline'>View comparison</span>
-                      <FaArrowRight className='w-3 h-3 group-hover:translate-x-1 transition-transform duration-150' />
-                    </div>
+          <StaggerGroup className='mt-12 sm:mt-16 grid gap-4 lg:grid-cols-3'>
+            {comparisons.map(alt => (
+              <StaggerItem key={alt.slug} className='h-full'>
+                {/* --accent tints the tile's top glow, one hue per tool from the home bento's palette */}
+                <Link
+                  prefetch={false}
+                  href={`/alternatives/${alt.slug}`}
+                  className='bento-tile group focus-visible:outline-2 focus-visible:outline-white/60'
+                  style={{ '--accent': alt.accent } as React.CSSProperties}
+                >
+                  <div className='relative flex flex-1 flex-col p-7 sm:p-8'>
+                    <h2 className='text-2xl font-semibold tracking-[-0.03em] text-text-primary'>
+                      {alt.name}
+                    </h2>
+                    <p className='mt-3 flex-1 text-base text-text-muted leading-relaxed'>
+                      {alt.summary}
+                    </p>
+                    <span className='bento-try mt-7 self-start'>
+                      See the comparison
+                      <FiArrowRight className='w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5' />
+                    </span>
                   </div>
+                </Link>
+              </StaggerItem>
+            ))}
+          </StaggerGroup>
+        </section>
+        <div className='section-divider' />
 
-                  {/* Divider */}
-                  <div
-                    className='mb-5'
-                    style={{ height: '1px', background: 'var(--color-border)' }}
-                  />
+        {/* the home page's four-tool table: every competitor on one screen */}
+        <Compare />
+        <div className='section-divider' />
 
-                  {/* Summary */}
-                  <p className='text-sm text-text-muted leading-relaxed'>{alt.summary}</p>
-                </div>
-              </Link>
-            </StaggerItem>
-          ))}
-        </StaggerGroup>
+        <FinalCta />
+        <div className='section-divider' />
+      </main>
 
-        <AdSlot slot='3005445709' />
-      </div>
-
-      <div className='section-divider' />
-      <FooterSection />
+      <LandingFooter />
     </div>
   )
 }

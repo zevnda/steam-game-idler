@@ -56,13 +56,17 @@ export default function OpenSource() {
           />
           <div className='mt-10 space-y-7'>
             {POINTS.map(p => (
-              <div key={p.title} className='flex gap-4'>
+              // below lg the icon stacks above centred text, under the (centred) heading
+              <div
+                key={p.title}
+                className='flex flex-col items-center gap-3 text-center lg:flex-row lg:items-start lg:gap-4 lg:text-left'
+              >
                 <span className='trust-icon' aria-hidden='true'>
                   <p.icon className='w-5 h-5' />
                 </span>
                 <div>
                   <h3 className='font-semibold text-text-primary'>{p.title}</h3>
-                  <p className='mt-1 text-[15px] text-text-muted leading-relaxed'>{p.body}</p>
+                  <p className='mt-1 text-base text-text-muted leading-relaxed'>{p.body}</p>
                 </div>
               </div>
             ))}
@@ -84,7 +88,7 @@ export default function OpenSource() {
               </div>
               <FiArrowUpRight className='ml-auto w-5 h-5 text-text-muted group-hover:text-text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all' />
             </div>
-            <p className='mt-5 text-[15px] text-text-muted leading-relaxed'>
+            <p className='mt-5 text-base text-text-muted leading-relaxed'>
               Automate your Steam library: farm trading cards, manage achievements, boost playtime
               and manage your inventory - from one desktop app for Windows and Linux.
             </p>

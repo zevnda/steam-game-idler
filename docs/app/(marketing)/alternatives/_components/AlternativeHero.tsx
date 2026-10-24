@@ -1,58 +1,21 @@
-import type { Competitor } from '@/app/(marketing)/alternatives/_data/competitors'
-import { TbCards } from 'react-icons/tb'
-
 interface AlternativeHeroProps {
-  competitor: Competitor
+  title: string
+  sub: string
 }
 
-export default function AlternativeHero({ competitor }: AlternativeHeroProps) {
+/**
+ * The /alternatives/[tool] pages' header: a centred title and one sentence, no buttons - the
+ * comparison table starts right under it (AlternativeDetail.tsx). Set at the secondary-page title
+ * size (as /alternatives, /blog, /changelog), not the home hero's. Enters as one block with
+ * `.page-enter`, like every inner page's header.
+ */
+export default function AlternativeHero({ title, sub }: AlternativeHeroProps) {
   return (
-    <section className='pt-36 pb-24 sm:pt-44 sm:pb-32 relative overflow-hidden'>
-      <div
-        className='absolute inset-0 pointer-events-none'
-        style={{
-          backgroundImage:
-            'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.055) 1px, transparent 0)',
-          backgroundSize: '24px 24px',
-          maskImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 100%)',
-          WebkitMaskImage:
-            'radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 100%)',
-        }}
-      />
-
-      <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
-        <div className='max-w-4xl mx-auto text-center'>
-          <div
-            className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border ${competitor.accentBorderClassName} ${competitor.accentBgClassName} ${competitor.accentClassName} text-sm font-medium mb-8`}
-          >
-            <TbCards className='w-4 h-4' />
-            {competitor.badgeLabel}
-          </div>
-
-          {/* Real-case text with spaces between the parts, uppercased by CSS: the three `block`
-              spans look like separate lines, but without the spaces crawlers read the heading as
-              one run-on word ("ARCHISTEAMFARMVSSTEAM GAME IDLER"). */}
-          <h1 className='text-4xl sm:text-5xl md:text-6xl font-bold leading-none tracking-tight uppercase mb-6'>
-            <span className='text-text-primary'>{competitor.name}</span>{' '}
-            <span className='block text-text-muted'>vs</span>{' '}
-            <span
-              className='block'
-              style={{
-                background: `linear-gradient(135deg, ${competitor.gradientFrom}, ${competitor.gradientTo})`,
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >
-              Steam Game Idler
-            </span>
-          </h1>
-
-          <p className='text-lg text-text-muted max-w-2xl mx-auto leading-relaxed'>
-            {competitor.intro}
-          </p>
-        </div>
-      </div>
-    </section>
+    <header className='landing-container page-enter pt-36 pb-14 sm:pt-44 sm:pb-16 text-center'>
+      <h1 className='max-w-4xl mx-auto text-[clamp(2.6rem,5.6vw,4.8rem)] font-semibold leading-[0.98] tracking-[-0.04em] text-balance text-text-primary'>
+        {title}
+      </h1>
+      <p className='mt-6 max-w-2xl mx-auto text-lg leading-relaxed text-text-muted'>{sub}</p>
+    </header>
   )
 }

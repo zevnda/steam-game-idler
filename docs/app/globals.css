@@ -215,6 +215,30 @@
   }
 }
 
+/* ─── Inner marketing pages ─────────────────────────────────── */
+/* The page header's entrance on every inner marketing page - the home hero's (.showcase__hero):
+   the whole header (title, sub, actions, hero picture) rises once as one block, transform only so
+   the title still counts as painted on the first frame (LCP). Section headings below never animate
+   and the content under them reveals on scroll (FadeIn/StaggerGroup), as on the home page. */
+.page-enter {
+  animation: hero-enter 1s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+/* Download page: the app snapshot beside the hero copy */
+.download-shot {
+  border-radius: 14px;
+  background: #0d0d0f;
+}
+
+/* Changelog: entries separated by space rather than a rule */
+.changelog-entry {
+  padding-top: 72px;
+}
+
+.changelog-entry:first-child {
+  padding-top: 0;
+}
+
 /* ─── Landing page ──────────────────────────────────────────── */
 /* Fast scrolling past the pinned WebGL stage makes Chrome briefly paint not-yet-rastered tiles
    with the root background - which was never set, so it flashed white. */
@@ -246,9 +270,11 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   padding-block: clamp(5rem, 11vw, 9.5rem);
 }
 
+/* Unlayered, so it beats Tailwind's max-w-* utilities - narrow it with [--container-max:...]
+   instead (e.g. the changelog's reading column). */
 .landing-container {
   width: 100%;
-  max-width: 1240px;
+  max-width: var(--container-max, 1240px);
   margin-inline: auto;
   padding-inline: clamp(1rem, 4vw, 2rem);
 }
@@ -294,6 +320,11 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.06);
 }
 
+.landing-nav__link[aria-current='page'] {
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .landing-nav__link--pro {
   font-weight: 700;
   color: var(--color-text-primary);
@@ -303,9 +334,10 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   position: fixed;
   inset: 0;
   z-index: 60;
-  background: rgba(0, 0, 0, 0.96);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  /* solid, not translucent: the bright 3D stage behind bled through even a 96% black */
+  background: #050505;
   /* closed (and the exit): a quick fade, then visibility flips once it's invisible */
   opacity: 0;
   visibility: hidden;
@@ -325,6 +357,95 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
     opacity 220ms cubic-bezier(0.22, 1, 0.36, 1),
     transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
     visibility 0s;
+}
+
+/* the home hero's ambient glow (.showcase__glow), low in the sheet */
+.landing-sheet__glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(70% 40% at 50% 100%, rgba(90, 120, 255, 0.14), transparent 70%),
+    radial-gradient(45% 30% at 80% 90%, rgba(200, 90, 255, 0.08), transparent 70%);
+}
+
+/* the sheet's groups rise in one after another (--i, set in LandingNav.tsx) */
+.landing-sheet__item {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.landing-sheet--open .landing-sheet__item {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(var(--i, 0) * 50ms + 60ms);
+}
+
+/* a group of links on one surface - the home page's card tone and outline */
+.sheet-group {
+  border-radius: 20px;
+  background: #0c0c0f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.sheet-group li + li {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sheet-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 15px 18px;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--color-text-primary);
+  transition: background-color 150ms ease;
+}
+
+.sheet-link:active {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.sheet-link[aria-current='page'] {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.sheet-link__chevron {
+  width: 18px;
+  height: 18px;
+  color: var(--color-text-muted);
+  transition: transform 150ms ease;
+}
+
+.sheet-link[aria-current='page'] .sheet-link__chevron {
+  color: var(--color-text-primary);
+}
+
+/* PRO: a full-width .rainbow-chip laid out as one more .sheet-link row - same corners, tone, text
+   inset and chevron as the groups above. Doubled class selectors: .rainbow-chip's own pill radius
+   and padding come later in this file and would otherwise win. */
+.rainbow-chip.sheet-pro {
+  display: flex;
+  width: 100%;
+  border-radius: 20px;
+}
+
+/* 1px rim + 18px = the groups' 1px border + 18px row padding, so the text lines up with theirs */
+.rainbow-chip__inner.sheet-pro__inner {
+  flex: 1;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 18px;
+  border-radius: 19px;
+  background: #0c0c0f;
+  color: var(--color-text-primary);
 }
 
 /* Rainbow-rimmed chip (hero release badge) */
@@ -374,6 +495,73 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
 
 .rainbow-chip:hover .rainbow-chip__inner {
   background: rgba(5, 5, 5, 0.82);
+}
+
+/* The hero's release banner (ReleaseBanner.tsx): a .rainbow-chip with a link and a dismiss button.
+   Always laid out (its slot is reserved so the hero never moves); hidden it's invisible, which
+   also keeps it out of the tab order. Fades in once the real version has loaded. */
+.release-banner {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 300ms ease,
+    visibility 0s linear 300ms;
+}
+
+.release-banner--on {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 500ms ease;
+}
+
+.release-banner__inner {
+  gap: 4px;
+  padding: 4px 4px 4px 14px;
+}
+
+.release-banner__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 6px;
+}
+
+.release-banner__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  transition: gap 200ms ease;
+}
+
+.release-banner__link:hover .release-banner__more {
+  gap: 7px;
+}
+
+.release-banner__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease;
+}
+
+.release-banner__close:hover {
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.release-banner__close:focus-visible,
+.release-banner__link:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
+  border-radius: 999px;
 }
 
 /* ── Showcase: pinned hero -> playground. `--t` (0..1) is the hand-over progress, set from JS. */
@@ -1961,6 +2149,22 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   border-top: 0;
 }
 
+/* two-tool form (SGI vs one competitor) used on /alternatives/[tool]; every column stays visible on
+   phones, so it carries no [data-off] switching */
+.cmp__row.cmp__row--duo {
+  grid-template-columns: minmax(0, 1.6fr) repeat(2, minmax(0, 1fr));
+}
+
+/* a per-category table's heading, sitting in the header row's feature column */
+.cmp__category {
+  display: flex;
+  align-items: center;
+  padding: 18px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
 @media (max-width: 767px) {
   .cmp__row {
     grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr));
@@ -2275,7 +2479,7 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
 
 .faq-card__answer {
   padding: 0 72px 22px 22px;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.7;
   color: var(--color-text-muted);
   opacity: 0;
@@ -2385,6 +2589,7 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
    state feedback, not movement. */
 @media (prefers-reduced-motion: reduce) {
   .showcase__hero,
+  .page-enter,
   .fallback-shot__img,
   .rainbow-chip::before,
   .cta-rim::before,
@@ -2417,7 +2622,8 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   }
 
   .landing-sheet,
-  .landing-sheet--open {
+  .landing-sheet--open,
+  .landing-sheet__item {
     transform: none;
   }
 
@@ -2448,18 +2654,6 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
   to {
     transform: translateX(100%);
   }
-}
-
-/* AdSense — hide ad units that didn't fill so they don't show as blank boxes */
-.ad-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;
-}
-
-.ad-wrapper:has(ins.adsbygoogle[data-ad-status='unfilled']) {
-  display: none;
 }
 
 /* ─── Prevent double scrollbar ─────────────────────────── */

@@ -20,7 +20,7 @@ export default function Layout({ children }: LayoutProps) {
       links={[
         // Blog and Changelog first: docs pages get most of the site's search traffic, so these
         // sidebar links are the main internal path from docs to both (the docs layout has no
-        // marketing NavBar). Same icons as the footer and NavBar use for them.
+        // marketing LandingNav). Same icons as the marketing footer uses for them.
         {
           type: 'icon',
           url: '/blog',

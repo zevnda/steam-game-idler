@@ -32,7 +32,7 @@ const COLUMNS: { title: string; links: { label: string; href: string; external?:
   },
 ]
 
-/** The landing page's footer. (Other marketing pages keep the shared FooterSection.) */
+/** The marketing site's footer, shared by the home page and every inner marketing page. */
 export default function LandingFooter() {
   return (
     <footer className='relative pt-20 overflow-hidden'>
@@ -102,7 +102,7 @@ export default function LandingFooter() {
           </div>
         </div>
 
-        <div className='mt-16 pt-6 border-t border-white/8 flex flex-col items-center text-center md:flex-row md:text-left justify-between gap-3 text-xs text-text-muted'>
+        <div className='mt-16 pt-6 border-t border-white/8 flex flex-col items-center text-center md:flex-row md:text-left justify-between gap-3 text-sm text-text-muted'>
           <span>© 2024-{new Date().getFullYear()} Steam Game Idler. All rights reserved.</span>
           <span>
             Website created and managed by{' '}

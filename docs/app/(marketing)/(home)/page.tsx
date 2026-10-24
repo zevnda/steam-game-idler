@@ -1,6 +1,4 @@
 import { Suspense } from 'react'
-import AdScripts from '@/app/(marketing)/(home)/_components/AdScripts'
-import AdSlot from '@/app/(marketing)/(home)/_components/AdSlot'
 import Community from '@/app/(marketing)/(home)/_components/landing/Community'
 import Compare from '@/app/(marketing)/(home)/_components/landing/Compare'
 import Faq from '@/app/(marketing)/(home)/_components/landing/Faq'
@@ -78,29 +76,24 @@ export default function HomePage() {
   return (
     <div className='landing min-h-screen bg-background'>
       <JsonLd data={[softwareApplication, faqPage]} />
-      <AdScripts />
       <LandingNav />
       <main>
-        {/* Hero + live 3D playground (pinned). No ad inside it - an ad block scrolling over the
-            pinned stage would break the hand-over from hero to playground. */}
+        {/* Hero + live 3D playground (pinned). Keep anything else out of it - a block scrolling
+            over the pinned stage would break the hand-over from hero to playground. */}
         <Showcase />
         <div className='section-divider' />
-        <AdSlot slot='1265004536' />
         <Suspense>
           <FeatureBento />
         </Suspense>
         <div className='section-divider' />
-        <AdSlot slot='3005445709' />
         <Suspense>
           <GetStarted />
         </Suspense>
         <div className='section-divider' />
-        <AdSlot slot='9143494556' />
         <Suspense>
           <Compare />
         </Suspense>
         <div className='section-divider' />
-        <AdSlot slot='9100790437' />
         <Suspense>
           <Community />
         </Suspense>
@@ -109,7 +102,6 @@ export default function HomePage() {
           <OpenSource />
         </Suspense>
         <div className='section-divider' />
-        <AdSlot slot='2284296837' />
         <Suspense>
           <Faq />
         </Suspense>
@@ -120,7 +112,6 @@ export default function HomePage() {
           <LatestPosts />
         </Suspense>
         <div className='section-divider' />
-        <AdSlot slot='3052629191' />
         <Suspense>
           <FinalCta />
         </Suspense>

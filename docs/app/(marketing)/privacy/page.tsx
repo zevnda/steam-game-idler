@@ -1,5 +1,5 @@
-import FooterSection from '@/app/(marketing)/(home)/_components/FooterSection'
-import NavBar from '@/app/(marketing)/(home)/_components/NavBar'
+import LandingFooter from '@/app/(marketing)/(home)/_components/landing/LandingFooter'
+import LandingNav from '@/app/(marketing)/(home)/_components/landing/LandingNav'
 
 export const metadata = {
   title: 'Privacy Policy | Steam Game Idler',
@@ -8,25 +8,26 @@ export const metadata = {
 
 export default function PrivacyPolicy() {
   return (
-    <div className='min-h-screen bg-background'>
-      <NavBar />
+    <div className='landing min-h-screen bg-background'>
+      <LandingNav />
 
       <div className='container mx-auto px-4 sm:px-6 md:px-8 max-w-3xl pt-36 pb-24'>
-        <h1 className='text-4xl sm:text-5xl font-bold text-text-primary mb-10 text-center tracking-tight'>
+        <h1 className='page-enter text-4xl sm:text-5xl font-bold text-text-primary mb-10 text-center tracking-tight'>
           Privacy Policy
         </h1>
 
         <div className='space-y-10'>
           <section>
             <p className='text-sm text-text-muted mb-6'>
-              <span className='text-text-primary font-semibold'>Last Updated:</span> June 21, 2026
+              <span className='text-text-primary font-semibold'>Last Updated:</span> October 24,
+              2026
             </p>
             <p className='text-text-muted leading-relaxed'>
               Steam Game Idler (&quot;SGI&quot;, &quot;the Application&quot;, &quot;we&quot;,
               &quot;us&quot;, or &quot;our&quot;) respects your privacy and is committed to
               protecting your personal information. This Privacy Policy explains how we collect,
               use, and safeguard your information when you use our desktop application or visit our
-              website. Both may display Google AdSense advertisements.
+              website.
             </p>
           </section>
 
@@ -351,16 +352,17 @@ export default function PrivacyPolicy() {
             </h3>
             <p className='text-text-muted leading-relaxed'>
               <span className='text-text-primary font-medium'>Desktop Application:</span> SGI does
-              not collect telemetry or usage statistics. Ad placements shown to non-PRO users load
-              content directly from our website in an embedded frame, which may include Google
-              AdSense and Google Analytics and set cookies in that context.
+              not collect telemetry or usage statistics. Non-PRO users see a promotional image in
+              the application&apos;s sidebar, loaded from our own content delivery network. No
+              third-party advertising network is involved and no advertising cookies are set;
+              clicking an image simply opens its link in your browser.
               <br />
               <br />
-              <span className='text-text-primary font-medium'>Website:</span> Our website uses
-              Google AdSense for advertising (see section 4.6), Google Analytics to understand site
-              traffic and usage trends, and Vercel Analytics to collect aggregated, non-personal
-              usage statistics to help improve site performance and user experience. No personally
-              identifiable information is collected by Vercel Analytics.
+              <span className='text-text-primary font-medium'>Website:</span> Our website does not
+              display advertisements. It uses Google Analytics to understand site traffic and usage
+              trends, and Vercel Analytics to collect aggregated, non-personal usage statistics to
+              help improve site performance and user experience. No personally identifiable
+              information is collected by Vercel Analytics.
             </p>
 
             <h3 className='text-base font-medium text-text-primary mb-3 mt-6'>
@@ -391,45 +393,6 @@ export default function PrivacyPolicy() {
               section 1.5). This service is operated separately from, and is not part of, our public
               desktop application or website codebase (see section 7).
             </p>
-          </section>
-
-          <section>
-            <h2 className='text-xl font-semibold text-text-primary mb-4'>
-              4.6 Google AdSense and Consent Management
-            </h2>
-            <p className='text-text-muted leading-relaxed mb-4'>
-              Both our website and desktop application may use Google AdSense to display
-              advertisements. As part of this, Google and its partners may use cookies and collect
-              data to personalize ads and measure ad performance. You may see a consent message when
-              using our site or app, allowing you to manage your preferences for personalized ads
-              and data collection.
-            </p>
-            <ul className='list-disc pl-6 space-y-2 text-text-muted'>
-              <li>
-                <span className='text-text-primary font-medium'>Third-Party Cookies:</span> Google
-                and partners may set cookies to deliver and personalize ads
-              </li>
-              <li>
-                <span className='text-text-primary font-medium'>User Consent:</span> You can accept
-                or manage your ad and data preferences via the consent message shown in our website
-                or app
-              </li>
-              <li>
-                <span className='text-text-primary font-medium'>Scope:</span> This applies to both
-                the Steam Game Idler website and desktop application
-              </li>
-              <li>
-                <span className='text-text-primary font-medium'>More Information:</span>{' '}
-                <a
-                  href='https://policies.google.com/technologies/ads'
-                  className='text-accent hover:opacity-80 transition-opacity duration-150 underline underline-offset-2'
-                  target='_blank'
-                  rel='noopener noreferrer'
-                >
-                  Google&apos;s Advertising Privacy &amp; Terms
-                </a>
-              </li>
-            </ul>
           </section>
 
           <section>
@@ -625,9 +588,8 @@ export default function PrivacyPolicy() {
             <h2 className='text-xl font-semibold text-text-primary mb-4'>10. Consent</h2>
             <p className='text-text-muted leading-relaxed'>
               By using Steam Game Idler or visiting our website, you consent to the collection and
-              use of your information as described in this Privacy Policy, including the use of
-              Google AdSense and related cookies. If you do not agree with this policy, please do
-              not use our application or website.
+              use of your information as described in this Privacy Policy. If you do not agree with
+              this policy, please do not use our application or website.
             </p>
           </section>
 
@@ -641,7 +603,7 @@ export default function PrivacyPolicy() {
       </div>
 
       <div className='section-divider' />
-      <FooterSection />
+      <LandingFooter />
     </div>
   )
 }

@@ -33,9 +33,7 @@ function Cover({ post, featured }: { post: BlogPost; featured: boolean }) {
       ) : (
         // Posts without a cover get a quiet branded panel rather than an empty box.
         <div className='blog-cover-fallback flex h-full w-full items-end p-5'>
-          <span className='text-xs font-semibold uppercase tracking-wider text-white/70'>
-            {post.data.category}
-          </span>
+          <span className='text-sm font-semibold text-white/80'>{post.data.category}</span>
         </div>
       )}
     </div>
@@ -85,7 +83,7 @@ export default function PostCard({
         </Heading>
 
         <p
-          className={`text-sm leading-relaxed text-text-muted ${featured ? 'sm:text-base' : 'line-clamp-3'}`}
+          className={`text-[15px] leading-relaxed text-text-muted ${featured ? 'sm:text-base' : 'line-clamp-3'}`}
         >
           {post.data.description}
         </p>

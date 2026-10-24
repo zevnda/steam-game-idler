@@ -1,17 +1,34 @@
 'use client'
 
-import { TbArrowUp } from 'react-icons/tb'
+import type { ReactNode } from 'react'
+import { TbArrowUp, TbBook } from 'react-icons/tb'
 import { scrollToPlayground } from './demoStore'
 import Image from 'next/image'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import DownloadButton from '@/app/(marketing)/(home)/_components/DownloadButton'
 import { FadeIn } from '@/app/lib/animations'
 import { useGlobalStore } from '@/app/lib/globalStore'
 
 /**
  * The closing call to action - framed in the same slowly rotating, muted rainbow rim the 3D app
- * window glows with at the top of the page, so it ends on the look it opened with.
+ * window glows with at the top of the page, so it ends on the look it opened with. Also closes the
+ * blog posts and the /alternatives pages (which pass their own title/sub); off the home page there's no demo to go back to, so the second action is the docs.
  */
-export default function FinalCta() {
+interface FinalCtaProps {
+  title?: ReactNode
+  sub?: string
+}
+
+export default function FinalCta({
+  title = (
+    <>
+      Put your library <span className='gradient-text'>to work.</span>
+    </>
+  ),
+  sub = 'Download Steam Game Idler and get started in minutes. No sign-up required.',
+}: FinalCtaProps) {
+  const onHome = usePathname() === '/'
   const { downloadSize, linuxDownloadUrl, linuxDownloadSize, selectedOS } = useGlobalStore(s => s)
   // Same "fall back to Windows until a real Linux release exists" rule as DownloadHero.tsx.
   const isLinux = selectedOS === 'linux' && Boolean(linuxDownloadUrl)
@@ -37,21 +54,28 @@ export default function FinalCta() {
               id='cta-heading'
               className='relative text-[clamp(2.2rem,5vw,4rem)] font-semibold leading-[1.02] tracking-[-0.04em] text-text-primary'
             >
-              Put your library <span className='gradient-text'>to work.</span>
+              {title}
             </h2>
             <p className='relative mt-5 text-lg text-text-muted leading-relaxed max-w-xl mx-auto'>
-              Download Steam Game Idler and get started in minutes. No sign-up required.
+              {sub}
             </p>
             <div className='relative mt-10 flex flex-col sm:flex-row gap-3 justify-center items-center'>
               <DownloadButton label='Download for free' iconClassName='w-5 h-5' />
-              <button
-                type='button'
-                onClick={scrollToPlayground}
-                className='btn-ghost px-6 py-3 rounded-full'
-              >
-                <TbArrowUp className='w-4 h-4' />
-                Back to the demo
-              </button>
+              {onHome ? (
+                <button
+                  type='button'
+                  onClick={scrollToPlayground}
+                  className='btn-ghost px-6 py-3 rounded-full'
+                >
+                  <TbArrowUp className='w-4 h-4' />
+                  Back to the demo
+                </button>
+              ) : (
+                <Link prefetch={false} href='/docs' className='btn-ghost px-6 py-3 rounded-full'>
+                  <TbBook className='w-4 h-4' />
+                  Read the docs
+                </Link>
+              )}
             </div>
             <p className='relative mt-8 flex flex-wrap justify-center gap-x-3 gap-y-1 text-sm text-text-muted'>
               {facts.map((f, i) => (

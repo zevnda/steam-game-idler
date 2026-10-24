@@ -54,7 +54,7 @@ function KeyTakeaways({
 }) {
   return (
     <aside className='not-prose my-8 rounded-xl border border-accent/25 bg-accent/5 p-5 sm:p-6'>
-      <p className='mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-accent'>
+      <p className='mb-3 flex items-center gap-2 text-base font-semibold text-accent'>
         <FiZap className='h-4 w-4' aria-hidden='true' />
         {title}
       </p>

@@ -5,11 +5,9 @@ import TableOfContents from '../_components/TableOfContents'
 import { InlineTOC } from 'fumadocs-ui/components/inline-toc'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import AdScripts from '@/app/(marketing)/(home)/_components/AdScripts'
-import AdSlot from '@/app/(marketing)/(home)/_components/AdSlot'
-import CTASection from '@/app/(marketing)/(home)/_components/CTASection'
-import FooterSection from '@/app/(marketing)/(home)/_components/FooterSection'
-import NavBar from '@/app/(marketing)/(home)/_components/NavBar'
+import FinalCta from '@/app/(marketing)/(home)/_components/landing/FinalCta'
+import LandingFooter from '@/app/(marketing)/(home)/_components/landing/LandingFooter'
+import LandingNav from '@/app/(marketing)/(home)/_components/landing/LandingNav'
 import JsonLd from '@/app/lib/JsonLd'
 import {
   absoluteUrl,
@@ -130,10 +128,9 @@ export default async function BlogPostPage(props: PageProps) {
   ]
 
   return (
-    <div className='min-h-screen bg-background'>
+    <div className='landing min-h-screen bg-background'>
       <JsonLd data={schema} />
-      <AdScripts />
-      <NavBar />
+      <LandingNav />
 
       <main className='container mx-auto max-w-6xl px-4 pb-20 pt-28 sm:px-6 sm:pt-32 md:px-8'>
         <nav aria-label='Breadcrumb' className='mb-8'>
@@ -156,7 +153,7 @@ export default async function BlogPostPage(props: PageProps) {
           </ol>
         </nav>
 
-        <header className='mx-auto mb-10 max-w-3xl lg:mx-0'>
+        <header className='page-enter mx-auto mb-10 max-w-3xl lg:mx-0'>
           <div className='mb-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-text-muted'>
             <span className='rounded-md bg-accent/10 px-2 py-0.5 font-medium text-accent'>
               {category}
@@ -228,8 +225,6 @@ export default async function BlogPostPage(props: PageProps) {
               </ul>
             )}
 
-            <AdSlot slot='3005445709' className='px-0!' />
-
             <section
               aria-label='About the author'
               className='card mt-4 flex items-start gap-4 p-5 hover:border-border'
@@ -286,10 +281,8 @@ export default async function BlogPostPage(props: PageProps) {
         )}
       </main>
 
-      <div className='section-divider' />
-      <CTASection />
-      <div className='section-divider' />
-      <FooterSection />
+      <FinalCta />
+      <LandingFooter />
     </div>
   )
 }

@@ -35,15 +35,15 @@ pnpm types:check     # fumadocs-mdx codegen + tsc --noEmit
 
 The app uses Next.js's **multiple root layouts** pattern: there is no single top-level `app/layout.tsx`. Instead, every route belongs to one of two top-level route groups, each with its own independent root layout (own `<html>`/`<body>`, own providers/scripts):
 
-- **`(marketing)`** — the full marketing/docs site (home, docs, changelog list, alternatives, download, pro, privacy, tos, paypal). Root layout includes Fumadocs `RootProvider`, Google Analytics, AdSense, `StoreLoader`, `TelemetryLoader`, full SEO metadata.
-- **`(embed)`** — routes meant to be loaded inside the desktop app's webview (currently just `/changelog/[slug]`, the single-changelog-entry view shown in `ChangelogModal.tsx`'s iframe). Root layout is intentionally minimal: fonts + global styles only, no analytics, no ads, no Fumadocs provider, no background fetches — this route is the one exception the app's Vercel Firewall rule allows through from `tauri.localhost`, so it should stay lightweight.
+- **`(marketing)`** — the full marketing/docs site (home, docs, changelog list, alternatives, download, pro, privacy, tos, paypal). Root layout includes Fumadocs `RootProvider`, Google Analytics, `StoreLoader`, `TelemetryLoader`, full SEO metadata.
+- **`(embed)`** — routes meant to be loaded inside the desktop app's webview (currently just `/changelog/[slug]`, the single-changelog-entry view shown in `ChangelogModal.tsx`'s iframe). Root layout is intentionally minimal: fonts + global styles only, no analytics, no Fumadocs provider, no background fetches — this route is the one exception the app's Vercel Firewall rule allows through from `tauri.localhost`, so it should stay lightweight.
 
 ```
 docs/
   app/                     # Next.js App Router
     (marketing)/           # Full-layout marketing/docs site — route group, own root layout
       (home)/              # Marketing home — nested route group with its own sub-layout
-        _components/       # Shared marketing components (NavBar, FooterSection, CTASection, DownloadButton...)
+        _components/       # Shared marketing components (DownloadButton, StoreLoader...)
           landing/         # The home page's own sections + the interactive three.js showcase (see below)
         layout.tsx
         page.tsx           # Composes all home sections
@@ -53,13 +53,13 @@ docs/
         _content/          # MDX source files (see Content section below)
         [[...slug]]/page.tsx # Catch-all routing — renders every doc page
         layout.tsx         # Docs layout (Fumadocs sidebar, breadcrumbs, search)
-      changelog/           # Changelog list page only (/changelog) — full layout, has NavBar/FooterSection
+      changelog/           # Changelog list page only (/changelog) — full layout, has LandingNav/LandingFooter
       blog/                # Blog listing (/blog), posts (/blog/[slug]), RSS feed (/blog/rss.xml)
       alternatives/        # Comparison pages (ASF, Idle Master, SAM)
       privacy/ tos/ pro/ download/ paypal/  # Static/other pages
-      layout.tsx           # Marketing root layout — SEO metadata, analytics, ads, fonts, providers
+      layout.tsx           # Marketing root layout — SEO metadata, analytics, fonts, providers
     (embed)/               # Minimal-layout routes loaded inside the desktop app's webview
-      changelog/[slug]/    # Single changelog entry (/changelog/[slug]) — no analytics/ads/RootProvider
+      changelog/[slug]/    # Single changelog entry (/changelog/[slug]) — no analytics/RootProvider
       layout.tsx           # Minimal root layout — fonts + global styles only
     api/                   # Route Handlers (search index, llms-full.txt) — outside the layout tree
     llms-full.txt/
@@ -70,7 +70,7 @@ docs/
     layout.shared.tsx      # Shared nav options reused across layouts
   changelogs/              # Changelog MDX files (versioned, e.g. 5.3.0.mdx)
   blog/                    # Blog post MDX files ({slug}.mdx); images in public/blog/{slug}/
-  public/                  # Static assets — logos, OG images, ads.txt
+  public/                  # Static assets — logos, OG images, ads.txt (AdSense verification only)
   source.config.ts         # Fumadocs collection definitions (docs dir: app/(marketing)/docs/_content)
   next.config.ts           # Static export config + Fumadocs MDX plugin
   mdx-components.tsx       # MDX component overrides (adds image zoom)
@@ -203,12 +203,15 @@ Wraps all `<img>` tags with Fumadocs `<ImageZoom>` for click-to-zoom. Extended b
 ### `app/(marketing)/layout.tsx`
 Marketing root layout that provides:
 - Fumadocs `RootProvider` (theming, search)
-- Google Analytics + AdSense scripts
+- Google Analytics
 - Geist + Geist Mono fonts
 - Full SEO metadata (OG tags, Twitter card, JSON-LD schema)
+- The site serves **no ads**: AdSense was removed entirely. What's left of it: the
+  `google-adsense-account` verification meta tag, commented out in the layout, and `public/ads.txt`.
+  Don't reintroduce ad slots or scripts.
 
 ### `app/(embed)/layout.tsx`
-Minimal root layout for `/changelog/[slug]` only — Geist/Geist Mono fonts + `globals.css`, no analytics, no ads, no Fumadocs `RootProvider`. Kept deliberately light since this is the one route the desktop app's webview still loads directly.
+Minimal root layout for `/changelog/[slug]` only — Geist/Geist Mono fonts + `globals.css`, no analytics, no Fumadocs `RootProvider`. Kept deliberately light since this is the one route the desktop app's webview still loads directly.
 
 ### `app/(marketing)/docs/layout.tsx`
 Docs section layout using Fumadocs `DocsLayout`:
@@ -217,10 +220,16 @@ Docs section layout using Fumadocs `DocsLayout`:
 - Theme switch disabled
 
 ### Home page (`app/(marketing)/(home)/_components/landing/`)
-The landing page has its own sections, nav (`LandingNav`) and footer (`LandingFooter`); every other
-marketing page keeps the shared `NavBar`/`FooterSection`/`CTASection`. Order: showcase -> feature
-bento -> get started -> compare -> community -> open source -> FAQ -> final CTA, with the six
-AdSense slots between sections (never inside the pinned showcase).
+The landing page's sections live here. Its nav (`LandingNav`), footer (`LandingFooter`), closing CTA
+(`FinalCta`) and `SectionHeading` are shared by every inner marketing page too (Pro, Download,
+Alternatives, Changelog, Blog, legal). `SectionHeading`'s mono `eyebrow` label is optional: the home
+page passes one, the inner pages don't. Off the home page, `LandingNav` points its in-page links at
+`/#...`. (`/pro` still uses its own `pro/_components/SectionHeading`.) Entrance animation follows
+the home page everywhere: a page's header (title, sub, actions, header picture) rises once as one
+block with `.page-enter` (the home hero's `hero-enter`, transform only - never fade a title's
+opacity, it delays LCP); section headings never animate; the content under them reveals on scroll
+with `FadeIn`/`StaggerGroup`. Order: showcase -> feature
+bento -> get started -> compare -> community -> open source -> FAQ -> final CTA.
 - **`showcase/Showcase.tsx`** pins a full-viewport three.js stage: the hero headline sits above a
   live 3D replica of the app, and scrolling hands over to a docked "playground" (feature picker +
   the window). One scroll-progress value drives both the stage (`setView(frame, pose)`) and the

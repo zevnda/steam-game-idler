@@ -1,8 +1,8 @@
 import { FaArrowRight } from 'react-icons/fa6'
 import { FiBook } from 'react-icons/fi'
 import Link from 'next/link'
-import FooterSection from '@/app/(marketing)/(home)/_components/FooterSection'
-import NavBar from '@/app/(marketing)/(home)/_components/NavBar'
+import LandingFooter from '@/app/(marketing)/(home)/_components/landing/LandingFooter'
+import LandingNav from '@/app/(marketing)/(home)/_components/landing/LandingNav'
 
 export const metadata = {
   title: 'Subscription Created',
@@ -12,8 +12,8 @@ export const metadata = {
 
 export default function StripeReturnPage() {
   return (
-    <div className='min-h-screen bg-background'>
-      <NavBar />
+    <div className='landing min-h-screen bg-background'>
+      <LandingNav />
 
       <section className='relative py-32 sm:py-62 overflow-hidden'>
         <div
@@ -29,7 +29,7 @@ export default function StripeReturnPage() {
         />
 
         <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
-          <div className='max-w-xl mx-auto text-center'>
+          <div className='page-enter max-w-xl mx-auto text-center'>
             <h1 className='text-4xl sm:text-5xl font-bold leading-none tracking-tight mb-5'>
               <span className='text-text-primary'>Thank you for supporting </span>
               <span className='gradient-text'>Steam Game Idler</span>
@@ -66,7 +66,7 @@ export default function StripeReturnPage() {
       </section>
 
       <div className='section-divider' />
-      <FooterSection />
+      <LandingFooter />
     </div>
   )
 }
