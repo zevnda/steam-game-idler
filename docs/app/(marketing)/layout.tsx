@@ -32,6 +32,14 @@ export const metadata = {
   description:
     'A free Steam idler for Windows and Linux. Farm trading cards and playtime hours on up to 32 games at once, unlock achievements and claim free games.',
   metadataBase: new URL('https://steamgameidler.com/'),
+  // Lets Google show large image previews, which Discover effectively requires to surface a page
+  // (and which also allows bigger thumbnails in regular results). A page setting its own `robots`
+  // (e.g. the noindexed checkout returns) replaces this whole object, so those stay unaffected.
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { 'index': true, 'follow': true, 'max-image-preview': 'large' },
+  },
   keywords: [
     'Steam Game Idler',
     'Steam Idler',
