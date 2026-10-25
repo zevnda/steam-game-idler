@@ -16,8 +16,9 @@ export function generateMetadata() {
   return {
     title: { absolute: TITLE },
     description: DESCRIPTION,
-    // An empty listing is a thin page; keep it out of the index until the first post ships.
-    robots: hasPosts ? undefined : { index: false, follow: true },
+    // An empty listing is a thin page; keep it out of the index until the first post ships. Spread
+    // rather than `robots: undefined`, which would still override (and blank) the layout's robots.
+    ...(hasPosts ? {} : { robots: { index: false, follow: true } }),
     openGraph: {
       url: `${SITE_URL}/blog`,
       title: TITLE,
