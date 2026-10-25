@@ -1,7 +1,30 @@
 name: Discord Notification
 
+# Manual re-send (or test post) of a release's changelog, using the same panels as release.yml's
+# send_discord_notification job. The release role ping is opt-in here (the `ping` input) so a
+# re-send to the real release channel doesn't ping everyone a second time
+
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to post, e.g. 6.3.0 (leave empty for the latest release)'
+        required: false
+        default: ''
+      webhook_secret:
+        # The name of a repo secret, never a raw webhook URL - workflow inputs are visible to anyone
+        # who can see this public repo's runs, and the URL alone is enough to post as the webhook
+        description: 'Repo secret holding the webhook URL (e.g. DISCORD_TEST_WEBHOOK for a test channel)'
+        required: false
+        default: 'DISCORD_WEBHOOK'
+      ping:
+        description: 'Include the release role ping, as a real release does (for test channels)'
+        type: boolean
+        default: false
+      dry_run:
+        description: 'Print the panel payloads without posting anything'
+        type: boolean
+        default: false
 
 jobs:
   notify:
@@ -9,36 +32,30 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
-      - name: Get latest release version
-        id: get_version
-        run: |
-          VERSION=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Using version: $VERSION"
-      
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
       - name: Send to Discord
         env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_WEBHOOK: ${{ secrets[inputs.webhook_secret || 'DISCORD_WEBHOOK'] }}
+          WEBHOOK_SECRET: ${{ inputs.webhook_secret || 'DISCORD_WEBHOOK' }}
+          VERSION: ${{ inputs.version || 'latest' }}
+          PING: ${{ inputs.ping }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          # Only used to look up the latest release without hitting the anonymous API rate limit
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
-          VERSION="${{ steps.get_version.outputs.version }}"
-          CHANGELOG_FILE="docs/changelogs/${VERSION}.mdx"
-          RELEASE_URL="https://github.com/${{ github.repository }}/releases/tag/${VERSION}"
-          
-          if [ ! -f "$CHANGELOG_FILE" ]; then
-            echo "Error: Changelog file not found: $CHANGELOG_FILE"
+          ARGS=(--version "$VERSION")
+          if [ "$PING" = "true" ]; then ARGS+=(--ping); fi
+          if [ "$DRY_RUN" = "true" ]; then
+            node scripts/discord-changelog.mjs "${ARGS[@]}" --dry-run
+            exit
+          fi
+          if [ -z "$DISCORD_WEBHOOK" ]; then
+            echo "::error::The repo secret $WEBHOOK_SECRET is missing or empty"
             exit 1
           fi
-          
-          # Extract changelog body after frontmatter (remove everything between --- markers and trim)
-          CHANGELOG_BODY=$(awk 'BEGIN{p=0} /^---$/{p++; next} p==2{print}' "$CHANGELOG_FILE" | sed '/^$/d')
-          
-          # Create JSON payload using jq to properly escape everything
-          jq -n \
-            --arg version "$VERSION" \
-            --arg changelog "$CHANGELOG_BODY" \
-            --arg url "$RELEASE_URL" \
-            '{content: ("# Steam Game Idler v" + $version + "\n\n" + $changelog + "\n\n[View on GitHub](<" + $url + ">)")}' \
-          | curl -H "Content-Type: application/json" \
-            -d @- \
-            "$DISCORD_WEBHOOK"
+          node scripts/discord-changelog.mjs "${ARGS[@]}"

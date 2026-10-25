@@ -2,8 +2,9 @@
 name: commit-desc
 description: >
   Write a Conventional Commits message compressed to intent only, scoped from
-  the files actually changed and validated against CONTRIBUTING.md. Use for
-  "write a commit", "commit message", or /commit-desc.
+  the files actually changed and validated against CONTRIBUTING.md, plus a
+  matching terse `<type>/<kebab-summary>` branch name. Use for "write a
+  commit", "commit message", "branch name", or /commit-desc.
 ---
 
 Write commit messages terse and exact. Conventional Commits format. No fluff. Why over what.
@@ -46,6 +47,12 @@ Write commit messages terse and exact. Conventional Commits format. No fluff. Wh
    generate a broad summary that encompasses all the changes. If you can't
    find a common theme, decide which change is considered the bigger of th
    lot and focus on that for the commit message.
+5. Also output a branch name on its own line: `<type>/<kebab-case-summary>`,
+   matching the repo's existing branches (e.g. `ci/bump-node-to-24`,
+   `chore/remove-unused-strings`). Same `type` as the commit message, no
+   scope, lowercase, hyphen-separated, only `a-z0-9-` after the slash. Make
+   it terser than the commit summary: 2–5 words, keeping only the words
+   that identify the change (drop articles, filler and the scope).
 
 ## Rules
 
@@ -60,5 +67,5 @@ Write commit messages terse and exact. Conventional Commits format. No fluff. Wh
 - Why over what: the summary should say what changed in behavior, not
   narrate the diff.
 - If nothing is staged or changed, say so instead of fabricating a message.
-- This skill only drafts the message — never run `git commit` yourself; the
-  user commits.
+- This skill only drafts the message and branch name — never run
+  `git commit` or create/switch branches yourself; the user does both.
