@@ -596,8 +596,9 @@ function sectionUnits(section, pageUrl) {
   return units
 }
 
-// Builds every panel's message payload. `ping` adds the release role mention as the very last
-// component of the last panel, and is the only thing any panel is allowed to mention
+// Builds every panel's message payload. `ping` adds the release role mention to the last panel,
+// right after the changelog body and above the footer's divider, and is the only thing any panel
+// is allowed to mention
 function buildPanels(changelog, { ping }) {
   const { version } = changelog
   const pageUrl = changelogPageUrl(version)
@@ -607,6 +608,7 @@ function buildPanels(changelog, { ping }) {
     textDisplay(SUBTITLE),
   ]
   const footer = [
+    ...(ping ? [textDisplay(`<@&${RELEASE_ROLE_ID}>`)] : []),
     divider(),
     textDisplay(FOOTER),
     spacer(),
@@ -618,7 +620,6 @@ function buildPanels(changelog, { ping }) {
         linkButton('Full Changelog', pageUrl),
       ],
     },
-    ...(ping ? [textDisplay(`<@&${RELEASE_ROLE_ID}>`)] : []),
   ]
 
   // Each panel tracks the container (1 component) plus a divider before each unit except a
