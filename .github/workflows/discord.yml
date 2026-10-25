@@ -1,7 +1,8 @@
 name: Discord Notification
 
 # Manual re-send (or test post) of a release's changelog, using the same panels as release.yml's
-# send_discord_notification job but without the release role ping
+# send_discord_notification job. The release role ping is opt-in here (the `ping` input) so a
+# re-send to the real release channel doesn't ping everyone a second time
 
 on:
   workflow_dispatch:
@@ -16,6 +17,10 @@ on:
         description: 'Repo secret holding the webhook URL (e.g. DISCORD_TEST_WEBHOOK for a test channel)'
         required: false
         default: 'DISCORD_WEBHOOK'
+      ping:
+        description: 'Include the release role ping, as a real release does (for test channels)'
+        type: boolean
+        default: false
       dry_run:
         description: 'Print the panel payloads without posting anything'
         type: boolean
@@ -38,16 +43,19 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets[inputs.webhook_secret || 'DISCORD_WEBHOOK'] }}
           WEBHOOK_SECRET: ${{ inputs.webhook_secret || 'DISCORD_WEBHOOK' }}
           VERSION: ${{ inputs.version || 'latest' }}
+          PING: ${{ inputs.ping }}
           DRY_RUN: ${{ inputs.dry_run }}
           # Only used to look up the latest release without hitting the anonymous API rate limit
           GITHUB_TOKEN: ${{ github.token }}
         run: |
+          ARGS=(--version "$VERSION")
+          if [ "$PING" = "true" ]; then ARGS+=(--ping); fi
           if [ "$DRY_RUN" = "true" ]; then
-            node scripts/discord-changelog.mjs --version "$VERSION" --dry-run
+            node scripts/discord-changelog.mjs "${ARGS[@]}" --dry-run
             exit
           fi
           if [ -z "$DISCORD_WEBHOOK" ]; then
             echo "::error::The repo secret $WEBHOOK_SECRET is missing or empty"
             exit 1
           fi
-          node scripts/discord-changelog.mjs --version "$VERSION"
+          node scripts/discord-changelog.mjs "${ARGS[@]}"
