@@ -104,18 +104,6 @@ export default function LandingFooter() {
 
         <div className='mt-16 pt-6 border-t border-white/8 flex flex-col items-center text-center md:flex-row md:text-left justify-between gap-3 text-sm text-text-muted'>
           <span>© 2024-{new Date().getFullYear()} Steam Game Idler. All rights reserved.</span>
-          <span>
-            Website created and managed by{' '}
-            <Link
-              prefetch={false}
-              href='https://aswebdesign.com.au/'
-              target='_blank'
-              rel='noopener'
-              className='text-accent hover:opacity-80 transition-opacity'
-            >
-              AS Web Design
-            </Link>
-          </span>
           <span>Not affiliated with Valve Corporation.</span>
         </div>
       </div>
