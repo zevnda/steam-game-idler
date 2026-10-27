@@ -63,7 +63,7 @@
     "react-i18next": "^17.0.9",
     "react-icons": "^5.7.0",
     "react-window": "^2.3.4",
-    "zustand": "^5.0.14"
+    "zustand": "^5.0.16"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.7",
