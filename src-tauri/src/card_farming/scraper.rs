@@ -105,14 +105,66 @@ fn parse_games_with_drops(html: &str) -> Vec<GameWithDrops> {
     games
 }
 
+/// Whether `html` is a real badge overview page rather than an error/throttle page served in its
+/// place - every real one (even an account with no badges at all, or a page number past the last
+/// one, which Steam clamps) carries exactly one `.badges_sheet` container, confirmed live
+/// (2026-10-28). Steam Community under load can answer with a generic "An error was encountered"
+/// page, sometimes even as HTTP 200, which has no `.badge_row`s either - without this check that
+/// page parses as "zero games with drops left", and the farming cycle then reports every active
+/// game as `DropsExhausted` at once and ends (seen in a real user log: 32 games "exhausted" in the
+/// same instant, all still listed with drops by the very next scrape).
+fn is_badge_page(html: &str) -> bool {
+    let document = Html::parse_document(html);
+    let badges_sheet_selector = Selector::parse(".badges_sheet").unwrap();
+    document.select(&badges_sheet_selector).next().is_some()
+}
+
+/// Fetches one badge overview page (2 onward) and parses it - any request failure, non-2xx status,
+/// or non-badge-page body fails the whole scrape (see [`get_games_with_drops`]'s doc comment).
+async fn fetch_page(
+    client: &reqwest::Client,
+    steam_id: &str,
+    cookie_value: &str,
+    url: String,
+    page: usize,
+) -> AppResult<Vec<GameWithDrops>> {
+    let response = client
+        .get(url)
+        .header("Cookie", cookie_value)
+        .send()
+        .await
+        .map_err(|e| {
+            tracing::warn!(steam_id, page, error = %e, "card farming: badge overview page request failed");
+            AppError::CardFarmingScrapeFailed(e.to_string())
+        })?;
+    let status = response.status();
+    if !status.is_success() {
+        tracing::warn!(steam_id, page, %status, "card farming: badge overview page returned an error status");
+        return Err(AppError::CardFarmingScrapeFailed(format!("page {page}: HTTP {status}")));
+    }
+    let html = response.text().await.map_err(|e| {
+        tracing::warn!(steam_id, page, error = %e, "card farming: badge overview page response failed to read");
+        AppError::CardFarmingScrapeFailed(e.to_string())
+    })?;
+    if !is_badge_page(&html) {
+        tracing::warn!(steam_id, page, html_len = html.len(), "card farming: badge overview page was not a badge page");
+        return Err(AppError::CardFarmingScrapeFailed(format!("page {page}: not a badge page")));
+    }
+    Ok(parse_games_with_drops(&html))
+}
+
 /// Every owned game with at least one card drop remaining, scraped from the account's badge
 /// overview pages (paginated - fetches page 1 first to discover the real page count via
-/// `detect_max_page`, then fetches the rest concurrently, mirroring `main`'s `join_all` shape). A
-/// single page's request failure is skipped rather than failing the whole call, same as `main` -
-/// except page 1 specifically, which also errors the whole call with
+/// `detect_max_page`, then fetches the rest concurrently).
+///
+/// **All-or-nothing**: any page's request failure, non-2xx status, or non-badge-page body (see
+/// [`is_badge_page`]) fails the whole call with `AppError::CardFarmingScrapeFailed` rather than
+/// returning a partial list. A partial list isn't a harmless degradation here - the farming cycle
+/// treats "missing from the scrape" as "drops exhausted", so every game on a skipped page would be
+/// reported finished and dropped from the session. Page 1 additionally errors with
 /// `AppError::SteamCommunitySessionExpired` if the session turns out to be dead (see
-/// `is_session_revoked`), rather than silently returning an empty/partial games list that would
-/// look like "nothing left to farm".
+/// `is_session_revoked`) or `AppError::FamilyViewRestricted` if Family View blocks it, so the
+/// caller can tell those permanent failures apart from a transient scrape failure.
 pub async fn get_games_with_drops(
     steam_id: &str,
     cookies: &SteamCookies,
@@ -133,9 +185,8 @@ pub async fn get_games_with_drops(
             AppError::CardFarmingScrapeFailed(e.to_string())
         })?;
 
-    // Checked only on page 1: pagination viability is decided from this page, and if the session
-    // is dead it's dead account-wide, so there's no need to repeat this per page. Pages 2+ keep
-    // their existing best-effort `Vec::new()` degradation on any failure, untouched.
+    // Checked only on page 1: if the session is dead it's dead account-wide, so there's no need
+    // to repeat this per page.
     if is_session_revoked(&first_page_response) {
         return Err(AppError::SteamCommunitySessionExpired(steam_id.to_string()));
     }
@@ -146,9 +197,23 @@ pub async fn get_games_with_drops(
         AppError::CardFarmingScrapeFailed(e.to_string())
     })?;
 
+    // Before the generic status check - the Family View gate is itself a 403, and needs its own
+    // error so the frontend can explain it.
     if is_family_view_blocked(status, &first_page_html) {
         tracing::warn!(steam_id, "card farming: badge overview blocked by Family View");
         return Err(AppError::FamilyViewRestricted(steam_id.to_string()));
+    }
+    if !status.is_success() {
+        tracing::warn!(steam_id, %status, "card farming: badge overview page 1 returned an error status");
+        return Err(AppError::CardFarmingScrapeFailed(format!("page 1: HTTP {status}")));
+    }
+    if !is_badge_page(&first_page_html) {
+        tracing::warn!(
+            steam_id,
+            html_len = first_page_html.len(),
+            "card farming: badge overview page 1 was not a badge page"
+        );
+        return Err(AppError::CardFarmingScrapeFailed("page 1: not a badge page".to_string()));
     }
 
     let max_page = detect_max_page(&first_page_html);
@@ -162,32 +227,29 @@ pub async fn get_games_with_drops(
     );
 
     if max_page > 1 {
-        let remaining_pages = (2..=max_page).map(|page| {
-            let client = client.clone();
-            let cookie_value = cookie_value.clone();
-            let url = page_url(page);
-            async move {
-                let response = match client.get(url).header("Cookie", cookie_value).send().await {
-                    Ok(r) => r,
-                    Err(e) => {
-                        tracing::warn!(steam_id, page, error = %e, "card farming: badge overview page request failed, skipping page");
-                        return Vec::new();
-                    }
-                };
-                match response.text().await {
-                    Ok(html) => parse_games_with_drops(&html),
-                    Err(e) => {
-                        tracing::warn!(steam_id, page, error = %e, "card farming: badge overview page response failed to read, skipping page");
-                        Vec::new()
-                    }
-                }
-            }
-        });
-
+        let remaining_pages = (2..=max_page)
+            .map(|page| fetch_page(&client, steam_id, &cookie_value, page_url(page), page));
         for page_games in join_all(remaining_pages).await {
-            games.extend(page_games);
+            games.extend(page_games?);
         }
     }
 
     Ok(games)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn is_badge_page_accepts_a_real_badge_sheet_even_with_no_rows() {
+        assert!(is_badge_page(r#"<html><body><div class="badges_sheet"></div></body></html>"#));
+    }
+
+    #[test]
+    fn is_badge_page_rejects_a_steam_error_page() {
+        assert!(!is_badge_page(
+            r#"<html><body><div class="error_ctn"><h3>An error was encountered while processing your request:</h3></div></body></html>"#
+        ));
+    }
 }

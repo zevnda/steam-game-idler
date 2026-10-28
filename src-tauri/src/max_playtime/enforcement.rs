@@ -9,13 +9,16 @@
 //! achievement-unlocker and card-farming each also track their *own* active-game bookkeeping
 //! outside that registry (`idling_apps`/`FarmingState::active`) and periodically re-announce their
 //! own claim from that local state. A release from outside their own loop would get silently
-//! undone by their very next re-announce, since their local state was never told the game stopped
-//! - so those two instead run their own native max-playtime check inside their own loops
-//! (`card_farming::manager::poll_active`'s `StopReason::MaxPlaytimeReached`,
-//! `achievement_unlocker::manager::run_scan_phase`'s over-cap pre-check), each on their own
-//! natural poll cadence. `OWNER_MANUAL`/`OWNER_AUTO_IDLE` have no such local state - the claims
-//! registry *is* their whole state - so a release from here is never undone. This mirrors
+//! undone by their very next re-announce, since their local state was never told the game
+//! stopped. So the unlocker instead runs its own native max-playtime check inside its own loop
+//! (`achievement_unlocker::manager::run_scan_phase`'s over-cap pre-check), on its own natural poll
+//! cadence. `OWNER_MANUAL`/`OWNER_AUTO_IDLE` have no such local state - the claims registry *is*
+//! their whole state - so a release from here is never undone. This mirrors
 //! `idling::auto_stop`'s identical scoping decision for the max-idle-time cap.
+//!
+//! TODO: card farming lost its equivalent native check in the two-phase rebuild (#2051) -
+//! `card_farming::manager` currently applies no max-playtime cap at all, neither excluding an
+//! over-cap game from its candidates nor stopping one mid-pass.
 //!
 //! **Estimates current playtime instead of asking Steam for it every tick.** The owned-games
 //! cache (`games::cache`) only reflects the last `get_owned_games` fetch, not live playtime, and

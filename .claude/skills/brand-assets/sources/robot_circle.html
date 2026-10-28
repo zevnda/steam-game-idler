@@ -1,0 +1,73 @@
+<html>
+  <body style="margin: 0; background: transparent">
+    <div
+      style="
+        box-sizing: border-box;
+        width: 1024px;
+        height: 1024px;
+        border-radius: 50%;
+        border: 36px solid transparent;
+        background:
+          linear-gradient(180deg, rgb(255 255 255/0.08), transparent 70%) padding-box,
+          linear-gradient(oklch(0.21 0.006 285.89), oklch(0.21 0.006 285.89)) padding-box,
+          conic-gradient(
+              from 200deg,
+              hsl(0 60% 55%),
+              hsl(50 60% 55%),
+              hsl(100 60% 55%),
+              hsl(160 60% 55%),
+              hsl(210 60% 55%),
+              hsl(265 60% 55%),
+              hsl(315 60% 55%),
+              hsl(360 60% 55%)
+            )
+            border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <svg viewBox="0 0 256 256" width="720" height="720">
+        <defs>
+          <mask id="face">
+            <rect x="-50" y="-50" width="356" height="356" fill="#fff" />
+            <ellipse cx="101" cy="144" rx="13" ry="17" fill="#000" />
+            <ellipse cx="155" cy="144" rx="13" ry="17" fill="#000" />
+            <path
+              d="M112 176 Q128 188 144 176"
+              fill="none"
+              stroke="#000"
+              stroke-width="10"
+              stroke-linecap="round"
+            />
+          </mask>
+        </defs>
+        <g fill="#fff" mask="url(#face)" transform="translate(0 10)">
+          <line
+            x1="98"
+            y1="82"
+            x2="84"
+            y2="50"
+            stroke="#fff"
+            stroke-width="12"
+            stroke-linecap="round"
+          />
+          <line
+            x1="158"
+            y1="82"
+            x2="172"
+            y2="50"
+            stroke="#fff"
+            stroke-width="12"
+            stroke-linecap="round"
+          />
+          <circle cx="82" cy="45" r="12" />
+          <circle cx="174" cy="45" r="12" />
+          <rect x="30" y="114" width="34" height="52" rx="14" />
+          <rect x="192" y="114" width="34" height="52" rx="14" />
+          <rect x="50" y="76" width="156" height="126" rx="58" />
+        </g>
+      </svg>
+    </div>
+  </body>
+</html>

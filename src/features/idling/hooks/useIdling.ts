@@ -9,6 +9,7 @@ import { toast } from '@heroui/react'
 import { useCardFarmingStore } from '@/shared/stores/cardFarmingStore'
 import { useIdlingStore } from '@/shared/stores/idlingStore'
 import { getAccountKey, useSessionStore } from '@/shared/stores/sessionStore'
+import { logFrontendInfo } from '@/shared/utils/frontendLogging'
 import { invoke } from '@/shared/utils/invoke'
 
 // The command each owner's per-section "Stop" needs to call. Card-farming/achievement-unlocker
@@ -144,6 +145,7 @@ export const useIdling = (games: OwnedGame[]) => {
     setIsStoppingAll(true)
     try {
       const result = await invoke<IdleSetResult>('stop_all_idling', { account })
+      logFrontendInfo('useIdling', 'user stopped all idling')
       const failure = result.failures[0]?.error
       if (failure) reportFailure(failure)
       await refreshIdleState()
@@ -167,6 +169,7 @@ export const useIdling = (games: OwnedGame[]) => {
       const { command, params } = stopOwnerCommand(owner, account)
       try {
         await invoke(command, params)
+        logFrontendInfo('useIdling', 'user stopped idling section', { owner })
         await refreshIdleState()
       } catch (error) {
         console.error(`Error in (${command}):`, error)
