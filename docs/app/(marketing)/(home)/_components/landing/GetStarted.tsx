@@ -19,12 +19,12 @@ const STEP_DONE = [2.9, 6.3, 9.2]
 // the beam full, SGI in the tray - the finished picture rather than the blank starting one.
 const HOLD = 10.9
 
-type Method = 'steam' | 'legacy'
+type Method = 'steam' | 'local'
 
 /**
  * "Get started" as a live pipeline: download -> sign in -> automate, each step a small working
  * scene that plays in sequence while the section is on screen. The sign-in step doubles as the
- * explainer for the two sign-in methods (agent mode = "Steam Sign-in", CLI mode = "Legacy").
+ * explainer for the two sign-in methods (agent mode = "Steam Sign-in", CLI mode = "Local").
  */
 export default function GetStarted() {
   const { ref, playing } = useInViewPlay<HTMLDivElement>()
@@ -79,7 +79,7 @@ export default function GetStarted() {
                   {(
                     [
                       ['steam', 'Steam Sign-in'],
-                      ['legacy', 'Legacy Sign-in'],
+                      ['local', 'Local Sign-in'],
                     ] as const
                   ).map(([id, label]) => (
                     <button
@@ -110,7 +110,7 @@ export default function GetStarted() {
                   )}
                 </div>
               }
-              visual={method === 'steam' ? <QrScene t={t} /> : <LegacyScene t={t} />}
+              visual={method === 'steam' ? <QrScene t={t} /> : <LocalScene t={t} />}
             />
             <Step
               n={3}
@@ -319,8 +319,8 @@ function QrScene({ t }: { t: number }) {
   )
 }
 
-/** Legacy Sign-in: SGI finds the running Steam client and picks up its account. */
-function LegacyScene({ t }: { t: number }) {
+/** Local Sign-in: SGI finds the running Steam client and picks up its account. */
+function LocalScene({ t }: { t: number }) {
   const found = t >= 4.9
   const pop = found ? easeBack(prog(t, 4.9, 0.45)) : 0
   const searching = t >= 3.5 && !found

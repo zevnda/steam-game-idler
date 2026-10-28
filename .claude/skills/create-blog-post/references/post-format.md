@@ -46,7 +46,7 @@ changelog line - use sparingly, never for routine releases).
 | `<YouTube id="..." title="..." caption="..." />` | Click-to-load embed (no player JS until clicked). Credit third-party creators in `caption`. |
 | `<Callout type="info\|warn\|error">` | Fumadocs callout, for genuine caveats (beta status, account risk). |
 | `<Steps>` / `<Step>` | Procedures. Pair with numbered H3s inside. |
-| `<Tabs items={[...]}>` / `<Tab>` | Only when content truly splits (e.g. Steam Sign-in vs Legacy Sign-in). |
+| `<Tabs items={[...]}>` / `<Tab>` | Only when content truly splits (e.g. Steam Sign-in vs Local Sign-in). |
 | Markdown tables | Comparisons, before/after, which-mode-supports-what. |
 
 Bare markdown images work but have no caption or dimensions. Use `<Figure>`.

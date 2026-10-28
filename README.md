@@ -32,7 +32,7 @@ See how it stacks up against other software, such as **[ArchiSteamFarm](https://
     * **Windows (installer)**: Run the installer and follow the steps
     * **Windows (portable)**: Extract the contents of the `.zip` file and run `Steam Game Idler.exe`
     * **Linux**: See the **[Linux install guide](https://steamgameidler.com/docs/get-started/install#linux)** for the full steps
-2. Choose between **[Steam Sign-in](https://steamgameidler.com/docs/get-started/how-to-sign-in#steam-sign-in)** or **[Legacy Sign-in](https://steamgameidler.com/docs/get-started/how-to-sign-in#legacy-sign-in)** mode
+2. Choose between **[Steam Sign-in](https://steamgameidler.com/docs/get-started/how-to-sign-in#steam-sign-in)** or **[Local Sign-in](https://steamgameidler.com/docs/get-started/how-to-sign-in#local-sign-in)** mode
 3. Start idling!
 
 Or if you prefer, you can **[build it yourself](https://steamgameidler.com/docs/get-started/build-it-yourself)** on either platform.
@@ -75,7 +75,7 @@ Refer to the **[documentation](https://steamgameidler.com/docs/)** for a detaile
   * **[Custom idling status](https://steamgameidler.com/docs/settings/general#custom-status-while-idling-steam-sign-in-only--pro-gamer-tier)**: Replace the default "Playing game" status with your own custom text while idling
   * **[Per-account online status](https://steamgameidler.com/docs/settings/general#online-status-steam-sign-in-only)**: Set your Steam status to Online, Away, Invisible, and more, per account
 * **[Multiple Sign-In Methods](https://steamgameidler.com/docs/get-started/how-to-sign-in)**: Choose exactly how you want to sign in
-  * **[Local Steam accounts](https://steamgameidler.com/docs/get-started/how-to-sign-in#legacy-sign-in)**: Sign in with an account already logged in to your local Steam client, no username/password needed
+  * **[Local Steam accounts](https://steamgameidler.com/docs/get-started/how-to-sign-in#local-sign-in)**: Sign in with an account already logged in to your local Steam client, no username/password needed
   * **[QR code scanning](https://steamgameidler.com/docs/get-started/how-to-sign-in#steam-sign-in)**: Scan a QR code with your Steam mobile app, no username/password needed
   * **[Username and password](https://steamgameidler.com/docs/get-started/how-to-sign-in#steam-sign-in)**: Use your username/password as you would on the Steam client
 * **Public Source Code**: Rest assured that what you're downloading and running is safe

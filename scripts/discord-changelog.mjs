@@ -106,7 +106,7 @@ const MOCK_BUTTON_LABELS = {
   'checkbox': '✓',
   'sell-dupes': 'Sell Dupes',
   'steam-sign-in': 'Steam Sign-in',
-  'legacy-sign-in': 'Legacy Sign-in',
+  'local-sign-in': 'Local Sign-in',
   'qr-sign-in': 'Or sign in with QR',
   'continue': 'Continue',
   'account-switcher': 'Account switcher',

@@ -64,7 +64,7 @@ type ButtonType =
   | 'import-timings'
   | 'sell-dupes'
   | 'steam-sign-in'
-  | 'legacy-sign-in'
+  | 'local-sign-in'
   | 'qr-sign-in'
   | 'continue'
   | 'account-switcher'
@@ -320,10 +320,10 @@ export default function MockButton({ type, content }: MockButtonProps) {
         Steam Sign-in
       </span>
     )
-  } else if (type === 'legacy-sign-in') {
+  } else if (type === 'local-sign-in') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        Legacy Sign-in
+        Local Sign-in
       </span>
     )
   } else if (type === 'qr-sign-in') {

@@ -127,7 +127,7 @@ pro.mdx
 ```
 
 Sign-in is documented once on `get-started/how-to-sign-in.mdx` — **Steam Sign-in** (agent
-mode, recommended, no local Steam client needed) vs. **Legacy Sign-in** (CLI mode, fallback,
+mode, recommended, no local Steam client needed) vs. **Local Sign-in** (CLI mode, fallback,
 requires a real local running Steam client) — and referenced elsewhere rather than re-explained
 wherever a feature behaves differently per sign-in mode.
 
