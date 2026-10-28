@@ -12,6 +12,7 @@ import { useAutoFarmCards } from '@/features/card-farming/hooks/useAutoFarmCards
 import { useCardFarmingSync } from '@/features/card-farming/hooks/useCardFarmingSync'
 import { useFreeGameClaimCorrections } from '@/features/free-games/hooks/useFreeGameClaimCorrections'
 import { useFreeGamesWatcher } from '@/features/free-games/hooks/useFreeGamesWatcher'
+import { useAchievementProgressSync } from '@/features/games-list/hooks/useAchievementProgressSync'
 import { useGamesListSync } from '@/features/games-list/hooks/useGamesListSync'
 import { useIdlingSync } from '@/features/idling/hooks/useIdlingSync'
 import { SettingsModal } from '@/features/settings/components/SettingsModal'
@@ -50,6 +51,7 @@ export const DashboardShell = ({ children }: DashboardShellProps) => {
   // hook's own doc comment.
   useIdlingSync()
   useGamesListSync()
+  useAchievementProgressSync()
   useCardFarmingSync()
   useAutoFarmCards()
   useAchievementUnlockerSync()

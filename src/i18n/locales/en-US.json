@@ -383,7 +383,9 @@
         "playtimeDesc": "Playtime (High to Low)",
         "playtimeAsc": "Playtime (Low to High)",
         "recentlyPlayedDesc": "Recently Played (Newest First)",
-        "recentlyPlayedAsc": "Recently Played (Oldest First)"
+        "recentlyPlayedAsc": "Recently Played (Oldest First)",
+        "achievementsDesc": "Completion (High to Low)",
+        "achievementsAsc": "Completion (Low to High)"
       },
       "empty": {
         "title": "No games found",

@@ -727,6 +727,32 @@ impl AgentManager {
         serde_json::from_value(result).map_err(AppError::from)
     }
 
+    /// Per-game achievement completion counts for `app_ids` via the daemon's batched
+    /// `achievements_progress` command. Uses the long owned-apps timeout since its cost scales
+    /// with library size the same way (a few hundred app ids per Steam round trip). Games Steam
+    /// returned nothing for are simply absent from the result.
+    pub async fn achievements_progress(
+        &self,
+        username: &str,
+        app_ids: Vec<u32>,
+    ) -> AppResult<Vec<crate::games::AchievementProgress>> {
+        let key = Self::key_for(username);
+        let process = self.existing(&key).await?;
+        let response = process
+            .send_request_with_timeout(
+                move |id| IpcRequest::achievements_progress(id, app_ids),
+                OWNED_APPS_REQUEST_TIMEOUT,
+            )
+            .await?;
+
+        let result = ok_or_agent_error_with_result(response)?;
+        let progress = result
+            .get("progress")
+            .cloned()
+            .unwrap_or(serde_json::Value::Array(Vec::new()));
+        serde_json::from_value(progress).map_err(AppError::from)
+    }
+
     /// Unlocks or locks a single achievement via the daemon's `achievement_set` command.
     pub async fn set_achievement(
         &self,

@@ -1,18 +1,18 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, State};
 
 use crate::error::AppResult;
 use crate::local_steam;
 use crate::steam_agent::AgentManager;
 
-use super::{cache, merge, web_api, OwnedGame, OwnedGamesResult};
+use super::{achievement_progress, cache, merge, web_api, OwnedGame, OwnedGamesResult};
 
 /// Identifies which sign-in mode's owned-games list to fetch, and the identifier that mode needs.
 /// Agent mode resolves everything from the already-signed-in `username`'s live session (including
 /// its SteamID64, once `status_changed` has reported one - see `steam_agent::AgentManager::steam_id`).
 /// CLI mode has no persistent session of its own to resolve a SteamID64 from, so it's passed
 /// directly (the frontend already has it from `local_steam::commands::get_users`).
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(
     rename_all = "camelCase",
     rename_all_fields = "camelCase",
@@ -72,16 +72,25 @@ pub async fn resolve_account_steam_id(
 /// mirrors `get_achievement_data`'s exact same param, for the same reason. Only agent mode uses
 /// it: CLI mode resolves the local Steam client's own configured display language itself (see
 /// `SteamworksLocalBackend.ResolveLocalizedNames`'s registry read), independent of this app's locale.
+///
+/// Achievement completion counts aren't fetched inline - that would hold the whole list back on a
+/// second library-sized fetch. Each game's last known counts are carried forward from the cache
+/// instead, and a library-wide `achievement_progress` refresh is kicked off in the background once
+/// the list is written; its results arrive via `ACHIEVEMENT_PROGRESS_EVENT`. That refresh is
+/// throttled unless `refresh_achievement_progress` is set - the frontend sets it for a first load
+/// or an explicit refresh, not for the periodic auto-update poll (see
+/// `achievement_progress::LIBRARY_REFRESH_MIN_INTERVAL`).
 #[tauri::command]
 pub async fn get_owned_games(
     app_handle: AppHandle,
     agent_manager: State<'_, AgentManager>,
     account: GamesAccount,
     locale: String,
+    refresh_achievement_progress: Option<bool>,
 ) -> AppResult<OwnedGamesResult> {
     let steam_id = resolve_steam_id(&account, &agent_manager).await?;
     let is_agent = matches!(account, GamesAccount::Agent { .. });
-    let raw_games = match account {
+    let raw_games = match &account {
         GamesAccount::Agent { username } => {
             // Read internally rather than make every caller plumb it through - same convention as
             // the Steam Web API key override below.
@@ -90,7 +99,7 @@ pub async fn get_owned_games(
                 .games_only;
             let steam_language = crate::achievements::steam_language::steam_language_for_locale(&locale);
             agent_manager
-                .get_owned_apps(&username, games_only, steam_language)
+                .get_owned_apps(username, games_only, steam_language)
                 .await?
         }
         GamesAccount::Local { .. } => local_steam::ownership::check_ownership().await?,
@@ -99,7 +108,7 @@ pub async fn get_owned_games(
     // Agent mode's `raw_games` already carries playtime from the daemon's own
     // Player.GetOwnedGames#1 enrichment (see RawOwnedGame's doc comment) - it never touches the
     // Steam Web API, so it's never subject to the private-profile detection below either.
-    let (merged, possibly_private) = if is_agent {
+    let (mut merged, possibly_private) = if is_agent {
         (merge::from_agent(raw_games), false)
     } else {
         let api_key = crate::credential_store::load_web_api_key();
@@ -107,7 +116,26 @@ pub async fn get_owned_games(
         (merge::merge(raw_games, fetch.games), fetch.possibly_private)
     };
 
+    // An unreadable previous cache just means nothing to carry forward - the background refresh
+    // below fills the counts in either way, so it's not worth failing the whole fetch over.
+    let previous = cache::read(&app_handle, &steam_id).unwrap_or_else(|e| {
+        tracing::warn!(steam_id, error = %e, "failed to read previous owned games cache, achievement counts start unknown");
+        Vec::new()
+    });
+    achievement_progress::carry_forward(&previous, &mut merged);
+
     cache::write(&app_handle, &steam_id, &merged)?;
+
+    if !is_agent {
+        achievement_progress::set_privacy_blocked(&steam_id, possibly_private);
+    }
+    achievement_progress::schedule_library_refresh(
+        &app_handle,
+        &account,
+        &steam_id,
+        merged.iter().map(|game| game.app_id),
+        refresh_achievement_progress.unwrap_or(false),
+    );
 
     tracing::info!(
         steam_id,

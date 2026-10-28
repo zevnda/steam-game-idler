@@ -6,6 +6,7 @@
 
 use std::fs;
 use std::path::PathBuf;
+use std::sync::Mutex;
 
 use serde::{Deserialize, Serialize};
 use tauri::AppHandle;
@@ -17,6 +18,12 @@ use crate::platform;
 use super::OwnedGame;
 
 const CACHE_FILE_NAME: &str = "owned_games.json";
+
+/// Serializes every write to this file - `write` (a whole fresh list from `get_owned_games`) and
+/// `update` (an in-place patch, e.g. `achievement_progress::record`) can otherwise interleave
+/// their read-modify-write and silently drop one side's change. One lock for every account's file
+/// is fine: writes are rare and short.
+static WRITE_LOCK: Mutex<()> = Mutex::new(());
 
 #[derive(Debug, Serialize, Deserialize)]
 struct CachedGames {
@@ -46,6 +53,28 @@ pub fn read(app_handle: &AppHandle, steam_id: &str) -> AppResult<Vec<OwnedGame>>
 }
 
 pub fn write(app_handle: &AppHandle, steam_id: &str, games: &[OwnedGame]) -> AppResult<()> {
+    let _guard = WRITE_LOCK.lock().unwrap_or_else(|e| e.into_inner());
+    write_unlocked(app_handle, steam_id, games)
+}
+
+/// Patches the cached list in place under the write lock. `patch` returns whether it changed
+/// anything, so a no-op patch (e.g. a game that isn't in this account's cached list) skips the
+/// rewrite. A missing cache is left missing - there's nothing to patch until `get_owned_games` has
+/// written one, and that fetch already carries its own fresh data.
+pub fn update(
+    app_handle: &AppHandle,
+    steam_id: &str,
+    patch: impl FnOnce(&mut Vec<OwnedGame>) -> bool,
+) -> AppResult<()> {
+    let _guard = WRITE_LOCK.lock().unwrap_or_else(|e| e.into_inner());
+    let mut games = read(app_handle, steam_id)?;
+    if games.is_empty() || !patch(&mut games) {
+        return Ok(());
+    }
+    write_unlocked(app_handle, steam_id, &games)
+}
+
+fn write_unlocked(app_handle: &AppHandle, steam_id: &str, games: &[OwnedGame]) -> AppResult<()> {
     let path = cache_file_path(app_handle, steam_id)?;
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent).map_err(|e| AppError::GamesCacheIo(e.to_string()))?;

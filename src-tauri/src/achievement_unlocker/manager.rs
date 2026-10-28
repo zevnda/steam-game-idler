@@ -1029,6 +1029,7 @@ async fn unlock_game(
             }
             let agent_manager = app_handle.state::<AgentManager>();
             succeeded = achievements::commands::set_achievement(
+                app_handle.clone(),
                 agent_manager,
                 account.clone(),
                 app_id,

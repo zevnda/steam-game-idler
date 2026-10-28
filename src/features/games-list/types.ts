@@ -6,4 +6,9 @@ export interface OwnedGame {
   name: string | null
   playtimeForeverMinutes: number
   rtimeLastPlayed: number
+  // Both `null` while unknown (not fetched yet, or a CLI-mode private profile) - distinct from a
+  // `0` total, which means the game has no achievements at all. Filled in and kept current by
+  // `games::achievement_progress` (Rust) + `useAchievementProgressSync`.
+  achievementsUnlocked: number | null
+  achievementsTotal: number | null
 }

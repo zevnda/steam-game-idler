@@ -54,6 +54,10 @@ export async function fetchGamesList(
     const fresh = await invoke<OwnedGamesResult>('get_owned_games', {
       account,
       locale: i18n.language,
+      // Every caller here is a first load, a staleness/language reload, or an explicit refresh -
+      // all worth fresh achievement counts. `silentlyRefreshGamesList`'s polling leaves this off so
+      // the backend's throttle applies (see `games::achievement_progress`).
+      refreshAchievementProgress: true,
     })
     updateEntry(key, {
       games: fresh.games,

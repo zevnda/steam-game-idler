@@ -32,6 +32,7 @@ namespace SteamUtility.Daemon
         private AchievementHandler _achievementHandler = null!;
         private OwnershipManager _ownershipManager = null!;
         private FreeLicenseManager _freeLicenseManager = null!;
+        private AchievementProgressManager _achievementProgressManager = null!;
 
         public int Run(string[] args)
         {
@@ -45,6 +46,7 @@ namespace SteamUtility.Daemon
             _bot.Client.AddHandler(_achievementHandler);
             _ownershipManager = new OwnershipManager();
             _freeLicenseManager = new FreeLicenseManager();
+            _achievementProgressManager = new AchievementProgressManager();
 
             _bot.LogOnStatusChanged += result =>
             {
@@ -239,6 +241,16 @@ namespace SteamUtility.Daemon
                             request.Language ?? "english"
                         );
                         IpcServer.SendResponse(request.Id, true, new { games });
+                        break;
+                    }
+
+                    case "achievements_progress":
+                    {
+                        var progress = await _achievementProgressManager.GetProgressAsync(
+                            _bot,
+                            request.AppIds ?? new List<uint>()
+                        );
+                        IpcServer.SendResponse(request.Id, true, new { progress });
                         break;
                     }
 

@@ -4,6 +4,7 @@ use tauri::{AppHandle, Emitter, State};
 
 use crate::achievement_unlocker::AchievementUnlockerManager;
 use crate::error::{AppError, AppResult};
+use crate::games::achievement_progress;
 use crate::games::commands::{resolve_steam_id, GamesAccount};
 use crate::local_steam;
 use crate::local_steam::commands::require_steam_running;
@@ -117,18 +118,22 @@ async fn backfill_global_percentages(data: &mut AchievementData, app_id: u32) {
 /// Unlocks or locks a single achievement. No separate "toggle" command - the frontend already
 /// knows an achievement's current `achieved` state from `get_achievement_data`, so it passes the
 /// desired `unlock` flag directly (`!achieved` for a toggle-style click).
+///
+/// Also the achievement unlocker's per-achievement unlock path (`achievement_unlocker::manager`),
+/// so its games-list completion counts stay current through the refresh below too.
 #[tauri::command]
 pub async fn set_achievement(
+    app_handle: AppHandle,
     agent_manager: State<'_, AgentManager>,
     account: GamesAccount,
     app_id: u32,
     achievement_id: String,
     unlock: bool,
 ) -> AppResult<()> {
-    let result = match account {
+    let result = match &account {
         GamesAccount::Agent { username } => {
             agent_manager
-                .set_achievement(&username, app_id, achievement_id.clone(), unlock)
+                .set_achievement(username, app_id, achievement_id.clone(), unlock)
                 .await
         }
         GamesAccount::Local { .. } => {
@@ -138,7 +143,8 @@ pub async fn set_achievement(
     };
     match &result {
         Ok(()) => {
-            tracing::info!(app_id, achievement_id, unlock, "achievement manager: set achievement")
+            tracing::info!(app_id, achievement_id, unlock, "achievement manager: set achievement");
+            achievement_progress::schedule_refresh(&app_handle, &account, [app_id]);
         }
         Err(e) => {
             tracing::warn!(app_id, achievement_id, unlock, error = %e, "achievement manager: set achievement failed")
@@ -157,6 +163,7 @@ pub async fn set_achievement(
 /// loop's per-item granularity without paying its cost when nothing goes wrong.
 #[tauri::command]
 pub async fn set_achievements(
+    app_handle: AppHandle,
     agent_manager: State<'_, AgentManager>,
     account: GamesAccount,
     app_id: u32,
@@ -223,11 +230,15 @@ pub async fn set_achievements(
         failed = result.failed.len(),
         "achievement manager: saved staged changes"
     );
+    if !result.succeeded.is_empty() {
+        achievement_progress::schedule_refresh(&app_handle, &account, [app_id]);
+    }
     Ok(result)
 }
 
 #[tauri::command]
 pub async fn unlock_all_achievements(
+    app_handle: AppHandle,
     agent_manager: State<'_, AgentManager>,
     account: GamesAccount,
     app_id: u32,
@@ -235,11 +246,16 @@ pub async fn unlock_all_achievements(
     if matches!(account, GamesAccount::Local { .. }) {
         require_steam_running()?;
     }
-    set_all(&agent_manager, &account, app_id, true).await
+    let result = set_all(&agent_manager, &account, app_id, true).await;
+    if result.is_ok() {
+        achievement_progress::schedule_refresh(&app_handle, &account, [app_id]);
+    }
+    result
 }
 
 #[tauri::command]
 pub async fn lock_all_achievements(
+    app_handle: AppHandle,
     agent_manager: State<'_, AgentManager>,
     account: GamesAccount,
     app_id: u32,
@@ -247,7 +263,11 @@ pub async fn lock_all_achievements(
     if matches!(account, GamesAccount::Local { .. }) {
         require_steam_running()?;
     }
-    lock_all_via_reset(&agent_manager, &account, app_id).await
+    let result = lock_all_via_reset(&agent_manager, &account, app_id).await;
+    if result.is_ok() {
+        achievement_progress::schedule_refresh(&app_handle, &account, [app_id]);
+    }
+    result
 }
 
 /// Shared body of `unlock_all_achievements`/`lock_all_achievements`/
@@ -456,6 +476,9 @@ pub async fn set_all_owned_games_achievements(
         games_total: app_ids.len(),
         ..Default::default()
     };
+    // Kept for one batched completion-count refresh once the run finishes - cheaper than one per
+    // game, and nothing reads the counts mid-run.
+    let refresh_app_ids = app_ids.clone();
     let mut completed = 0;
     // An initial 0-of-N event so the frontend can show the total straight away, rather than only
     // once the first (possibly slow) game finishes.
@@ -507,6 +530,7 @@ pub async fn set_all_owned_games_achievements(
         achievements_changed = summary.achievements_changed,
         "library achievement run: finished"
     );
+    achievement_progress::schedule_refresh(&app_handle, account, refresh_app_ids);
     Ok(summary)
 }
 
@@ -527,17 +551,20 @@ fn emit_library_run_progress(
     );
 }
 
+/// Refreshes completion counts afterwards too - a stat-backed achievement (e.g. "win N games")
+/// can unlock as a side effect of a stat edit.
 #[tauri::command]
 pub async fn update_stats(
+    app_handle: AppHandle,
     agent_manager: State<'_, AgentManager>,
     account: GamesAccount,
     app_id: u32,
     stats: Vec<StatUpdate>,
 ) -> AppResult<()> {
     let stat_count = stats.len();
-    let result = match account {
+    let result = match &account {
         GamesAccount::Agent { username } => {
-            agent_manager.update_stats(&username, app_id, stats).await
+            agent_manager.update_stats(username, app_id, stats).await
         }
         GamesAccount::Local { .. } => {
             require_steam_running()?;
@@ -546,18 +573,22 @@ pub async fn update_stats(
     };
     if result.is_ok() {
         tracing::info!(app_id, stat_count, "achievement manager: stats updated");
+        achievement_progress::schedule_refresh(&app_handle, &account, [app_id]);
     }
     result
 }
 
+/// A stats reset also locks every achievement, so it refreshes completion counts like the
+/// achievement setters above.
 #[tauri::command]
 pub async fn reset_all_stats(
+    app_handle: AppHandle,
     agent_manager: State<'_, AgentManager>,
     account: GamesAccount,
     app_id: u32,
 ) -> AppResult<()> {
-    let result = match account {
-        GamesAccount::Agent { username } => agent_manager.reset_all_stats(&username, app_id).await,
+    let result = match &account {
+        GamesAccount::Agent { username } => agent_manager.reset_all_stats(username, app_id).await,
         GamesAccount::Local { .. } => {
             require_steam_running()?;
             local_steam::achievements::reset_all_stats(app_id).await
@@ -565,6 +596,7 @@ pub async fn reset_all_stats(
     };
     if result.is_ok() {
         tracing::info!(app_id, "achievement manager: stats reset");
+        achievement_progress::schedule_refresh(&app_handle, &account, [app_id]);
     }
     result
 }
