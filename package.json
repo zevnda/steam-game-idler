@@ -52,7 +52,7 @@
     "@tauri-apps/plugin-updater": "~2.10.1",
     "@tauri-apps/plugin-window-state": "~2.4.1",
     "fuse.js": "^7.5.0",
-    "i18next": "^26.3.6",
+    "i18next": "^26.5.11",
     "i18next-browser-languagedetector": "^8.2.1",
     "next": "^16.4.3",
     "qrcode.react": "4.2.0",
@@ -63,7 +63,7 @@
     "react-i18next": "^17.0.9",
     "react-icons": "^5.7.0",
     "react-window": "^2.3.4",
-    "zustand": "^5.0.14"
+    "zustand": "^5.0.16"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.7",
@@ -72,7 +72,7 @@
     "@next/eslint-plugin-next": "^16.4.3",
     "@tailwindcss/postcss": "^4.3.3",
     "@tauri-apps/cli": "^2.12.2",
-    "@types/node": "^26.1.1",
+    "@types/node": "^26.6.5",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.71.2",
@@ -83,8 +83,8 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-unused-imports": "^4.4.1",
     "husky": "^9.1.7",
-    "lint-staged": "^17.2.0",
-    "postcss": "^8.5.26",
+    "lint-staged": "^17.6.0",
+    "postcss": "^8.5.32",
     "prettier": "^3.9.6",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3"
