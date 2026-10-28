@@ -269,7 +269,6 @@
     "landing": {
       "title": "Entrar no Steam Game Idler",
       "agentButton": "Entrar na Steam",
-      "localButton": "Login Legado",
       "localAlreadySignedIn": "Uma conta local do Steam já está conectada — só é possível estar conectado com uma por vez",
       "acknowledge": "Ao clicar em 'Continuar', você concorda com os <0>Termos de Serviço</0> e reconhece que leu nossa <1>Política de Privacidade</1>."
     },

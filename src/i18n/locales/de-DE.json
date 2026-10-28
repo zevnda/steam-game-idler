@@ -264,7 +264,6 @@
     "landing": {
       "title": "Melde dich bei Steam Game Idler an",
       "agentButton": "Steam Anmeldung",
-      "localButton": "Anmeldung Legacy-Verfahren",
       "localAlreadySignedIn": "Ein lokaler Steam-Client-Account ist bereits angemeldet – es kann immer nur einer gleichzeitig angemeldet sein.",
       "acknowledge": "Durch Klicken auf ‚Weiter‘ stimmst du den <0> Nutzungsbedingungen </0> zu und bestätigst, dass du unsere <1> Datenschutzerklärung </1> gelesen hast."
     },

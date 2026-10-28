@@ -267,7 +267,6 @@
     "landing": {
       "title": "Iniciar sesión en Steam Game Idler",
       "agentButton": "Iniciar sesión en Steam",
-      "localButton": "Inicio de sesión heredado",
       "localAlreadySignedIn": "Ya hay una cuenta de cliente de Steam local iniciada; solo se puede iniciar sesión una cuenta a la vez.",
       "acknowledge": "Al hacer clic en \"Continuar\", aceptas los <0>Términos de Servicio</0> y reconoces que has leído nuestra <1>Política de privacidad</1>."
     },

@@ -271,7 +271,6 @@
     "landing": {
       "title": "Accedi a Steam Game Idler",
       "agentButton": "Accesso con Steam",
-      "localButton": "Accesso legacy",
       "localAlreadySignedIn": "Un account del client Steam locale ha già effettuato l'accesso: può essercene solo uno alla volta.",
       "acknowledge": "Continuando, accetti i <0>Termini di servizio</0> e confermi di aver letto la nostra <1>Informativa sulla privacy</1>."
     },

@@ -274,7 +274,6 @@
     "landing": {
       "title": "登录 Steam Game Idler",
       "agentButton": "Steam 登录",
-      "localButton": "旧版登录",
       "localAlreadySignedIn": "已登录一个本地 Steam 客户端账号——单次仅能登录一个",
       "acknowledge": "继续即表示您同意 <0>服务条款</0>，并确认您已阅读我们的 <1>隐私政策</1>"
     },
