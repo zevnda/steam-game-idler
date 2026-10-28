@@ -7,10 +7,11 @@
 //! enrichment), so it takes the `merge::from_agent` path instead and never touches the Web API -
 //! see `RawOwnedGame`'s doc comment for why.
 //!
-//! Scoped narrowly to "what does this account own, with playtime": free games, per-game
-//! achievements, and the free-game redeem flow are separate, later features (see `main`'s
-//! `game_data.rs` for what this deliberately doesn't port yet).
+//! Each entry also carries the account's achievement completion counts for that game (see
+//! `achievement_progress` for how they're fetched and kept in sync mid-session) - counts only, the
+//! full per-achievement data stays the `achievements` module's job.
 
+pub mod achievement_progress;
 pub(crate) mod cache;
 pub mod commands;
 mod merge;
@@ -66,6 +67,26 @@ pub struct OwnedGame {
     /// erroring, same resilience `settings::Settings` applies to its own fields.
     #[serde(default)]
     pub last_refund_eligible_purchase_unix_seconds: Option<i64>,
+    /// How many of this game's achievements the account has unlocked, and how many it has in
+    /// total - `None` for both when unknown (never fetched yet, the fetch failed, or a CLI-mode
+    /// account's private profile hid it), which is deliberately distinct from `Some(0)` total (a
+    /// game with no achievements at all). See `achievement_progress`. `#[serde(default)]` so a
+    /// cache file written before these fields existed still deserializes as unknown.
+    #[serde(default)]
+    pub achievements_unlocked: Option<u32>,
+    #[serde(default)]
+    pub achievements_total: Option<u32>,
+}
+
+/// One game's achievement completion counts - the wire shape of both the daemon's
+/// `achievements_progress` response (`Daemon/Bot/AchievementProgressManager.cs`'s
+/// `AchievementProgressDto`) and the `ACHIEVEMENT_PROGRESS_EVENT` payload's entries.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AchievementProgress {
+    pub app_id: u32,
+    pub unlocked: u32,
+    pub total: u32,
 }
 
 /// `commands::get_owned_games`'s return shape - carries `possibly_private` alongside the games

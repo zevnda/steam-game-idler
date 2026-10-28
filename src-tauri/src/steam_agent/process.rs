@@ -394,8 +394,13 @@ async fn handle_line(
                     .get("blocked")
                     .and_then(|v| v.as_bool())
                     .unwrap_or(false);
+                // The game a just-ended session was playing, if this event is that ending.
+                let mut finished_app_id = None;
                 let session = {
                     let mut current = playing_session.lock().unwrap();
+                    if current.blocked && !blocked {
+                        finished_app_id = current.app_id;
+                    }
                     let since_ms = match (blocked, current.since_ms) {
                         (false, _) => None,
                         (true, Some(since)) => Some(since),
@@ -426,6 +431,19 @@ async fn handle_line(
                     tracing::info!(
                         account = %key,
                         "steam agent: other session stopped playing - automation resumed"
+                    );
+                }
+                // The user just finished actually playing this game on their real Steam client,
+                // so they may have earned achievements the games list doesn't know about yet -
+                // agent mode's one signal for legitimately earned unlocks (see
+                // `games::achievement_progress`'s module doc comment).
+                if let Some(app_id) = finished_app_id {
+                    crate::games::achievement_progress::schedule_refresh(
+                        app_handle,
+                        &crate::games::commands::GamesAccount::Agent {
+                            username: key.clone(),
+                        },
+                        [app_id],
                     );
                 }
             }

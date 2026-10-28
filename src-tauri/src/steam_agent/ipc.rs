@@ -309,6 +309,29 @@ impl IpcRequest {
         }
     }
 
+    /// Batched per-game achievement completion counts - see
+    /// `Daemon/Bot/AchievementProgressManager.cs`.
+    pub fn achievements_progress(id: String, app_ids: Vec<u32>) -> Self {
+        Self {
+            id,
+            cmd: "achievements_progress",
+            user: None,
+            pass_b64: None,
+            refresh_token_b64: None,
+            code: None,
+            app_ids: Some(app_ids),
+            app_id: None,
+            achievement_id: None,
+            unlock: None,
+            stats: None,
+            achievement_changes: None,
+            persona_state: None,
+            game_extra_info: None,
+            language: None,
+            games_only: None,
+        }
+    }
+
     /// Unlocks or locks a single achievement via the daemon's `achievement_set` command - no
     /// separate toggle verb exists on this path (see `Daemon/DaemonHost.cs`), so the caller always
     /// passes an explicit `unlock` flag.
