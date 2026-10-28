@@ -275,7 +275,7 @@
     "landing": {
       "title": "Sign in to Steam Game Idler",
       "agentButton": "Steam Sign-in",
-      "localButton": "Legacy Sign-in",
+      "localButton": "Local Sign-in",
       "localAlreadySignedIn": "A local Steam client account is already signed in — only one can be signed in at a time.",
       "acknowledge": "By continuing, you agree to the <0>Terms of Service</0> and acknowledge that you have read our <1>Privacy Policy</1>."
     },

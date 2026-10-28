@@ -21,12 +21,12 @@ export const FAQ = [
   {
     question: 'Do I need to give SGI my username or password?',
     answer:
-      'Only if you choose "Steam Sign-in", the recommended method. Your credentials go directly to Steam\'s own servers, the same as signing in through the official Steam client, and SGI never sees or stores your password. You can also scan a QR code with the Steam mobile app instead. If you\'d rather not sign in through SGI at all, use "Legacy Sign-in" on Windows, which uses the account already signed in to your running Steam client.',
+      'Only if you choose "Steam Sign-in", the recommended method. Your credentials go directly to Steam\'s own servers, the same as signing in through the official Steam client, and SGI never sees or stores your password. You can also scan a QR code with the Steam mobile app instead. If you\'d rather not sign in through SGI at all, use "Local Sign-in" on Windows, which uses the account already signed in to your running Steam client.',
   },
   {
     question: 'Do I need the Steam client installed?',
     answer:
-      'Not with "Steam Sign-in", the recommended method: you sign in with your Steam username and password or a QR code, and no local Steam client is needed. "Legacy Sign-in" is the Windows-only fallback for anyone who\'d rather not enter Steam credentials into SGI. It requires the Steam client to be installed, running and already signed in.',
+      'Not with "Steam Sign-in", the recommended method: you sign in with your Steam username and password or a QR code, and no local Steam client is needed. "Local Sign-in" is the Windows-only fallback for anyone who\'d rather not enter Steam credentials into SGI. It requires the Steam client to be installed, running and already signed in.',
   },
   {
     question: 'How does SGI farm trading cards?',
@@ -46,7 +46,7 @@ export const FAQ = [
   {
     question: 'Which operating systems are supported?',
     answer:
-      'Windows 10 and 11 (installer or portable zip) and Linux (.deb, .rpm or AppImage). Steam Sign-in works on both. Legacy Sign-in is Windows-only.',
+      'Windows 10 and 11 (installer or portable zip) and Linux (.deb, .rpm or AppImage). Steam Sign-in works on both. Local Sign-in is Windows-only.',
   },
   {
     question: 'How does SGI unlock achievements for games?',

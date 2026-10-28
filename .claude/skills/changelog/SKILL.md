@@ -67,7 +67,7 @@ accuracy. Why it matters to the user over how it was implemented.
    - No internal file names, function names, code terms, or implementation detail — describe
      the effect the user sees/gets, not the mechanism.
    - Use a nested sub-bullet list under one bullet when a change has distinct behavior for
-     different modes/platforms (see `6.2.3.mdx`'s Steam Sign-in vs Legacy Sign-in split).
+     different modes/platforms (see `6.2.3.mdx`'s Steam Sign-in vs Local Sign-in split).
    - For one exceptionally large/overhaul-level change only, a `##` prose heading + 1-2
      sentence summary paragraph above the `###` sections is acceptable (see `6.2.0.mdx`'s
      "Card Farming Feature Overhaul") — don't reach for this for an ordinary release.

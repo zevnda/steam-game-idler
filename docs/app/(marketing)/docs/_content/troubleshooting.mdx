@@ -23,13 +23,13 @@ This page covers common issues and their solutions when using Steam Game Idler.
     ### Check System Requirements
     - Windows 10/11 or Linux (64-bit)
     - Internet connection
-    - Steam client installed and running (only required if you use [Legacy Sign-in](/docs/get-started/how-to-sign-in#legacy-sign-in), which is Windows-only — Linux supports Steam Sign-in only)
+    - Steam client installed and running (only required if you use [Local Sign-in](/docs/get-started/how-to-sign-in#local-sign-in), which is Windows-only — Linux supports Steam Sign-in only)
   </Step>
 
   <Step>
     ### Verify Your Sign-In
     - If using [Steam Sign-in](/docs/get-started/how-to-sign-in#steam-sign-in), make sure you completed any Steam Guard prompt fully
-    - If using [Legacy Sign-in](/docs/get-started/how-to-sign-in#legacy-sign-in), make sure the Steam client is running and you're signed in to at least one account
+    - If using [Local Sign-in](/docs/get-started/how-to-sign-in#local-sign-in), make sure the Steam client is running and you're signed in to at least one account
     - Your Steam profile is set to public (required for some features regardless of sign-in method)
   </Step>
 
@@ -170,8 +170,8 @@ This page covers common issues and their solutions when using Steam Game Idler.
     - **"Your Steam session isn't active anymore. Please sign in again."** or **"Your Steam ID hasn't been resolved yet. Please try again in a moment."** — usually transient, right after signing in or if the account was signed in elsewhere (see the "Signed in on another device" reconnect prompt). Wait a moment and retry
   </Accordion>
 
-  <Accordion title="No Steam accounts show up on the Legacy Sign-in screen" id="no-accounts">
-    Legacy Sign-in reads your locally saved Steam logins to populate the account picker.
+  <Accordion title="No Steam accounts show up on the Local Sign-in screen" id="no-accounts">
+    Local Sign-in reads your locally saved Steam logins to populate the account picker.
 
     - Make sure the Steam client is installed and that you've logged in to your account(s) through Steam at least once
     - Open Steam and sign in normally, then restart SGI
@@ -182,8 +182,8 @@ This page covers common issues and their solutions when using Steam Game Idler.
     - **"Couldn't read this device's saved Steam accounts."** means SGI found Steam but couldn't read its `loginusers.vdf` file. Signing in through the Steam client at least once (as above) regenerates this file
   </Accordion>
 
-  <Accordion title="Switching Legacy Sign-in accounts, or launching Steam from SGI, fails" id="legacy-account-switch-fails">
-    These errors are all specific to **Legacy Sign-in**'s account switcher, which works by directly editing your local Steam client's saved login state:
+  <Accordion title="Switching Local Sign-in accounts, or launching Steam from SGI, fails" id="local-account-switch-fails">
+    These errors are all specific to **Local Sign-in**'s account switcher, which works by directly editing your local Steam client's saved login state:
 
     - **"That account could no longer be found."** — the account was removed from `loginusers.vdf` (e.g. it was signed out of the Steam client entirely) since SGI last read it. Sign in to it through Steam once more, then try switching again
     - **"Couldn't switch Steam accounts."** — SGI couldn't update the registry value Steam uses to decide which account to auto-login. Make sure Steam is fully closed before switching, and that SGI has normal write access to `HKEY_CURRENT_USER` (try running SGI as administrator once if this persists)
@@ -192,7 +192,7 @@ This page covers common issues and their solutions when using Steam Game Idler.
   </Accordion>
 
   <Accordion title="A 'Steam is closed' warning appears while using SGI" id="steam-closed-warning">
-    This only affects **Legacy Sign-in** accounts, which depend on the local Steam client staying open and signed in. If Steam closes, is restarted, or you sign out of it while SGI is running, any active idling/farming/unlocking for that account is stopped and this warning appears until Steam is running and signed in again.
+    This only affects **Local Sign-in** accounts, which depend on the local Steam client staying open and signed in. If Steam closes, is restarted, or you sign out of it while SGI is running, any active idling/farming/unlocking for that account is stopped and this warning appears until Steam is running and signed in again.
 
     - Reopen the Steam client and make sure you're signed in to the same account
     - This doesn't affect [Steam Sign-in](/docs/get-started/how-to-sign-in#steam-sign-in) accounts, since they don't need a local Steam client at all
@@ -211,7 +211,7 @@ This page covers common issues and their solutions when using Steam Game Idler.
 
 <Accordions type="multiple">
   <Accordion title="A game won't start idling" id="idle-wont-start">
-    - If using **Legacy Sign-in**, make sure the Steam client is running and you're signed in to the same account you're using in SGI
+    - If using **Local Sign-in**, make sure the Steam client is running and you're signed in to the same account you're using in SGI
     - Make sure the game is actually owned on this account. SGI can't idle games you don't own
     - Check the log file (<MockButton type='view-log-file' /> in [Debug Settings](/docs/settings/debug)) for a "Failed to start idling" message
     - If you recently reinstalled SGI, make sure `SteamUtility.exe` wasn't removed by your antivirus (see [Antivirus or Windows Defender is blocking SGI](#antivirus-blocking))
@@ -223,12 +223,12 @@ This page covers common issues and their solutions when using Steam Game Idler.
   <Accordion title="A game shows as idling in SGI but Steam doesn't show it as 'Currently in game'" id="idle-not-reflected">
     - Give it a minute, since there's a short delay before Steam's status updates
     - Make sure Steam itself is online (not in **Offline Mode**), as idling relies on Steam's servers being reachable
-    - If using **Legacy Sign-in**, restarting Steam (not SGI) while a game is idling can desync the status. Stop and restart idling for that game
+    - If using **Local Sign-in**, restarting Steam (not SGI) while a game is idling can desync the status. Stop and restart idling for that game
   </Accordion>
 
   <Accordion title="Idling stops by itself" id="idle-stops">
     - Make sure your PC isn't going to sleep. Adjust Windows power settings so it stays awake while idling
-    - If using **Legacy Sign-in**, Steam will stop "in-game" status if you launch the same game manually, or if Steam restarts/updates in the background
+    - If using **Local Sign-in**, Steam will stop "in-game" status if you launch the same game manually, or if Steam restarts/updates in the background
     - Check the log file for errors around the time idling stopped
   </Accordion>
 
@@ -325,11 +325,11 @@ This page covers common issues and their solutions when using Steam Game Idler.
   <Accordion title="Achievements list is empty or won't load" id="achievements-empty">
     - Make sure the game actually has achievements (some games genuinely have none — SGI shows **"This app doesn't have achievement data."** in this case, which is expected, not a bug)
     - Try toggling the **refresh/refetch** option for that game to force SGI to re-fetch the achievement schema from Steam
-    - If using **Legacy Sign-in**, make sure the Steam client is running and online
+    - If using **Local Sign-in**, make sure the Steam client is running and online
   </Accordion>
 
   <Accordion title="Unlocking, locking, or toggling an achievement fails" id="achievement-toggle-fails">
-    - If using **Legacy Sign-in**, make sure the Steam client is running and you're signed in to the matching account
+    - If using **Local Sign-in**, make sure the Steam client is running and you're signed in to the matching account
     - Make sure the game isn't currently being idled by another tool, or already running through Steam itself, which can conflict with `SteamUtility.exe`
     - Check the log file for a specific error
     - Some games use **Family Sharing** or third-party anti-cheat that blocks stat writes. These games generally can't be modified
@@ -342,8 +342,8 @@ This page covers common issues and their solutions when using Steam Game Idler.
   <Accordion title='"This game isn’t supported for achievements when signed in with Steam"' id="achievement-game-coordinator-unsupported">
     This is expected, not a bug. A small set of games (Team Fortress 2, Dota 2, CS2, Left 4 Dead 2, Portal 2) use Valve's Game Coordinator system for stats, which isn't reachable through **Steam Sign-in**'s architecture at all.
 
-    - **On Windows**: switch to [Legacy Sign-in](/docs/get-started/how-to-sign-in#legacy-sign-in) for these specific games, which has no such restriction
-    - **On Linux**: there's no local-client fallback (Legacy Sign-in doesn't exist on Linux), so these games can't be managed at all — this is a Steam architecture limitation, not something SGI can work around
+    - **On Windows**: switch to [Local Sign-in](/docs/get-started/how-to-sign-in#local-sign-in) for these specific games, which has no such restriction
+    - **On Linux**: there's no local-client fallback (Local Sign-in doesn't exist on Linux), so these games can't be managed at all — this is a Steam architecture limitation, not something SGI can work around
   </Accordion>
 
   <Accordion title="Achievement Unlocker isn't progressing" id="achievement-unlocker-stuck">
@@ -441,7 +441,7 @@ This page covers common issues and their solutions when using Steam Game Idler.
 
 <Accordions type="multiple">
   <Accordion title="SGI is using high CPU or memory" id="high-cpu-memory">
-    - If using **Legacy Sign-in**, idling many games simultaneously spawns a separate helper process per game. This is normal, but idling a very large number of games at once will increase resource usage. **Steam Sign-in** accounts idle through one shared session instead, which uses noticeably less
+    - If using **Local Sign-in**, idling many games simultaneously spawns a separate helper process per game. This is normal, but idling a very large number of games at once will increase resource usage. **Steam Sign-in** accounts idle through one shared session instead, which uses noticeably less
     - Check **Task Manager** to confirm whether the usage comes from `steam-game-idler.exe`, `SteamUtility.exe` or `webview2.exe` processes
     - Update to the latest version, as performance fixes are released regularly. See the [Changelog](/changelog)
   </Accordion>
@@ -538,7 +538,7 @@ If these troubleshooting steps don't solve your issue:
    - Detailed description of the problem
    - Steps to reproduce
    - Your system information (OS/version, Steam version)
-   - Which sign-in method you're using (Steam Sign-in or Legacy Sign-in)
+   - Which sign-in method you're using (Steam Sign-in or Local Sign-in)
    - Relevant log file excerpts
    - Screenshots if applicable
 
