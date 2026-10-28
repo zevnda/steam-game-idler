@@ -243,6 +243,16 @@ impl IdleClaimsRegistry {
         .await
     }
 
+    /// Empties every owner's claim for one already-resolved `steam_id` without announcing anything -
+    /// for when that account's connection is already gone and there's nothing to announce to
+    /// (`steam_agent::process`'s concurrent-login kick, where Steam already dropped the session's
+    /// games). Takes the SteamID64 directly rather than a `GamesAccount`, because by then
+    /// `resolve_steam_id` can no longer resolve the account - the kick path nulls the cached id.
+    pub async fn clear_account(&self, steam_id: &str) {
+        self.claims.lock().await.remove(steam_id);
+        tracing::info!(steam_id, "idling: cleared all claims (connection gone, nothing announced)");
+    }
+
     /// Wipes every account's claims without announcing anything - used when the processes those
     /// claims refer to are already being torn down some other way for the whole app (pre-update
     /// cleanup). Deliberately still whole-app, not per-account - see this module's doc comment.
@@ -301,7 +311,7 @@ impl IdleClaimsRegistry {
     /// (`idling_apps`/`active`) and would silently re-add a game this registry released on their
     /// very next claim update if a release bypassed that state, so those two owners run their own
     /// native max-playtime check inside their own loops instead (see
-    /// `card_farming::manager::poll_active`/`achievement_unlocker::manager`'s scan phase) - see
+    /// `achievement_unlocker::manager`'s scan phase; card farming currently has none) - see
     /// `max_playtime::enforcement`'s module doc comment for the full reasoning. An account whose
     /// last-known [`GamesAccount`] was never recorded (a claim replace has never happened) is
     /// skipped rather than panicking - can't happen in practice since a nonempty claim only ever

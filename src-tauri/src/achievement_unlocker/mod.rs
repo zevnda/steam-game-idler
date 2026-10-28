@@ -112,7 +112,7 @@ pub enum CompletedUnlockReason {
 /// frontend can render a persistent "session finished" summary instead of the game just silently
 /// vanishing from `active` once `cache::remove` dequeues it. Mirrors `card_farming::GameWithDrops`'s
 /// identical role in `FarmingState::completed`. Not populated for a user-initiated stop - matches
-/// `card_farming::poll_active`'s same distinction (a manual stop isn't "this game is done").
+/// `card_farming::CompletedFarm`'s same distinction (a manual stop isn't "this game is done").
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CompletedUnlock {

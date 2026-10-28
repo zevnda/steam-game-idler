@@ -316,7 +316,14 @@ async fn handle_line(
         }
         IpcLine::Event { name, mut payload } => {
             let key = account_key.lock().unwrap().clone();
-            tracing::info!(account = %key, event = %name, "steam agent event");
+            // `idle_state` is the daemon echoing back every idle announce - card farming's
+            // restart-cycle alone sends dozens per pass, each already logged once as
+            // `idling: claim updated`, so at info it buried everything else in a user's log.
+            if name == "idle_state" {
+                tracing::debug!(account = %key, event = %name, "steam agent event");
+            } else {
+                tracing::info!(account = %key, event = %name, "steam agent event");
+            }
 
             if name == "refresh_token" {
                 if let Some(real_key) = persist_refresh_token(app_handle, &key, &payload) {
@@ -469,8 +476,9 @@ async fn handle_line(
 /// Reacts to `status_changed{result: "LoggedInElsewhere"}` - the account's session was terminally
 /// replaced by another client of the same logon type (`EResult.LogonSessionReplaced`, e.g. a
 /// second SGI instance signed into the same account - the wire name predates that narrowing, see
-/// `DaemonHost.cs`). Stops this account's automation via the exact same underlying calls
-/// `stop_farming`/`stop_achievement_unlocker`/`stop_all_idling` already make, rather than letting
+/// `DaemonHost.cs`). Stops this account's automation via the same underlying calls
+/// `stop_farming`/`stop_achievement_unlocker` make, then drops its idle claims without announcing
+/// (see `IdleClaimsRegistry::clear_account`), rather than letting
 /// the daemon's own auto-reconnect (already suppressed for this case - see
 /// `SteamBot.cs::OnDisconnected`) leave stale automation state around. Runs unconditionally here
 /// (not gated behind the frontend being mounted/listening) so pausing is reliable regardless of
@@ -502,21 +510,14 @@ async fn handle_session_superseded(app_handle: &AppHandle, account_key: &str, st
         tracing::warn!(account = %account_key, error = %e, "steam agent: failed to stop achievement unlocker after concurrent-login kick");
     }
 
-    let account = crate::games::commands::GamesAccount::Agent {
-        username: account_key.to_string(),
-    };
-    if let Err(e) = app_handle
+    // Keyed by the SteamID64 captured before the kick, not re-resolved from `account_key` - this
+    // runs spawned, so by now the caller has already nulled the cached id and `clear_all`'s
+    // `resolve_steam_id` would fail ("no resolved SteamID64 yet"), leaving every claim behind.
+    // Nothing to announce either: the daemon connection is already dead Steam-side.
+    app_handle
         .state::<crate::idling::claims::IdleClaimsRegistry>()
-        .clear_all(
-            app_handle,
-            app_handle.state::<crate::steam_agent::AgentManager>(),
-            app_handle.state::<crate::idling::IdlingManager>(),
-            account,
-        )
-        .await
-    {
-        tracing::warn!(account = %account_key, error = %e, "steam agent: failed to clear idle claims after concurrent-login kick");
-    }
+        .clear_account(steam_id)
+        .await;
 
     tracing::warn!(
         account = %account_key,

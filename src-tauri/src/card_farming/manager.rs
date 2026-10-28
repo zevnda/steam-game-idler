@@ -48,6 +48,15 @@ const MICRO_PAUSE: Duration = Duration::from_secs(5);
 /// How long each target gets idled, alone, during the restart-cycle's individual sweep.
 const MICRO_IDLE_DURATION: Duration = Duration::from_secs(5);
 
+/// How many badge-page scrapes in a row may fail transiently (`AppError::CardFarmingScrapeFailed` -
+/// Steam Community throttling or erroring, not a dead session) before the cycle gives up. Each
+/// failed pass re-runs the previous pass's targets for one more restart-cycle (~8 minutes for a
+/// full 32-game batch), so this tolerates roughly 45 minutes of Steam Community trouble.
+const MAX_CONSECUTIVE_SCRAPE_FAILURES: u32 = 6;
+/// How long to wait before retrying a failed scrape when there's no previous pass's targets to keep
+/// idling in the meantime (the very first pass of a session failed).
+const SCRAPE_RETRY_DELAY: Duration = Duration::from_secs(60);
+
 /// One owned-games-cache entry's worth of data this module's checks care about - bundles real
 /// playtime (skip-settings, refund-window playtime threshold) and purchase recency (refund-window
 /// date threshold) so [`resolve_candidates`] only needs one cache read/lookup per game instead of a
@@ -672,7 +681,9 @@ impl CardFarmingManager {
 /// The cycle itself: resolve this iteration's eligible pool, pick a phase, run the restart-cycle
 /// against its target(s), repeat - ending once nothing is eligible at all, [`CardFarmingManager::
 /// stop`] set `stopped`, or a mid-cycle Steam Community session expiry was confirmed (see
-/// [`FarmingState::session_expired`]). All three converge on the same cleanup below, safe to run
+/// [`FarmingState::session_expired`]). A transient badge-scrape failure is *not* an end condition
+/// until it repeats [`MAX_CONSECUTIVE_SCRAPE_FAILURES`] times in a row - until then the previous
+/// pass's targets just keep farming. All three converge on the same cleanup below, safe to run
 /// once (`stop` awaits this very task before returning, so there's no concurrent double-run, but
 /// `replace_owner_claim([])`/removing an already-removed session entry are idempotent regardless).
 #[allow(clippy::too_many_arguments)]
@@ -694,6 +705,11 @@ async fn run_cycle(
     // every other way this loop can end (a manual stop, mid-wait `stopped` firing, or a resolve
     // error), so `maybe_start_next_task` only ever chains on a genuine "nothing left" finish.
     let mut queue_genuinely_empty = false;
+    // The last pass's targets, re-run as-is while a scrape is failing transiently - keeps the
+    // session farming through a Steam Community hiccup instead of ending it (see
+    // `MAX_CONSECUTIVE_SCRAPE_FAILURES`).
+    let mut last_idle_targets: Vec<IdleTarget> = Vec::new();
+    let mut consecutive_scrape_failures: u32 = 0;
 
     while !stopped.load(Ordering::SeqCst) {
         // No drops accrue while another session on the account is playing a game (the daemon
@@ -726,7 +742,38 @@ async fn run_cycle(
         )
         .await
         {
-            Ok(c) => c,
+            Ok(c) => {
+                consecutive_scrape_failures = 0;
+                c
+            }
+            Err(AppError::CardFarmingScrapeFailed(reason))
+                if consecutive_scrape_failures < MAX_CONSECUTIVE_SCRAPE_FAILURES =>
+            {
+                consecutive_scrape_failures += 1;
+                tracing::warn!(
+                    steam_id,
+                    attempt = consecutive_scrape_failures,
+                    max_attempts = MAX_CONSECUTIVE_SCRAPE_FAILURES,
+                    reason,
+                    "card farming: badge scrape failed, keeping current targets and retrying next cycle"
+                );
+                // The scrape is the first thing `resolve_candidates` does, so nothing was pushed
+                // to `new_completed` before it failed - nothing to report here. A game manually
+                // stopped from the Idling page since the last good pass must stay stopped.
+                last_idle_targets.retain(|t| !excluded_snapshot.contains(&t.app_id));
+                let outcome = if last_idle_targets.is_empty() {
+                    race_wait(SCRAPE_RETRY_DELAY, &stopped, &wake)
+                        .await
+                        .unwrap_or(CycleOutcome::Completed)
+                } else {
+                    run_restart_cycle(&app_handle, &account, &last_idle_targets, &stopped, &wake)
+                        .await
+                };
+                match outcome {
+                    CycleOutcome::Stopped => break,
+                    CycleOutcome::Completed | CycleOutcome::Woken => continue,
+                }
+            }
             Err(AppError::SteamCommunitySessionExpired(id)) => {
                 let _ = credentials::clear(&id);
                 let mut s = state.lock().await;
@@ -771,6 +818,7 @@ async fn run_cycle(
             .chain(candidates.accumulating)
             .filter(|g| !target_ids.contains(&g.app_id))
             .collect();
+        let queue_len = queue_list.len();
 
         // Only entries still selected as a target survive - see `FarmingProgress::active_since`'s
         // doc comment for why dropping to `queue` (even briefly) resets the clock, and why the
@@ -787,6 +835,20 @@ async fn run_cycle(
                 playtime_hours: game.playtime_hours,
                 active_since: now_ms,
             });
+            // Only a decrease is a drop - logged per drop (not per pass) so a user's log shows
+            // whether cards are actually still dropping, e.g. for a "nothing's dropped in X hours"
+            // report. A game's final drop shows up as "drops exhausted" in `resolve_candidates`
+            // instead, since it's no longer in the scrape at all.
+            if game.remaining < entry.remaining {
+                tracing::info!(
+                    steam_id,
+                    app_id = game.app_id,
+                    name = %game.name,
+                    previous_remaining = entry.remaining,
+                    remaining = game.remaining,
+                    "card farming: card dropped"
+                );
+            }
             entry.remaining = game.remaining;
             entry.playtime_hours = game.playtime_hours;
             active_progress.push(entry.clone());
@@ -800,6 +862,18 @@ async fn run_cycle(
         }
         emit_state(&app_handle, &steam_id, &state).await;
 
+        // One line per pass (~8 minutes for a full 32-game batch) - proves the cycle is alive and
+        // shows whether the total is moving, without reading through the restart-cycle's own
+        // per-step claim churn.
+        tracing::info!(
+            steam_id,
+            phase = ?phase,
+            targets = targets.len(),
+            queued = queue_len,
+            drops_remaining = targets.iter().map(|g| g.remaining).sum::<u32>(),
+            "card farming: pass started"
+        );
+
         let idle_targets: Vec<IdleTarget> = targets
             .iter()
             .map(|g| IdleTarget {
@@ -807,6 +881,7 @@ async fn run_cycle(
                 name: g.name.clone(),
             })
             .collect();
+        last_idle_targets = idle_targets.clone();
 
         match run_restart_cycle(&app_handle, &account, &idle_targets, &stopped, &wake).await {
             CycleOutcome::Stopped => break,
