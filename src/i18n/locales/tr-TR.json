@@ -269,7 +269,6 @@
     "landing": {
       "title": "Steam Game Idler'da Oturum Aç",
       "agentButton": "Steam Girişi",
-      "localButton": "Eski Oturum Açma Yöntemi",
       "localAlreadySignedIn": "Yerel Steam istemcisinde zaten oturum açılmış bir hesap var — aynı anda yalnızca bir hesapta oturum açılabilir.",
       "acknowledge": "Devam ederek <0>Hizmet Şartları</0>'nı kabul etmiş ve <1>Gizlilik Politikamızı</1> okuduğunuzu onaylamış olursunuz."
     },

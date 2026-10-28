@@ -267,7 +267,6 @@
     "landing": {
       "title": "Se connecter à Steam Game Idler",
       "agentButton": "Connexion Steam",
-      "localButton": "Connexion legacy",
       "localAlreadySignedIn": "Un compte Steam local est déjà connecté - un seul peut être connecté en même temps.",
       "acknowledge": "En continuant, vous acceptez les <0>Conditions d'Utilisations</0> et confirmez avoir lu notre <1>Politique de Confidentialité</1>."
     },
