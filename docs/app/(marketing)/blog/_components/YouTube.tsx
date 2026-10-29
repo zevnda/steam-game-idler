@@ -53,7 +53,7 @@ export default function YouTube({ id, title, caption }: YouTubeProps) {
           </a>
         )}
       </div>
-      <figcaption className='mt-3 text-center text-sm text-text-muted'>
+      <figcaption className='mt-3 text-center text-[13px] leading-relaxed italic text-text-muted/80'>
         {caption ?? title}
       </figcaption>
     </figure>

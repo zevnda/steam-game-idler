@@ -34,7 +34,9 @@ function Figure({ src, alt, caption, width, height }: FigureProps) {
         className='w-full h-auto rounded-xl border border-border'
       />
       {caption && (
-        <figcaption className='mt-3 text-center text-sm text-text-muted'>{caption}</figcaption>
+        <figcaption className='mt-3 text-center text-[13px] leading-relaxed italic text-text-muted/80'>
+          {caption}
+        </figcaption>
       )}
     </figure>
   )
