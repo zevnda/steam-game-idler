@@ -1,10 +1,12 @@
 'use client'
 
+import type { ProTier } from '@/app/lib/analytics'
 import { useState } from 'react'
 import { FaArrowRight, FaPaypal } from 'react-icons/fa6'
+import { rememberCheckout, trackEvent } from '@/app/lib/analytics'
 
 interface PayPalButtonProps {
-  tier: 'casual' | 'gamer'
+  tier: ProTier
   className?: string
 }
 
@@ -13,6 +15,9 @@ export default function PayPalButton({ tier, className }: PayPalButtonProps) {
 
   const handleClick = async () => {
     setIsLoading(true)
+    // sent now, not after the redirect: the API round-trip below gives the hit time to go out
+    rememberCheckout(tier, 'paypal')
+    trackEvent('pro_checkout_start', { tier, provider: 'paypal' })
     try {
       const res = await fetch('https://api.steamgameidler.com/api/paypal-create-subscription', {
         method: 'POST',

@@ -66,7 +66,10 @@ export default function DownloadHero() {
             under a minute.
           </p>
 
-          <div className='mt-9 flex flex-wrap items-center justify-center lg:justify-start gap-3'>
+          <div
+            data-analytics-placement='download_hero'
+            className='mt-9 flex flex-wrap items-center justify-center lg:justify-start gap-3'
+          >
             <Link prefetch={false} href={primaryUrl} className='btn-download justify-center'>
               <span key={swap.key} className={`inline-flex items-center gap-2 ${swap.className}`}>
                 {isLinux ? <FaLinux className='w-4 h-4' /> : <FaWindows className='w-4 h-4' />}
@@ -111,6 +114,7 @@ export default function DownloadHero() {
               release page on GitHub, where the same files are. */}
           <div
             key={`alt-${swap.key}`}
+            data-analytics-placement='download_hero_alt'
             className={`flex flex-wrap items-center justify-center lg:justify-start gap-3 mt-6 ${swap.className}`}
           >
             {isLinux ? (

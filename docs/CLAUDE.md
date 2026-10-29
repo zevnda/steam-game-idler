@@ -210,6 +210,25 @@ Marketing root layout that provides:
   `google-adsense-account` verification meta tag, commented out in the layout, and `public/ads.txt`.
   Don't reintroduce ad slots or scripts.
 
+### Analytics (GA4 custom events)
+`lib/analytics.ts` is the one place events are defined (`trackEvent`, plus its doc comment listing
+every event and parameter): `download_click`, `community_click`, `pro_checkout_start`,
+`pro_checkout_complete`, `search`.
+- **Event and parameter names are coupled to the GA4 property** (`properties/541712847`): each
+  parameter is registered there as an event-scoped custom dimension, and `download_click` and both
+  `pro_checkout_*` events are Key Events. Renaming one in code silently empties its report. A new
+  parameter needs a new custom dimension, and a new conversion-type event needs a Key Event. Set
+  these up via the GA4 Admin API (the `claude-seo` service account in `~/.config/claude-seo/` has
+  Editor on the property) or in the GA UI.
+- **Download and Discord/GitHub clicks are tracked by one delegated listener**
+  (`(marketing)/_components/ClickTracker.tsx`), matched on the link's URL. A new download link
+  needs no wiring. Add `data-analytics-placement='...'` on a container to name where a click came
+  from (otherwise the nearest ancestor `id` is used).
+- The `ga-init` script is `afterInteractive` on purpose (only the gtag.js download is
+  `lazyOnload`): the dataLayer queue and `config` must exist before any custom event is pushed.
+- GA undercounts this audience heavily (ad blockers). Use GitHub's asset `download_count` for
+  absolute totals and GA for ratios and attribution.
+
 ### `app/(embed)/layout.tsx`
 Minimal root layout for `/changelog/[slug]` only — Geist/Geist Mono fonts + `globals.css`, no analytics, no Fumadocs `RootProvider`. Kept deliberately light since this is the one route the desktop app's webview still loads directly.
 
