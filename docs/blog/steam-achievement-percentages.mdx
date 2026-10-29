@@ -1,0 +1,198 @@
+---
+title: 'Steam Achievement Percentages Explained: How Rarity Is Calculated'
+seoTitle: 'Steam Achievement Percentages - How Rarity Is Calculated'
+description: A Steam achievement's percentage is the share of players who unlocked it. Here's who Steam counts, why the numbers run low, and what makes one rare.
+date: 2026-10-29
+category: Explainers
+tags: [Achievements]
+image: /blog/steam-achievement-percentages/cover.webp
+imageAlt: Steam achievement percentages explained, with a global stats card showing an opening achievement at 74.0%, a halfway achievement at 35.1% and a rare one at 2.4%
+keywords:
+  - how are steam achievement percentages calculated
+  - why are steam achievement percentages so low
+  - steam achievement rarity
+  - steam rare achievement percentage
+  - steam global achievement stats
+  - steam achievement percentage
+---
+
+A Steam achievement's global percentage is the share of players who have unlocked it. Valve
+describes it as "the percentage of people that have unlocked this achievement," but doesn't say
+exactly who counts as one of those people. The numbers show the base is wide: even achievements
+you earn in a game's first minutes rarely pass 75-87%, because many counted players barely play.
+Steam labels an achievement **rare** when fewer than 10% of players have it.
+
+<KeyTakeaways>
+- Steam's global percentage is the share of a game's players who have unlocked an achievement,
+  shown to one decimal place.
+- Valve doesn't publish who's in the denominator. Opening achievements topping out at 74-87%
+  shows it includes many people who barely played.
+- Steam calls an achievement rare when fewer than 10% of players have unlocked it. We matched
+  Steam's "rare" counts against the raw data for four games.
+- Global Stats now sit behind a **Show Global Stats** toggle on Steam's new achievements page,
+  part of the Achievement Sets beta.
+- Anyone can read the same numbers from Steam's public Web API without a key.
+</KeyTakeaways>
+
+<Figure
+  src="/blog/steam-achievement-percentages/steam-global-stats-toggle.webp"
+  alt="Steam's achievements page for Portal 2 with Show Global Stats switched on, listing 51 achievements (22 rare) and Wake Up Call at 74.0%"
+  width={1600}
+  height={1014}
+  caption="Steam's achievements page for Portal 2 with Show Global Stats on, October 29, 2026. The game's cover art is hidden."
+/>
+
+## What a Steam achievement percentage means
+
+The percentage next to an achievement is how many of a game's players have unlocked it, out of
+100. Valve's [ISteamUserStats documentation](https://partner.steamgames.com/doc/api/ISteamUserStats)
+says the value is "the percentage of people that have unlocked this achievement from 0 to 100,"
+and describes the data as "the percentage of players who have received each achievement for the
+current game globally."
+
+It's the same number everywhere Steam shows it: on the game's achievements page, in your library
+and in profile showcases such as **Rarest Achievements**. Steam's public Web API endpoint
+`GetGlobalAchievementPercentagesForApp` serves it too, keyed only by the game's app ID, so no
+account or API key is needed to read it. The API returns each value as text with one decimal
+place, such as `"74.0"`, which is why you never see a percentage finer than 0.1%.
+
+## How Steam calculates achievement percentages
+
+Valve publishes the formula's top half, not its bottom. The top is simple: players who have
+unlocked the achievement. Who counts as a player for the bottom half isn't documented anywhere
+Valve publishes.
+
+The data narrows it down. Look at each game's most common achievement, the one nearly everyone
+who plays should get, in Steam's global stats on October 29, 2026:
+
+| Game | Most common achievement | What it takes | Global % |
+|---|---|---|---|
+| Terraria | Timber!! | Chop down your first tree | 87.0% |
+| Hades | Escaped Tartarus | Clear the first region | 81.8% |
+| Portal 2 | Wake Up Call | Survive the manual override, minutes into the story | 74.0% |
+| Team Fortress 2 | Race for the Pennant | Run 25 kilometers | 49.5% |
+
+If the denominator only included people who had really played, chopping a tree in Terraria would
+be close to 100%. Instead, 13% of counted players never did. So the base includes a lot of people
+who own a game and never got past the opening, or never launched it at all. That's why every
+percentage is lower than it "feels" from inside the community of people who actually play.
+
+## Why Steam achievement percentages are so low
+
+Most low percentages come from who's counted, not just from difficulty:
+
+- **People who never really played.** As the table above shows, a big share of counted players
+  never get past the opening. Games bought in bundles or sales, claimed for free or left in the
+  backlog are the likely reason.
+- **Free-to-play games.** A free game is easy to try and drop, so the base is huge. Team Fortress
+  2's most common achievement sits under 50%.
+- **Long or grindy goals.** Endgame and completion achievements naturally land in single digits:
+  Portal 2's hardest co-op achievement is at 2.4%, and Terraria's rarest at 0.5%.
+- **Achievements added later.** An achievement added in an update or DLC starts at 0% for
+  everyone, including players who stopped playing before it existed.
+
+The Achievement Sets beta changes how DLC and seasonal achievements are grouped, but Valve's
+[announcement](https://steamcommunity.com/ogg/593110/announcements/detail/710037059469839142)
+doesn't say whether a DLC set's percentages are measured against DLC owners or all players. Our
+[Achievement Sets explainer](/blog/steam-achievement-sets) covers what the beta does change.
+
+## What counts as a rare achievement on Steam?
+
+Steam marks an achievement as rare when **fewer than 10%** of players have unlocked it. Valve
+doesn't publish this cut-off, so we checked it: the new achievements page shows a "rare" count for
+each game, and we compared it with the raw percentages from Steam's API on October 29, 2026.
+
+| Game | Achievements | Steam's "rare" count | Below 10% in the API |
+|---|---|---|---|
+| Terraria | 137 | 33 | 33 |
+| Portal 2 | 51 | 22 | 22 |
+| Hades | 49 | 10 | 10 |
+| Team Fortress 2 | 516 shown | 263 | 262, plus 5 at exactly 10.0% |
+
+The first three match exactly. Team Fortress 2 is off by one, and five of its achievements sit at
+exactly 10.0%. The API rounds to one decimal, so one of those is most likely just under 10% in
+Steam's own data.
+
+Rare achievements get special treatment in the Steam client. They have their own animation:
+Valve's [June 2023 client update](https://steamcommunity.com/ogg/593110/announcements/detail/3687931965598323437)
+"fixed missing animation for rare achievements on the game details page." Your profile's
+**Rarest Achievements** showcase ranks your achievements by these same percentages.
+
+## Where to see global achievement stats
+
+Open any game's achievements page on the Steam Community, or from the game in your Steam library,
+and switch on **Show Global Stats**. Valve's Achievement Sets announcement says "Global Stats, or
+the per-achievement completion rates, are now available as a toggle here rather than on a
+separate page." The page is public, so you can check a game's percentages without owning it or
+signing in.
+
+## What this means for Steam Game Idler
+
+Steam Game Idler shows the same global percentages Steam does, and uses them in two places:
+
+- **[Achievement Manager](/docs/features/achievement-manager)** shows every achievement's global
+  unlock percentage and can sort by **Global unlock %**. It also adds a rarity label from
+  **Common** to **Legendary**. Those labels are Steam Game Idler's own bands (Rare means 5-15%,
+  Epic 1-5% and Legendary under 1%), so they don't line up with Steam's single under-10% "rare"
+  label.
+- **[Achievement Unlocker](/docs/features/achievement-unlocker)** unlocks a game's achievements in
+  order of global rarity by default, starting with the most common. You can change that with
+  [Custom Order & Unlock Delay](/docs/features/achievement-unlocker/custom-order-and-unlock-delay).
+
+With Steam Sign-in, the Steam session itself doesn't provide these percentages, so Steam Game
+Idler reads them from the same public `GetGlobalAchievementPercentagesForApp` endpoint described
+above. With Local Sign-in, the local Steam client provides them. Either way, the numbers match
+what Steam shows.
+
+[Download Steam Game Idler](/download) to see a game's rarity at a glance.
+
+<Figure
+  src="/blog/steam-achievement-percentages/sgi-achievement-manager-rarity.webp"
+  alt="Steam Game Idler's Achievement Manager for THE FINALS sorted by Global unlock %, with achievements from 1.7% Epic down to 0.5% Legendary"
+  width={1600}
+  height={1046}
+  caption="Steam Game Idler's Achievement Manager sorted by Global unlock %. Its Epic (1-5%) and Legendary (under 1%) labels are its own bands, not Steam's rare label."
+/>
+
+## FAQ
+
+### How are Steam achievement percentages calculated?
+
+Steam divides the number of players who have unlocked an achievement by the number of players it
+counts for that game, and shows the result to one decimal place. Valve doesn't publish exactly who
+it counts, but the data shows it includes many people who barely played.
+
+### Why are Steam achievement percentages so low?
+
+Because the base includes everyone counted as a player, including people who bought a game and
+never got far. Even achievements earned in the first minutes of Terraria, Hades or Portal 2 sit
+between 74% and 87%.
+
+### What percentage is a rare achievement on Steam?
+
+Under 10%. Steam's achievements page counts an achievement as rare when fewer than 10% of players
+have unlocked it, which matched Steam's API data for every game we checked.
+
+### Where can I see global achievement percentages?
+
+On a game's achievements page on the Steam Community or in your library. Switch on **Show Global
+Stats** to see each achievement's percentage. The page is public, so you don't need to own the game.
+
+### Do Steam achievement percentages change?
+
+Yes. They're calculated from all players, so they move as new players arrive and existing players
+unlock more. A new game's percentages can shift a lot in its first weeks.
+
+### Do DLC achievements count toward the percentage?
+
+DLC achievements have their own percentages like any other. Valve hasn't said whether they're
+measured against DLC owners or all of the game's players, so a low DLC percentage may partly
+reflect how few people bought the DLC.
+
+## Sources
+
+- Valve, [Steamworks Documentation: ISteamUserStats](https://partner.steamgames.com/doc/api/ISteamUserStats), accessed October 29, 2026.
+- Valve, [Steam Achievement Sets Now in Beta](https://steamcommunity.com/ogg/593110/announcements/detail/710037059469839142), October 15, 2026.
+- Valve, [Steam Client Update - June 14th](https://steamcommunity.com/ogg/593110/announcements/detail/3687931965598323437), June 15, 2023.
+- Steam Web API, `ISteamUserStats/GetGlobalAchievementPercentagesForApp` and `GetSchemaForGame` for Terraria, Hades, Portal 2 and Team Fortress 2, accessed October 29, 2026.
+- Steam Community, achievements pages for [Terraria](https://steamcommunity.com/achievements/105600), [Hades](https://steamcommunity.com/achievements/1145360), [Portal 2](https://steamcommunity.com/achievements/620) and [Team Fortress 2](https://steamcommunity.com/achievements/440), accessed October 29, 2026.

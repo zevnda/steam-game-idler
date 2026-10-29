@@ -6,7 +6,7 @@ rejected ones from coming back without new evidence, and news sweeps from re-rea
 weeks. Newest entries go first in each section. Keep entries short; full research lives in the
 gitignored `seo-blog-research-{slug}.md` files.
 
-**Last discovery sweep:** 2026-10-23 (two-day window: only Valve item was the Oct 21 client update - bug fixes only; Protobufs changes were Remote Play/audio; no seasonal event in the next 6 weeks fits - nothing queued)
+**Last discovery sweep:** 2026-10-29 (window 10-23..10-29: no client update; Steam Scream V and Personal Calendar only; Protobufs were SteamOS/store/CS2. Autocomplete surfaced a playtime-mechanics gap - 2 queued)
 
 ## Queued - passed the gate, not written yet
 
@@ -40,13 +40,10 @@ gitignored `seo-blog-research-{slug}.md` files.
 Not posts: these intents belong on existing docs pages. Do them once the launch posts are
 published. GSC figures are 2026-07-20 to 2026-10-17; re-pull before starting.
 
-- **`/docs/features/playtime-booster`**: "how to increase steam playtime without playing" (77),
-  "steam boost hours" (51 @ 9.8), "how to boost hours on steam games" (42), "boost steam hours"
-  (39 @ 9.4) - ~430 impressions, 8 clicks. Use searchers' wording ("hours", "boost") and add a
-  short how-to near the top.
-- **`/docs/steam-credentials`**: "sessionid steam" (123, was 31), "steamloginsecure" (111),
-  "steam session id" (106, was 2) - ~490 impressions, 3 clicks, and rising. A clear "where to find
-  your sessionid / steamLoginSecure" section and a title that names them would capture it.
+- **Done 2026-10-20 (found 2026-10-29):** the playtime-booster ("How to boost hours on a Steam
+  game", "Steam Hour Booster" title), steam-credentials ("What are steamLoginSecure,
+  steamMachineAuth and sessionid?") and card-farming ("How to farm Steam trading cards") updates
+  all shipped in #2173/#2175. Judge them in the 2026-11-17 title review below.
 - **`/docs/features/achievement-manager` (protected achievements)** - added 2026-10-20: ~650
   impressions / ~7 clicks at pos ~8 ("steam achievement manager protected achievements" 359,
   "steam protected achievements" 99, "...how to unlock protected achievements" 38, and SAM's own
@@ -66,12 +63,23 @@ published. GSC figures are 2026-07-20 to 2026-10-17; re-pull before starting.
   it underperforms or Google rewrites it, and keep the keyword phrase as-is. The
   achievement-unlocker title's `:` (vs ` - ` elsewhere) is cosmetic only; switch it to ` - `
   only if that title is being edited anyway.
-- **`/docs/features/card-farming`**: "how to farm steam trading cards" and variants ~340
-  impressions at pos 6-8, ~3 clicks. Make sure the opening answers the how-to directly.
 
 ## Written - awaiting merge
 
 <!-- ### <title> - `docs/blog/<slug>.mdx` - written YYYY-MM-DD -->
+
+### Steam Achievement Percentages Explained: How Rarity Is Calculated - `docs/blog/steam-achievement-percentages.mdx` - written 2026-10-29
+- Primary keyword: how are steam achievement percentages calculated
+- Inbound link added: `/blog/steam-achievement-sets` (Global Stats bullet; no `updated:` change).
+- Revisit: when Achievement Sets leave beta (Global Stats toggle, DLC-set percentages), or 2027-10.
+  Re-check the "rare = under 10%" table against live counts on each revisit.
+
+### How Steam Tracks Playtime: AFK, Offline, Invisible and Can You Reset It? - `docs/blog/how-steam-tracks-playtime.mdx` - written 2026-10-29
+- Primary keyword: how does steam track playtime | Scope: mechanics only (no "fake/edit playtime"
+  intent - SSA Automation clause, user-delegated decision 2026-10-29).
+- Inbound link added: `/docs/features/playtime-booster` ("How idling works" paragraph).
+- Revisit: 2027-10 (yearly), or if Valve documents Offline Mode playtime / `playtime_disconnected`,
+  or changes playtime privacy options. Bump `date:` if the PR waits days to merge.
 
 ## Published
 
@@ -80,25 +88,47 @@ published. GSC figures are 2026-07-20 to 2026-10-17; re-pull before starting.
 
 ### Can You Remove, Hide or Reset Steam Achievements? What Actually Works - `/blog/remove-steam-achievements` - published 2026-10-20
 - Primary keyword: can you remove steam achievements | Revisit: 2027-10 (yearly), or if Valve changes privacy/private-game rules or adds an official reset
-- Indexed 2026-10-20 (URL Inspection 2026-10-21: Submitted and indexed, canonical matches; re-checked 2026-10-23: PASS).
+- Indexed 2026-10-20 (URL Inspection 2026-10-21: Submitted and indexed, canonical matches; re-checked 2026-10-23, 2026-10-29: PASS).
+- 2026-10-29: GSC to 10-26 shows ~800 impressions at pos 6-10 ("how to remove steam achievements" 279 @ 10.1) but only 1-2 clicks. Too early to act; if CTR is still ~0 at the 2026-11-17 review, test a title/description that matches the "how to remove/reset" wording.
 
 ### How to Level Up on Steam: Every Source of XP, and What It Costs - `/blog/how-to-level-up-on-steam` - published 2026-10-20
 - Primary keyword: how to level up on steam | Revisit: each Winter/Summer Sale (new Seasonal Badge), and before the 2026 Steam Awards nominations (late Nov) to confirm the badge
-- Indexed 2026-10-20 (URL Inspection 2026-10-21: Submitted and indexed, canonical matches; re-checked 2026-10-23: PASS).
+- Indexed 2026-10-20 (URL Inspection 2026-10-21: Submitted and indexed, canonical matches; re-checked 2026-10-23, 2026-10-29: PASS).
+- 2026-10-29: Steam Awards 2025 nominations opened 2025-11-25 (Steam news API); 2026 dates aren't on Steamworks' upcoming-events page yet. Re-check ~2026-11-20 and update the badge section once they're announced.
 
 ### How Steam Trading Cards Work: Drops, Badges, Booster Packs and Selling - `/blog/how-steam-trading-cards-work` - published 2026-10-20
 - Primary keyword: how do steam trading cards work | Revisit: 2027-10 (yearly refresh), or if Valve changes card/booster/badge rules
-- Indexed 2026-10-20 (URL Inspection: Submitted and indexed; re-checked 2026-10-23: PASS).
+- Indexed 2026-10-20 (URL Inspection: Submitted and indexed; re-checked 2026-10-23, 2026-10-29: PASS).
 
 ### Steam Achievement Sets: What the Beta Changes for Achievement Hunters - `/blog/steam-achievement-sets` - published 2026-10-20
 - Primary keyword: steam achievement sets | Revisit: when Achievement Sets leave beta (check the Steam news API), then set `updated:`
-- Indexed 2026-10-20 (URL Inspection: Submitted and indexed; re-checked 2026-10-23: PASS).
+- Indexed 2026-10-20 (URL Inspection: Submitted and indexed; re-checked 2026-10-23, 2026-10-29: PASS).
 
 ## Rejected - don't re-propose without new evidence
 
 <!-- ### <topic>
 - Rejected YYYY-MM-DD: gate H1/H5/... - one-line evidence
 - Revisit only if: <the specific change that would flip it> -->
+
+### Steam Points value ("are steam points worth it", "points per dollar", "can points buy games")
+- Rejected 2026-10-29: S2 0 - big autocomplete cluster, but SGI does nothing with Points; GSC 5
+  impressions. The XP/badge side is already in the level-up post.
+- Revisit only if: SGI adds a Points feature, or GSC shows Points queries reaching the level-up post at volume.
+
+### Steam card drops troubleshooting ("why am i not getting card drops", "does steam level affect drops")
+- Rejected 2026-10-29: H5 - `/docs/features/card-farming/card-drop-times` and the trading-cards
+  post cover it; GSC 15 impressions total.
+- Revisit only if: GSC shows these queries landing on a page that doesn't answer them.
+
+### Steam Achievement Manager safety ("is SAM bannable / safe / detected")
+- Rejected 2026-10-29: same SSA/brand issue as the rejected ban post, and
+  `/alternatives/steam-achievement-manager` exists.
+- Revisit only if: the user decides to cover the SSA clause.
+
+### Steam Scream V Fest / Personal Calendar full release (Oct 2026)
+- Rejected 2026-10-29: H1 - a themed sale and a store calendar feature; no cards, badges,
+  achievements or playtime involved.
+- Revisit only if: either gains a cards/badge/achievement component.
 
 ### `GetOwnedGames` "include all free games" flag
 - Rejected 2026-10-21: H2 - datamined only (`include_all_free_games` added to
@@ -150,9 +180,10 @@ indexed in time.
 
 | Event | Dates | Notes |
 |---|---|---|
-| Steam Winter Sale 2026 | 17 Dec 2026 - 4 Jan 2027 (confirmed 2026-10-20) | Pitch window opens ~late Nov (sale page not live as of 2026-10-20, so nothing to verify yet). Verify what the sale awards (event badge, stickers, Points items, cards?) from the sale page before a cards/badges angle. |
+| Steam Winter Sale 2026 | 17 Dec 2026 - 4 Jan 2027 (confirmed 2026-10-20, still listed 2026-10-29) | Pitch window opens ~late Nov (sale page not live as of 2026-10-20, so nothing to verify yet). Verify what the sale awards (event badge, stickers, Points items, cards?) from the sale page before a cards/badges angle. |
 | Steam Spring Sale 2027 | 18 - 25 Mar 2027 (confirmed) | Same check. |
 | Steam Summer Sale 2027 | 24 Jun - 8 Jul 2027 (confirmed) | Same check. |
 | Steam Autumn Sale | 2026 edition began 1 Oct 2026 (Steam news); 2027 TBD | Earlier than the old late-November habit - don't assume dates. |
 | Steam Next Fest | 22 Feb - 1 Mar 2027, 14 - 21 Jun 2027 (confirmed) | Demos have no cards/achievements - usually *not* a fit. |
+| Steam Awards nominations | 2025: opened 25 Nov 2025; 2026 TBD (not on upcoming-events 2026-10-29) | Awards a badge (XP). Not a post - an update trigger for the level-up post. |
 | Themed fests | many; see Steamworks upcoming events | Genre sales - not a fit unless cards/achievements change. |
