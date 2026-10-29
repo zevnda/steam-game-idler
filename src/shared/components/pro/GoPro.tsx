@@ -7,6 +7,7 @@ import { AppTooltip } from '@/shared/components/AppTooltip'
 import { usePlatformStore } from '@/shared/stores/platformStore'
 import { useProModalStore } from '@/shared/stores/proModalStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
+import { revealTitleIfTruncated } from '@/shared/utils/revealTitleIfTruncated'
 
 // Sidebar upsell card (above the account footer) - shown for free (`null` tier) users only, same audience
 // as the small animated titlebar pill it replaced. The sidebar has the width for a real card with
@@ -103,10 +104,7 @@ export const GoPro = ({ collapsed }: { collapsed: boolean }) => {
                   didn't say what the button was. A brand word, so not translated (CLAUDE.md's i18n
                   exceptions); the button's accessible name and tooltip stay the translated title.
                   aria-hidden so screen readers get that name, not "PRO" read out as well. */}
-              <span
-                aria-hidden='true'
-                className='text-xs leading-[18px] font-bold tracking-[0.06em]'
-              >
+              <span aria-hidden='true' className='text-xs leading-4.5 font-bold tracking-[0.06em]'>
                 PRO
               </span>
             </button>
@@ -144,12 +142,23 @@ export const GoPro = ({ collapsed }: { collapsed: boolean }) => {
               expanding, while it's still mid-width-transition, so wrapping copy would balloon the
               card's height during the animation. */}
           <span className='flex min-w-0 flex-1 flex-col'>
-            {/* No native `title` tooltips on either line - a browser tooltip popping up over
-                the card's own text just reads as noise. */}
-            <span className='truncate text-sm font-bold text-foreground'>{title}</span>
+            {/* No static `title` tooltips on either line - a browser tooltip popping up over the
+                card's own fully-visible text just reads as noise. `revealTitleIfTruncated` only
+                sets one when a longer locale actually clips the line; the perk line can't change
+                underneath it, since hovering the card pauses the rotation. */}
+            <span
+              className='truncate text-sm font-bold text-foreground'
+              onMouseEnter={revealTitleIfTruncated}
+            >
+              {title}
+            </span>
             {/* Keyed by index so each swap remounts the span and replays `.go-pro-perk`'s entrance
                 animation (globals.css). */}
-            <span key={perkIndex} className='go-pro-perk truncate text-xs text-foreground/70'>
+            <span
+              key={perkIndex}
+              className='go-pro-perk truncate text-xs text-foreground/70'
+              onMouseEnter={revealTitleIfTruncated}
+            >
               {t(PERK_KEYS[perkIndex])}
             </span>
           </span>

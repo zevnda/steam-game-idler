@@ -4,6 +4,7 @@ import { cn } from '@heroui/react'
 import Link from 'next/link'
 import { AppTooltip } from '@/shared/components/AppTooltip'
 import { useIsActiveRoute } from '@/shared/hooks/useIsActiveRoute'
+import { revealTitleIfTruncated } from '@/shared/utils/revealTitleIfTruncated'
 
 interface SidebarItemProps {
   href: string
@@ -97,7 +98,9 @@ export const SidebarItem = ({
       />
       {!collapsed && (
         <>
-          <span className='truncate'>{label}</span>
+          <span className='truncate' onMouseEnter={revealTitleIfTruncated}>
+            {label}
+          </span>
           {running && (
             <>
               <RunningDot className='ml-auto' />

@@ -8,6 +8,7 @@ import { FloatingActionBar } from './FloatingActionBar'
 import { ProtectedNotice } from './ProtectedNotice'
 import { StatisticsList } from './StatisticsList'
 import { AlertDialog, Button, EmptyState, InputGroup, Typography } from '@heroui/react'
+import { revealTitleIfTruncated } from '@/shared/utils/revealTitleIfTruncated'
 
 interface StatisticsViewProps {
   stats: StatDto[]
@@ -59,7 +60,7 @@ export const StatisticsView = ({ stats, isMutating, onSave, onResetAll }: Statis
         <div className='flex min-w-0 items-center gap-3' data-tauri-drag-region>
           {/* No count beside the title - the sidebar's Statistics entry already shows it. */}
           <div className='flex min-w-0 flex-1' data-tauri-drag-region>
-            <Typography truncate type='h3'>
+            <Typography truncate type='h3' onMouseEnter={revealTitleIfTruncated}>
               {t('dashboard.achievements.tabs.statistics')}
             </Typography>
           </div>

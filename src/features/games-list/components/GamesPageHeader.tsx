@@ -41,7 +41,7 @@ export const GamesPageHeader = ({
       </div>
       <div className='flex shrink-0 items-center gap-2'>
         <GameSortSelect
-          ariaLabel='Sort games'
+          ariaLabel={t('dashboard.inventoryManager.sort.label')}
           options={sortOptions}
           value={sortStyle}
           onChange={onSortStyleChange}
