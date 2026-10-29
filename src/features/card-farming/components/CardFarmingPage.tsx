@@ -305,7 +305,11 @@ export const CardFarmingPage = () => {
           selectedKey={activeTab}
           onSelectionChange={key => setActiveTab(key as CardFarmingTab)}
         >
-          <div className='mx-6 mt-4 flex items-center justify-between gap-3'>
+          {/* `flex-wrap`: the tab labels are `whitespace-nowrap`, so in a longer locale at the
+              minimum window width the tabs + sort select no longer fit on one line - the select
+              drops below the tabs instead of overflowing. Same on every tabbed page (AutoIdle,
+              Favorites, AchievementUnlocker). No-op wherever everything fits. */}
+          <div className='mx-6 mt-4 flex flex-wrap items-center justify-between gap-3'>
             <TabListContainer className='shrink-0'>
               <TabList>
                 <Tab className='whitespace-nowrap' id='browse'>
@@ -324,7 +328,7 @@ export const CardFarmingPage = () => {
             </TabListContainer>
             {activeTab === 'browse' && (
               <GameSortSelect
-                ariaLabel='Sort games'
+                ariaLabel={t('dashboard.inventoryManager.sort.label')}
                 options={CARD_FARMING_SORT_STYLES.map(style => ({
                   id: style,
                   label: t(CARD_FARMING_SORT_LABEL_KEYS[style]),

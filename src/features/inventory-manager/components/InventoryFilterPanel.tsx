@@ -183,7 +183,13 @@ export const InventoryFilterPanel = ({
               onClick={() => toggleFilter(option.key)}
             >
               <Icon className='shrink-0' fontSize={16} />
-              <span className='grow truncate text-sm font-medium'>{t(option.labelKey)}</span>
+              {/* Wraps rather than truncating - a vertical list with nothing to align against,
+                  so a longer locale's label just makes its own row taller. `min-w-0` +
+                  `wrap-break-word` let a single long compound word break too, instead of
+                  pushing the check icon out of the panel. */}
+              <span className='min-w-0 grow wrap-break-word text-sm font-medium'>
+                {t(option.labelKey)}
+              </span>
               {isActive && <TbCheck className='shrink-0' fontSize={16} />}
             </button>
           )

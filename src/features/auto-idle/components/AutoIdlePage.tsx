@@ -121,7 +121,7 @@ export const AutoIdlePage = () => {
         selectedKey={activeTab}
         onSelectionChange={key => setActiveTab(key as AutoIdleTab)}
       >
-        <div className='mx-6 mt-4 flex items-center justify-between gap-3'>
+        <div className='mx-6 mt-4 flex flex-wrap items-center justify-between gap-3'>
           <TabListContainer className='shrink-0'>
             <TabList>
               <Tab className='whitespace-nowrap' id='browse'>
@@ -136,7 +136,7 @@ export const AutoIdlePage = () => {
           </TabListContainer>
           {activeTab === 'browse' && (
             <GameSortSelect
-              ariaLabel='Sort games'
+              ariaLabel={t('dashboard.inventoryManager.sort.label')}
               options={sortStyleOptions.map(style => ({
                 id: style,
                 label: t(OWNED_GAME_SORT_LABEL_KEYS[style]),

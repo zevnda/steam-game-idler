@@ -49,6 +49,7 @@ import { useInventorySettings } from '@/features/inventory-manager/hooks/useInve
 import { ModalDragRegion } from '@/shared/components/ModalDragRegion'
 import { SocialButtons } from '@/shared/components/SocialButtons'
 import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
+import { revealTitleIfTruncated } from '@/shared/utils/revealTitleIfTruncated'
 
 // Data-driven tab list, in `main`'s category order - extending this array plus `SettingsTab`
 // (settingsModalStore.ts) is how each feature adds its own settings category once it exists, no
@@ -241,7 +242,9 @@ export const SettingsModal = () => {
                               flex container can't ellipsis its own anonymous-flex-item text.
                               Mirrors SidebarItem.tsx's identical `<span className='truncate'>`
                               pattern. */}
-                          <span className='truncate'>{t(labelKey)}</span>
+                          <span className='truncate' onMouseEnter={revealTitleIfTruncated}>
+                            {t(labelKey)}
+                          </span>
                         </Tab>
                       ))}
                     </TabList>

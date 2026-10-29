@@ -28,6 +28,7 @@ import { useSteamWarningStore } from '@/shared/stores/steamWarningStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { logFrontendInfo } from '@/shared/utils/frontendLogging'
 import { invoke } from '@/shared/utils/invoke'
+import { revealTitleIfTruncated } from '@/shared/utils/revealTitleIfTruncated'
 import { computeAllowedAccountKeys } from '@/shared/utils/subscriptionAccess'
 
 const identifierFor = (account: SignedInAccount) =>
@@ -142,7 +143,7 @@ const AccountRow = ({
               ellipsis` only affects text content, so applying it to the row directly would just
               hard-clip the badge (a nested pill element) with no ellipsis instead of shrinking
               the mode label to make room for it. */}
-          <span className='truncate'>
+          <span className='truncate' onMouseEnter={revealTitleIfTruncated}>
             {account.mode === 'agent'
               ? t('dashboard.sidebar.accountSwitcher.modeAgent')
               : t('dashboard.sidebar.accountSwitcher.modeLocal')}

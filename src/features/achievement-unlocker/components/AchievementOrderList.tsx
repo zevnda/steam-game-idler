@@ -11,6 +11,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { cn, NumberField, Typography } from '@heroui/react'
 import { isInGroups } from '@/features/achievement-manager/utils/groupAchievements'
+import { revealTitleIfTruncated } from '@/shared/utils/revealTitleIfTruncated'
 
 // AchievementOrderRow's intrinsic height (44px icon + 2 * 10px `py-2.5` padding + 2px border = 66)
 // - the description line added below the name still fits under the 44px icon column (name +
@@ -120,7 +121,14 @@ const ConnectorRow = ({ achievementName, delay, isDisabled, onDelayChange }: Con
       <div className='flex flex-1 items-center justify-between gap-2 pl-10 pr-3'>
         <div className='flex min-w-0 items-center gap-1.5'>
           <TbHourglassLow className='shrink-0 text-muted' fontSize={14} />
-          <Typography color='muted' type='body-xs'>
+          {/* Capped at two lines - this row has a fixed virtualized height (`h-13`), so a longer
+              locale wrapping further would spill into the neighbouring cards. */}
+          <Typography
+            className='line-clamp-2'
+            color='muted'
+            type='body-xs'
+            onMouseEnter={revealTitleIfTruncated}
+          >
             {t('dashboard.achievementUnlocker.order.delayUntilNextUnlock')}
           </Typography>
         </div>
@@ -248,7 +256,9 @@ const ReadOnlySectionHeaderRow = ({ reason, count }: { reason: ReadOnlyReason; c
         className={cn('mb-0.5 shrink-0', reason === 'protected' ? 'text-warning' : 'text-muted')}
         fontSize={14}
       />
-      <Typography truncate type='body-xs' weight='semibold'>
+      {/* Stays single-line (fixed virtualized row height, see above) - the full title is
+          recoverable on hover instead when a longer locale clips it. */}
+      <Typography truncate type='body-xs' weight='semibold' onMouseEnter={revealTitleIfTruncated}>
         {t(READ_ONLY_SECTION_TITLE_KEYS[reason])}
       </Typography>
       <span className='shrink-0 rounded-full bg-surface-tertiary px-1.5 py-0.5 text-[10px] font-semibold text-muted'>

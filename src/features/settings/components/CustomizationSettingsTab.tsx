@@ -36,6 +36,7 @@ import {
   THEME_SWATCH_BACKGROUNDS,
 } from '@/shared/theme/presets'
 import { invoke } from '@/shared/utils/invoke'
+import { revealTitleIfTruncated } from '@/shared/utils/revealTitleIfTruncated'
 import { hasCasualAccess } from '@/shared/utils/subscriptionAccess'
 
 interface CustomizationSettingsTabProps {
@@ -274,7 +275,14 @@ export const CustomizationSettingsTab = ({
                 />
               )}
             </span>
-            <span className='w-full max-w-20 truncate text-center text-xs'>
+            {/* Up to two lines, not single-line `truncate`: every English name fits on one line,
+                but longer locales got cut to a few letters. The swatch row is `flex-wrap` with
+                nothing aligned underneath, so a two-line name costs nothing; past two lines the
+                full name is still recoverable on hover. */}
+            <span
+              className='line-clamp-2 w-full max-w-20 wrap-break-word text-center text-xs'
+              onMouseEnter={revealTitleIfTruncated}
+            >
               {t(`dashboard.settings.customization.theme.names.${key}`)}
             </span>
           </Radio.Content>
