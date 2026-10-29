@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { FiChevronRight, FiMenu, FiX } from 'react-icons/fi'
 import { scrollBehavior } from './demoStore'
 import { LINKS, SOCIALS } from './navLinks'
+import { Unbounded } from 'next/font/google'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Logo } from '@/app/(marketing)/_components/Logo'
@@ -23,6 +24,13 @@ interface LandingNavProps {
    *  second. Any link clicked inside it closes the sheet. */
   sheetLead?: React.ReactNode
 }
+
+// The desktop app's titlebar wordmark face (src/shared/components/titlebar/Titlebar.tsx), so the
+// site's brand reads the same as the app's. Preloaded (unlike Showcase.tsx's lazy copy of the same
+// font) since this nav is above the fold on every page.
+const unbounded = Unbounded({ subsets: ['latin'] })
+
+const brandClass = `${unbounded.className} text-sm font-semibold text-text-primary`
 
 const iconButtonClass =
   'p-2 rounded-full text-text-muted hover:text-text-primary hover:bg-white/5 transition-colors'
@@ -80,7 +88,7 @@ export default function LandingNav({ actions, sheetLead }: LandingNavProps) {
         <div className='landing-nav'>
           <Link prefetch={false} href='/' className='flex items-center gap-2.5 shrink-0'>
             <Logo size={22} />
-            <span className='font-semibold tracking-tight text-text-primary'>Steam Game Idler</span>
+            <span className={brandClass}>Steam Game Idler</span>
           </Link>
 
           <nav aria-label='Main' className='hidden md:flex items-center gap-0.5'>
@@ -172,9 +180,7 @@ export default function LandingNav({ actions, sheetLead }: LandingNavProps) {
               className='flex items-center gap-2.5 shrink-0'
             >
               <Logo size={22} />
-              <span className='font-semibold tracking-tight text-text-primary'>
-                Steam Game Idler
-              </span>
+              <span className={brandClass}>Steam Game Idler</span>
             </Link>
             <button
               type='button'
