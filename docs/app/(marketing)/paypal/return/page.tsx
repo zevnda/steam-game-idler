@@ -8,5 +8,5 @@ export const metadata = {
 
 // Where PayPal sends a buyer after a completed checkout - see CheckoutSuccess
 export default function PayPalReturnPage() {
-  return <CheckoutSuccess />
+  return <CheckoutSuccess provider='paypal' />
 }

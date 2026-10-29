@@ -8,5 +8,5 @@ export const metadata = {
 
 // Where Stripe sends a buyer after a completed checkout - see CheckoutSuccess
 export default function StripeReturnPage() {
-  return <CheckoutSuccess />
+  return <CheckoutSuccess provider='stripe' />
 }

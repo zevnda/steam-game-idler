@@ -12,7 +12,7 @@ export default function PaymentButtons({ tier, stripeUrl }: PaymentButtonsProps)
 
   return (
     <div className='flex flex-row gap-2.5'>
-      <StripeButton url={stripeUrl} className={buttonClass} />
+      <StripeButton tier={tier} url={stripeUrl} className={buttonClass} />
       <PayPalButton tier={tier} className={buttonClass} />
     </div>
   )

@@ -1,6 +1,7 @@
 import { RootProvider } from 'fumadocs-ui/provider/next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import Script from 'next/script'
+import ClickTracker from '@/app/(marketing)/_components/ClickTracker'
 import RainbowDefs from '@/app/(marketing)/_components/RainbowDefs'
 import OSDetector from '@/app/(marketing)/(home)/_components/OSDetector'
 import VercelAnalytics from '@/app/(marketing)/(home)/_components/VercelAnalytics'
@@ -121,7 +122,9 @@ export default function Layout({ children }: LayoutProps) {
           strategy='lazyOnload'
         />
 
-        <Script id='ga-init' strategy='lazyOnload'>
+        {/* Only the tag download is deferred: the init runs early so the dataLayer queue (and the
+            `config` command) exists before any custom event from app/lib/analytics.ts is pushed */}
+        <Script id='ga-init' strategy='afterInteractive'>
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
@@ -146,6 +149,7 @@ export default function Layout({ children }: LayoutProps) {
 
         <RainbowDefs />
         <VercelAnalytics />
+        <ClickTracker />
         <OSDetector />
       </body>
     </html>

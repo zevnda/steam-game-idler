@@ -305,7 +305,11 @@ export default function PreviousVersionsSection() {
           </div>
 
           {/* the home comparison table's container (.cmp); the list crossfades on an OS switch */}
-          <div key={swap.key} className={`cmp ${swap.className}`}>
+          <div
+            key={swap.key}
+            data-analytics-placement='previous_versions'
+            className={`cmp ${swap.className}`}
+          >
             {!currentGroupState ||
             (currentGroupState.loading && currentGroupState.items.length === 0) ? (
               <div className='p-6 text-center text-sm text-text-muted'>

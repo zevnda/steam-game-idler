@@ -1,5 +1,7 @@
+import type { CheckoutProvider } from '@/app/lib/analytics'
 import { FaArrowRight } from 'react-icons/fa6'
 import Link from 'next/link'
+import CheckoutCompleteTracker from '@/app/(marketing)/_components/CheckoutCompleteTracker'
 import LandingFooter from '@/app/(marketing)/(home)/_components/landing/LandingFooter'
 import LandingNav from '@/app/(marketing)/(home)/_components/landing/LandingNav'
 
@@ -57,7 +59,7 @@ export default function CheckoutResult({ lead, tail, sub, children }: CheckoutRe
  * tried; it was louder but clashed with the page.) The activation steps mirror the PRO docs
  * (docs/_content/pro.mdx) - keep them in sync.
  */
-export function CheckoutSuccess() {
+export function CheckoutSuccess({ provider }: { provider: CheckoutProvider }) {
   return (
     <CheckoutResult
       lead='Thanks for supporting'
@@ -69,6 +71,8 @@ export function CheckoutSuccess() {
         </>
       }
     >
+      <CheckoutCompleteTracker provider={provider} />
+
       {/* The page's one bit of colour: the closing CTA's rainbow rim (.cta-rim), on its one card -
           what to do next is the point of the page */}
       <div className='cta-rim mt-10'>
