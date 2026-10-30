@@ -108,6 +108,20 @@
     "gamesQueuedCount_other": "{{count}} games queued",
     "completedThisSessionCount": "Completed this session ({{count}})"
   },
+  "versionPolicy": {
+    "outdated": {
+      "title": "Update recommended",
+      "description": "This version of Steam Game Idler will stop working soon. Update now to keep using it without interruption."
+    },
+    "unsupported": {
+      "title": "Update required",
+      "description": "This version of Steam Game Idler is no longer supported. Update to the latest version to continue using the app."
+    },
+    "currentVersion": "Your version: {{version}}",
+    "installUpdate": "Install update",
+    "downloadUpdate": "Download update",
+    "remindLater": "Remind me later"
+  },
   "update": {
     "downloading": "Downloading update..."
   },

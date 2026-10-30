@@ -8,8 +8,10 @@ import { ErrorBoundary } from '@/shared/components/ErrorBoundary'
 import { FullscreenLoader } from '@/shared/components/FullscreenLoader'
 import { LinuxResizeHandles } from '@/shared/components/LinuxResizeHandles'
 import { GoProModal } from '@/shared/components/pro/GoProModal'
+import { SplashScreen } from '@/shared/components/SplashScreen'
 import { Titlebar } from '@/shared/components/titlebar/Titlebar'
 import { UpdateLoader } from '@/shared/components/UpdateLoader'
+import { VersionPolicyDialog } from '@/shared/components/VersionPolicyDialog'
 import { useAppReady } from '@/shared/hooks/useAppReady'
 import { useCheckForUpdates } from '@/shared/hooks/useCheckForUpdates'
 import { useContextMenu } from '@/shared/hooks/useContextMenu'
@@ -18,18 +20,64 @@ import { useLegacyMigrationCleanup } from '@/shared/hooks/useLegacyMigrationClea
 import { usePlatform } from '@/shared/hooks/usePlatform'
 import { useSessionBootstrap } from '@/shared/hooks/useSessionBootstrap'
 import { useTraySync } from '@/shared/hooks/useTraySync'
+import { useVersionPolicy } from '@/shared/hooks/useVersionPolicy'
 import { useZoomControls } from '@/shared/hooks/useZoomControls'
 import { useUpdateStore } from '@/shared/stores/updateStore'
+import { useVersionPolicyStore } from '@/shared/stores/versionPolicyStore'
 import { useFont } from '@/shared/theme/useFont'
 import { useTheme } from '@/shared/theme/useTheme'
 import '@/styles/globals.css'
 import '@/i18n'
 
-const App = ({ Component, pageProps }: AppProps) => {
-  const router = useRouter()
-  const isDashboard = router.pathname.startsWith('/dashboard')
+// Version-policy gate (see useVersionPolicy) - the only hooks that run before the policy check
+// resolves are the ones below that touch nothing beyond this window. `AppContent` (every other app
+// hook: session restore, sign-in, update checks, Steam connections, API calls) only mounts once
+// the build is confirmed usable, and unmounts again if a re-check later finds it unsupported.
+const App = (props: AppProps) => {
   useAppReady()
   useGlobalErrorLogging()
+  const versionStatus = useVersionPolicy()
+  const isUpdating = useUpdateStore(state => state.isUpdating)
+
+  if (versionStatus === 'checking') {
+    return (
+      <>
+        <LinuxResizeHandles />
+        <Titlebar minimal />
+        <FullscreenLoader visible />
+      </>
+    )
+  }
+
+  if (versionStatus === 'unsupported') {
+    return (
+      <>
+        <LinuxResizeHandles />
+        <Titlebar minimal />
+        {/* "Install update" hands off to the normal performUpdate flow, which flips isUpdating -
+            mirrors AppContent's own UpdateLoader early return below. */}
+        {isUpdating ? (
+          <UpdateLoader />
+        ) : (
+          <>
+            {/* The window is transparent (tauri.conf.json) and no routed page is mounted to paint
+                a background, so without this the desktop shows through behind the dialog. Same
+                splash the launch loader just showed, so the loader hands off without a jump;
+                `z-0` drops it below the dialog's overlay (SplashScreen defaults to z-9998). */}
+            <SplashScreen className='z-0'>{null}</SplashScreen>
+            <VersionPolicyDialog variant='unsupported' />
+          </>
+        )}
+      </>
+    )
+  }
+
+  return <AppContent {...props} />
+}
+
+const AppContent = ({ Component, pageProps }: AppProps) => {
+  const router = useRouter()
+  const isDashboard = router.pathname.startsWith('/dashboard')
   // Runs before everything else that might read/hydrate from localStorage - see its own doc
   // comment for why this is a separate one-off check rather than piggybacking on
   // useCheckForUpdates' `is_major` path.
@@ -71,6 +119,9 @@ const App = ({ Component, pageProps }: AppProps) => {
   // doc comment for why the sync has to be pushed from the frontend at all.
   useTraySync()
   const isUpdating = useUpdateStore(state => state.isUpdating)
+  const showOutdatedPrompt = useVersionPolicyStore(
+    state => state.status === 'outdated' && !state.outdatedDismissed,
+  )
 
   if (isUpdating) {
     // Titlebar still mounts here (unlike the plain `<UpdateLoader />` this used to early-return),
@@ -115,6 +166,7 @@ const App = ({ Component, pageProps }: AppProps) => {
       <Titlebar minimal={bootstrapPhase === 'checking'} />
       <ChangelogModal />
       <GoProModal />
+      {showOutdatedPrompt && <VersionPolicyDialog variant='outdated' />}
       {/* Blocks the routed page (dashboard or pre-dashboard) until useSessionBootstrap has
           re-validated any persisted session - see that hook's doc comment. Everything above this
           (Titlebar, toasts, the Chatway widget) stays mounted through the check since none of it

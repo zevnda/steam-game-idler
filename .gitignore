@@ -59,3 +59,7 @@ target
 
 # Ad hoc CDP testing scripts (scratch WebSocket-driving scripts written per session) stay untracked.
 *.ps1
+
+# Local version-policy test file (see src/shared/utils/versionPolicy.ts) - never commit, the real
+# version-policy.json on main is live for every user.
+public/version-policy.dev.json
