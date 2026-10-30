@@ -107,6 +107,20 @@
     "completedThisSessionCount": "本次会话已完成（{{count}}）",
     "gamesQueuedCount_other": "{{count}} 款游戏已加入队列"
   },
+  "versionPolicy": {
+    "outdated": {
+      "title": "建议更新",
+      "description": "此版本的 Steam Game Idler 即将停止服务，请立即更新，以免影响使用。"
+    },
+    "unsupported": {
+      "title": "需要更新",
+      "description": "此版本的 Steam Game Idler 已不再受支持，请更新至最新版本，以继续使用。"
+    },
+    "currentVersion": "您的版本：{{version}}",
+    "installUpdate": "安装更新",
+    "downloadUpdate": "下载更新",
+    "remindLater": "稍后提醒"
+  },
   "update": {
     "downloading": "正在下载更新……"
   },

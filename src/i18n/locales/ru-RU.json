@@ -110,6 +110,20 @@
     "gamesQueuedCount_many": "{{count}} игр в очереди",
     "gamesQueuedCount_other": "{{count}} игр в очереди"
   },
+  "versionPolicy": {
+    "outdated": {
+      "title": "Рекомендуется обновление",
+      "description": "Эта версия Steam Game Idler скоро перестанет работать. Обновитесь сейчас, чтобы продолжить пользоваться без перебоев."
+    },
+    "unsupported": {
+      "title": "Требуется обновление",
+      "description": "Эта версия приложения Steam Game Idler больше не поддерживается. Обновитесь до последней версии, чтобы продолжить использование."
+    },
+    "currentVersion": "Ваша версия: {{version}}",
+    "installUpdate": "Установить обновление",
+    "downloadUpdate": "Скачать обновление",
+    "remindLater": "Напомнить позже"
+  },
   "update": {
     "downloading": "Скачивание обновления..."
   },
