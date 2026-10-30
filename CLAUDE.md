@@ -325,6 +325,25 @@ entirely (`platform::is_portable()`); on Linux, only the AppImage build can self
 installs live in `/usr/bin`, owned by the system package manager, so they can't self-update and the
 tray's "Check for updates" entry is hidden entirely for them.
 
+**Version policy (remote deprecation)**: `version-policy.json` (repo root, hand-edited, never
+CI-regenerated - deliberately separate from `latest.json`, which `release.yml` rewrites every
+release) holds `recommendedVersion` (older builds get a dismissible "update soon" nag) and
+`minimumVersion` (older builds are hard-blocked). `useVersionPolicy` runs at the `_app.tsx` gate
+before any other app hook; while `checking` or `unsupported`, `AppContent` (session restore,
+sign-in, update checks, every API call) never mounts - only the titlebar and
+`VersionPolicyDialog` (update or quit) render. Fails open: a 2.5s startup fetch timeout falls back
+to the last cached policy, no policy means supported, and a malformed field is ignored rather than
+blocking. Fetched from GitHub raw only (no R2 fallback like `latest.json`), so a region that
+can't reach raw.githubusercontent.com fails open; GitHub's CDN can also take ~5 minutes to serve an
+edit. Re-checked hourly; a mid-session block kills all SteamUtility processes and reveals the
+window (a `start_minimized` launch would otherwise sit invisible in the tray). Only builds that
+ship this check honor it. Raise `recommendedVersion` a few weeks before `minimumVersion`, and
+never set `minimumVersion` above the version `latest.json` currently serves - "Install update"
+would find nothing to install (it falls back to the latest GitHub release page, but every user would be
+blocked until a release exists). To test in dev, create the git-ignored
+`public/version-policy.dev.json` (same shape) - dev builds read it instead of the live file; never
+test by editing the real `version-policy.json`, since a forgotten revert on `main` blocks every user.
+
 **Pre-install cleanup** (`updater.rs`'s `kill_all_steam_utility_processes`) is a cross-platform
 `sysinfo`-based implementation (not a Windows `taskkill` shell-out) that must keep killing every
 `SteamUtility`/`SteamUtility.exe` process this app's process model can spawn (per-account agent
