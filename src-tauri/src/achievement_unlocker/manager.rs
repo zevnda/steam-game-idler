@@ -73,6 +73,10 @@ const RETRY_BACKOFF: [Duration; 2] = [Duration::from_secs(2), Duration::from_sec
 /// matches `main`'s `buildUpcomingQueue` default `limit`.
 const UPCOMING_LIMIT: usize = 5;
 
+fn estimated_playtime_minutes(baseline: u64, elapsed: Duration, idle: bool) -> u64 {
+    baseline + if idle { elapsed.as_secs() / 60 } else { 0 }
+}
+
 struct UnlockerSession {
     handle: JoinHandle<()>,
     stopped: Arc<AtomicBool>,
@@ -928,8 +932,11 @@ async fn unlock_game(
             break;
         }
 
-        let estimated_playtime_minutes =
-            baseline_playtime_minutes + unlock_started_at.elapsed().as_secs() / 60;
+        let estimated_playtime_minutes = estimated_playtime_minutes(
+            baseline_playtime_minutes,
+            unlock_started_at.elapsed(),
+            unlocker_settings.idle,
+        );
         let over_max_playtime = crate::max_playtime::settings::is_over_cap(
             app_handle,
             steam_id,
@@ -1435,4 +1442,27 @@ async fn run_loop(
         .remove(&steam_id)
         .await;
     tracing::info!(steam_id, "achievement unlocker: session ended");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn unlocking_without_idling_does_not_add_playtime() {
+        let estimated = estimated_playtime_minutes(100, Duration::from_secs(600), false);
+        assert_eq!(estimated, 100);
+    }
+
+    #[test]
+    fn idling_while_unlocking_adds_whole_minutes() {
+        assert_eq!(
+            estimated_playtime_minutes(100, Duration::from_secs(59), true),
+            100
+        );
+        assert_eq!(
+            estimated_playtime_minutes(100, Duration::from_secs(600), true),
+            110
+        );
+    }
 }
