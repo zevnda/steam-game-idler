@@ -27,7 +27,7 @@ use std::cmp::Ordering as CmpOrdering;
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
 use std::sync::Arc;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use chrono::Timelike;
 use rand::Rng;
@@ -72,6 +72,49 @@ const RETRY_BACKOFF: [Duration; 2] = [Duration::from_secs(2), Duration::from_sec
 /// How many of the soonest-upcoming achievements to project in [`ActiveGameProgress::upcoming`] -
 /// matches `main`'s `buildUpcomingQueue` default `limit`.
 const UPCOMING_LIMIT: usize = 5;
+
+/// Whether the max-playtime cap applies to `app_id` in this session. The cap only limits playtime,
+/// and unlocking on its own doesn't add any - only idling does - so a game this session will never
+/// idle (idling turned off, or the user stopped it from the Idling page) keeps unlocking whatever
+/// its playtime is, rather than being dequeued as "max playtime reached". An exclusion lasts the
+/// rest of the session (see `remove_active_game`), so this can't flip back and resume counting
+/// against the cap for the same game.
+async fn max_playtime_applies(
+    idle: bool,
+    excluded_app_ids: &Mutex<HashSet<u32>>,
+    app_id: u32,
+) -> bool {
+    idle && !excluded_app_ids.lock().await.contains(&app_id)
+}
+
+/// Time a game has actually spent idling during [`unlock_game`], for estimating its playtime
+/// forward from the cached baseline. Wall-clock time since the game started would also count
+/// schedule waits and pauses for another session playing, neither of which adds Steam playtime,
+/// and so would stop a game short of its real cap.
+#[derive(Default)]
+struct IdlePlaytime {
+    elapsed: Duration,
+    started_at: Option<Instant>,
+}
+
+impl IdlePlaytime {
+    fn set_idling(&mut self, idle: bool, now: Instant) {
+        if idle {
+            self.started_at.get_or_insert(now);
+        } else if let Some(started_at) = self.started_at.take() {
+            self.elapsed += now.duration_since(started_at);
+        }
+    }
+
+    fn estimated_minutes(&self, baseline: u64, now: Instant) -> u64 {
+        let elapsed = self.elapsed
+            + self
+                .started_at
+                .map(|start| now.duration_since(start))
+                .unwrap_or_default();
+        baseline + elapsed.as_secs() / 60
+    }
+}
 
 struct UnlockerSession {
     handle: JoinHandle<()>,
@@ -691,6 +734,7 @@ async fn run_scan_phase(
     backlog: Vec<AchievementUnlockerEntry>,
     worker_count: u32,
     state: &Arc<Mutex<AchievementUnlockerState>>,
+    excluded_app_ids: &Arc<Mutex<HashSet<u32>>>,
     stopped: &Arc<AtomicBool>,
 ) -> Vec<ScannedGame> {
     let total = backlog.len() as u32;
@@ -700,6 +744,10 @@ async fn run_scan_phase(
     }
     emit_state(app_handle, steam_id, state).await;
 
+    let idle = settings::get(app_handle, steam_id)
+        .await
+        .unwrap_or_default()
+        .idle;
     // Best-effort playtime lookup for the max-playtime exclusion below - read once for the whole
     // pass rather than per game, same reasoning as `auto_idle::commands::start_auto_idle_games`.
     let playtime_by_app_id: Arc<HashMap<u32, u64>> = Arc::new(
@@ -723,6 +771,7 @@ async fn run_scan_phase(
         let state = state.clone();
         let stopped = stopped.clone();
         let playtime_by_app_id = playtime_by_app_id.clone();
+        let excluded_app_ids = excluded_app_ids.clone();
 
         handles.push(tokio::spawn(async move {
             let mut ready = Vec::new();
@@ -734,14 +783,15 @@ async fn run_scan_phase(
                 let Some((queue_index, entry)) = entry else { break };
 
                 let playtime = playtime_by_app_id.get(&entry.app_id).copied().unwrap_or(0);
-                let over_cap = crate::max_playtime::settings::is_over_cap(
-                    &app_handle,
-                    &steam_id,
-                    entry.app_id,
-                    playtime,
-                )
-                .await
-                .unwrap_or(false);
+                let over_cap = max_playtime_applies(idle, &excluded_app_ids, entry.app_id).await
+                    && crate::max_playtime::settings::is_over_cap(
+                        &app_handle,
+                        &steam_id,
+                        entry.app_id,
+                        playtime,
+                    )
+                    .await
+                    .unwrap_or(false);
                 if over_cap {
                     if let Err(e) = cache::remove(&app_handle, &steam_id, entry.app_id).await {
                         tracing::warn!(app_id = entry.app_id, error = %e.code(), "achievement unlocker: failed to remove over-max-playtime game from queue");
@@ -858,7 +908,7 @@ async fn unlock_game(
             .find(|g| g.app_id == app_id)
             .map(|g| g.playtime_forever_minutes)
             .unwrap_or(0);
-    let unlock_started_at = std::time::Instant::now();
+    let mut idle_playtime = IdlePlaytime::default();
 
     // Resolved once per game, not per achievement, so the projected `upcoming` queue and the real
     // wait always agree - matches `main`'s `delayMap`.
@@ -886,6 +936,7 @@ async fn unlock_game(
     {
         set_game_idling(idling_apps, app_handle, account, app_id, &game.name, true).await;
         is_idling = true;
+        idle_playtime.set_idling(true, Instant::now());
     }
 
     if game.delay_before_first_unlock_ms > 0 {
@@ -929,15 +980,17 @@ async fn unlock_game(
         }
 
         let estimated_playtime_minutes =
-            baseline_playtime_minutes + unlock_started_at.elapsed().as_secs() / 60;
-        let over_max_playtime = crate::max_playtime::settings::is_over_cap(
-            app_handle,
-            steam_id,
-            app_id,
-            estimated_playtime_minutes,
-        )
-        .await
-        .unwrap_or(false);
+            idle_playtime.estimated_minutes(baseline_playtime_minutes, Instant::now());
+        let over_max_playtime =
+            max_playtime_applies(unlocker_settings.idle, excluded_app_ids, app_id).await
+                && crate::max_playtime::settings::is_over_cap(
+                    app_handle,
+                    steam_id,
+                    app_id,
+                    estimated_playtime_minutes,
+                )
+                .await
+                .unwrap_or(false);
         if over_max_playtime {
             tracing::info!(app_id, name = %game.name, "achievement unlocker: max playtime cap reached, removing from queue");
             if is_idling {
@@ -947,7 +1000,7 @@ async fn unlock_game(
             // Unlike a `stopped`-triggered break (a pause the user may resume), this game has
             // permanently hit its cap for this session and must be dequeued here - otherwise the
             // next pass re-reads the same stale `get_owned_games_cache` baseline this check itself
-            // used, doesn't see it as over cap yet, re-adds it, and `unlock_started_at` resets to
+            // used, doesn't see it as over cap yet, re-adds it, and the idle timer resets to
             // zero - so it takes another few minutes to re-trip this same check. That non-removal
             // let the same game cycle through scan -> unlock -> break indefinitely, so the session
             // never reached `EndReason::QueueEmpty` and `is_running` stayed stuck `true`.
@@ -976,6 +1029,7 @@ async fn unlock_game(
                 set_game_idling(idling_apps, app_handle, account, app_id, &game.name, false).await;
                 is_idling = false;
             }
+            idle_playtime.set_idling(false, Instant::now());
             update_game(state, app_id, |g| g.is_waiting_for_schedule = true).await;
             emit_state(app_handle, steam_id, state).await;
 
@@ -990,12 +1044,12 @@ async fn unlock_game(
             }
             update_game(state, app_id, |g| g.is_waiting_for_schedule = false).await;
             emit_state(app_handle, steam_id, state).await;
-        } else if !is_idling
-            && unlocker_settings.idle
-            && !excluded_app_ids.lock().await.contains(&app_id)
+        }
+        if !is_idling && unlocker_settings.idle && !excluded_app_ids.lock().await.contains(&app_id)
         {
             set_game_idling(idling_apps, app_handle, account, app_id, &game.name, true).await;
             is_idling = true;
+            idle_playtime.set_idling(true, Instant::now());
         }
 
         if stopped.load(Ordering::SeqCst) {
@@ -1009,6 +1063,7 @@ async fn unlock_game(
         // churn. Re-projects `upcoming` afterwards since every countdown shown before the pause
         // is stale by then.
         if steam_agent::is_playing_blocked(app_handle, account).await {
+            idle_playtime.set_idling(false, Instant::now());
             tracing::info!(
                 app_id,
                 name = %game.name,
@@ -1017,6 +1072,7 @@ async fn unlock_game(
             if steam_agent::wait_while_playing_blocked(app_handle, account, stopped).await {
                 break;
             }
+            idle_playtime.set_idling(is_idling, Instant::now());
             tracing::info!(app_id, name = %game.name, "achievement unlocker: resumed");
             update_upcoming(state, app_id, &game.achievements, &delays, index, 0).await;
             emit_state(app_handle, steam_id, state).await;
@@ -1368,6 +1424,7 @@ async fn run_loop(
             backlog,
             worker_count,
             &state,
+            &excluded_app_ids,
             &stopped,
         )
         .await;
@@ -1435,4 +1492,70 @@ async fn run_loop(
         .remove(&steam_id)
         .await;
     tracing::info!(steam_id, "achievement unlocker: session ended");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn max_playtime_only_applies_to_a_game_that_will_idle() {
+        let excluded = Mutex::new(HashSet::from([440]));
+        assert!(max_playtime_applies(true, &excluded, 570).await);
+        assert!(!max_playtime_applies(false, &excluded, 570).await);
+        assert!(!max_playtime_applies(true, &excluded, 440).await);
+    }
+
+    #[test]
+    fn unlocking_without_idling_does_not_add_playtime() {
+        let now = Instant::now();
+        let playtime = IdlePlaytime::default();
+        assert_eq!(
+            playtime.estimated_minutes(100, now + Duration::from_secs(600)),
+            100
+        );
+    }
+
+    #[test]
+    fn idling_while_unlocking_adds_whole_minutes() {
+        let now = Instant::now();
+        let mut playtime = IdlePlaytime::default();
+        playtime.set_idling(true, now);
+        assert_eq!(
+            playtime.estimated_minutes(100, now + Duration::from_secs(59)),
+            100
+        );
+        assert_eq!(
+            playtime.estimated_minutes(100, now + Duration::from_secs(600)),
+            110
+        );
+    }
+
+    #[test]
+    fn schedule_wait_does_not_consume_playtime_cap() {
+        let now = Instant::now();
+        let mut playtime = IdlePlaytime::default();
+        let resumed = now + Duration::from_secs(600);
+        assert_eq!(playtime.estimated_minutes(100, resumed), 100);
+        playtime.set_idling(true, resumed);
+        assert_eq!(
+            playtime.estimated_minutes(100, resumed + Duration::from_secs(600)),
+            110
+        );
+    }
+
+    #[test]
+    fn pause_preserves_idle_time_and_resumes_without_counting_the_wait() {
+        let now = Instant::now();
+        let mut playtime = IdlePlaytime::default();
+        playtime.set_idling(true, now);
+        playtime.set_idling(false, now + Duration::from_secs(30));
+        let resumed = now + Duration::from_secs(3630);
+        assert_eq!(playtime.estimated_minutes(100, resumed), 100);
+        playtime.set_idling(true, resumed);
+        assert_eq!(
+            playtime.estimated_minutes(100, resumed + Duration::from_secs(30)),
+            101
+        );
+    }
 }

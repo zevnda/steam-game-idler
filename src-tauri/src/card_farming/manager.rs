@@ -115,6 +115,31 @@ fn filter_reason(
     None
 }
 
+/// A game's total playtime for the max-playtime check - the higher of the owned-games cache and this
+/// pass's badge-page scrape. The cache only reflects the last `get_owned_games` fetch, so on its own
+/// it would never see the playtime this session is adding; the scrape is fresh every pass, but only
+/// reports tenths of an hour, and reads as `0.0` for a game whose row shows no playtime.
+fn current_playtime_minutes(cached_minutes: u64, scraped_hours: f32) -> u64 {
+    cached_minutes.max((scraped_hours * 60.0).round() as u64)
+}
+
+/// Whether `game` has reached its effective max-playtime cap. A failed settings read counts as not
+/// over the cap, so one unreadable file can't drop games from a session that could otherwise finish.
+async fn is_over_max_playtime(
+    app_handle: &AppHandle,
+    steam_id: &str,
+    game: &GameWithDrops,
+    cached: CachedGameInfo,
+) -> bool {
+    let playtime = current_playtime_minutes(cached.playtime_forever_minutes, game.playtime_hours);
+    crate::max_playtime::settings::is_over_cap(app_handle, steam_id, game.app_id, playtime)
+        .await
+        .unwrap_or_else(|e| {
+            tracing::warn!(app_id = game.app_id, error = %e.code(), "card farming: failed to read max playtime settings");
+            false
+        })
+}
+
 struct ResolvedCandidates {
     ready: Vec<GameWithDrops>,
     accumulating: Vec<GameWithDrops>,
@@ -138,6 +163,12 @@ struct ResolvedCandidates {
 ///   since the general pool is pre-filtered before a game ever enters `progress`) is dropped
 ///   silently - filters exclude quietly everywhere except an explicit whitelist membership, which
 ///   warrants an explanation since the user opted it in deliberately.
+/// - **Found, but at its max-playtime cap** - follows the same rules, with one addition: a
+///   general-pool game that was actively being farmed is reported too, because this session's own
+///   idling is what pushed it over, so it can happen with no setting having changed. This re-check
+///   every pass is also what stops a game mid-session, at most one restart-cycle after it crosses
+///   the cap. While scrapes are failing, `run_cycle` re-runs the previous targets without coming
+///   through here, so the cap isn't re-checked until a scrape succeeds again.
 async fn resolve_candidates(
     app_handle: &AppHandle,
     steam_id: &str,
@@ -227,9 +258,24 @@ async fn resolve_candidates(
                 .await;
                 continue;
             }
+            if is_over_max_playtime(app_handle, steam_id, &game, cached).await {
+                prune_whitelist_member(
+                    app_handle,
+                    steam_id,
+                    game.app_id,
+                    game.name.clone(),
+                    game.remaining,
+                    CompletedFarmReason::MaxPlaytime,
+                    None,
+                    completed,
+                )
+                .await;
+                continue;
+            }
             classify(game, &mut ready, &mut accumulating);
         }
     } else {
+        let mut over_max_playtime = HashSet::new();
         for (app_id, game) in &games_by_app_id {
             if excluded_app_ids.contains(app_id) || blacklisted.contains(app_id) {
                 continue;
@@ -238,20 +284,44 @@ async fn resolve_candidates(
             if filter_reason(cached, farming_settings, now).is_some() {
                 continue;
             }
+            if is_over_max_playtime(app_handle, steam_id, game, cached).await {
+                over_max_playtime.insert(*app_id);
+                continue;
+            }
             classify(game.clone(), &mut ready, &mut accumulating);
+        }
+        if !over_max_playtime.is_empty() {
+            tracing::info!(
+                steam_id,
+                skipped = over_max_playtime.len(),
+                "card farming: skipped games at their max playtime"
+            );
         }
 
         // Anything still tracked in `progress` that the loop above didn't re-admit either
-        // genuinely finished (not in the raw scrape at all) or was excluded by a filter that
-        // changed mid-session (still in the raw scrape, just no longer eligible) - only the former
-        // is reported, see this fn's doc comment.
+        // genuinely finished (not in the raw scrape at all), reached its max playtime, or was
+        // excluded by a filter that changed mid-session (still in the raw scrape, just no longer
+        // eligible) - only the first two are reported, see this fn's doc comment.
         let still_eligible: HashSet<u32> = ready
             .iter()
             .chain(accumulating.iter())
             .map(|g| g.app_id)
             .collect();
         for (app_id, prog) in progress {
-            if still_eligible.contains(app_id) || games_by_app_id.contains_key(app_id) {
+            if still_eligible.contains(app_id) {
+                continue;
+            }
+            if let Some(game) = games_by_app_id.get(app_id) {
+                if over_max_playtime.contains(app_id) {
+                    tracing::info!(app_id, name = %prog.name, "card farming: max playtime reached");
+                    completed.push(CompletedFarm {
+                        app_id: *app_id,
+                        name: prog.name.clone(),
+                        remaining: game.remaining,
+                        reason: CompletedFarmReason::MaxPlaytime,
+                        farmable_at: None,
+                    });
+                }
                 continue;
             }
             tracing::info!(app_id, name = %prog.name, "card farming: drops exhausted");
@@ -1010,6 +1080,21 @@ mod tests {
             accumulating: vec![],
         };
         assert!(select_phase(&candidates, false).is_none());
+    }
+
+    #[test]
+    fn current_playtime_uses_the_higher_of_cache_and_scrape() {
+        // A stale cache must not hide playtime this session added, and a row with no playtime
+        // (reads as 0.0) must not hide what the cache already knows.
+        assert_eq!(current_playtime_minutes(60, 2.5), 150);
+        assert_eq!(current_playtime_minutes(150, 0.0), 150);
+        assert_eq!(current_playtime_minutes(0, 0.0), 0);
+    }
+
+    #[test]
+    fn current_playtime_rounds_scraped_hours_to_whole_minutes() {
+        assert_eq!(current_playtime_minutes(0, 1.6), 96);
+        assert_eq!(current_playtime_minutes(0, 0.1), 6);
     }
 
     fn cached(playtime_minutes: u64, purchase: Option<i64>) -> CachedGameInfo {
