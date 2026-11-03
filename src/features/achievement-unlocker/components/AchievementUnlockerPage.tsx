@@ -262,7 +262,7 @@ export const AchievementUnlockerPage = () => {
                   {t('dashboard.achievementUnlocker.addAllToQueue')}
                 </Button>
                 <GameSortSelect
-                  isDisabled={!isShowingTabs}
+                  isDisabled={!isShowingTabs || games.length === 0}
                   ariaLabel={t('dashboard.inventoryManager.sort.label')}
                   options={sortStyleOptions.map(style => ({
                     id: style,

@@ -337,7 +337,7 @@ export const CardFarmingPage = () => {
           >
             {activeTab === 'browse' && (
               <GameSortSelect
-                isDisabled={!isShowingTabs}
+                isDisabled={!isShowingTabs || browseGames.length === 0}
                 ariaLabel={t('dashboard.inventoryManager.sort.label')}
                 options={CARD_FARMING_SORT_STYLES.map(style => ({
                   id: style,

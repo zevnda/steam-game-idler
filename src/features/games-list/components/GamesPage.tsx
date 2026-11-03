@@ -105,9 +105,9 @@ export const GamesPage = () => {
 
   // `GamesList` draws the toolbar itself while the list is showing, so it can sit under the banner.
   const isShowingList = !showSkeleton && games.length > 0 && filteredGames.length > 0
-  const renderToolbar = (isFrosted: boolean) => (
+  const renderToolbar = (hasBackground: boolean) => (
     <PageToolbar
-      isFrosted={isFrosted}
+      hasBackground={hasBackground}
       start={
         isShowingList && (
           <PageTitle count={filteredGames.length} title={t('common.tabs.allGames')} />

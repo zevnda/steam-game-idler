@@ -908,7 +908,7 @@ body {
   }
 }
 
-/* PageToolbar.tsx - a full-width bar in the page's own colour, frosting whatever scrolls beneath it.
+/* PageToolbar.tsx - a full-width bar in the page's own colour, with content scrolling beneath it.
    `--page-toolbar-height` is its usual height: 40px controls with 14px of `py-3.5` either side.
    Cancelling that from the layout pulls the content up behind the bar, and the content's own top
    padding then puts its first row right at the bar's bottom edge, so the controls have the same 14px
@@ -940,19 +940,11 @@ main .overflow-y-auto:not(.inventory-filter-panel, :has([role='grid'])) {
   scrollbar-gutter: stable;
 }
 
-.page-toolbar-frosted {
-  background: color-mix(in oklch, var(--background) 95%, transparent);
-  -webkit-backdrop-filter: blur(18px) saturate(150%);
-  backdrop-filter: blur(18px) saturate(150%);
-}
-
-/* Without blur, content scrolling behind a see-through bar would be unreadable, so it goes opaque. */
 .page-toolbar-solid {
   background: var(--background);
 }
 
-/* Scroll containers run up behind the bar so content can frost through it, but their scrollbars
-   shouldn't. Starting the track below the bar also keeps the thumb out from under it. Matched from
+/* Scroll containers run up behind the bar, but their scrollbars shouldn't. Starting the track below the bar also keeps the thumb out from under it. Matched from
    `main`, since which element scrolls varies by page (a tab panel, a virtualized grid, a filter
    panel), and overlays render outside `main`, so their scrollbars aren't affected. The Games list
    is the exception, since its bar starts further down the page: GamesList.tsx sets its inset as the

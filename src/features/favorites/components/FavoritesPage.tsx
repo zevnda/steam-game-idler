@@ -156,6 +156,7 @@ export const FavoritesPage = () => {
           >
             {activeTab === 'browse' && (
               <GameSortSelect
+                isDisabled={games.length === 0}
                 ariaLabel={t('dashboard.inventoryManager.sort.label')}
                 options={sortStyleOptions.map(style => ({
                   id: style,

@@ -15,7 +15,6 @@ import {
   GAME_GRID_GAP,
   useResponsiveColumnCount,
 } from '@/shared/hooks/useGameGridColumns'
-import { usePlatformStore } from '@/shared/stores/platformStore'
 
 // Steam's `library_hero` art is 1920x620. The banner keeps that shape until the limits below, then
 // crops, so it never gets too short to fit its contents or tall enough to fill an ultrawide window.
@@ -176,7 +175,6 @@ export const GamesList = ({
   // and is stuck from the beginning, so this page then looks like the others.
   const toolbarRowTop = showBanner ? bannerRowHeight : 0
   const [isToolbarStuck, setIsToolbarStuck] = useState(false)
-  const forceReducedMotion = usePlatformStore(state => state.forceReducedMotion) === true
   useEffect(() => {
     const element = listApi?.element
     if (!element) return
@@ -242,9 +240,8 @@ export const GamesList = ({
                 lagged behind the scroll and made docking feel sluggish. */}
             <div
               className={cn(
-                'pointer-events-none absolute inset-0',
-                forceReducedMotion ? 'page-toolbar-solid' : 'page-toolbar-frosted',
-                isToolbarStuck ? 'opacity-100' : 'opacity-0',
+                'page-toolbar-solid pointer-events-none absolute inset-0',
+                !isToolbarStuck && 'opacity-0',
               )}
             />
             {toolbar}
