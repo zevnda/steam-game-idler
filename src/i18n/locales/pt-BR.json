@@ -637,7 +637,6 @@
           "description": "Não farmar um jogo que ainda está na janela de reembolso (comprado dentro de 14 dias e abaixo de 2 horas de jogo)."
         },
         "autoFarmCards": {
-          "title": "Farmar cartas automaticamente",
           "description": "Checar periodicamente para jogos possuídos com drop de cartas faltantes e farmar automaticamente eles."
         },
         "skipNoPlaytime": {

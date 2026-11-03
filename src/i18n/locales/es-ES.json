@@ -634,7 +634,6 @@
           "description": "No intentes conseguir un juego mientras aún esté dentro del plazo de reembolso de Steam (comprado en los últimos 14 días con menos de 2 horas de juego)."
         },
         "autoFarmCards": {
-          "title": "Cultiva automáticamente tarjetas",
           "description": "Revisa periódicamente los juegos que posees con cartas que aún te quedan y comienza a conseguirlas automáticamente."
         },
         "skipNoPlaytime": {

@@ -582,7 +582,6 @@
           "title": "İade edilebilir oyunları atla"
         },
         "autoFarmCards": {
-          "title": "Kartları otomatik kas",
           "description": "Kart düşüşü kalan sahip olduğunuz oyunları düzenli olarak kontrol eder ve bunların kartlarını otomatik olarak kasmaya başlar."
         },
         "skipNoPlaytime": {
