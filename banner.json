@@ -1,11 +1,11 @@
 {
-  "id": "sgi-giveaway-2026-10",
+  "id": "sgi-translate-2026-11",
   "variant": "promo",
-  "title": "Steam Game Idler PRO Giveaway (1-month)",
-  "message": "Win a 1-month Steam Game Idler PRO subscription! Enter the giveaway on Discord now and boost your SGI experience with exclusive features.",
-  "ctaLabel": "Join the Discord",
-  "ctaUrl": "https://discord.gg/5kY2ZbVnZ8",
-  "asset": "giveaway.webp",
+  "title": "Help Translate Steam Game Idler",
+  "message": "Want to see SGI in your language? Want to fix an existing translation? Join our translation effort and help make the app accessible to more users worldwide.",
+  "ctaLabel": "Learn More",
+  "ctaUrl": "https://github.com/zevnda/steam-game-idler/discussions/148",
+  "asset": "i18n.webp",
   "dismissal": "permanent",
   "enabled": true
 }
