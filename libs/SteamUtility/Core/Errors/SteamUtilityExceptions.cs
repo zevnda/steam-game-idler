@@ -42,6 +42,14 @@ namespace SteamUtility.Core.Errors
             ) { }
     }
 
+    // Steam stopped responding partway through a multi-part response. Same code as a request that
+    // never got any response (see ExceptionMapper), since both mean the same thing to a caller.
+    public sealed class SteamResponseIncompleteException : SteamUtilityException
+    {
+        public SteamResponseIncompleteException()
+            : base("steam_request_timeout", "Steam did not send its full response in time") { }
+    }
+
     public sealed class SteamApiTimeoutException : SteamUtilityException
     {
         public SteamApiTimeoutException()

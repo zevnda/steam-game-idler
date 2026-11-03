@@ -1,13 +1,15 @@
 import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
-import { TbDeviceGamepad2, TbRefresh } from 'react-icons/tb'
+import { TbRefresh } from 'react-icons/tb'
 import { useGamesList } from '../hooks/useGamesList'
 import { errorMessageKey } from '../utils/errorMessageKey'
 import { GamesList } from './GamesList'
+import { NoGamesBanner } from './NoGamesBanner'
 import { Alert, Button, EmptyState, Skeleton, Typography } from '@heroui/react'
 import { useRouter } from 'next/router'
 import { useIdling } from '@/features/idling/hooks/useIdling'
+import { PageBannerArea } from '@/shared/components/dashboard/PageBanner'
 import { PageBody } from '@/shared/components/dashboard/PageBody'
 import { PageTitle, PageToolbar } from '@/shared/components/dashboard/PageToolbar'
 import { GameGridSkeleton } from '@/shared/components/GameGridSkeleton'
@@ -190,13 +192,9 @@ export const GamesPage = () => {
             {errorAlert}
           </div>
         ) : games.length === 0 ? (
-          <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-            <TbDeviceGamepad2 fontSize={40} />
-            <Typography type='h3'>{t('dashboard.games.empty.title')}</Typography>
-            <Typography color='muted' type='body-sm'>
-              {t('dashboard.games.empty.description')}
-            </Typography>
-          </EmptyState>
+          <PageBannerArea hasToolbar>
+            <NoGamesBanner isRefreshing={isRefreshing} onRefresh={refresh} />
+          </PageBannerArea>
         ) : filteredGames.length === 0 ? (
           <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
             <RiSearchLine fontSize={40} />

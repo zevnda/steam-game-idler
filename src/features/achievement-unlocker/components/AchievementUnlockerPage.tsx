@@ -1,20 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
-import {
-  TbAward,
-  TbDeviceGamepad2,
-  TbPlayerPlayFilled,
-  TbPlayerStopFilled,
-  TbPlus,
-  TbSettings,
-} from 'react-icons/tb'
+import { TbPlayerPlayFilled, TbPlayerStopFilled, TbPlus, TbSettings } from 'react-icons/tb'
 import { useAchievementUnlockerQueue } from '../hooks/useAchievementUnlockerQueue'
 import { useAchievementUnlockerRun } from '../hooks/useAchievementUnlockerRun'
 import { errorMessageKey as achievementUnlockerErrorMessageKey } from '../utils/errorMessageKey'
 import { AchievementUnlockerBrowseGrid } from './AchievementUnlockerBrowseGrid'
 import { AchievementUnlockerListGrid } from './AchievementUnlockerListGrid'
 import { AchievementUnlockerProgressView } from './AchievementUnlockerProgressView'
+import { AchievementUnlockerQueuePreview } from './AchievementUnlockerQueuePreview'
 import {
   Alert,
   AlertDialog,
@@ -30,8 +24,11 @@ import {
   Typography,
 } from '@heroui/react'
 import { useRouter } from 'next/router'
+import { NoGamesBanner } from '@/features/games-list/components/NoGamesBanner'
 import { useGamesList } from '@/features/games-list/hooks/useGamesList'
 import { errorMessageKey as gamesErrorMessageKey } from '@/features/games-list/utils/errorMessageKey'
+import { EmptyListBanner } from '@/shared/components/dashboard/EmptyListBanner'
+import { PageBannerArea } from '@/shared/components/dashboard/PageBanner'
 import { PageBody } from '@/shared/components/dashboard/PageBody'
 import { CountChip, PageToolbar } from '@/shared/components/dashboard/PageToolbar'
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
@@ -323,13 +320,9 @@ export const AchievementUnlockerPage = () => {
                     </Button>
                   </div>
                 ) : games.length === 0 ? (
-                  <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-                    <TbDeviceGamepad2 fontSize={40} />
-                    <Typography type='h3'>{t('dashboard.games.empty.title')}</Typography>
-                    <Typography color='muted' type='body-sm'>
-                      {t('dashboard.games.empty.description')}
-                    </Typography>
-                  </EmptyState>
+                  <PageBannerArea hasToolbar>
+                    <NoGamesBanner onRefresh={refresh} />
+                  </PageBannerArea>
                 ) : filteredGames.length === 0 ? (
                   <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
                     <RiSearchLine fontSize={40} />
@@ -356,13 +349,15 @@ export const AchievementUnlockerPage = () => {
                     ))}
                   </div>
                 ) : queue.length === 0 ? (
-                  <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-                    <TbAward fontSize={40} />
-                    <Typography type='h3'>{t('common.noGamesQueued')}</Typography>
-                    <Typography color='muted' type='body-sm'>
-                      {t('dashboard.achievementUnlocker.empty.description')}
-                    </Typography>
-                  </EmptyState>
+                  <PageBannerArea hasToolbar>
+                    <EmptyListBanner
+                      art={<AchievementUnlockerQueuePreview />}
+                      description={t('dashboard.achievementUnlocker.empty.description')}
+                      title={t('common.noGamesQueued')}
+                      onBrowseGames={() => setActiveTab('browse')}
+                      onManualAdd={() => setIsManualAddOpen(true)}
+                    />
+                  </PageBannerArea>
                 ) : (
                   <AchievementUnlockerListGrid
                     queue={queue}

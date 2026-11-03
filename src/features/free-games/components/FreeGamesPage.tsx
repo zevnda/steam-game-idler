@@ -1,12 +1,14 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbGift, TbRefresh, TbSettings } from 'react-icons/tb'
+import { TbRefresh, TbSettings } from 'react-icons/tb'
 import { useClaimFreeGame } from '../hooks/useClaimFreeGame'
 import { useFreeGames } from '../hooks/useFreeGames'
 import { errorMessageKey } from '../utils/errorMessageKey'
+import { FreeGamesEmptyBanner } from './FreeGamesEmptyBanner'
 import { FreeGamesGrid } from './FreeGamesGrid'
-import { Alert, Button, EmptyState, Typography } from '@heroui/react'
+import { Alert, Button } from '@heroui/react'
 import { useRouter } from 'next/router'
+import { PageBannerArea } from '@/shared/components/dashboard/PageBanner'
 import { PageBody } from '@/shared/components/dashboard/PageBody'
 import { PageTitle, PageToolbar } from '@/shared/components/dashboard/PageToolbar'
 import { GameGridSkeleton } from '@/shared/components/GameGridSkeleton'
@@ -37,32 +39,37 @@ export const FreeGamesPage = () => {
     return null
   }
 
+  // The banner carries its own refresh and settings buttons, so there's no toolbar above it.
+  const isEmpty = !isLoading && !errorCode && freeGames.length === 0
+
   return (
     <div className='flex h-full flex-col'>
       <PageBody>
-        <PageToolbar
-          start={
-            freeGames.length > 0 && (
-              <PageTitle count={freeGames.length} title={t('dashboard.sidebar.nav.freeGames')} />
-            )
-          }
-        >
-          <Button
-            isIconOnly
-            aria-label={t('common.actions.refresh')}
-            isPending={isRefreshing}
-            onPress={refresh}
+        {!isEmpty && (
+          <PageToolbar
+            start={
+              freeGames.length > 0 && (
+                <PageTitle count={freeGames.length} title={t('dashboard.sidebar.nav.freeGames')} />
+              )
+            }
           >
-            <TbRefresh fontSize={18} />
-          </Button>
-          <Button
-            isIconOnly
-            aria-label={t('common.actions.settings')}
-            onPress={() => openSettings('freeGames')}
-          >
-            <TbSettings fontSize={18} />
-          </Button>
-        </PageToolbar>
+            <Button
+              isIconOnly
+              aria-label={t('common.actions.refresh')}
+              isPending={isRefreshing}
+              onPress={refresh}
+            >
+              <TbRefresh fontSize={18} />
+            </Button>
+            <Button
+              isIconOnly
+              aria-label={t('common.actions.settings')}
+              onPress={() => openSettings('freeGames')}
+            >
+              <TbSettings fontSize={18} />
+            </Button>
+          </PageToolbar>
+        )}
 
         {isLoading ? (
           <GameGridSkeleton />
@@ -81,14 +88,10 @@ export const FreeGamesPage = () => {
               {t('common.actions.tryAgain')}
             </Button>
           </div>
-        ) : freeGames.length === 0 ? (
-          <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-            <TbGift fontSize={40} />
-            <Typography type='h3'>{t('dashboard.freeGames.empty.title')}</Typography>
-            <Typography color='muted' type='body-sm'>
-              {t('dashboard.freeGames.empty.description')}
-            </Typography>
-          </EmptyState>
+        ) : isEmpty ? (
+          <PageBannerArea>
+            <FreeGamesEmptyBanner isRefreshing={isRefreshing} onRefresh={refresh} />
+          </PageBannerArea>
         ) : (
           <div className='flex-1 overflow-y-auto'>
             <FreeGamesGrid

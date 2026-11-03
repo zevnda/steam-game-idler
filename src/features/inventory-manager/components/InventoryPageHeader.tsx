@@ -26,6 +26,8 @@ interface InventoryPageHeaderProps {
   // The title/count row itself always renders (see InventoryManagerPage's own doc comment on why -
   // every other page's header mounts unconditionally too).
   hasLoaded: boolean
+  // Whether the inventory itself has anything in it, regardless of search and filters.
+  hasItems: boolean
   isFetching: boolean
   isListing: boolean
   isSellingAll: boolean
@@ -55,6 +57,7 @@ export const InventoryPageHeader = ({
   dupesCount,
   sellDelaySeconds,
   hasLoaded,
+  hasItems,
   isFetching,
   isListing,
   isSellingAll,
@@ -82,7 +85,8 @@ export const InventoryPageHeader = ({
     <>
       <PageToolbar
         start={
-          hasLoaded && (
+          hasLoaded &&
+          hasItems && (
             <PageTitle count={itemCount} title={t('dashboard.sidebar.nav.inventoryManager')} />
           )
         }

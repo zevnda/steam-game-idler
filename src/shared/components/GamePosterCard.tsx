@@ -12,6 +12,8 @@ const REVEAL_CLASSNAME =
 interface GamePosterCardProps {
   appId: number
   name: string
+  // See GamePosterArt's prop of the same name.
+  knownArtSrc?: string
   // Marks membership of whatever this page manages (favorited, queued, whitelisted...). It's shown
   // permanently because scanning a grid for what's already added shouldn't require hovering it.
   isSelected?: boolean
@@ -37,6 +39,7 @@ interface GamePosterCardProps {
 export const GamePosterCard = ({
   appId,
   name,
+  knownArtSrc,
   isSelected,
   isDimmed,
   isAlwaysRevealed,
@@ -53,7 +56,7 @@ export const GamePosterCard = ({
       {...(hasContextMenu ? gameCardContextAttrs(appId, name) : {})}
     >
       <div className='relative h-full w-full overflow-hidden rounded-xl bg-surface transition-[translate] duration-150 motion-safe:group-hover:-translate-y-1'>
-        <GamePosterArt appId={appId} name={name} />
+        <GamePosterArt appId={appId} knownSrc={knownArtSrc} name={name} />
 
         <div
           className={cn(
@@ -105,14 +108,13 @@ export const GamePosterCard = ({
 
 type GamePosterActionProps = Omit<ComponentProps<typeof Button>, 'isIconOnly' | 'size' | 'variant'>
 
-// An icon-only button styled for the card's dark overlay, where the theme's ghost button colours
-// aren't guaranteed to be legible.
+// An icon-only button for the card's overlay. Solid white with a dark icon so it stands out the same
+// over any game's art, where a see-through button was hard to spot on busy or bright artwork.
 export const GamePosterAction = ({ className, ...props }: GamePosterActionProps) => (
   <Button
     isIconOnly
-    className={cn('text-white hover:bg-white/20', className)}
+    className={cn('bg-white text-black shadow-md hover:bg-white/85', className)}
     size='sm'
-    variant='ghost'
     {...props}
   />
 )

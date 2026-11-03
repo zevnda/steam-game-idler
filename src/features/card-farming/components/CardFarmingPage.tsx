@@ -2,7 +2,7 @@ import type { CardFarmingSettings, GameWithDrops } from '../types'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
-import { TbBan, TbCards, TbPlayerPlayFilled, TbPlayerStopFilled, TbSettings } from 'react-icons/tb'
+import { TbPlayerPlayFilled, TbPlayerStopFilled, TbSettings } from 'react-icons/tb'
 import { useCardFarming } from '../hooks/useCardFarming'
 import { useCardFarmingBlacklist } from '../hooks/useCardFarmingBlacklist'
 import { useCardFarmingWhitelist } from '../hooks/useCardFarmingWhitelist'
@@ -14,6 +14,7 @@ import {
 } from '../utils/sortGamesWithDrops'
 import { CardFarmingBlacklistGrid } from './CardFarmingBlacklistGrid'
 import { CardFarmingBrowseGrid } from './CardFarmingBrowseGrid'
+import { CardFarmingEmptyBanner } from './CardFarmingEmptyBanner'
 import { CardFarmingProgressView } from './CardFarmingProgressView'
 import { CardFarmingStartPanel } from './CardFarmingStartPanel'
 import { CardFarmingWhitelistGrid } from './CardFarmingWhitelistGrid'
@@ -30,6 +31,7 @@ import {
   Typography,
 } from '@heroui/react'
 import { useRouter } from 'next/router'
+import { PageBannerArea } from '@/shared/components/dashboard/PageBanner'
 import { PageBody } from '@/shared/components/dashboard/PageBody'
 import { CountChip, PageToolbar } from '@/shared/components/dashboard/PageToolbar'
 import { GameGridSkeleton } from '@/shared/components/GameGridSkeleton'
@@ -398,15 +400,12 @@ export const CardFarmingPage = () => {
                 {isBrowseLoading ? (
                   <GameGridSkeleton />
                 ) : browseGames.length === 0 ? (
-                  <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-                    <TbCards fontSize={40} />
-                    <Typography type='h3'>
-                      {t('dashboard.cardFarming.browseEmpty.title')}
-                    </Typography>
-                    <Typography color='muted' type='body-sm'>
-                      {t('dashboard.cardFarming.browseEmpty.description')}
-                    </Typography>
-                  </EmptyState>
+                  <PageBannerArea hasToolbar>
+                    <CardFarmingEmptyBanner
+                      variant='browse'
+                      onBrowseGames={() => setActiveTab('browse')}
+                    />
+                  </PageBannerArea>
                 ) : filteredBrowseGames.length === 0 ? (
                   <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
                     <RiSearchLine fontSize={40} />
@@ -431,15 +430,12 @@ export const CardFarmingPage = () => {
                 {whitelistLoading ? (
                   <GameGridSkeleton />
                 ) : whitelist.length === 0 ? (
-                  <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-                    <TbCards fontSize={40} />
-                    <Typography type='h3'>
-                      {t('dashboard.cardFarming.whitelistEmpty.title')}
-                    </Typography>
-                    <Typography color='muted' type='body-sm'>
-                      {t('dashboard.cardFarming.whitelistEmpty.description')}
-                    </Typography>
-                  </EmptyState>
+                  <PageBannerArea hasToolbar>
+                    <CardFarmingEmptyBanner
+                      variant='whitelist'
+                      onBrowseGames={() => setActiveTab('browse')}
+                    />
+                  </PageBannerArea>
                 ) : (
                   <CardFarmingWhitelistGrid
                     pendingAppIds={pendingAppIds}
@@ -453,15 +449,12 @@ export const CardFarmingPage = () => {
                 {blacklistLoading ? (
                   <GameGridSkeleton />
                 ) : blacklist.length === 0 ? (
-                  <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-                    <TbBan fontSize={40} />
-                    <Typography type='h3'>
-                      {t('dashboard.cardFarming.blacklistEmpty.title')}
-                    </Typography>
-                    <Typography color='muted' type='body-sm'>
-                      {t('dashboard.cardFarming.blacklistEmpty.description')}
-                    </Typography>
-                  </EmptyState>
+                  <PageBannerArea hasToolbar>
+                    <CardFarmingEmptyBanner
+                      variant='blacklist'
+                      onBrowseGames={() => setActiveTab('browse')}
+                    />
+                  </PageBannerArea>
                 ) : (
                   <CardFarmingBlacklistGrid
                     blacklist={blacklist}

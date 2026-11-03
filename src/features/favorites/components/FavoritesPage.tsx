@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
-import { TbDeviceGamepad2, TbHeart, TbPlus } from 'react-icons/tb'
+import { TbPlus } from 'react-icons/tb'
 import { useFavorites } from '../hooks/useFavorites'
 import { errorMessageKey as favoritesErrorMessageKey } from '../utils/errorMessageKey'
 import { FavoritesBrowseGrid } from './FavoritesBrowseGrid'
 import { FavoritesListGrid } from './FavoritesListGrid'
+import { FavoritesPreview } from './FavoritesPreview'
 import {
   Alert,
   AlertDialog,
@@ -21,8 +22,11 @@ import {
   Typography,
 } from '@heroui/react'
 import { useRouter } from 'next/router'
+import { NoGamesBanner } from '@/features/games-list/components/NoGamesBanner'
 import { useGamesList } from '@/features/games-list/hooks/useGamesList'
 import { errorMessageKey as gamesErrorMessageKey } from '@/features/games-list/utils/errorMessageKey'
+import { EmptyListBanner } from '@/shared/components/dashboard/EmptyListBanner'
+import { PageBannerArea } from '@/shared/components/dashboard/PageBanner'
 import { PageBody } from '@/shared/components/dashboard/PageBody'
 import { CountChip, PageToolbar } from '@/shared/components/dashboard/PageToolbar'
 import { GameListTabPanel } from '@/shared/components/GameListTabPanel'
@@ -196,13 +200,9 @@ export const FavoritesPage = () => {
                 </Button>
               </div>
             ) : games.length === 0 ? (
-              <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-                <TbDeviceGamepad2 fontSize={40} />
-                <Typography type='h3'>{t('dashboard.games.empty.title')}</Typography>
-                <Typography color='muted' type='body-sm'>
-                  {t('dashboard.games.empty.description')}
-                </Typography>
-              </EmptyState>
+              <PageBannerArea hasToolbar>
+                <NoGamesBanner onRefresh={refresh} />
+              </PageBannerArea>
             ) : filteredGames.length === 0 ? (
               <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
                 <RiSearchLine fontSize={40} />
@@ -229,13 +229,15 @@ export const FavoritesPage = () => {
                 ))}
               </div>
             ) : favorites.length === 0 ? (
-              <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-                <TbHeart fontSize={40} />
-                <Typography type='h3'>{t('dashboard.favorites.empty.title')}</Typography>
-                <Typography color='muted' type='body-sm'>
-                  {t('dashboard.favorites.empty.description')}
-                </Typography>
-              </EmptyState>
+              <PageBannerArea hasToolbar>
+                <EmptyListBanner
+                  art={<FavoritesPreview />}
+                  description={t('dashboard.favorites.empty.description')}
+                  title={t('dashboard.favorites.empty.title')}
+                  onBrowseGames={() => setActiveTab('browse')}
+                  onManualAdd={() => setIsManualAddOpen(true)}
+                />
+              </PageBannerArea>
             ) : (
               <FavoritesListGrid
                 favorites={favorites}

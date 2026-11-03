@@ -7,12 +7,14 @@ import { useLockedItems } from '../hooks/useLockedItems'
 import { getCurrencyDecimalPlaces } from '../utils/currency'
 import { errorMessageKey } from '../utils/errorMessageKey'
 import { InventoryConnectPanel } from './InventoryConnectPanel'
+import { InventoryEmptyBanner } from './InventoryEmptyBanner'
 import { InventoryFilterPanel } from './InventoryFilterPanel'
 import { InventoryItemGrid } from './InventoryItemGrid'
 import { InventoryPageHeader } from './InventoryPageHeader'
 import { PriceOrderModal } from './PriceOrderModal'
 import { Alert, toast } from '@heroui/react'
 import { useRouter } from 'next/router'
+import { PageBannerArea } from '@/shared/components/dashboard/PageBanner'
 import { PageBody } from '@/shared/components/dashboard/PageBody'
 import { GameGridSkeleton } from '@/shared/components/GameGridSkeleton'
 import { useAutoConnectSteamCookies } from '@/shared/hooks/useAutoConnectSteamCookies'
@@ -447,6 +449,7 @@ export const InventoryManagerPage = () => {
             title stays visible through the initial skeleton and the connect panel. */}
         <InventoryPageHeader
           dupesCount={dupeCandidates.length}
+          hasItems={items.length > 0}
           hasLoaded={canAccessInventory}
           isBusy={isBusy}
           isFetching={isFetching}
@@ -501,6 +504,10 @@ export const InventoryManagerPage = () => {
               onConnect={connect}
             />
           </div>
+        ) : items.length === 0 && !errorCode ? (
+          <PageBannerArea hasToolbar>
+            <InventoryEmptyBanner />
+          </PageBannerArea>
         ) : (
           <div className='flex min-h-0 flex-1'>
             <InventoryFilterPanel

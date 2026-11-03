@@ -7,6 +7,9 @@ import { requestGameArt, useGameArtStore } from '@/shared/stores/gameArtStore'
 interface GamePosterArtProps {
   appId: number
   name: string
+  // A known-good URL to show straight away, skipping the lookup, for art chosen ahead of time rather
+  // than a game from someone's library. Falls back to the usual chain below if it ever stops loading.
+  knownSrc?: string
 }
 
 const CDN_BASE = 'https://cdn.cloudflare.steamstatic.com/steam/apps'
@@ -45,12 +48,27 @@ const ArtImage = ({
 //   4. A placeholder showing the game's name, since nothing else here would identify the game.
 // Nothing renders until the lookup finishes, so a game with hashed art doesn't flash the wrong
 // image or a failed request first.
-export const GamePosterArt = ({ appId, name }: GamePosterArtProps) => {
+export const GamePosterArt = ({ appId, name, knownSrc }: GamePosterArtProps) => {
+  const [isKnownSrcBroken, setIsKnownSrcBroken] = useState(false)
+  const shouldUseKnownSrc = knownSrc !== undefined && !isKnownSrcBroken
   const resolved = useGameArtStore(state => state.resolved[appId])
   const step = useGameArtStore(state => state.fallbackSteps[appId] ?? 0)
   const advanceFallback = useGameArtStore(state => state.advanceFallback)
 
-  useEffect(() => requestGameArt(appId), [appId])
+  useEffect(() => {
+    if (!shouldUseKnownSrc) requestGameArt(appId)
+  }, [appId, shouldUseKnownSrc])
+
+  if (shouldUseKnownSrc) {
+    return (
+      <ArtImage
+        className='object-cover'
+        name={name}
+        src={knownSrc}
+        onError={() => setIsKnownSrcBroken(true)}
+      />
+    )
+  }
 
   if (resolved === undefined) return null
 

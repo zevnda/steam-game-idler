@@ -2,15 +2,17 @@ import type { TranslationKey } from '@/i18n'
 import type { IdleOwner } from '../types'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbPlayerPlay, TbPlayerStopFilled } from 'react-icons/tb'
+import { TbPlayerStopFilled } from 'react-icons/tb'
 import { useIdling } from '../hooks/useIdling'
 import { groupIdlingGames } from '../utils/groupIdlingGames'
+import { IdlingEmptyBanner } from './IdlingEmptyBanner'
 import { IdlingSection } from './IdlingSection'
-import { Alert, Button, EmptyState, Skeleton, Typography } from '@heroui/react'
+import { Alert, Button, Skeleton } from '@heroui/react'
 import { useRouter } from 'next/router'
 import { useGamesList } from '@/features/games-list/hooks/useGamesList'
 import { errorMessageKey as gamesErrorMessageKey } from '@/features/games-list/utils/errorMessageKey'
 import { BackToTopButton } from '@/shared/components/BackToTopButton'
+import { PageBannerArea } from '@/shared/components/dashboard/PageBanner'
 import { PageBody } from '@/shared/components/dashboard/PageBody'
 import { PageTitle, PageToolbar } from '@/shared/components/dashboard/PageToolbar'
 import { useBackToTop } from '@/shared/hooks/useBackToTop'
@@ -102,13 +104,9 @@ export const IdlingPage = () => {
             </Button>
           </div>
         ) : idlingGames.length === 0 ? (
-          <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-            <TbPlayerPlay fontSize={40} />
-            <Typography type='h3'>{t('dashboard.idling.empty.title')}</Typography>
-            <Typography color='muted' type='body-sm'>
-              {t('dashboard.idling.empty.description')}
-            </Typography>
-          </EmptyState>
+          <PageBannerArea>
+            <IdlingEmptyBanner />
+          </PageBannerArea>
         ) : (
           <div
             ref={setScrollElement}

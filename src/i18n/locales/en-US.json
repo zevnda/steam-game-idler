@@ -425,8 +425,10 @@
         "other": "Other"
       },
       "empty": {
-        "title": "No games idling",
-        "description": "Start idling a game from the Games tab to see it here."
+        "title": "Nothing's idling right now.",
+        "description": "Go to the Games page, hover over a game and press the play button. It'll show up here while it idles.",
+        "browseGames": "Browse your games",
+        "setUpAutoIdle": "Set up Automatic Idler"
       },
       "errors": {
         "startFailed": "Couldn't start idling this game.",
@@ -630,12 +632,12 @@
         "description": "Every owned game's card drops are either fully farmed or none are available right now."
       },
       "whitelistEmpty": {
-        "title": "No games whitelisted",
-        "description": "Add games from the Games With Drops tab to restrict farming to just those games. Leave it empty to farm all game with drops."
+        "title": "No whitelisted games",
+        "description": "Add games from the Games With Drops tab to farm only those games. Leave it empty to farm all games with drops."
       },
       "blacklistEmpty": {
         "title": "No blacklisted games",
-        "description": "Games you blacklist from the Games With Drops tab will never be farmed and appear here."
+        "description": "Add games from the Games With Drops tab to never farm those games. Leave it empty to farm all games with drops."
       },
       "connect": {
         "automaticDescription": "Signs in to Steam Community automatically to check for drops."
@@ -862,7 +864,8 @@
       },
       "empty": {
         "title": "No items found",
-        "description": "No marketable items match the current search and filters."
+        "description": "No marketable items match the current search and filters.",
+        "noItemsDescription": "You don't have any items that can be sold on the Steam Market yet. Trading cards you farm will show up here."
       },
       "priceData": {
         "sellOrders": "Sell orders",

@@ -20,6 +20,10 @@ namespace SteamUtility.Daemon.Bot
         // a multi-part response extends the deadline, so this only limits silence between parts.
         private static readonly TimeSpan PicsJobTimeout = TimeSpan.FromSeconds(30);
 
+        // Steam splits a large PICS response into parts and can stall partway through one, so a
+        // whole library in a single request is the most likely thing to come back incomplete.
+        private const int PicsBatchSize = 250;
+
         // Fetches running right now, shared by anyone asking for the same thing. Each one requests
         // the account's entire license and app list from Steam, and repeated triggers (reloading the
         // window, an account switch landing during a refresh) used to stack up as separate full
@@ -148,6 +152,10 @@ namespace SteamUtility.Daemon.Bot
             // WaitForLicenseListAsync doc comment.
             await bot.WaitForLicenseListAsync(TimeSpan.FromSeconds(10));
             var resolution = await ResolveOwnedAppIdsAsync(bot);
+            Log.Info(
+                "OwnershipManager",
+                $"Resolved ownership: licenses={bot.OwnedLicenses.Count} apps={resolution.AppIds.Count} gamesOnly={gamesOnly}"
+            );
 
             var appIds = resolution.AppIds;
 
@@ -158,16 +166,11 @@ namespace SteamUtility.Daemon.Bot
                     .Select(appId => new SteamApps.PICSRequest(appId))
                     .ToList();
 
-                var appsJob = bot.SteamAppsHandler.PICSGetProductInfo(
-                    apps: appRequests,
-                    packages: Enumerable.Empty<SteamApps.PICSRequest>()
-                );
-                appsJob.Timeout = PicsJobTimeout;
-                var appResultSet = await appsJob;
+                var appResults = await GetProductInfoAsync(bot, appRequests, arePackages: false);
 
                 var playtimes = await GetPlaytimesAsync(bot);
 
-                foreach (var result in appResultSet.Results!)
+                foreach (var result in appResults)
                 {
                     foreach (var (appId, info) in result.Apps)
                     {
@@ -314,6 +317,38 @@ namespace SteamUtility.Daemon.Bot
             return result;
         }
 
+        // Throws if any batch comes back incomplete. SteamKit2 doesn't treat that as a failure: once at
+        // least one part of a response has arrived, a timeout returns whatever it has with Complete
+        // false. Using that as if it were everything silently turned a stalled response into a
+        // library of a handful of games, which then overwrote the cached list. Failing here leaves
+        // the last good list in place, and lets the caller retry.
+        private static async Task<List<SteamApps.PICSProductInfoCallback>> GetProductInfoAsync(
+            SteamBot bot,
+            List<SteamApps.PICSRequest> requests,
+            bool arePackages
+        )
+        {
+            var results = new List<SteamApps.PICSProductInfoCallback>();
+            var none = Enumerable.Empty<SteamApps.PICSRequest>();
+            foreach (var batch in requests.Chunk(PicsBatchSize))
+            {
+                var job = bot.SteamAppsHandler.PICSGetProductInfo(
+                    apps: arePackages ? none : batch,
+                    packages: arePackages ? batch : none
+                );
+                job.Timeout = PicsJobTimeout;
+                var resultSet = await job;
+                if (!resultSet.Complete)
+                {
+                    throw new SteamResponseIncompleteException();
+                }
+
+                results.AddRange(resultSet.Results!);
+            }
+
+            return results;
+        }
+
         private static async Task<OwnedAppResolution> ResolveOwnedAppIdsAsync(SteamBot bot)
         {
             var ownedAppIds = new HashSet<uint>();
@@ -336,14 +371,9 @@ namespace SteamUtility.Daemon.Bot
             // whichever one we see first.
             var licensesByPackageId = bot.OwnedLicenses.ToLookup(license => license.PackageID);
 
-            var packagesJob = bot.SteamAppsHandler.PICSGetProductInfo(
-                apps: Enumerable.Empty<SteamApps.PICSRequest>(),
-                packages: packageRequests
-            );
-            packagesJob.Timeout = PicsJobTimeout;
-            var packageResultSet = await packagesJob;
+            var packageResults = await GetProductInfoAsync(bot, packageRequests, arePackages: true);
 
-            foreach (var result in packageResultSet.Results!)
+            foreach (var result in packageResults)
             {
                 foreach (var (packageId, package) in result.Packages)
                 {
