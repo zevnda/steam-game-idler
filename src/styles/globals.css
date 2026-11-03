@@ -905,3 +905,41 @@ body {
     animation: none;
   }
 }
+
+/* PageToolbar.tsx - a full-width bar in the page's own colour, frosting whatever scrolls beneath it.
+   `--page-toolbar-height` is its usual height: 40px controls with 14px of `py-3.5` either side.
+   Cancelling that from the layout pulls the content up behind the bar, and the content's own top
+   padding then puts its first row right at the bar's bottom edge, so the controls have the same 14px
+   above and below whether or not anything is scrolled behind them. A top-row card's 4px hover lift
+   slides just under the bar, the same as any card scrolled up to it. */
+:root {
+  --page-toolbar-height: 68px;
+}
+
+.page-toolbar {
+  position: relative;
+  z-index: 10;
+  margin-bottom: calc(var(--page-toolbar-height) * -1);
+}
+
+.page-toolbar-frosted {
+  background: color-mix(in oklch, var(--background) 95%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+}
+
+/* Without blur, content scrolling behind a see-through bar would be unreadable, so it goes opaque. */
+.page-toolbar-solid {
+  background: var(--background);
+}
+
+/* Keeps content clear of the bar at the top of its scroll range. Virtualized grids and the like use
+   this alone, since react-window handles their horizontal padding itself. */
+.page-toolbar-offset {
+  padding-top: var(--page-toolbar-height);
+}
+
+/* Whatever sits directly below a PageToolbar. */
+.page-content {
+  padding: var(--page-toolbar-height) 1.5rem 1.5rem;
+}

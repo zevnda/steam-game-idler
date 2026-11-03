@@ -1,16 +1,17 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbGift } from 'react-icons/tb'
+import { TbGift, TbRefresh, TbSettings } from 'react-icons/tb'
 import { useClaimFreeGame } from '../hooks/useClaimFreeGame'
 import { useFreeGames } from '../hooks/useFreeGames'
 import { errorMessageKey } from '../utils/errorMessageKey'
 import { FreeGamesGrid } from './FreeGamesGrid'
-import { FreeGamesPageHeader } from './FreeGamesPageHeader'
 import { Alert, Button, EmptyState, Typography } from '@heroui/react'
 import { useRouter } from 'next/router'
 import { PageBody } from '@/shared/components/dashboard/PageBody'
+import { PageTitle, PageToolbar } from '@/shared/components/dashboard/PageToolbar'
 import { GameGridSkeleton } from '@/shared/components/GameGridSkeleton'
 import { useSessionStore } from '@/shared/stores/sessionStore'
+import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
 
 // Claimable free games - discovery (get_free_games) is a public, mode-agnostic scrape with no
 // account concept, already filtered here against this account's owned games (useFreeGames reuses
@@ -21,6 +22,7 @@ import { useSessionStore } from '@/shared/stores/sessionStore'
 export const FreeGamesPage = () => {
   const { t } = useTranslation()
   const router = useRouter()
+  const openSettings = useSettingsModalStore(state => state.open)
   const account = useSessionStore(state => state.account)
   const { freeGames, isLoading, isRefreshing, errorCode, refresh } = useFreeGames()
   const { pendingAppIds, outcomes, errorCodes, claim } = useClaimFreeGame()
@@ -37,12 +39,31 @@ export const FreeGamesPage = () => {
 
   return (
     <div className='flex h-full flex-col'>
-      <FreeGamesPageHeader
-        gameCount={freeGames.length}
-        isRefreshing={isRefreshing}
-        onRefresh={refresh}
-      />
       <PageBody>
+        <PageToolbar
+          start={
+            freeGames.length > 0 && (
+              <PageTitle count={freeGames.length} title={t('dashboard.sidebar.nav.freeGames')} />
+            )
+          }
+        >
+          <Button
+            isIconOnly
+            aria-label={t('common.actions.refresh')}
+            isPending={isRefreshing}
+            onPress={refresh}
+          >
+            <TbRefresh fontSize={18} />
+          </Button>
+          <Button
+            isIconOnly
+            aria-label={t('common.actions.settings')}
+            onPress={() => openSettings('freeGames')}
+          >
+            <TbSettings fontSize={18} />
+          </Button>
+        </PageToolbar>
+
         {isLoading ? (
           <GameGridSkeleton />
         ) : errorCode ? (

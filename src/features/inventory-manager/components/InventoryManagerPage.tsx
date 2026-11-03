@@ -441,31 +441,30 @@ export const InventoryManagerPage = () => {
 
   return (
     <div className='flex h-full flex-col'>
-      {/* Always mounted, like every other page's header (GamesPageHeader/CardFarmingPageHeader/
-          etc.) - only the action buttons are gated on `hasLoaded` (here, `canAccessInventory` -
-          see useInventory.ts's doc comment for why raw `hasLoaded` alone isn't sufficient), so the
-          title/count row stays visible through the initial skeleton and the connect panel instead
-          of the page looking headerless until a fetch succeeds. */}
-      <InventoryPageHeader
-        dupesCount={dupeCandidates.length}
-        hasLoaded={canAccessInventory}
-        isBusy={isBusy}
-        isFetching={isFetching}
-        isListing={isListing}
-        isRemovingListings={isRemovingListings}
-        isSellingAll={isSellingAll}
-        isSellingDupes={isSellingDupes}
-        itemCount={filteredItems.length}
-        selectedCount={selectedCount}
-        sellDelaySeconds={settings?.sellDelay ?? 10}
-        onListSelected={handleListSelected}
-        onOpenSettings={() => openSettings('inventoryManager')}
-        onRefresh={refresh}
-        onRemoveListings={removeListings}
-        onSellAll={handleSellAll}
-        onSellDupes={handleSellDupes}
-      />
       <PageBody>
+        {/* Always mounted - only its action buttons are gated on `canAccessInventory` (see
+            useInventory.ts's doc comment for why raw `hasLoaded` alone isn't sufficient), so the
+            title stays visible through the initial skeleton and the connect panel. */}
+        <InventoryPageHeader
+          dupesCount={dupeCandidates.length}
+          hasLoaded={canAccessInventory}
+          isBusy={isBusy}
+          isFetching={isFetching}
+          isListing={isListing}
+          isRemovingListings={isRemovingListings}
+          isSellingAll={isSellingAll}
+          isSellingDupes={isSellingDupes}
+          itemCount={filteredItems.length}
+          selectedCount={selectedCount}
+          sellDelaySeconds={settings?.sellDelay ?? 10}
+          onListSelected={handleListSelected}
+          onOpenSettings={() => openSettings('inventoryManager')}
+          onRefresh={refresh}
+          onRemoveListings={removeListings}
+          onSellAll={handleSellAll}
+          onSellDupes={handleSellDupes}
+        />
+
         {canAccessInventory && errorCode && (
           <div className='px-6 pt-4'>
             <Alert status='danger'>
@@ -489,13 +488,13 @@ export const InventoryManagerPage = () => {
           // click - real, visible feedback that the click did something, matching GamesPage's
           // identical `isManualRefreshing` pattern instead of refreshing silently in place.
           <GameGridSkeleton
-            gridClassName='grid grid-cols-[repeat(auto-fill,minmax(190px,1fr))] gap-4 p-6'
+            gridClassName='grid grid-cols-[repeat(auto-fill,minmax(190px,1fr))] gap-4 page-content'
             tileClassName='h-64 rounded-xl'
           />
         ) : !canAccessInventory ? (
           // Centered in the remaining content area - matches CardFarmingStartPanel's identical
           // centering so both cookie-prompt screens look the same.
-          <div className='flex flex-1 items-center justify-center overflow-y-auto'>
+          <div className='page-toolbar-offset flex flex-1 items-center justify-center overflow-y-auto'>
             <InventoryConnectPanel
               errorCode={errorCode}
               isConnecting={isFetching}

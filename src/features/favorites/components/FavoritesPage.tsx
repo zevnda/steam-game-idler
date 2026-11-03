@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
-import { TbDeviceGamepad2, TbHeart } from 'react-icons/tb'
+import { TbDeviceGamepad2, TbHeart, TbPlus } from 'react-icons/tb'
 import { useFavorites } from '../hooks/useFavorites'
 import { errorMessageKey as favoritesErrorMessageKey } from '../utils/errorMessageKey'
 import { FavoritesBrowseGrid } from './FavoritesBrowseGrid'
 import { FavoritesListGrid } from './FavoritesListGrid'
-import { FavoritesPageHeader } from './FavoritesPageHeader'
 import {
   Alert,
   AlertDialog,
@@ -25,6 +24,7 @@ import { useRouter } from 'next/router'
 import { useGamesList } from '@/features/games-list/hooks/useGamesList'
 import { errorMessageKey as gamesErrorMessageKey } from '@/features/games-list/utils/errorMessageKey'
 import { PageBody } from '@/shared/components/dashboard/PageBody'
+import { CountChip, PageToolbar } from '@/shared/components/dashboard/PageToolbar'
 import { GameListTabPanel } from '@/shared/components/GameListTabPanel'
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
 import { ManualAddGameModal } from '@/shared/components/ManualAddGameModal'
@@ -100,12 +100,18 @@ export const FavoritesPage = () => {
     return null
   }
 
+  const manualAddButton = (
+    <Button
+      isIconOnly
+      aria-label={t('common.manualAdd.title')}
+      onPress={() => setIsManualAddOpen(true)}
+    >
+      <TbPlus fontSize={18} />
+    </Button>
+  )
+
   return (
     <div className='flex h-full flex-col'>
-      <FavoritesPageHeader
-        favoriteCount={favorites.length}
-        onManualAdd={() => setIsManualAddOpen(true)}
-      />
       <PageBody>
         {favoritesErrorCode && (
           <div className='px-6 pt-4'>
@@ -126,19 +132,24 @@ export const FavoritesPage = () => {
           selectedKey={activeTab}
           onSelectionChange={key => setActiveTab(key as FavoritesTab)}
         >
-          <div className='mx-6 mt-4 flex flex-wrap items-center justify-between gap-3'>
-            <TabListContainer className='shrink-0'>
-              <TabList>
-                <Tab className='whitespace-nowrap' id='browse'>
-                  {t('common.tabs.allGames')}
-                  <TabIndicator />
-                </Tab>
-                <Tab className='whitespace-nowrap' id='list'>
-                  {t('dashboard.sidebar.nav.favorites')}
-                  <TabIndicator />
-                </Tab>
-              </TabList>
-            </TabListContainer>
+          <PageToolbar
+            start={
+              <TabListContainer className='shrink-0'>
+                <TabList>
+                  <Tab className='gap-2 whitespace-nowrap' id='browse'>
+                    {t('common.tabs.allGames')}
+                    {phase !== 'loading' && <CountChip count={filteredGames.length} />}
+                    <TabIndicator />
+                  </Tab>
+                  <Tab className='gap-2 whitespace-nowrap' id='list'>
+                    {t('dashboard.sidebar.nav.favorites')}
+                    {!favoritesLoading && <CountChip count={favorites.length} />}
+                    <TabIndicator />
+                  </Tab>
+                </TabList>
+              </TabListContainer>
+            }
+          >
             {activeTab === 'browse' && (
               <GameSortSelect
                 ariaLabel={t('dashboard.inventoryManager.sort.label')}
@@ -159,11 +170,12 @@ export const FavoritesPage = () => {
                 {t('common.actions.clear')}
               </Button>
             )}
-          </div>
+            {manualAddButton}
+          </PageToolbar>
 
           <TabPanel className='min-h-0 flex-1 overflow-y-auto p-0' id='browse'>
             {phase === 'loading' ? (
-              <div className='game-grid p-6'>
+              <div className='game-grid page-content'>
                 {Array.from({ length: 12 }, (_, index) => (
                   <Skeleton key={index} className='aspect-2/3 rounded-xl' />
                 ))}
@@ -211,7 +223,7 @@ export const FavoritesPage = () => {
 
           <GameListTabPanel id='list'>
             {favoritesLoading ? (
-              <div className='game-grid p-6'>
+              <div className='game-grid page-content'>
                 {Array.from({ length: 6 }, (_, index) => (
                   <Skeleton key={index} className='aspect-2/3 rounded-xl' />
                 ))}

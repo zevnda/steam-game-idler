@@ -43,7 +43,7 @@ export const AutoIdleListGrid = ({
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <SortableContext items={games.map(item => item.appId)}>
-        <div className='game-grid p-6'>
+        <div className='game-grid page-content'>
           {games.map(game => (
             <SortableAutoIdleListCard
               key={game.appId}

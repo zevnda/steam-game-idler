@@ -10,9 +10,9 @@ interface PageBodyProps {
   children: ReactNode
 }
 
-// Everything below a routed dashboard page's header or a settings category's title, playing a
-// brief fade-and-rise when navigated to. The header is deliberately left outside it, so the title
-// stays put while the content arrives. Being one element that stays mounted through a page's loading states, it
+// A routed dashboard page's content, or everything below a settings category's title, playing a
+// brief fade-and-rise when navigated to. Settings leaves its title outside this, so the title stays
+// put while the category's content arrives. Being one element that stays mounted through a page's loading states, it
 // plays once per navigation: a page that fetches first (card farming, inventory) rises with its
 // skeleton, then swaps to real content in place rather than moving a second time.
 //

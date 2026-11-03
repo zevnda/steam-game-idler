@@ -30,7 +30,7 @@ export const AchievementUnlockerProgressView = ({
 
   return (
     <div className='relative min-h-full'>
-      <div className='relative z-10 flex flex-col gap-4 p-6'>
+      <div className='page-content relative z-10 flex flex-col gap-4'>
         {state.scanProgress && (
           <AchievementUnlockerScanProgressCard progress={state.scanProgress} />
         )}

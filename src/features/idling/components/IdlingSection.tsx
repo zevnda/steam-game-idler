@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { TbPlayerStopFilled } from 'react-icons/tb'
 import { Button, Typography } from '@heroui/react'
 import { GameCard } from '@/features/games-list/components/GameCard'
+import { CountChip } from '@/shared/components/dashboard/PageToolbar'
 
 interface IdlingSectionProps {
   title: string
@@ -33,13 +34,11 @@ export const IdlingSection = ({
   return (
     <div className='flex flex-col gap-3'>
       <div className='flex items-center justify-between gap-4'>
-        <div className='flex items-baseline gap-2'>
+        <div className='flex items-center gap-2'>
           <Typography type='body-sm' className='font-semibold'>
             {title}
           </Typography>
-          <Typography type='body-sm' color='muted'>
-            {t('dashboard.idling.count', { count: games.length })}
-          </Typography>
+          <CountChip count={games.length} />
         </div>
         {onStop && (
           <Button size='sm' variant='danger' isPending={isStopping} onPress={onStop}>

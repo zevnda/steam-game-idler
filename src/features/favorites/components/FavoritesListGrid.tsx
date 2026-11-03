@@ -44,7 +44,7 @@ export const FavoritesListGrid = ({
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <SortableContext items={favorites.map(item => item.appId)}>
-        <div className='game-grid p-6'>
+        <div className='game-grid page-content'>
           {favorites.map(favorite => (
             <SortableFavoriteListCard
               key={favorite.appId}

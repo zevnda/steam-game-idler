@@ -9,7 +9,7 @@ interface GameGridSkeletonProps {
   gridClassName?: string
 }
 
-const DEFAULT_GRID_CLASSNAME = 'game-grid p-6'
+const DEFAULT_GRID_CLASSNAME = 'game-grid page-content'
 const DEFAULT_TILE_CLASSNAME = 'aspect-2/3 rounded-xl'
 
 // Shared loading placeholder for every game/item grid in the app (games list, free games,

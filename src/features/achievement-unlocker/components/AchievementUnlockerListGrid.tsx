@@ -155,7 +155,7 @@ export const AchievementUnlockerListGrid = ({
                 onRemove,
                 onEditOrder,
               }}
-              className='py-6'
+              className='page-toolbar-offset pb-6'
               columnCount={realColumnCount + 2}
               gridRef={setGridApi}
               // Every real column's slot is `cardWidth` plus a trailing GAP to the next card -

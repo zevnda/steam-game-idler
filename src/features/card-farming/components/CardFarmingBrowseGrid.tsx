@@ -23,7 +23,7 @@ export const CardFarmingBrowseGrid = ({
   onBlacklist,
 }: CardFarmingBrowseGridProps) => {
   return (
-    <div className='game-grid p-6'>
+    <div className='game-grid page-content'>
       {games.map(game => (
         <CardFarmingBrowseCard
           key={game.appId}

@@ -15,7 +15,7 @@ export const CardFarmingBlacklistGrid = ({
   onRemove,
 }: CardFarmingBlacklistGridProps) => {
   return (
-    <div className='game-grid p-6'>
+    <div className='game-grid page-content'>
       {blacklist.map(game => (
         <CardFarmingBlacklistCard
           key={game.appId}

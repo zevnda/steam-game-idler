@@ -2,7 +2,7 @@ import type { CardFarmingSettings, GameWithDrops } from '../types'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
-import { TbBan, TbCards } from 'react-icons/tb'
+import { TbBan, TbCards, TbPlayerPlayFilled, TbPlayerStopFilled, TbSettings } from 'react-icons/tb'
 import { useCardFarming } from '../hooks/useCardFarming'
 import { useCardFarmingBlacklist } from '../hooks/useCardFarmingBlacklist'
 import { useCardFarmingWhitelist } from '../hooks/useCardFarmingWhitelist'
@@ -14,7 +14,6 @@ import {
 } from '../utils/sortGamesWithDrops'
 import { CardFarmingBlacklistGrid } from './CardFarmingBlacklistGrid'
 import { CardFarmingBrowseGrid } from './CardFarmingBrowseGrid'
-import { CardFarmingPageHeader } from './CardFarmingPageHeader'
 import { CardFarmingProgressView } from './CardFarmingProgressView'
 import { CardFarmingStartPanel } from './CardFarmingStartPanel'
 import { CardFarmingWhitelistGrid } from './CardFarmingWhitelistGrid'
@@ -32,6 +31,7 @@ import {
 } from '@heroui/react'
 import { useRouter } from 'next/router'
 import { PageBody } from '@/shared/components/dashboard/PageBody'
+import { CountChip, PageToolbar } from '@/shared/components/dashboard/PageToolbar'
 import { GameGridSkeleton } from '@/shared/components/GameGridSkeleton'
 import { GameListTabPanel } from '@/shared/components/GameListTabPanel'
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
@@ -77,6 +77,7 @@ type CardFarmingTab = 'browse' | 'whitelist' | 'blacklist'
 export const CardFarmingPage = () => {
   const { t } = useTranslation()
   const router = useRouter()
+  const openSettings = useSettingsModalStore(state => state.open)
   const account = useSessionStore(state => state.account)
   const {
     state,
@@ -249,18 +250,45 @@ export const CardFarmingPage = () => {
     return null
   }
 
+  const isShowingProgress = state.isFarming || showFinishedSummary
+  // The tabs stay on screen in every state so this row never changes shape: disabled while loading,
+  // while there's no Steam session to load anything with, and during a run.
+  const isShowingTabs = connected && !isShowingProgress && !isChecking && !isAutoConnecting
+  const pageActions = (
+    <>
+      <Button
+        isIconOnly
+        aria-label={t('common.actions.settings')}
+        onPress={() => openSettings('cardFarming')}
+      >
+        <TbSettings fontSize={18} />
+      </Button>
+      {state.isFarming ? (
+        <Button isPending={isStopping} variant='danger' onPress={handleStop}>
+          <TbPlayerStopFilled fontSize={18} />
+          {t('dashboard.cardFarming.actions.stop')}
+        </Button>
+      ) : (
+        <Button
+          isDisabled={
+            !connected ||
+            isChecking ||
+            isAutoConnecting ||
+            (!isBrowseLoading && browseGames.length === 0)
+          }
+          isPending={isStarting}
+          variant='primary'
+          onPress={start}
+        >
+          <TbPlayerPlayFilled fontSize={16} />
+          {t('common.actions.start')}
+        </Button>
+      )}
+    </>
+  )
+
   return (
     <div className='flex h-full flex-col'>
-      <CardFarmingPageHeader
-        activeCount={state.active.length}
-        connected={connected}
-        hasEligibleGames={isBrowseLoading || browseGames.length > 0}
-        isFarming={state.isFarming}
-        isStarting={isStarting}
-        isStopping={isStopping}
-        onStart={start}
-        onStop={handleStop}
-      />
       <PageBody>
         {connected && displayedErrorCode && (
           <div className='px-6 pt-4'>
@@ -276,164 +304,175 @@ export const CardFarmingPage = () => {
           </div>
         )}
 
-        {state.isFarming || showFinishedSummary ? (
-          <div className='min-h-0 flex-1 overflow-y-auto'>
-            <CardFarmingProgressView
-              hoursUntilFarmable={hoursUntilFarmable}
-              state={state}
-              onDismissFinished={
-                showFinishedSummary && accountKey ? () => dismissFinished(accountKey) : undefined
-              }
-            />
-          </div>
-        ) : isChecking || isAutoConnecting ? (
-          // Neutral loading state for the (usually brief) window before the shared credentials
-          // check - and any trusted auto-connect attempt it kicks off - has settled, so an account
-          // with already-valid cookies never flashes the connect panel first (see
-          // useAutoConnectSteamCookies's doc comment).
-          <GameGridSkeleton />
-        ) : !connected ? (
-          <div className='flex flex-1 items-center justify-center overflow-y-auto'>
-            <CardFarmingStartPanel
-              errorCode={connectErrorCode}
-              isConnecting={isConnecting}
-              onConnect={connect}
-            />
-          </div>
-        ) : (
-          <TabsRoot
-            className='flex min-h-0 flex-1 flex-col'
-            selectedKey={activeTab}
-            onSelectionChange={key => setActiveTab(key as CardFarmingTab)}
-          >
-            {/* `flex-wrap`: the tab labels are `whitespace-nowrap`, so in a longer locale at the
-              minimum window width the tabs + sort select no longer fit on one line - the select
-              drops below the tabs instead of overflowing. Same on every tabbed page (AutoIdle,
-              Favorites, AchievementUnlocker). No-op wherever everything fits. */}
-            <div className='mx-6 mt-4 flex flex-wrap items-center justify-between gap-3'>
+        <TabsRoot
+          isDisabled={!isShowingTabs}
+          className='flex min-h-0 flex-1 flex-col'
+          selectedKey={activeTab}
+          onSelectionChange={key => setActiveTab(key as CardFarmingTab)}
+        >
+          <PageToolbar
+            start={
               <TabListContainer className='shrink-0'>
                 <TabList>
-                  <Tab className='whitespace-nowrap' id='browse'>
+                  <Tab className='gap-2 whitespace-nowrap' id='browse'>
                     {t('dashboard.cardFarming.tabs.gamesWithDrops')}
+                    {isShowingTabs && !isBrowseLoading && <CountChip count={browseGames.length} />}
                     <TabIndicator />
                   </Tab>
-                  <Tab className='whitespace-nowrap' id='whitelist'>
+                  <Tab className='gap-2 whitespace-nowrap' id='whitelist'>
                     {t('dashboard.cardFarming.tabs.whitelisted')}
+                    {isShowingTabs && !whitelistLoading && <CountChip count={whitelist.length} />}
                     <TabIndicator />
                   </Tab>
-                  <Tab className='whitespace-nowrap' id='blacklist'>
+                  <Tab className='gap-2 whitespace-nowrap' id='blacklist'>
                     {t('dashboard.cardFarming.tabs.blacklisted')}
+                    {isShowingTabs && !blacklistLoading && <CountChip count={blacklist.length} />}
                     <TabIndicator />
                   </Tab>
                 </TabList>
               </TabListContainer>
-              {activeTab === 'browse' && (
-                <GameSortSelect
-                  ariaLabel={t('dashboard.inventoryManager.sort.label')}
-                  options={CARD_FARMING_SORT_STYLES.map(style => ({
-                    id: style,
-                    label: t(CARD_FARMING_SORT_LABEL_KEYS[style]),
-                  }))}
-                  value={sortStyle}
-                  onChange={style => setSortStyle('cardFarming', style)}
-                />
-              )}
-              {activeTab === 'whitelist' && whitelist.length > 0 && (
-                <Button
-                  className='shrink-0'
-                  variant='danger'
-                  onPress={() => setConfirmClearTarget('whitelist')}
-                >
-                  {t('common.actions.clear')}
-                </Button>
-              )}
-              {activeTab === 'blacklist' && blacklist.length > 0 && (
-                <Button
-                  className='shrink-0'
-                  variant='danger'
-                  onPress={() => setConfirmClearTarget('blacklist')}
-                >
-                  {t('common.actions.clear')}
-                </Button>
-              )}
+            }
+          >
+            {activeTab === 'browse' && (
+              <GameSortSelect
+                isDisabled={!isShowingTabs}
+                ariaLabel={t('dashboard.inventoryManager.sort.label')}
+                options={CARD_FARMING_SORT_STYLES.map(style => ({
+                  id: style,
+                  label: t(CARD_FARMING_SORT_LABEL_KEYS[style]),
+                }))}
+                value={sortStyle}
+                onChange={style => setSortStyle('cardFarming', style)}
+              />
+            )}
+            {activeTab === 'whitelist' && whitelist.length > 0 && (
+              <Button
+                className='shrink-0'
+                isDisabled={!isShowingTabs}
+                variant='danger'
+                onPress={() => setConfirmClearTarget('whitelist')}
+              >
+                {t('common.actions.clear')}
+              </Button>
+            )}
+            {activeTab === 'blacklist' && blacklist.length > 0 && (
+              <Button
+                className='shrink-0'
+                isDisabled={!isShowingTabs}
+                variant='danger'
+                onPress={() => setConfirmClearTarget('blacklist')}
+              >
+                {t('common.actions.clear')}
+              </Button>
+            )}
+            {pageActions}
+          </PageToolbar>
+
+          {isShowingProgress ? (
+            <div className='min-h-0 flex-1 overflow-y-auto'>
+              <CardFarmingProgressView
+                hoursUntilFarmable={hoursUntilFarmable}
+                state={state}
+                onDismissFinished={
+                  showFinishedSummary && accountKey ? () => dismissFinished(accountKey) : undefined
+                }
+              />
             </div>
+          ) : isChecking || isAutoConnecting ? (
+            // Neutral loading state for the (usually brief) window before the shared credentials
+            // check - and any trusted auto-connect attempt it kicks off - has settled, so an account
+            // with already-valid cookies never flashes the connect panel first (see
+            // useAutoConnectSteamCookies's doc comment).
+            <GameGridSkeleton />
+          ) : !connected ? (
+            <div className='page-toolbar-offset flex flex-1 items-center justify-center overflow-y-auto'>
+              <CardFarmingStartPanel
+                errorCode={connectErrorCode}
+                isConnecting={isConnecting}
+                onConnect={connect}
+              />
+            </div>
+          ) : (
+            <>
+              <GameListTabPanel id='browse'>
+                {isBrowseLoading ? (
+                  <GameGridSkeleton />
+                ) : browseGames.length === 0 ? (
+                  <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
+                    <TbCards fontSize={40} />
+                    <Typography type='h3'>
+                      {t('dashboard.cardFarming.browseEmpty.title')}
+                    </Typography>
+                    <Typography color='muted' type='body-sm'>
+                      {t('dashboard.cardFarming.browseEmpty.description')}
+                    </Typography>
+                  </EmptyState>
+                ) : filteredBrowseGames.length === 0 ? (
+                  <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
+                    <RiSearchLine fontSize={40} />
+                    <Typography type='h3'>{t('common.search.noResultsTitle')}</Typography>
+                    <Typography color='muted' type='body-sm'>
+                      {t('common.search.noResultsDescription')}
+                    </Typography>
+                  </EmptyState>
+                ) : (
+                  <CardFarmingBrowseGrid
+                    games={sortedBrowseGames}
+                    pendingAppIds={pendingAppIds}
+                    pendingBlacklistAppIds={pendingBlacklistAppIds}
+                    whitelistedAppIds={whitelistedAppIds}
+                    onBlacklist={handleBlacklist}
+                    onToggleWhitelist={game => toggleWhitelisted(game.appId, game.name)}
+                  />
+                )}
+              </GameListTabPanel>
 
-            <GameListTabPanel id='browse'>
-              {isBrowseLoading ? (
-                <GameGridSkeleton />
-              ) : browseGames.length === 0 ? (
-                <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-                  <TbCards fontSize={40} />
-                  <Typography type='h3'>{t('dashboard.cardFarming.browseEmpty.title')}</Typography>
-                  <Typography color='muted' type='body-sm'>
-                    {t('dashboard.cardFarming.browseEmpty.description')}
-                  </Typography>
-                </EmptyState>
-              ) : filteredBrowseGames.length === 0 ? (
-                <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-                  <RiSearchLine fontSize={40} />
-                  <Typography type='h3'>{t('common.search.noResultsTitle')}</Typography>
-                  <Typography color='muted' type='body-sm'>
-                    {t('common.search.noResultsDescription')}
-                  </Typography>
-                </EmptyState>
-              ) : (
-                <CardFarmingBrowseGrid
-                  games={sortedBrowseGames}
-                  pendingAppIds={pendingAppIds}
-                  pendingBlacklistAppIds={pendingBlacklistAppIds}
-                  whitelistedAppIds={whitelistedAppIds}
-                  onBlacklist={handleBlacklist}
-                  onToggleWhitelist={game => toggleWhitelisted(game.appId, game.name)}
-                />
-              )}
-            </GameListTabPanel>
+              <GameListTabPanel id='whitelist'>
+                {whitelistLoading ? (
+                  <GameGridSkeleton />
+                ) : whitelist.length === 0 ? (
+                  <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
+                    <TbCards fontSize={40} />
+                    <Typography type='h3'>
+                      {t('dashboard.cardFarming.whitelistEmpty.title')}
+                    </Typography>
+                    <Typography color='muted' type='body-sm'>
+                      {t('dashboard.cardFarming.whitelistEmpty.description')}
+                    </Typography>
+                  </EmptyState>
+                ) : (
+                  <CardFarmingWhitelistGrid
+                    pendingAppIds={pendingAppIds}
+                    whitelist={whitelist}
+                    onRemove={removeFromWhitelist}
+                  />
+                )}
+              </GameListTabPanel>
 
-            <GameListTabPanel id='whitelist'>
-              {whitelistLoading ? (
-                <GameGridSkeleton />
-              ) : whitelist.length === 0 ? (
-                <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-                  <TbCards fontSize={40} />
-                  <Typography type='h3'>
-                    {t('dashboard.cardFarming.whitelistEmpty.title')}
-                  </Typography>
-                  <Typography color='muted' type='body-sm'>
-                    {t('dashboard.cardFarming.whitelistEmpty.description')}
-                  </Typography>
-                </EmptyState>
-              ) : (
-                <CardFarmingWhitelistGrid
-                  pendingAppIds={pendingAppIds}
-                  whitelist={whitelist}
-                  onRemove={removeFromWhitelist}
-                />
-              )}
-            </GameListTabPanel>
-
-            <GameListTabPanel id='blacklist'>
-              {blacklistLoading ? (
-                <GameGridSkeleton />
-              ) : blacklist.length === 0 ? (
-                <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-                  <TbBan fontSize={40} />
-                  <Typography type='h3'>
-                    {t('dashboard.cardFarming.blacklistEmpty.title')}
-                  </Typography>
-                  <Typography color='muted' type='body-sm'>
-                    {t('dashboard.cardFarming.blacklistEmpty.description')}
-                  </Typography>
-                </EmptyState>
-              ) : (
-                <CardFarmingBlacklistGrid
-                  blacklist={blacklist}
-                  pendingAppIds={pendingBlacklistAppIds}
-                  onRemove={handleUnblacklist}
-                />
-              )}
-            </GameListTabPanel>
-          </TabsRoot>
-        )}
+              <GameListTabPanel id='blacklist'>
+                {blacklistLoading ? (
+                  <GameGridSkeleton />
+                ) : blacklist.length === 0 ? (
+                  <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
+                    <TbBan fontSize={40} />
+                    <Typography type='h3'>
+                      {t('dashboard.cardFarming.blacklistEmpty.title')}
+                    </Typography>
+                    <Typography color='muted' type='body-sm'>
+                      {t('dashboard.cardFarming.blacklistEmpty.description')}
+                    </Typography>
+                  </EmptyState>
+                ) : (
+                  <CardFarmingBlacklistGrid
+                    blacklist={blacklist}
+                    pendingAppIds={pendingBlacklistAppIds}
+                    onRemove={handleUnblacklist}
+                  />
+                )}
+              </GameListTabPanel>
+            </>
+          )}
+        </TabsRoot>
 
         <AlertDialog
           isOpen={confirmClearTarget !== null}

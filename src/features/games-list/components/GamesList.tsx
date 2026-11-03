@@ -1,13 +1,13 @@
+import type { ReactNode } from 'react'
 import type { RowComponentProps } from 'react-window'
 import type { RecommendedSlide } from '../hooks/useRecommendedSlides'
 import type { OwnedGame } from '../types'
-import { useEffect, useMemo, useRef } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { List, useListCallbackRef } from 'react-window'
 import { useRecommendedSlides } from '../hooks/useRecommendedSlides'
 import { GameCard } from './GameCard'
 import { RecommendedBanner } from './RecommendedBanner'
-import { Skeleton, Typography } from '@heroui/react'
+import { cn, Skeleton } from '@heroui/react'
 import { BackToTopButton } from '@/shared/components/BackToTopButton'
 import { useBackToTop } from '@/shared/hooks/useBackToTop'
 import {
@@ -15,20 +15,27 @@ import {
   GAME_GRID_GAP,
   useResponsiveColumnCount,
 } from '@/shared/hooks/useGameGridColumns'
+import { usePlatformStore } from '@/shared/stores/platformStore'
 
 // Steam's `library_hero` art is 1920x620. The banner keeps that shape until the limits below, then
 // crops, so it never gets too short to fit its contents or tall enough to fill an ultrawide window.
 const BANNER_ASPECT_RATIO = 1920 / 620
+// GamesPage's loading skeleton repeats these limits and the aspect ratio in Tailwind classes.
 const BANNER_MIN_HEIGHT = 340
 const BANNER_MAX_HEIGHT = 420
-const BANNER_BOTTOM_GAP = 24
-const HEADER_ROW_HEIGHT = 48
+// The list has no top padding of its own, so whichever row comes first sets the gap under the
+// titlebar: this for the banner, and the toolbar's own top padding when there's no banner. That same
+// toolbar padding is also the gap beneath the banner, so the banner needs none of its own.
+const BANNER_TOP_GAP = 14
+// Must match `--page-toolbar-height` in globals.css.
+const TOOLBAR_HEIGHT = 68
 
-type ListRow = { type: 'recommended' } | { type: 'header' } | { type: 'games'; games: OwnedGame[] }
+type ListRow = { type: 'recommended' } | { type: 'toolbar' } | { type: 'games'; games: OwnedGame[] }
 
 interface GamesListProps {
   games: OwnedGame[]
   recommendedGames: OwnedGame[]
+  toolbar: ReactNode
   idlingAppIds: number[]
   idlePendingAppIds: Set<number>
   idleStartTimes: Record<number, number>
@@ -41,7 +48,6 @@ interface RowProps {
   cardRowHeight: number
   bannerRowHeight: number
   recommendedSlides: RecommendedSlide[]
-  allGamesTitle: string
   idlingAppIds: number[]
   idlePendingAppIds: Set<number>
   idleStartTimes: Record<number, number>
@@ -50,11 +56,11 @@ interface RowProps {
 
 // react-window `List` row height must be known ahead of time - the `recommended` and plain `games`
 // rows are computed from the measured container width (see `useResponsiveColumnCount`), the
-// `header` row is a fixed constant.
+// `toolbar` row is a fixed constant.
 const getRowHeight = (index: number, props: RowProps) => {
   const row = props.rows[index]
   if (row.type === 'recommended') return props.bannerRowHeight
-  if (row.type === 'header') return HEADER_ROW_HEIGHT
+  if (row.type === 'toolbar') return TOOLBAR_HEIGHT
   return props.cardRowHeight
 }
 
@@ -73,7 +79,6 @@ const GamesListRow = ({
   cardWidth,
   cardRowHeight,
   recommendedSlides,
-  allGamesTitle,
   idlingAppIds,
   idlePendingAppIds,
   idleStartTimes,
@@ -93,7 +98,7 @@ const GamesListRow = ({
 
   if (row.type === 'recommended') {
     return (
-      <div className='px-6' style={{ ...style, paddingBottom: BANNER_BOTTOM_GAP }}>
+      <div className='px-6' style={{ ...style, paddingTop: BANNER_TOP_GAP }}>
         {recommendedSlides.length > 0 ? (
           <RecommendedBanner
             idlePendingAppIds={idlePendingAppIds}
@@ -107,12 +112,9 @@ const GamesListRow = ({
       </div>
     )
   }
-  if (row.type === 'header') {
-    return (
-      <div className='flex items-end px-6 pb-2' style={style}>
-        <Typography type='h4'>{allGamesTitle}</Typography>
-      </div>
-    )
+  if (row.type === 'toolbar') {
+    // Only reserves the space - see the sticky toolbar in `GamesList` below for what sits in it.
+    return <div style={style} />
   }
   return (
     // Explicit per-card pixel width (not CSS grid `1fr` columns) - each react-window row is its
@@ -137,12 +139,12 @@ const GamesListRow = ({
 export const GamesList = ({
   games,
   recommendedGames,
+  toolbar,
   idlingAppIds,
   idlePendingAppIds,
   idleStartTimes,
   onToggleIdle,
 }: GamesListProps) => {
-  const { t } = useTranslation()
   const containerRef = useRef<HTMLDivElement>(null)
   const { width, usableWidth, columnCount } = useResponsiveColumnCount(containerRef)
   const [listApi, setListApi] = useListCallbackRef()
@@ -156,17 +158,38 @@ export const GamesList = ({
   const bannerRowHeight =
     Math.round(
       Math.min(BANNER_MAX_HEIGHT, Math.max(BANNER_MIN_HEIGHT, usableWidth / BANNER_ASPECT_RATIO)),
-    ) + BANNER_BOTTOM_GAP
+    ) + BANNER_TOP_GAP
 
   // The row is held open with a skeleton while games are being checked, then dropped if none of
   // them turn out to have usable art.
   const { slides: recommendedSlides, isChecking } = useRecommendedSlides(recommendedGames)
   const showBanner = recommendedSlides.length > 0 || isChecking
 
+  // The toolbar is one element using real `position: sticky`, not a row: rows are absolutely positioned,
+  // so a sticky row could never stick. Passing it as `List`'s children puts it directly inside the
+  // scroll container, where the browser moves and docks it in the same pass as the scroll itself. An
+  // earlier version swapped in a second copy from a scroll listener, but scrolling runs ahead of the
+  // script, so the hand-off could never quite line up.
+  //
+  // Its margins start it where the toolbar row is, then cancel its height from the flow, so react-window's
+  // spacer after it still sets the scroll height alone. With no banner above it, it starts at the top
+  // and is stuck from the beginning, so this page then looks like the others.
+  const toolbarRowTop = showBanner ? bannerRowHeight : 0
+  const [isToolbarStuck, setIsToolbarStuck] = useState(false)
+  const forceReducedMotion = usePlatformStore(state => state.forceReducedMotion) === true
+  useEffect(() => {
+    const element = listApi?.element
+    if (!element) return
+    const update = () => setIsToolbarStuck(element.scrollTop >= toolbarRowTop)
+    update()
+    element.addEventListener('scroll', update, { passive: true })
+    return () => element.removeEventListener('scroll', update)
+  }, [listApi, toolbarRowTop])
+
   const rows = useMemo<ListRow[]>(() => {
     const result: ListRow[] = []
     if (showBanner) result.push({ type: 'recommended' })
-    result.push({ type: 'header' })
+    result.push({ type: 'toolbar' })
     for (let i = 0; i < games.length; i += columnCount) {
       result.push({ type: 'games', games: games.slice(i, i + columnCount) })
     }
@@ -179,7 +202,6 @@ export const GamesList = ({
     cardRowHeight,
     bannerRowHeight,
     recommendedSlides,
-    allGamesTitle: t('common.tabs.allGames'),
     idlingAppIds,
     idlePendingAppIds,
     idleStartTimes,
@@ -193,14 +215,34 @@ export const GamesList = ({
     <div className='relative h-full w-full' ref={containerRef}>
       {width > 0 && (
         <List
-          className='py-6'
+          className='pb-6'
           listRef={setListApi}
           rowComponent={GamesListRow}
           rowCount={rows.length}
           rowHeight={getRowHeight}
           rowProps={rowProps}
           style={{ height: '100%', width: '100%' }}
-        />
+        >
+          <div
+            className='sticky top-0 z-10'
+            style={{
+              height: TOOLBAR_HEIGHT,
+              marginTop: toolbarRowTop,
+              marginBottom: -(toolbarRowTop + TOOLBAR_HEIGHT),
+            }}
+          >
+            {/* Only on once content can pass behind the bar. Deliberately instant: a fade here
+                lagged behind the scroll and made docking feel sluggish. */}
+            <div
+              className={cn(
+                'pointer-events-none absolute inset-0',
+                forceReducedMotion ? 'page-toolbar-solid' : 'page-toolbar-frosted',
+                isToolbarStuck ? 'opacity-100' : 'opacity-0',
+              )}
+            />
+            {toolbar}
+          </div>
+        </List>
       )}
       <BackToTopButton visible={isVisible} onPress={scrollToTop} />
     </div>

@@ -54,7 +54,7 @@ export const CardFarmingProgressView = ({
 
   return (
     <div className='relative min-h-full'>
-      <div className='relative z-10 flex flex-col gap-6 p-6'>
+      <div className='page-content relative z-10 flex flex-col gap-6'>
         {state.active.length > 0 && (
           <div className='flex flex-col gap-2'>
             <Typography color='muted' type='body-xs' weight='semibold'>

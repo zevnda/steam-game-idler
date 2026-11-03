@@ -1,16 +1,17 @@
 import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
-import { TbDeviceGamepad2 } from 'react-icons/tb'
+import { TbDeviceGamepad2, TbRefresh } from 'react-icons/tb'
 import { useGamesList } from '../hooks/useGamesList'
 import { errorMessageKey } from '../utils/errorMessageKey'
 import { GamesList } from './GamesList'
-import { GamesPageHeader } from './GamesPageHeader'
-import { Alert, Button, EmptyState, Typography } from '@heroui/react'
+import { Alert, Button, EmptyState, Skeleton, Typography } from '@heroui/react'
 import { useRouter } from 'next/router'
 import { useIdling } from '@/features/idling/hooks/useIdling'
 import { PageBody } from '@/shared/components/dashboard/PageBody'
+import { PageTitle, PageToolbar } from '@/shared/components/dashboard/PageToolbar'
 import { GameGridSkeleton } from '@/shared/components/GameGridSkeleton'
+import { GameSortSelect } from '@/shared/components/GameSortSelect'
 import { useOwnedGameSort } from '@/shared/hooks/useOwnedGameSort'
 import { searchGames } from '@/shared/search/fuzzySearch'
 import { useSearchStore } from '@/shared/stores/searchStore'
@@ -18,7 +19,7 @@ import { useSessionStore } from '@/shared/stores/sessionStore'
 import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
 import { useSortPreferencesStore } from '@/shared/stores/sortPreferencesStore'
 import { openExternalLink } from '@/shared/utils/links'
-import { sortOwnedGames } from '@/shared/utils/sortOwnedGames'
+import { OWNED_GAME_SORT_LABEL_KEYS, sortOwnedGames } from '@/shared/utils/sortOwnedGames'
 
 const STEAM_PRIVACY_SETTINGS_URL = 'https://steamcommunity.com/my/edit/settings'
 
@@ -100,16 +101,39 @@ export const GamesPage = () => {
     </>
   )
 
+  // `GamesList` draws the toolbar itself while the list is showing, so it can sit under the banner.
+  const isShowingList = !showSkeleton && games.length > 0 && filteredGames.length > 0
+  const renderToolbar = (isFrosted: boolean) => (
+    <PageToolbar
+      isFrosted={isFrosted}
+      start={
+        isShowingList && (
+          <PageTitle count={filteredGames.length} title={t('common.tabs.allGames')} />
+        )
+      }
+    >
+      <GameSortSelect
+        isDisabled={!isShowingList}
+        ariaLabel={t('dashboard.inventoryManager.sort.label')}
+        options={sortStyleOptions.map(style => ({
+          id: style,
+          label: t(OWNED_GAME_SORT_LABEL_KEYS[style]),
+        }))}
+        value={effectiveSortStyle}
+        onChange={style => setSortStyle('games', style)}
+      />
+      <Button
+        isIconOnly
+        aria-label={t('common.actions.refresh')}
+        isPending={isRefreshing}
+        onPress={refresh}
+      >
+        <TbRefresh fontSize={18} />
+      </Button>
+    </PageToolbar>
+  )
   return (
     <div className='flex h-full flex-col'>
-      <GamesPageHeader
-        gameCount={games.length}
-        isRefreshing={isRefreshing}
-        sortStyle={effectiveSortStyle}
-        sortStyleOptions={sortStyleOptions}
-        onRefresh={refresh}
-        onSortStyleChange={style => setSortStyle('games', style)}
-      />
       <PageBody>
         {/* A failed refresh with a list already loaded only earns a notice: the games on screen are
             still correct, and replacing them would make a brief Steam stall look like a lost
@@ -148,6 +172,17 @@ export const GamesPage = () => {
           </div>
         )}
 
+        {/* Sized by the same limits as GamesList's banner row, so the banner replaces this without
+            the page moving. On a refresh the games are already known, so a library with nothing to
+            recommend doesn't flash a banner it will never show. */}
+        {showSkeleton && (games.length === 0 || recommendedGames.length > 0) && (
+          <div className='shrink-0 px-6 pt-3.5'>
+            <Skeleton className='aspect-1920/620 max-h-105 min-h-85 w-full rounded-2xl' />
+          </div>
+        )}
+
+        {!isShowingList && renderToolbar(!showSkeleton)}
+
         {showSkeleton ? (
           <GameGridSkeleton />
         ) : errorCode && games.length === 0 ? (
@@ -182,6 +217,7 @@ export const GamesPage = () => {
               idleStartTimes={idleStartTimes}
               idlingAppIds={idlingAppIds}
               recommendedGames={recommendedGames}
+              toolbar={renderToolbar(false)}
               onToggleIdle={toggleIdle}
             />
           </div>

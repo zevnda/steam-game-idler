@@ -16,7 +16,7 @@ interface CardFarmingStartPanelProps {
 // `useAutoConnectSteamCookies` couldn't skip it (no saved cookies, and not a gamer-tier agent-mode
 // account - see that hook's doc comment). Connecting does NOT start a farming cycle by itself - it
 // only proves cookies work and populates the "Games With Drops" tab; starting is a separate
-// explicit action from `CardFarmingPageHeader`. All of the card/tab/prefill/save UI lives in the
+// explicit action from `CardFarmingPage`'s toolbar. All of the card/tab/prefill/save UI lives in the
 // shared `SteamCookiesConnectPanel` (see its own doc comment) - this component just supplies this
 // feature's copy, error display, and forwards `onConnect` - mirrors InventoryConnectPanel's
 // identical errorSlot wiring so a bad cookie paste shows the same way on both pages.

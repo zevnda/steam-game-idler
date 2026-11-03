@@ -11,7 +11,7 @@ import {
   useResponsiveColumnCount,
 } from '@/shared/hooks/useGameGridColumns'
 
-// Vertical padding is a plain `py-6` on react-window's own scrollable root (Grid, not a wrapper -
+// Vertical padding is plain `page-toolbar-offset pb-6`, matching `.page-content`, on react-window's own scrollable root (Grid, not a wrapper -
 // so the scrollbar itself stays flush against the true edge). That works because react-window
 // never sets a cell's `top` - only `transform: translateY(...)` - so each cell falls back to its
 // *static* position (i.e. its normal-flow position, which honors padding-top) before the
@@ -119,7 +119,7 @@ export const VirtualizedGameGrid = ({ games, renderCard }: VirtualizedGameGridPr
         <Grid
           cellComponent={Cell}
           cellProps={{ games, realColumnCount, cardWidth, cardHeight, renderCard }}
-          className='py-6'
+          className='page-toolbar-offset pb-6'
           columnCount={realColumnCount + 2}
           gridRef={setGridApi}
           // Every real column's slot is `cardWidth` plus a trailing GAP to the next card - except
@@ -133,7 +133,7 @@ export const VirtualizedGameGrid = ({ games, renderCard }: VirtualizedGameGridPr
           }}
           rowCount={rowCount}
           // Mirrors columnWidth above for the vertical axis: the last row's slot is `cardHeight`
-          // alone so it sits flush against the bottom `py-6` padding instead of leaving a dead GAP
+          // alone so it sits flush against the bottom `pb-6` padding instead of leaving a dead GAP
           // beneath it.
           rowHeight={index => (index === rowCount - 1 ? cardHeight : cardHeight + GAP)}
           style={{ height: '100%', width: '100%' }}

@@ -6,7 +6,7 @@ type Phase = 'loading' | 'ready'
 interface FreeGamesStore {
   phase: Phase
   games: FreeGameEntry[]
-  // Drives FreeGamesPageHeader's refresh-button spinner for a manual refresh only - never touched
+  // Drives the Free Games toolbar's refresh-button spinner for a manual refresh only - never touched
   // by the hourly background poll (see `silentlyRefreshFreeGames` in useFreeGamesWatcher.ts),
   // mirroring gamesListStore's identical isRefreshing/silent-refresh split.
   isRefreshing: boolean

@@ -2,10 +2,9 @@ import type { TranslationKey } from '@/i18n'
 import type { IdleOwner } from '../types'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbPlayerPlay } from 'react-icons/tb'
+import { TbPlayerPlay, TbPlayerStopFilled } from 'react-icons/tb'
 import { useIdling } from '../hooks/useIdling'
 import { groupIdlingGames } from '../utils/groupIdlingGames'
-import { IdlingPageHeader } from './IdlingPageHeader'
 import { IdlingSection } from './IdlingSection'
 import { Alert, Button, EmptyState, Skeleton, Typography } from '@heroui/react'
 import { useRouter } from 'next/router'
@@ -13,6 +12,7 @@ import { useGamesList } from '@/features/games-list/hooks/useGamesList'
 import { errorMessageKey as gamesErrorMessageKey } from '@/features/games-list/utils/errorMessageKey'
 import { BackToTopButton } from '@/shared/components/BackToTopButton'
 import { PageBody } from '@/shared/components/dashboard/PageBody'
+import { PageTitle, PageToolbar } from '@/shared/components/dashboard/PageToolbar'
 import { useBackToTop } from '@/shared/hooks/useBackToTop'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 
@@ -68,14 +68,20 @@ export const IdlingPage = () => {
 
   return (
     <div className='flex h-full flex-col'>
-      <IdlingPageHeader
-        idlingCount={appIds.length}
-        isStoppingAll={isStoppingAll}
-        onStopAll={stopAll}
-      />
       <PageBody>
+        {appIds.length > 0 && (
+          <PageToolbar
+            start={<PageTitle count={appIds.length} title={t('dashboard.sidebar.nav.idling')} />}
+          >
+            <Button isPending={isStoppingAll} variant='danger' onPress={stopAll}>
+              <TbPlayerStopFilled fontSize={18} />
+              {t('dashboard.idling.stopAll')}
+            </Button>
+          </PageToolbar>
+        )}
+
         {phase === 'loading' && appIds.length > 0 ? (
-          <div className='game-grid p-6'>
+          <div className='game-grid page-content'>
             {Array.from({ length: appIds.length }, (_, index) => (
               <Skeleton key={index} className='aspect-2/3 rounded-xl' />
             ))}
@@ -106,7 +112,7 @@ export const IdlingPage = () => {
         ) : (
           <div
             ref={setScrollElement}
-            className='relative flex flex-1 flex-col gap-6 overflow-y-auto p-6'
+            className='page-content relative flex flex-1 flex-col gap-6 overflow-y-auto'
           >
             {groups.map(group => {
               const groupGameIds = new Set(group.appIds)

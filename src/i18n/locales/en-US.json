@@ -104,8 +104,6 @@
       "nameDesc": "Name (Z-A)"
     },
     "noGamesQueued": "No games queued",
-    "gamesQueuedCount_one": "{{count}} game queued",
-    "gamesQueuedCount_other": "{{count}} games queued",
     "completedThisSessionCount": "Completed this session ({{count}})"
   },
   "versionPolicy": {
@@ -386,8 +384,6 @@
       }
     },
     "games": {
-      "count_one": "{{count}} game",
-      "count_other": "{{count}} games",
       "unknownName": "App {{appId}}",
       "carousels": {
         "recommended": "Recommended"
@@ -423,8 +419,6 @@
       "descriptionWithGame": "This account is playing {{game}} in another Steam session, so idling and automation are paused. Everything resumes automatically about a minute after that session stops playing."
     },
     "idling": {
-      "count_one": "{{count}} game idling",
-      "count_other": "{{count}} games idling",
       "stopAll": "Stop all",
       "sections": {
         "manual": "Manually idled",
@@ -441,8 +435,6 @@
       }
     },
     "favorites": {
-      "count_one": "{{count}} favorite",
-      "count_other": "{{count}} favorites",
       "confirmClear": {
         "title": "Clear all favorites?",
         "description": "This will remove all {{count}} games from your favorites list."
@@ -458,8 +450,6 @@
       }
     },
     "freeGames": {
-      "count_one": "{{count}} free game available",
-      "count_other": "{{count}} free games available",
       "actions": {
         "claim": "Claim",
         "claimed": "Claimed"
@@ -611,11 +601,6 @@
       }
     },
     "cardFarming": {
-      "status": {
-        "idle": "Not farming",
-        "farming_one": "Farming {{count}} game",
-        "farming_other": "Farming {{count}} games"
-      },
       "actions": {
         "stop": "Stop farming"
       },
@@ -708,10 +693,6 @@
       }
     },
     "achievementUnlocker": {
-      "status": {
-        "running_one": "Unlocking {{count}} game",
-        "running_other": "Unlocking {{count}} games"
-      },
       "addAllToQueue": "Add all to queue",
       "confirmAddAllToQueue": {
         "title": "Add all {{count}} games to the queue?",
@@ -827,14 +808,11 @@
       }
     },
     "inventoryManager": {
-      "count_one": "{{count}} item",
-      "count_other": "{{count}} items",
       "fetchPrice": "Fetch price",
       "fetchingPrice": "Fetching price…",
       "badgeLevel": "Badge level {{level}}",
       "noBadge": "No badge crafted",
       "connect": {
-        "description": "Load your Steam Community inventory to manage and sell items.",
         "automaticDescription": "Signs in to Steam Community automatically to load your inventory."
       },
       "actions": {

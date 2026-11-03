@@ -179,7 +179,7 @@ export const InventoryItemGrid = ({ items, ...callbacks }: InventoryItemGridProp
           <Grid
             cellComponent={Cell}
             cellProps={{ items, realColumnCount, rowCount, cardWidth, callbacks }}
-            className='py-6'
+            className='page-toolbar-offset pb-6'
             columnCount={realColumnCount + 2}
             gridRef={setGridApi}
             columnWidth={index =>
