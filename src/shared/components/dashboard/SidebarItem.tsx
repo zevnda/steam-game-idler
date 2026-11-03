@@ -76,7 +76,7 @@ export const SidebarItem = ({
         'focus-visible:ring-2 focus-visible:ring-focus',
         collapsed && 'justify-center px-0',
         isActive
-          ? 'bg-surface text-foreground hover:bg-surface-hover'
+          ? 'bg-surface-secondary text-foreground'
           : 'text-muted hover:bg-surface-hover hover:text-foreground',
       )}
       href={href}

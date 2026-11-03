@@ -141,7 +141,7 @@ export const Sidebar = () => {
   return (
     <nav
       className={cn(
-        'relative flex h-screen shrink-0 flex-col border-r border-border bg-background',
+        'relative flex h-screen shrink-0 flex-col border-r border-border bg-(--app-chrome)',
         hydrated && 'transition-[width] duration-200',
         collapsed ? 'w-16' : 'w-64',
       )}

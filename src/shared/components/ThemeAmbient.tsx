@@ -258,7 +258,7 @@ export const ThemeAmbient = () => {
       key={preset}
       ref={canvasRef}
       aria-hidden='true'
-      className={`absolute transition-opacity duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+      className={`page-backdrop absolute transition-opacity duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
       style={{
         inset: -blurPx * 3,
         width: `calc(100% + ${blurPx * 6}px)`,

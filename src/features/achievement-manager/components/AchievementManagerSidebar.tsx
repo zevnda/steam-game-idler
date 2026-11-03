@@ -68,7 +68,7 @@ const NavItem = ({
     aria-current={isActive ? 'page' : undefined}
     className={cn(
       'flex w-full cursor-pointer flex-col gap-1.5 rounded-xl px-3 py-2 text-left duration-150',
-      isActive ? 'bg-surface-secondary' : 'hover:bg-surface-secondary/60',
+      isActive ? 'bg-surface-secondary' : 'hover:bg-surface-hover',
     )}
     type='button'
     onClick={onPress}
@@ -146,7 +146,7 @@ export const AchievementManagerSidebar = ({
   const hasSets = sections !== null && sections.length > 0
 
   return (
-    <aside className='flex w-72 shrink-0 flex-col border-r border-border bg-background'>
+    <aside className='flex w-72 shrink-0 flex-col border-r border-border bg-(--app-chrome)'>
       {/* `data-tauri-drag-region` - the modal covers the app's titlebar, so this strip keeps the
           window draggable while the overlay is open (see Titlebar.tsx for the same pattern). */}
       <div className='flex shrink-0 items-center gap-1 px-3 pt-3' data-tauri-drag-region>

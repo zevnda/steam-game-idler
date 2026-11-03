@@ -213,7 +213,7 @@ export const SettingsModal = () => {
               split with only a floating dismiss button (see GoProModal's identical structural
               deviation for the established precedent). `Modal.Heading` still renders (visually
               hidden) so the dialog keeps a real accessible name for screen readers. */}
-          <Modal.Dialog className='overflow-hidden p-0'>
+          <Modal.Dialog className='overflow-hidden bg-background p-0'>
             <Modal.Heading className='sr-only'>{t('dashboard.settings.title')}</Modal.Heading>
             <ModalDragRegion placement='dialog' />
             <Modal.CloseTrigger className='absolute left-5 top-5 z-50 h-8 w-8 bg-field text-muted duration-150 hover:bg-field-hover rounded-full' />
@@ -228,13 +228,13 @@ export const SettingsModal = () => {
                 {/* Fixed-width, non-scrolling nav column - `pt-16` clears the floating close
                     button above it, `border-r`/`bg-background` match Sidebar.tsx's own dashboard
                     nav column for visual consistency with the rest of the app's chrome. */}
-                <div className='flex h-full w-64 shrink-0 flex-col border-r border-border bg-background pt-16'>
+                <div className='flex h-full w-64 shrink-0 flex-col border-r border-border bg-(--app-chrome) pt-16'>
                   <TabListContainer className='min-h-0 flex-1 overflow-y-auto bg-transparent px-3'>
                     <TabList className='w-full gap-1 p-0'>
                       {TABS.map(({ key, labelKey, icon: Icon, groupStart }) => (
                         <Tab
                           // Same row styling as SidebarItem.tsx (h-9, 18px/1.5-stroke icon,
-                          // semibold label, muted unless selected, `bg-surface` highlight) so the
+                          // semibold label, muted unless selected, `bg-surface-secondary` highlight) so the
                           // settings nav reads as the same system as the dashboard sidebar.
                           // `hover:opacity-100` cancels HeroUI's own `.tabs__tab` hover rule,
                           // which fades an unselected tab to 0.7 opacity - the opposite of the
@@ -243,7 +243,7 @@ export const SettingsModal = () => {
                             'h-9 w-full min-w-0 justify-start gap-3 rounded-lg px-3 text-left text-sm font-semibold',
                             'text-muted hover:bg-surface-hover hover:text-foreground hover:opacity-100',
                             'data-[hovered=true]:opacity-100',
-                            'data-[selected=true]:bg-surface data-[selected=true]:text-foreground',
+                            'data-[selected=true]:bg-surface-secondary data-[selected=true]:text-foreground',
                             groupStart && 'mt-3',
                           )}
                           id={key}

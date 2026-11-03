@@ -67,7 +67,7 @@ export const InventoryItemCard = ({
           onChange={onToggleSelect}
         >
           <Checkbox.Content>
-            <Checkbox.Control className='bg-surface-tertiary hover:bg-surface-hover text-foreground'>
+            <Checkbox.Control className='bg-field hover:bg-field-hover text-foreground'>
               <Checkbox.Indicator />
             </Checkbox.Control>
           </Checkbox.Content>

@@ -36,28 +36,42 @@
    not before.
 */
 [data-theme='dark'] {
-  --background: oklch(0.21 0.006 285.89);
+  --background: #0b0c0e;
 
-  --surface: oklch(0.28 0.006 285.89);
-  --overlay: oklch(24.521% 0.00755 285.784);
+  --surface: #16171b;
+  --overlay: #131418;
 
-  --default: oklch(0.33 0.006 285.89);
-  --surface-secondary: oklch(0.33 0.006 285.89);
+  /* One shade for every small interactive control (inputs, dropdowns, the search bar, secondary
+     buttons, tab strips, chips, switch tracks), so they read as one family wherever they sit. */
+  --default: #212328;
+  --surface-secondary: #212328;
 
-  --separator: oklch(0.31 0.006 285.89);
+  --separator: #17181c;
 
-  --border: oklch(0.36 0.006 285.89);
-  --surface-tertiary: oklch(0.4 0.006 285.89);
+  --border: #1b1c20;
+  --surface-tertiary: #2c2e34;
 
-  --field-background: var(--surface);
-  --field-hover: var(--surface-secondary);
+  --field-background: var(--default);
+
+  /* Everything below is derived from the tokens above rather than being a fixed colour, because this
+     block also applies under every dark theme preset, which only overrides the base tokens. A fixed
+     colour here would show up as the default theme's grey on top of, say, a purple theme.
+
+     HeroUI's stock hover mixes (8% for surfaces, 4% for buttons) were tuned for a lighter canvas. On
+     colours this dark, 4% is too slight to see, and a surface's hover could end up brighter than the
+     selected item beside it. */
+  --app-chrome: color-mix(in oklab, var(--background) 98%, var(--foreground));
+  --surface-hover: color-mix(in oklab, var(--surface) 96%, var(--foreground));
+  --default-hover: color-mix(in oklab, var(--default) 90%, var(--foreground));
+  --field-hover: color-mix(in oklab, var(--field-background) 90%, var(--foreground));
+  --segment: color-mix(in oklab, var(--default) 88%, var(--foreground));
 
   /* Scrollbar thumb/track - reuses HeroUI's own token names (`--scrollbar-thumb`/`-track`), but
      driven by `::-webkit-scrollbar` below instead of HeroUI's `scrollbar-color`/`scrollbar-width`
      system (see this file's scrollbar rule for why). Thumb sits at the same lightness as
      --surface-tertiary/--field-border - the "most prominent neutral" tier, since it needs to read
      clearly against every other layer. */
-  --scrollbar-thumb: oklch(0.4 0.006 285.89);
+  --scrollbar-thumb: #2c2e34;
   --scrollbar-track: transparent;
 }
 
@@ -70,6 +84,10 @@
 
 .button--secondary {
   --button-fg: var(--white);
+}
+
+[data-theme='light'] {
+  --app-chrome: color-mix(in oklab, var(--background) 98%, var(--foreground));
 }
 
 /* Inverted for the `white` preset (the only one setting `data-theme='light'` - see `presets.ts`'s
@@ -86,6 +104,14 @@
 
 [data-theme='light'] .button--secondary {
   --button-fg: var(--black);
+}
+
+/* HeroUI fades an unselected tab to 70% on hover, which reads as the tab getting less available.
+   Brightening it instead matches every other hover in the app. */
+.tabs__tab:not([data-selected='true']):not([data-disabled='true']):hover,
+.tabs__tab[data-hovered='true']:not([data-selected='true']):not([data-disabled='true']) {
+  opacity: 1;
+  color: var(--foreground);
 }
 
 /* App-wide scrollbar styling (a fully rounded 8px thumb, inset 3px from each edge by a transparent

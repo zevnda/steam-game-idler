@@ -935,13 +935,22 @@ body {
 /* Reserves the scrollbar's room on a page's scrollers even when they don't overflow. Otherwise a
    grid would be wider with a few games than with many, and shift when a list grows long enough. Not
    on one wrapping a virtualized grid, which scrolls and reserves that room itself: both reserving it
-   would leave an empty strip beside the real scrollbar. */
-main .overflow-y-auto:not(.inventory-filter-panel, :has([role='grid'])) {
+   would leave an empty strip beside the real scrollbar. Matches a marker on the grid's container,
+   not react-window's own [role='grid'], which only exists once that container has been measured:
+   the panel's width would then change during the measuring, causing a ResizeObserver loop error. */
+main .overflow-y-auto:not(.inventory-filter-panel, :has(.virtual-grid-host)) {
   scrollbar-gutter: stable;
 }
 
 .page-toolbar-solid {
   background: var(--background);
+}
+
+/* With a backdrop behind the page, a solid bar ends in a hard line wherever the backdrop is bright.
+   Fading its bottom padding avoids that. Not done without a backdrop, where it would only soften
+   cards scrolling under the bar. */
+body:has(.page-backdrop) .page-toolbar-solid {
+  background: linear-gradient(to bottom, var(--background) calc(100% - 14px), transparent);
 }
 
 /* Scroll containers run up behind the bar, but their scrollbars shouldn't. Starting the track below the bar also keeps the thumb out from under it. Matched from

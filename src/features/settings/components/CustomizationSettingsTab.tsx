@@ -239,9 +239,9 @@ export const CustomizationSettingsTab = ({
               className='relative h-8 w-8 overflow-hidden rounded-full border border-border'
               style={{ background: swatchBackground ?? tokens.background }}
             >
-              {/* Accent pip - signature presets also recolor HeroUI's accent, which the
-                  background circle alone wouldn't show. */}
-              {tokens.accent && (
+              {/* Accent pip, signature presets only: it pairs with their backdrop art, while a
+                  plain color preset's swatch is just its color. */}
+              {swatchBackground && tokens.accent && (
                 <span
                   className='absolute right-0.5 bottom-0.5 h-2.5 w-2.5 rounded-full ring-1 ring-black/40'
                   style={{ background: tokens.accent }}

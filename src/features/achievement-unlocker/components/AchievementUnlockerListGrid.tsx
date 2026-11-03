@@ -141,7 +141,7 @@ export const AchievementUnlockerListGrid = ({
         {/* No horizontal padding here (or on Grid) - see VirtualizedGameGrid.tsx's top comment.
             `relative` only affects positioning context - anchors BackToTopButton below to this
             grid's own viewport. */}
-        <div ref={containerRef} className='relative h-full w-full'>
+        <div ref={containerRef} className='virtual-grid-host relative h-full w-full'>
           {width > 0 && (
             <Grid
               cellComponent={Cell}

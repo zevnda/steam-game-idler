@@ -188,7 +188,7 @@ export const AchievementsView = ({
           </InputGroup>
           {/* Segmented control styled after the app's tab lists - a one-click status filter, which
             the old sort dropdown's "Locked first"/"Unlocked first" only approximated. */}
-          <div className='flex shrink-0 rounded-full bg-surface p-1'>
+          <div className='flex shrink-0 rounded-full bg-default p-1'>
             {STATUS_FILTERS.map(filter => (
               <button
                 key={filter.id}
@@ -196,7 +196,7 @@ export const AchievementsView = ({
                 className={cn(
                   'cursor-pointer rounded-full px-3 py-1 text-sm duration-150',
                   statusFilter === filter.id
-                    ? 'bg-surface-tertiary font-semibold text-foreground'
+                    ? 'bg-(--segment) font-semibold text-foreground'
                     : 'text-muted hover:text-foreground',
                 )}
                 type='button'

@@ -37,7 +37,7 @@ export const GlobalSearchBar = () => {
       <div
         className={cn(
           'pointer-events-auto flex h-10 w-56 items-center gap-2 rounded-full lg:w-72',
-          'bg-surface px-1 text-sm text-muted transition-colors hover:bg-surface-hover',
+          'bg-field px-1 text-sm text-muted transition-colors hover:bg-field-hover',
         )}
       >
         <button
@@ -52,7 +52,7 @@ export const GlobalSearchBar = () => {
         </button>
         {query && (
           <button
-            className='mr-1 shrink-0 rounded-full p-1 hover:bg-surface-hover cursor-pointer'
+            className='mr-1 shrink-0 rounded-full p-1 hover:bg-foreground/10 cursor-pointer'
             type='button'
             onClick={() => clearQuery(scope.id)}
           >

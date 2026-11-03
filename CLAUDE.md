@@ -713,7 +713,7 @@ per theme — adding a theme is a one-object change:
 - `tokens.ts` — `ThemeTokens`, the token contract every theme supplies (the neutral-surface ladder:
   `background`, `fieldBackground`/`fieldBorder`, `surface`, `overlay`, `default`,
   `surfaceSecondary`, `separator`, `border`, `surfaceTertiary`, `scrollbarThumb`/`scrollbarTrack`).
-  Accent/success/warning/danger/spacing/radius stay HeroUI's stock values regardless of theme.
+  Success/warning/danger/spacing/radius stay HeroUI's stock values regardless of theme; `accent` is an optional per-preset override.
 - `presets.ts` — `THEME_PRESETS`, a `Record<ThemePreset, ThemeTokens>` for the non-default presets.
   `default` is not a registry entry — it's `theme.css`'s own stylesheet baseline, selected by
   *clearing* any inline override.
@@ -725,7 +725,7 @@ per theme — adding a theme is a one-object change:
   pre-dashboard-visible preference like zoom). Reconciles the provisional script-applied theme
   against the real `Settings.theme` + subscription tier once both are available.
 
-**Adding a new theme preset**: add one `makeTokens(hue, chroma)` call (or a hand-written
+**Adding a new theme preset**: add one `makeTintedTokens(hue, chroma)` call (or a hand-written
 `ThemeTokens` object) to `presets.ts` — no new file, no CSS selector, no changes to
 `applyTheme.ts`/`useTheme.ts`/`_document.tsx`. All non-default presets are Casual-tier gated,
 enforced consistently in both `useTheme.ts` and `CustomizationSettingsTab.tsx`.

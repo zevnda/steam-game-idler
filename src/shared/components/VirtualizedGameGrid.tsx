@@ -114,7 +114,7 @@ export const VirtualizedGameGrid = ({ games, renderCard }: VirtualizedGameGridPr
     // so react-window's own scrollbar sits flush against this container's true edge. `relative`
     // only affects positioning context (not layout), so it's safe alongside that - it's what lets
     // BackToTopButton below anchor to this grid's own viewport instead of the whole app window.
-    <div ref={containerRef} className='relative h-full w-full'>
+    <div ref={containerRef} className='virtual-grid-host relative h-full w-full'>
       {width > 0 && (
         <Grid
           cellComponent={Cell}

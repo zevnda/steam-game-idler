@@ -92,7 +92,7 @@ export const Titlebar = ({ minimal = false }: TitlebarProps) => {
       // strip instead of being covered by it.
       className={cn(
         'fixed left-0 top-0 h-14 w-screen select-none',
-        minimal ? 'z-9999 bg-transparent' : 'z-50 border-b border-border bg-background',
+        minimal ? 'z-9999 bg-transparent' : 'z-50 border-b border-border bg-(--app-chrome)',
       )}
       data-tauri-drag-region
     >
@@ -100,7 +100,7 @@ export const Titlebar = ({ minimal = false }: TitlebarProps) => {
         {!minimal && (
           <>
             {/* Brand/logo, leftmost in the titlebar itself now that Titlebar paints an opaque
-                `bg-background` over the full window width - it used to be Sidebar's own Brand strip
+                `bg-(--app-chrome)` over the full window width - it used to be Sidebar's own Brand strip
                 showing through a transparent Titlebar, which stopped working once Titlebar became
                 opaque. Sized to match the sidebar's current width (`w-16`/`w-64`) so it stays visually
                 anchored above the sidebar and collapses in step with it. `hydrated` gates the

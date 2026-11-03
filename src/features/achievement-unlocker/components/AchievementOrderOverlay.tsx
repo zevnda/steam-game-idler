@@ -116,7 +116,7 @@ export const AchievementOrderOverlay = () => {
       <Modal isOpen={openGame !== null} onOpenChange={handleOpenChange}>
         <Modal.Backdrop>
           <Modal.Container size='cover'>
-            <Modal.Dialog className='overflow-hidden p-0'>
+            <Modal.Dialog className='overflow-hidden bg-background p-0'>
               {openGame && (
                 <AchievementOrderHeader
                   canImportTimings={canImportTimings}
@@ -212,7 +212,7 @@ export const AchievementOrderOverlay = () => {
                 )}
               </Modal.Body>
               {!isLoading && !loadErrorCode && achievements.length > 0 && (
-                <Modal.Footer className='bg-overlay shrink-0 border-t border-border px-6 py-3 mt-0'>
+                <Modal.Footer className='bg-background shrink-0 border-t border-border px-6 py-3 mt-0'>
                   <Button isPending={isSaving} onPress={save}>
                     {t('common.actions.save')}
                   </Button>

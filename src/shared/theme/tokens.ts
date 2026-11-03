@@ -21,8 +21,8 @@ export interface ThemeTokens {
   scrollbarThumb: string
   scrollbarTrack: string
   // Optional HeroUI accent override (switches, selected tabs, progress bars, focus rings - `--focus`
-  // already resolves through `--accent`). Only the "signature" presets set these; a preset leaving
-  // them out keeps HeroUI's stock blue, and `applyTheme()` clears any previous override.
+  // already resolves through `--accent`). A preset leaving them out keeps HeroUI's stock blue, and
+  // `applyTheme()` clears any previous override.
   accent?: string
   accentForeground?: string
 }

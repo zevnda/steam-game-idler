@@ -81,7 +81,7 @@ const DelayRow = ({ delayBeforeFirstUnlock, isDisabled, onDelayChange }: DelayRo
           value={delayBeforeFirstUnlock === '' ? NaN : delayBeforeFirstUnlock}
           onChange={value => onDelayChange(Number.isNaN(value) ? '' : value)}
         >
-          <NumberField.Group className='bg-surface-secondary hover:bg-surface-hover text-foreground'>
+          <NumberField.Group className='bg-field hover:bg-field-hover text-foreground'>
             <NumberField.DecrementButton />
             <NumberField.Input />
             <NumberField.IncrementButton />
@@ -142,7 +142,7 @@ const ConnectorRow = ({ achievementName, delay, isDisabled, onDelayChange }: Con
             value={delay ?? NaN}
             onChange={value => onDelayChange(Number.isNaN(value) ? null : value)}
           >
-            <NumberField.Group className='bg-surface-secondary hover:bg-surface-hover text-foreground'>
+            <NumberField.Group className='bg-field hover:bg-field-hover text-foreground'>
               <NumberField.DecrementButton />
               <NumberField.Input />
               <NumberField.IncrementButton />
@@ -261,7 +261,7 @@ const ReadOnlySectionHeaderRow = ({ reason, count }: { reason: ReadOnlyReason; c
       <Typography truncate type='body-xs' weight='semibold' onMouseEnter={revealTitleIfTruncated}>
         {t(READ_ONLY_SECTION_TITLE_KEYS[reason])}
       </Typography>
-      <span className='shrink-0 rounded-full bg-surface-tertiary px-1.5 py-0.5 text-[10px] font-semibold text-muted'>
+      <span className='shrink-0 rounded-full bg-surface-secondary px-1.5 py-0.5 text-[10px] font-semibold text-muted'>
         {count}
       </span>
     </div>

@@ -3,35 +3,33 @@ import type { ThemeTokens } from './tokens'
 // Named theme presets, keyed by the same string persisted in `Settings.theme`
 // (`src-tauri/src/settings/mod.rs`). `default` isn't a registry entry - it's `theme.css`'s
 // `[data-theme='dark']` stylesheet baseline, applied by *not* setting any inline override (see
-// `applyTheme(null)`). All Pro-gated presets below reuse `default`'s exact lightness ladder (same
-// oklch L values `theme.css` already defines) so every theme keeps the same elevation model - only
-// hue/chroma shift, which is what makes them read as distinct color themes rather than different
-// contrast levels.
+// `applyTheme(null)`). The basic colour presets below (`makeTintedTokens`) sit on `default`'s
+// lightness ladder, so they differ from it in colour rather than in contrast.
 export type ThemePreset = keyof typeof THEME_PRESETS
 
-// Builds one preset's full token set from a single hue + chroma, so adding theme #7 tomorrow is
-// one `makeTokens(hue, chroma)` call, not twelve hand-written oklch strings. `black` is the one
-// preset that doesn't fit this shape (a darker, near-neutral ladder rather than a hue-shifted
-// one), so it's hand-written separately below.
+// Builds a colour theme on `default`'s own lightness ladder (`theme.css`), so every control stands
+// out from the page exactly as much as it does there and only the tint changes. Chroma stays low
+// because a dark colour reads far more saturated than its number suggests, and the canvas gets the
+// least of it: tinting every layer equally is what makes a theme look like a colour filter, with
+// inputs and buttons melting into the page. Colour comes mostly from `accent` instead.
 //
-// `depth` shifts the whole ladder darker (negative) while keeping every step's relative gap - the
-// signature presets use it so their animated backdrop (`ambientShaders.ts`) has a deeper canvas to glow
-// against, without changing the elevation model itself.
-function makeTokens(hue: number, chroma: number, depth = 0) {
-  const oklch = (lightness: number) =>
-    `oklch(${Math.round((lightness + depth) * 1000) / 1000} ${chroma} ${hue})`
+// Each step is an offset from `canvas`, so a signature preset can pick a deeper canvas for its
+// animated backdrop (`ambientShaders.ts`) to glow against and keep the same contrast between layers.
+function makeTintedTokens(hue: number, chroma: number, canvas = 0.16) {
+  const tint = (offset: number, strength = 1) =>
+    `oklch(${Math.round((canvas + offset) * 1000) / 1000} ${Math.round(chroma * strength * 1000) / 1000} ${hue})`
   return {
-    background: oklch(0.21),
-    fieldBackground: oklch(0.24),
-    fieldBorder: oklch(0.4),
-    surface: oklch(0.28),
-    overlay: oklch(0.28),
-    default: oklch(0.33),
-    surfaceSecondary: oklch(0.33),
-    separator: oklch(0.31),
-    border: oklch(0.36),
-    surfaceTertiary: oklch(0.4),
-    scrollbarThumb: oklch(0.4),
+    background: tint(0, 0.8),
+    fieldBackground: tint(0.1),
+    fieldBorder: 'transparent',
+    surface: tint(0.05, 0.9),
+    overlay: tint(0.035, 0.9),
+    default: tint(0.1),
+    surfaceSecondary: tint(0.1),
+    separator: tint(0.055, 0.9),
+    border: tint(0.07, 0.9),
+    surfaceTertiary: tint(0.145),
+    scrollbarThumb: tint(0.145),
     scrollbarTrack: 'transparent',
   }
 }
@@ -39,28 +37,46 @@ function makeTokens(hue: number, chroma: number, depth = 0) {
 // Every preset here is Casual-tier gated - enforced by `useTheme.ts`/`CustomizationSettingsTab.tsx`
 // via `hasCasualAccess`, not by anything in this file.
 export const THEME_PRESETS = {
-  blue: makeTokens(250, 0.06),
-  red: makeTokens(25, 0.08),
-  purple: makeTokens(300, 0.07),
-  pink: makeTokens(340, 0.07),
-  orange: makeTokens(40, 0.06),
+  // No accent override: HeroUI's stock accent is already this blue.
+  blue: makeTintedTokens(255, 0.032),
+  // Warm enough to stay distinct from `--danger`, so a switch that's on doesn't read as an error.
+  red: {
+    ...makeTintedTokens(20, 0.025),
+    accent: 'oklch(0.68 0.19 28)',
+    accentForeground: 'var(--snow)',
+  },
+  purple: {
+    ...makeTintedTokens(305, 0.038),
+    accent: 'oklch(0.68 0.17 305)',
+    accentForeground: 'var(--snow)',
+  },
+  pink: {
+    ...makeTintedTokens(350, 0.028),
+    accent: 'oklch(0.74 0.15 350)',
+    accentForeground: 'var(--eclipse)',
+  },
+  orange: {
+    ...makeTintedTokens(55, 0.022),
+    accent: 'oklch(0.75 0.16 60)',
+    accentForeground: 'var(--eclipse)',
+  },
   // Not hue-shifted like the others - a darker, lower-chroma variant of the same neutral hue
   // `default` uses, for a true "black" theme rather than a colored one.
   black: {
-    background: 'oklch(0.14 0.003 285.89)',
-    fieldBackground: 'oklch(0.2329 0.003 285.89)',
-    fieldBorder: 'oklch(0.32 0.003 285.89)',
-    surface: 'oklch(0.19 0.003 285.89)',
-    overlay: 'oklch(0.1706 0.003 285.89)',
-    default: 'oklch(0.24 0.003 285.89)',
-    surfaceSecondary: 'oklch(0.24 0.003 285.89)',
-    separator: 'oklch(0.22 0.003 285.89)',
-    border: 'oklch(0.27 0.003 285.89)',
-    surfaceTertiary: 'oklch(0.32 0.003 285.89)',
-    scrollbarThumb: 'oklch(0.32 0.003 285.89)',
+    background: 'oklch(0.08 0 0)',
+    fieldBackground: 'oklch(0.21 0 0)',
+    fieldBorder: 'transparent',
+    surface: 'oklch(0.15 0 0)',
+    overlay: 'oklch(0.135 0 0)',
+    default: 'oklch(0.21 0 0)',
+    surfaceSecondary: 'oklch(0.21 0 0)',
+    separator: 'oklch(0.155 0 0)',
+    border: 'oklch(0.175 0 0)',
+    surfaceTertiary: 'oklch(0.26 0 0)',
+    scrollbarThumb: 'oklch(0.26 0 0)',
     scrollbarTrack: 'transparent',
   },
-  // The one light-background preset - doesn't fit `makeTokens`'s dark-ascending ladder shape either
+  // The one light-background preset - doesn't fit `makeTintedTokens`'s dark-ascending ladder shape either
   // (an inverted mirror of `black`, not a hue shift). `ThemeTokens` only carries this app's own
   // elevation subset; HeroUI's own `--foreground`/`--field-foreground`/`--link`/shadow tokens still
   // need to flip to its light values for text to stay readable, which no entry in this file can do
@@ -72,8 +88,8 @@ export const THEME_PRESETS = {
     fieldBorder: 'oklch(0.84 0.004 285.89)',
     surface: 'oklch(1 0 0)',
     overlay: 'oklch(1 0 0)',
-    default: 'oklch(0.94 0.002 285.89)',
-    surfaceSecondary: 'oklch(0.94 0.002 285.89)',
+    default: 'oklch(0.92 0.003 285.89)',
+    surfaceSecondary: 'oklch(0.92 0.003 285.89)',
     separator: 'oklch(0.91 0.003 285.89)',
     border: 'oklch(0.89 0.003 285.89)',
     surfaceTertiary: 'oklch(0.84 0.004 285.89)',
@@ -84,32 +100,32 @@ export const THEME_PRESETS = {
   // (`ambientShaders.ts`, rendered by `ThemeAmbient.tsx`). Adding one here without a matching
   // shader just yields a plain recolor rather than an error.
   synthwave: {
-    ...makeTokens(295, 0.07, -0.03),
+    ...makeTintedTokens(295, 0.07, 0.18),
     accent: 'oklch(0.7 0.24 350)',
     accentForeground: 'var(--snow)',
   },
   aurora: {
-    ...makeTokens(210, 0.04, -0.03),
+    ...makeTintedTokens(210, 0.04, 0.18),
     accent: 'oklch(0.8 0.15 170)',
     accentForeground: 'var(--eclipse)',
   },
   nebula: {
-    ...makeTokens(280, 0.045, -0.05),
+    ...makeTintedTokens(280, 0.045, 0.16),
     accent: 'oklch(0.7 0.19 295)',
     accentForeground: 'var(--snow)',
   },
   terminal: {
-    ...makeTokens(150, 0.03, -0.07),
+    ...makeTintedTokens(150, 0.03, 0.14),
     accent: 'oklch(0.84 0.21 145)',
     accentForeground: 'var(--eclipse)',
   },
   ember: {
-    ...makeTokens(45, 0.035, -0.03),
+    ...makeTintedTokens(45, 0.035, 0.18),
     accent: 'oklch(0.72 0.18 48)',
     accentForeground: 'var(--eclipse)',
   },
   abyss: {
-    ...makeTokens(235, 0.06, -0.05),
+    ...makeTintedTokens(235, 0.06, 0.16),
     accent: 'oklch(0.78 0.13 210)',
     accentForeground: 'var(--eclipse)',
   },
@@ -122,8 +138,8 @@ export const THEME_PRESETS = {
     fieldBorder: 'oklch(0.86 0.04 340)',
     surface: 'oklch(0.99 0.008 340)',
     overlay: 'oklch(0.99 0.008 340)',
-    default: 'oklch(0.93 0.025 340)',
-    surfaceSecondary: 'oklch(0.93 0.025 340)',
+    default: 'oklch(0.9 0.03 340)',
+    surfaceSecondary: 'oklch(0.9 0.03 340)',
     separator: 'oklch(0.9 0.03 340)',
     border: 'oklch(0.88 0.035 340)',
     surfaceTertiary: 'oklch(0.86 0.04 340)',
@@ -133,52 +149,52 @@ export const THEME_PRESETS = {
     accentForeground: 'var(--snow)',
   },
   sugarNight: {
-    ...makeTokens(310, 0.06, -0.04),
+    ...makeTintedTokens(310, 0.06, 0.17),
     accent: 'oklch(0.78 0.14 340)',
     accentForeground: 'var(--eclipse)',
   },
   sakura: {
-    ...makeTokens(350, 0.05, -0.04),
+    ...makeTintedTokens(350, 0.05, 0.17),
     accent: 'oklch(0.78 0.12 355)',
     accentForeground: 'var(--eclipse)',
   },
   lofiRain: {
-    ...makeTokens(250, 0.025, -0.04),
+    ...makeTintedTokens(250, 0.025, 0.17),
     accent: 'oklch(0.78 0.14 70)',
     accentForeground: 'var(--eclipse)',
   },
   fireflies: {
-    ...makeTokens(150, 0.03, -0.06),
+    ...makeTintedTokens(150, 0.03, 0.15),
     accent: 'oklch(0.88 0.17 120)',
     accentForeground: 'var(--eclipse)',
   },
   holo: {
-    ...makeTokens(260, 0.02, -0.05),
+    ...makeTintedTokens(260, 0.02, 0.16),
     accent: 'oklch(0.82 0.12 195)',
     accentForeground: 'var(--eclipse)',
   },
   blackHole: {
-    ...makeTokens(60, 0.01, -0.08),
+    ...makeTintedTokens(60, 0.01, 0.13),
     accent: 'oklch(0.8 0.14 75)',
     accentForeground: 'var(--eclipse)',
   },
   lavaLamp: {
-    ...makeTokens(10, 0.04, -0.04),
+    ...makeTintedTokens(10, 0.04, 0.17),
     accent: 'oklch(0.7 0.2 30)',
     accentForeground: 'var(--snow)',
   },
   circuit: {
-    ...makeTokens(245, 0.04, -0.06),
+    ...makeTintedTokens(245, 0.04, 0.15),
     accent: 'oklch(0.72 0.17 245)',
     accentForeground: 'var(--snow)',
   },
   luxe: {
-    ...makeTokens(80, 0.008, -0.08),
+    ...makeTintedTokens(80, 0.008, 0.13),
     accent: 'oklch(0.8 0.13 85)',
     accentForeground: 'var(--eclipse)',
   },
   arcade: {
-    ...makeTokens(275, 0.04, -0.07),
+    ...makeTintedTokens(275, 0.04, 0.14),
     accent: 'oklch(0.86 0.2 145)',
     accentForeground: 'var(--eclipse)',
   },
@@ -238,16 +254,16 @@ export function isLightThemePreset(theme: string) {
 // for why). Must stay in sync with `theme.css`'s `[data-theme='dark']` block by hand; not consumed
 // by `applyTheme`/`useTheme.ts`, only by the settings-tab preview swatch.
 export const DEFAULT_THEME_PREVIEW_TOKENS: ThemeTokens = {
-  background: 'oklch(0.21 0.006 285.89)',
-  fieldBackground: 'oklch(0.24 0.006 285.89)',
-  fieldBorder: 'oklch(0.4 0.006 285.89)',
-  surface: 'oklch(0.28 0.006 285.89)',
-  overlay: 'oklch(0.28 0.006 285.89)',
-  default: 'oklch(0.33 0.006 285.89)',
-  surfaceSecondary: 'oklch(0.33 0.006 285.89)',
-  separator: 'oklch(0.31 0.006 285.89)',
-  border: 'oklch(0.36 0.006 285.89)',
-  surfaceTertiary: 'oklch(0.4 0.006 285.89)',
-  scrollbarThumb: 'oklch(0.4 0.006 285.89)',
+  background: '#0b0c0e',
+  fieldBackground: '#212328',
+  fieldBorder: 'transparent',
+  surface: '#16171b',
+  overlay: '#131418',
+  default: '#212328',
+  surfaceSecondary: '#212328',
+  separator: '#17181c',
+  border: '#1b1c20',
+  surfaceTertiary: '#2c2e34',
+  scrollbarThumb: '#2c2e34',
   scrollbarTrack: 'transparent',
 }

@@ -41,7 +41,7 @@ export const CustomBackground = () => {
       {showImage && (
         <>
           <div
-            className='absolute inset-0 bg-cover bg-center'
+            className='page-backdrop absolute inset-0 bg-cover bg-center'
             style={{
               backgroundImage: `url(${dataUrl})`,
               WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',

@@ -117,7 +117,7 @@ export const AchievementManagerOverlay = () => {
               />
             )}
 
-            <main className='flex min-h-0 min-w-0 flex-1 flex-col bg-overlay'>
+            <main className='flex min-h-0 min-w-0 flex-1 flex-col bg-background'>
               {/* Shown for *every* load, refreshes included (not just the first, when there's no
                   data yet) - so pressing refresh visibly does something until the new data lands.
                   The pane remounts afterwards, so search/filter/selection start fresh, same as a

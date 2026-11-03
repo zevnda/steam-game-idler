@@ -29,7 +29,7 @@ const KeybindRow = ({ label, keys, altKeys }: KeybindRowProps) => (
   <div
     className={cn(
       'flex items-center justify-between gap-4 px-4 py-3',
-      'odd:bg-field/40 transition-colors hover:bg-field-hover',
+      'odd:bg-surface/50 transition-colors hover:bg-surface-hover',
     )}
   >
     <Typography type='body-sm'>{label}</Typography>
