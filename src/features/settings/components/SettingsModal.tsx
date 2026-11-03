@@ -140,20 +140,25 @@ const SettingsPanel = ({
           fill && 'min-h-0 flex-1',
         )}
       >
-        <Typography
-          className='flex items-center gap-1'
-          color='muted'
-          type='body-xs'
-          weight='semibold'
-        >
-          {t('dashboard.settings.title')}
-          <TbChevronRight fontSize={12} />
-        </Typography>
-        <div className='mb-8 flex items-center justify-between gap-4'>
-          <Typography type='h3' className='font-bold'>
-            {titleKey && t(titleKey)}
+        {/* Stands in for the header this modal doesn't have, so the window can be dragged by it (see
+            ModalDragRegion). The offset takes in the panel's empty top padding, 2rem from each of
+            the two wrappers, since that's where a drag is most likely to start. */}
+        <div className='-mt-16 pt-16' data-modal-drag>
+          <Typography
+            className='flex items-center gap-1'
+            color='muted'
+            type='body-xs'
+            weight='semibold'
+          >
+            {t('dashboard.settings.title')}
+            <TbChevronRight fontSize={12} />
           </Typography>
-          {titleAction}
+          <div className='mb-8 flex items-center justify-between gap-4'>
+            <Typography type='h3' className='font-bold'>
+              {titleKey && t(titleKey)}
+            </Typography>
+            {titleAction}
+          </div>
         </div>
         <PageBody fill={fill}>{children}</PageBody>
       </div>
@@ -215,7 +220,7 @@ export const SettingsModal = () => {
               hidden) so the dialog keeps a real accessible name for screen readers. */}
           <Modal.Dialog className='overflow-hidden bg-background p-0'>
             <Modal.Heading className='sr-only'>{t('dashboard.settings.title')}</Modal.Heading>
-            <ModalDragRegion placement='dialog' />
+            <ModalDragRegion />
             <Modal.CloseTrigger className='absolute left-5 top-5 z-50 h-8 w-8 bg-field text-muted duration-150 hover:bg-field-hover rounded-full' />
 
             <Modal.Body className='flex h-full min-h-0 overflow-hidden p-0'>
@@ -228,7 +233,10 @@ export const SettingsModal = () => {
                 {/* Fixed-width, non-scrolling nav column - `pt-16` clears the floating close
                     button above it, `border-r`/`bg-background` match Sidebar.tsx's own dashboard
                     nav column for visual consistency with the rest of the app's chrome. */}
-                <div className='flex h-full w-64 shrink-0 flex-col border-r border-border bg-(--app-chrome) pt-16'>
+                <div
+                  className='flex h-full w-64 shrink-0 flex-col border-r border-border bg-(--app-chrome) pt-16'
+                  data-modal-drag
+                >
                   <TabListContainer className='min-h-0 flex-1 overflow-y-auto bg-transparent px-3'>
                     <TabList className='w-full gap-1 p-0'>
                       {TABS.map(({ key, labelKey, icon: Icon, groupStart }) => (

@@ -37,7 +37,7 @@ export const ChangelogModal = () => {
   return (
     <Modal isOpen={showChangelog} onOpenChange={open => setShowChangelog(open)}>
       <Modal.Backdrop>
-        <ModalDragRegion placement='backdrop' />
+        <ModalDragRegion />
         <Modal.Container size='lg'>
           <Modal.Dialog className='overflow-hidden p-0'>
             <Modal.Header className='p-4'>

@@ -77,7 +77,7 @@ export const SteamWarning = () => {
   return (
     <Modal isOpen={isOpen}>
       <Modal.Backdrop isDismissable={false} isKeyboardDismissDisabled>
-        <ModalDragRegion placement='backdrop' />
+        <ModalDragRegion />
         <Modal.Container size='sm'>
           <Modal.Dialog>
             <Modal.Header>

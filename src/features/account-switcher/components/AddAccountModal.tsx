@@ -216,7 +216,7 @@ export const AddAccountModal = () => {
   return (
     <Modal isOpen={isOpen} onOpenChange={open => !open && close()}>
       <Modal.Backdrop>
-        <ModalDragRegion placement='backdrop' />
+        <ModalDragRegion />
         <Modal.Container size='md'>
           <Modal.Dialog>
             <Modal.Header>

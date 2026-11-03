@@ -277,7 +277,7 @@ export const CardFarmingSettingsTab = ({
         }}
       >
         <Modal.Backdrop>
-          <ModalDragRegion placement='backdrop' />
+          <ModalDragRegion />
           <Modal.Container size='sm'>
             <Modal.Dialog>
               <Modal.Header>
