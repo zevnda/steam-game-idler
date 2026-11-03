@@ -91,60 +91,64 @@ export const InventoryPageHeader = ({
           )
         }
       >
-        <Button
-          isDisabled={!hasLoaded || selectedCount === 0 || isBusy}
-          isPending={isListing}
-          variant='secondary'
-          onPress={() => setOpenDialog('listSelected')}
-        >
-          {t('dashboard.inventoryManager.actions.listSelected', { count: selectedCount })}
-        </Button>
+        {hasLoaded && (
+          <>
+            <Button
+              isDisabled={!hasLoaded || selectedCount === 0 || isBusy}
+              isPending={isListing}
+              variant='secondary'
+              onPress={() => setOpenDialog('listSelected')}
+            >
+              {t('dashboard.inventoryManager.actions.listSelected', { count: selectedCount })}
+            </Button>
 
-        <Button
-          isDisabled={!hasLoaded || itemCount === 0 || isBusy}
-          isPending={isSellingAll}
-          variant='secondary'
-          onPress={() => setOpenDialog('sellAll')}
-        >
-          {t('dashboard.inventoryManager.actions.sellAll', { count: itemCount })}
-        </Button>
+            <Button
+              isDisabled={!hasLoaded || itemCount === 0 || isBusy}
+              isPending={isSellingAll}
+              variant='secondary'
+              onPress={() => setOpenDialog('sellAll')}
+            >
+              {t('dashboard.inventoryManager.actions.sellAll', { count: itemCount })}
+            </Button>
 
-        {/* `isDisabled` only reflects the real "nothing to sell" reason (itemCount === 0)
+            {/* `isDisabled` only reflects the real "nothing to sell" reason (itemCount === 0)
                       - a gamer-tier gate is styled to look disabled but stays a real, pressable
                       Button whose `onPress` opens the upsell instead. HeroUI's Button maps
                       `isDisabled` to a native `disabled` attribute, which would otherwise swallow
                       the real click a gated upsell needs entirely (confirmed live via CDP), not
                       just block bubbling to a wrapper. */}
-        <Button
-          className={!canSellDupes ? 'opacity-50' : undefined}
-          isDisabled={!hasLoaded || itemCount === 0 || isBusy}
-          isPending={isSellingDupes}
-          variant='secondary'
-          onPress={() =>
-            canSellDupes ? setOpenDialog('sellDupes') : openProModalWithTier('gamer')
-          }
-        >
-          {t('dashboard.inventoryManager.actions.sellDupes')}
-          {!canSellDupes && <TierBadge tier='gamer' />}
-        </Button>
+            <Button
+              className={!canSellDupes ? 'opacity-50' : undefined}
+              isDisabled={!hasLoaded || itemCount === 0 || isBusy}
+              isPending={isSellingDupes}
+              variant='secondary'
+              onPress={() =>
+                canSellDupes ? setOpenDialog('sellDupes') : openProModalWithTier('gamer')
+              }
+            >
+              {t('dashboard.inventoryManager.actions.sellDupes')}
+              {!canSellDupes && <TierBadge tier='gamer' />}
+            </Button>
 
-        <Button
-          isDisabled={!hasLoaded || itemCount === 0 || isBusy}
-          isPending={isRemovingListings}
-          variant='danger'
-          onPress={() => setOpenDialog('removeListings')}
-        >
-          {t('dashboard.inventoryManager.actions.removeListings')}
-        </Button>
+            <Button
+              isDisabled={!hasLoaded || itemCount === 0 || isBusy}
+              isPending={isRemovingListings}
+              variant='danger'
+              onPress={() => setOpenDialog('removeListings')}
+            >
+              {t('dashboard.inventoryManager.actions.removeListings')}
+            </Button>
 
-        <Button
-          isIconOnly
-          aria-label={t('common.actions.refresh')}
-          isPending={isFetching}
-          onPress={onRefresh}
-        >
-          <TbRefresh fontSize={18} />
-        </Button>
+            <Button
+              isIconOnly
+              aria-label={t('common.actions.refresh')}
+              isPending={isFetching}
+              onPress={onRefresh}
+            >
+              <TbRefresh fontSize={18} />
+            </Button>
+          </>
+        )}
 
         <Button isIconOnly aria-label={t('common.actions.settings')} onPress={onOpenSettings}>
           <TbSettings fontSize={18} />

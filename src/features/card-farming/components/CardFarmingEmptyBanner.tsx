@@ -3,6 +3,7 @@ import { TbBan, TbCards, TbPlus, TbSettings } from 'react-icons/tb'
 import { Button } from '@heroui/react'
 import { PageBanner, PageBannerPreview } from '@/shared/components/dashboard/PageBanner'
 import { GamePosterAction, GamePosterCard } from '@/shared/components/GamePosterCard'
+import { GameChip } from '@/shared/components/GameStatChips'
 import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
 import { PREVIEW_GAMES } from '@/shared/utils/previewGameArt'
 
@@ -14,7 +15,11 @@ type CardFarmingEmptyVariant = 'browse' | 'whitelist' | 'blacklist'
 
 // The Games With Drops tab with games on it, which is where all three empty tabs are filled from. The
 // whitelist variant marks a card as added, since that's what would land a game on that tab.
-const GamesWithDropsPreview = ({ variant }: { variant: CardFarmingEmptyVariant }) => {
+export const GamesWithDropsPreview = ({
+  variant = 'browse',
+}: {
+  variant?: CardFarmingEmptyVariant
+}) => {
   const { t } = useTranslation()
 
   return (
@@ -36,8 +41,16 @@ const GamesWithDropsPreview = ({ variant }: { variant: CardFarmingEmptyVariant }
           }
           hasContextMenu={false}
           isAlwaysRevealed={index === REVEALED_CARD_INDEX}
+          // Drops as a chip, like the real Games With Drops cards, which the whitelist check replaces
+          badge={
+            !(variant === 'whitelist' && index === 0) && (
+              <GameChip corner='right'>
+                <TbCards aria-hidden fontSize={11} />
+                {PREVIEW_DROPS[index]}
+              </GameChip>
+            )
+          }
           isSelected={variant === 'whitelist' && index === 0}
-          meta={t('dashboard.cardFarming.progress.dropsRemaining', { count: PREVIEW_DROPS[index] })}
         />
       ))}
     </PageBannerPreview>

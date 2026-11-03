@@ -59,7 +59,7 @@ const PreviewItem = ({ item }: { item: (typeof PREVIEW_ITEMS)[number] }) => (
   </div>
 )
 
-const InventoryPreview = () => {
+export const InventoryPreview = () => {
   const { t } = useTranslation()
 
   return (

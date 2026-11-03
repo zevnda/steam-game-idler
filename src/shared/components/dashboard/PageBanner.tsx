@@ -10,6 +10,9 @@ interface PageBannerProps {
   // The right-hand illustration, positioned by the caller. Only shown once there's room for it (the
   // `@4xl:` breakpoint below), since it would otherwise overlap the text.
   art?: ReactNode
+  // Content under the text, such as a form. The banner then grows to fit it rather than keeping the
+  // usual fixed shape.
+  children?: ReactNode
 }
 
 interface PageBannerAreaProps {
@@ -63,14 +66,19 @@ export const PageBannerPreview = ({ title, count, action, children }: PageBanner
 // A large banner standing in for a page with nothing to show, explaining why it's empty and what to
 // do about it rather than leaving a line of text in an empty page. Wears the Go Pro card's turning
 // rainbow rim and glow (globals.css `.page-banner`), so it reads as part of the same brand language.
-export const PageBanner = ({ title, description, actions, art }: PageBannerProps) => {
+export const PageBanner = ({ title, description, actions, art, children }: PageBannerProps) => {
   const forceReducedMotion = usePlatformStore(state => state.forceReducedMotion) === true
   const motionClassName = forceReducedMotion && 'force-reduced-motion'
 
   return (
     // The same shape and height limits as the Games page's Recommended banner (see GamesList.tsx's
     // BANNER_* constants), so every large banner in the app is one size.
-    <div className='@container relative aspect-1920/620 max-h-105 min-h-85 w-full'>
+    <div
+      className={cn(
+        '@container relative w-full',
+        children ? 'min-h-85' : 'aspect-1920/620 max-h-105 min-h-85',
+      )}
+    >
       {/* A sibling behind the card, since the card clips its own overflow and would cut it off. */}
       <span aria-hidden='true' className={cn('page-banner-glow rounded-[22px]', motionClassName)} />
       <div
@@ -97,6 +105,7 @@ export const PageBanner = ({ title, description, actions, art }: PageBannerProps
           </h2>
           <p className='text-sm leading-6 text-muted'>{description}</p>
           {actions && <div className='flex flex-wrap items-center gap-2'>{actions}</div>}
+          {children && <div className='w-full'>{children}</div>}
         </div>
       </div>
     </div>

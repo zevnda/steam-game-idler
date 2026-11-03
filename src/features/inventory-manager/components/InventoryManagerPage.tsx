@@ -437,6 +437,9 @@ export const InventoryManagerPage = () => {
   // InventoryPageHeader.tsx's doc comment on why this must gate every action, not just its own.
   const isBusy = isListing || isSellingAll || isSellingDupes || isRemovingListings
 
+  const isShowingConnectPanel =
+    !(isInitializing || isChecking || isAutoConnecting || isManualRefreshing) && !canAccessInventory
+
   if (!account) {
     return null
   }
@@ -444,29 +447,31 @@ export const InventoryManagerPage = () => {
   return (
     <div className='flex h-full flex-col'>
       <PageBody>
-        {/* Always mounted - only its action buttons are gated on `canAccessInventory` (see
-            useInventory.ts's doc comment for why raw `hasLoaded` alone isn't sufficient), so the
-            title stays visible through the initial skeleton and the connect panel. */}
-        <InventoryPageHeader
-          dupesCount={dupeCandidates.length}
-          hasItems={items.length > 0}
-          hasLoaded={canAccessInventory}
-          isBusy={isBusy}
-          isFetching={isFetching}
-          isListing={isListing}
-          isRemovingListings={isRemovingListings}
-          isSellingAll={isSellingAll}
-          isSellingDupes={isSellingDupes}
-          itemCount={filteredItems.length}
-          selectedCount={selectedCount}
-          sellDelaySeconds={settings?.sellDelay ?? 10}
-          onListSelected={handleListSelected}
-          onOpenSettings={() => openSettings('inventoryManager')}
-          onRefresh={refresh}
-          onRemoveListings={removeListings}
-          onSellAll={handleSellAll}
-          onSellDupes={handleSellDupes}
-        />
+        {/* Its action buttons are gated on `canAccessInventory` (see useInventory.ts's doc comment
+            for why raw `hasLoaded` alone isn't sufficient). Left out entirely while the credentials
+            prompt shows, which has its own settings button, since nothing in it can be used yet. */}
+        {!isShowingConnectPanel && (
+          <InventoryPageHeader
+            dupesCount={dupeCandidates.length}
+            hasItems={items.length > 0}
+            hasLoaded={canAccessInventory}
+            isBusy={isBusy}
+            isFetching={isFetching}
+            isListing={isListing}
+            isRemovingListings={isRemovingListings}
+            isSellingAll={isSellingAll}
+            isSellingDupes={isSellingDupes}
+            itemCount={filteredItems.length}
+            selectedCount={selectedCount}
+            sellDelaySeconds={settings?.sellDelay ?? 10}
+            onListSelected={handleListSelected}
+            onOpenSettings={() => openSettings('inventoryManager')}
+            onRefresh={refresh}
+            onRemoveListings={removeListings}
+            onSellAll={handleSellAll}
+            onSellDupes={handleSellDupes}
+          />
+        )}
 
         {canAccessInventory && errorCode && (
           <div className='px-6 pt-4'>
@@ -495,15 +500,12 @@ export const InventoryManagerPage = () => {
             tileClassName='h-64 rounded-xl'
           />
         ) : !canAccessInventory ? (
-          // Centered in the remaining content area - matches CardFarmingStartPanel's identical
-          // centering so both cookie-prompt screens look the same.
-          <div className='page-toolbar-offset flex flex-1 items-center justify-center overflow-y-auto'>
-            <InventoryConnectPanel
-              errorCode={errorCode}
-              isConnecting={isFetching}
-              onConnect={connect}
-            />
-          </div>
+          <InventoryConnectPanel
+            errorCode={errorCode}
+            isConnecting={isFetching}
+            onConnect={connect}
+            onOpenSettings={() => openSettings('inventoryManager')}
+          />
         ) : items.length === 0 && !errorCode ? (
           <PageBannerArea hasToolbar>
             <InventoryEmptyBanner />

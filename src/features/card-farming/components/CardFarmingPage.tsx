@@ -22,6 +22,7 @@ import {
   Alert,
   AlertDialog,
   Button,
+  cn,
   EmptyState,
   Tab,
   TabIndicator,
@@ -261,6 +262,7 @@ export const CardFarmingPage = () => {
   // The tabs stay on screen in every state so this row never changes shape: disabled while loading,
   // while there's no Steam session to load anything with, and during a run.
   const isShowingTabs = connected && !isShowingProgress && !isChecking && !isAutoConnecting
+  const isShowingConnectPanel = !connected && !isShowingProgress && !isChecking && !isAutoConnecting
   const pageActions = (
     <>
       <Button
@@ -270,7 +272,7 @@ export const CardFarmingPage = () => {
       >
         <TbSettings fontSize={18} />
       </Button>
-      {state.isFarming ? (
+      {isShowingConnectPanel ? null : state.isFarming ? (
         <Button isPending={isStopping} variant='danger' onPress={handleStop}>
           <TbPlayerStopFilled fontSize={18} />
           {t('dashboard.cardFarming.actions.stop')}
@@ -311,69 +313,78 @@ export const CardFarmingPage = () => {
           </div>
         )}
 
+        {/* The connect panel renders outside this TabsRoot (see below): its own Automatic/Manual
+            tabs, nested in here, were picked up as this page's tabs and drawn in the toolbar. */}
         <TabsRoot
           isDisabled={!isShowingTabs}
-          className='flex min-h-0 flex-1 flex-col'
+          className={cn('flex flex-col', !isShowingConnectPanel && 'min-h-0 flex-1')}
           selectedKey={activeTab}
           onSelectionChange={key => setActiveTab(key as CardFarmingTab)}
         >
-          <PageToolbar
-            start={
-              <TabListContainer className='shrink-0'>
-                <TabList>
-                  <Tab className='gap-2 whitespace-nowrap' id='browse'>
-                    {t('dashboard.cardFarming.tabs.gamesWithDrops')}
-                    {isShowingTabs && !isBrowseLoading && <CountChip count={browseGames.length} />}
-                    <TabIndicator />
-                  </Tab>
-                  <Tab className='gap-2 whitespace-nowrap' id='whitelist'>
-                    {t('dashboard.cardFarming.tabs.whitelisted')}
-                    {isShowingTabs && !whitelistLoading && <CountChip count={whitelist.length} />}
-                    <TabIndicator />
-                  </Tab>
-                  <Tab className='gap-2 whitespace-nowrap' id='blacklist'>
-                    {t('dashboard.cardFarming.tabs.blacklisted')}
-                    {isShowingTabs && !blacklistLoading && <CountChip count={blacklist.length} />}
-                    <TabIndicator />
-                  </Tab>
-                </TabList>
-              </TabListContainer>
-            }
-          >
-            {activeTab === 'browse' && (
-              <GameSortSelect
-                isDisabled={!isShowingTabs || browseGames.length === 0}
-                ariaLabel={t('dashboard.inventoryManager.sort.label')}
-                options={CARD_FARMING_SORT_STYLES.map(style => ({
-                  id: style,
-                  label: t(CARD_FARMING_SORT_LABEL_KEYS[style]),
-                }))}
-                value={sortStyle}
-                onChange={style => setSortStyle('cardFarming', style)}
-              />
-            )}
-            {activeTab === 'whitelist' && whitelist.length > 0 && (
-              <Button
-                className='shrink-0'
-                isDisabled={!isShowingTabs}
-                variant='danger'
-                onPress={() => setConfirmClearTarget('whitelist')}
-              >
-                {t('common.actions.clear')}
-              </Button>
-            )}
-            {activeTab === 'blacklist' && blacklist.length > 0 && (
-              <Button
-                className='shrink-0'
-                isDisabled={!isShowingTabs}
-                variant='danger'
-                onPress={() => setConfirmClearTarget('blacklist')}
-              >
-                {t('common.actions.clear')}
-              </Button>
-            )}
-            {pageActions}
-          </PageToolbar>
+          {/* Hidden, not unmounted, while the credentials prompt shows: nothing in it can be used
+              yet (the prompt has its own settings button), and the page's tab state needs its tab
+              list to stay registered. */}
+          <div className={cn(isShowingConnectPanel && 'hidden')}>
+            <PageToolbar
+              start={
+                <TabListContainer className='shrink-0'>
+                  <TabList>
+                    <Tab className='gap-2 whitespace-nowrap' id='browse'>
+                      {t('dashboard.cardFarming.tabs.gamesWithDrops')}
+                      {isShowingTabs && !isBrowseLoading && (
+                        <CountChip count={browseGames.length} />
+                      )}
+                      <TabIndicator />
+                    </Tab>
+                    <Tab className='gap-2 whitespace-nowrap' id='whitelist'>
+                      {t('dashboard.cardFarming.tabs.whitelisted')}
+                      {isShowingTabs && !whitelistLoading && <CountChip count={whitelist.length} />}
+                      <TabIndicator />
+                    </Tab>
+                    <Tab className='gap-2 whitespace-nowrap' id='blacklist'>
+                      {t('dashboard.cardFarming.tabs.blacklisted')}
+                      {isShowingTabs && !blacklistLoading && <CountChip count={blacklist.length} />}
+                      <TabIndicator />
+                    </Tab>
+                  </TabList>
+                </TabListContainer>
+              }
+            >
+              {activeTab === 'browse' && !isShowingConnectPanel && (
+                <GameSortSelect
+                  isDisabled={!isShowingTabs || browseGames.length === 0}
+                  ariaLabel={t('dashboard.inventoryManager.sort.label')}
+                  options={CARD_FARMING_SORT_STYLES.map(style => ({
+                    id: style,
+                    label: t(CARD_FARMING_SORT_LABEL_KEYS[style]),
+                  }))}
+                  value={sortStyle}
+                  onChange={style => setSortStyle('cardFarming', style)}
+                />
+              )}
+              {activeTab === 'whitelist' && whitelist.length > 0 && (
+                <Button
+                  className='shrink-0'
+                  isDisabled={!isShowingTabs}
+                  variant='danger'
+                  onPress={() => setConfirmClearTarget('whitelist')}
+                >
+                  {t('common.actions.clear')}
+                </Button>
+              )}
+              {activeTab === 'blacklist' && blacklist.length > 0 && (
+                <Button
+                  className='shrink-0'
+                  isDisabled={!isShowingTabs}
+                  variant='danger'
+                  onPress={() => setConfirmClearTarget('blacklist')}
+                >
+                  {t('common.actions.clear')}
+                </Button>
+              )}
+              {pageActions}
+            </PageToolbar>
+          </div>
 
           {isShowingProgress ? (
             <div className='min-h-0 flex-1 overflow-y-auto'>
@@ -391,15 +402,7 @@ export const CardFarmingPage = () => {
             // with already-valid cookies never flashes the connect panel first (see
             // useAutoConnectSteamCookies's doc comment).
             <GameGridSkeleton />
-          ) : !connected ? (
-            <div className='page-toolbar-offset flex flex-1 items-center justify-center overflow-y-auto'>
-              <CardFarmingStartPanel
-                errorCode={connectErrorCode}
-                isConnecting={isConnecting}
-                onConnect={connect}
-              />
-            </div>
-          ) : (
+          ) : isShowingConnectPanel ? null : (
             <>
               <GameListTabPanel id='browse'>
                 {isBrowseLoading ? (
@@ -473,6 +476,15 @@ export const CardFarmingPage = () => {
             </>
           )}
         </TabsRoot>
+
+        {isShowingConnectPanel && (
+          <CardFarmingStartPanel
+            errorCode={connectErrorCode}
+            isConnecting={isConnecting}
+            onConnect={connect}
+            onOpenSettings={() => openSettings('cardFarming')}
+          />
+        )}
 
         <AlertDialog
           isOpen={confirmClearTarget !== null}

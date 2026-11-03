@@ -1,6 +1,7 @@
 import type { SteamCookies } from '../types'
 import { useTranslation } from 'react-i18next'
 import { connectErrorMessageKey } from '../utils/errorMessageKey'
+import { GamesWithDropsPreview } from './CardFarmingEmptyBanner'
 import { Alert } from '@heroui/react'
 import { SteamCookiesConnectPanel } from '@/shared/components/SteamCookiesConnectPanel'
 
@@ -8,6 +9,7 @@ interface CardFarmingStartPanelProps {
   isConnecting: boolean
   errorCode: string | null
   onConnect: (manualCookies: SteamCookies | undefined) => Promise<boolean>
+  onOpenSettings: () => void
 }
 
 // The pre-connect state: lets the user connect a Steam Community session either automatically
@@ -24,11 +26,13 @@ export const CardFarmingStartPanel = ({
   isConnecting,
   errorCode,
   onConnect,
+  onOpenSettings,
 }: CardFarmingStartPanelProps) => {
   const { t } = useTranslation()
 
   return (
     <SteamCookiesConnectPanel<SteamCookies>
+      art={<GamesWithDropsPreview />}
       automaticDescription={t('dashboard.cardFarming.connect.automaticDescription')}
       automaticTabLabel={t('common.connect.automaticTab')}
       errorSlot={
@@ -50,6 +54,7 @@ export const CardFarmingStartPanel = ({
       showLearnMoreLink
       title={t('dashboard.settings.steamCredentials.title')}
       onConnect={onConnect}
+      onOpenSettings={onOpenSettings}
     />
   )
 }
