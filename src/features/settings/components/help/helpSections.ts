@@ -27,10 +27,6 @@ export interface HelpSection {
 // word count. So don't add these to en-US.json or flag them as hardcoded strings. The subscription
 // answers are copies of the Go Pro modal's FAQ, and the error questions copies of the app's real error
 // messages, so keep those in step if they change.
-//
-// Deliberately leaves out whether family-shared games can be idled or have their achievements
-// managed: the docs say they don't appear at all, but Steam Sign-in's ownership check does list them
-// (see steam_agent/ownership_settings.rs), so that needs a verified answer first.
 export const HELP_SECTIONS: HelpSection[] = [
   {
     id: 'general',
@@ -139,6 +135,12 @@ export const HELP_SECTIONS: HelpSection[] = [
         question: 'Can I idle in-game items or join game servers?',
         answer: "No. Idling doesn't run an actual instance of the game.",
       },
+      {
+        id: 'familyShared',
+        question: 'Can I idle family-shared games?',
+        answer:
+          "Yes. Games shared with you through Steam Families appear in your games list alongside your own. Only one person can play a shared copy at a time, so a shared game can't be idled while someone else in your family is playing it. Shared games don't drop trading cards.",
+      },
     ],
   },
   {
@@ -208,6 +210,12 @@ export const HELP_SECTIONS: HelpSection[] = [
         id: 'notOwned',
         question: "Can I unlock achievements for games I don't own?",
         answer: 'No. The game must be in your library.',
+      },
+      {
+        id: 'familySharedAchievements',
+        question: 'Can I unlock achievements for family-shared games?',
+        answer:
+          "Yes. They appear in your games list like your own, and the achievements you unlock are added to your profile, not the owner's.",
       },
       {
         id: 'unlockOrder',

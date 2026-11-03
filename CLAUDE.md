@@ -610,6 +610,48 @@ runtime-unknown params, so per-game drill-down views are overlays by necessity a
 design. Sidebar is a real `SidebarItem` component rendered from a data-driven sections array
 (`{ header, items: SidebarItemConfig[] }[]`) — active state is `useRouter().pathname === item.href`.
 
+## Docs and in-app Help stay in sync with the app (strict)
+
+The docs site (`docs/`) and the in-app Help tab are what users read to learn the app, so a change
+that leaves either one describing old behaviour is not done. **Any change to what a user sees or
+does - a label, a button's icon or position, a page's layout, a flow, a feature's behaviour, a
+setting, a keybind, an error message, a tier - updates the docs and the in-app FAQ in the same
+change.** Never defer it to a later PR or leave it as a follow-up note. Docs deploy on merge to
+`main` while the app ships on release, so the two land together only if they're in the same PR.
+
+Before calling such a change done, grep `docs/` and `src/features/settings/components/help/` for
+every label, string and behaviour it touched, and update each hit. Where to look:
+
+- **Feature walkthroughs** - `docs/app/(marketing)/docs/_content/features/**`, `get-started/**`.
+  Their `MockButton`s (`docs/app/(marketing)/docs/_components/MockButton.tsx`) stand in for real
+  buttons: keep each one's icon/label matching the app, and keep the surrounding wording true to
+  where the control lives and how it's reached (e.g. a game card's buttons only appear on hover;
+  page actions live in each page's toolbar).
+- **Settings** - one `settings/*.mdx` page per Settings tab, in the tab's order in the docs
+  `meta.json`. A new Settings tab also needs its docs page, a `meta.json` entry, a
+  `DOCS_SLUG_BY_TAB` entry in `src/shared/components/SocialButtons.tsx`, and a line in
+  `docs/CLAUDE.md`'s content list.
+- **Keybinds** - `settings/keybinds.mdx` mirrors `KeybindsSettingsTab.tsx` exactly.
+- **FAQ, three places** - the docs FAQ (`docs/app/(marketing)/docs/_components/faqData.ts`), the
+  landing page FAQ (`docs/app/(marketing)/(home)/_components/landing/faqData.ts`) and the in-app
+  Help tab (`src/features/settings/components/help/helpSections.ts`). They're worded differently
+  on purpose (the in-app one is condensed and English-only, see that file's comment), but they
+  must never disagree on a fact. Changing what one says means checking the other two.
+- **Error messages** - an "Error messages" FAQ entry is titled with the app's exact error string
+  from `en-US.json`, so a user can search for what they saw. Changing that string means renaming
+  the entry in both FAQs, and updating the `:~:text=` fragment in
+  `src/shared/utils/errorDocsHref.ts` if it links there. Remove an entry once the app can no
+  longer show its error.
+- **Troubleshooting** - `troubleshooting.mdx` quotes error messages and describes fixes, the same
+  as the FAQ.
+- **Pro/tiers** - the four surfaces listed under "Pro/subscription tiers" below.
+- **Landing showcase** - `docs/app/(marketing)/(home)/_components/landing/showcase/engine/mockApp.ts`
+  draws a simplified copy of the app. It doesn't need every detail, but a layout change big enough
+  to be recognisable (a redesigned page, a new card style) should reach it too.
+
+Verify a docs fact against the app's code, not against other docs: the docs FAQ has drifted from
+the app before.
+
 ## i18n
 
 Only `en-US.json` is hand-maintained; the 8 other shipped locales (de-DE, es-ES, fr-FR, it-IT,

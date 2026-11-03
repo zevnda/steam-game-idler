@@ -332,11 +332,11 @@ This page covers common issues and their solutions when using Steam Game Idler.
     - If using **Local Sign-in**, make sure the Steam client is running and you're signed in to the matching account
     - Make sure the game isn't currently being idled by another tool, or already running through Steam itself, which can conflict with `SteamUtility.exe`
     - Check the log file for a specific error
-    - Some games use **Family Sharing** or third-party anti-cheat that blocks stat writes. These games generally can't be modified
+    - Some games use third-party anti-cheat that blocks stat writes. These games generally can't be modified
 
     On-screen error text and what it means:
-    - **"That value is set by the game server and can't be changed."** — a genuinely different case from the Family Sharing one above. This achievement or statistic is flagged by the game itself as server-authoritative, so no client (SGI included) can write to it. This is a Steam-side restriction, not a bug
-    - **"That achievement/statistic couldn't be found."** — usually a stale cached achievement schema. Try the refresh/refetch option above; if it still fails afterward, it's worth reporting
+    - **"That value is set by the game server and can't be changed."** — a genuinely different case from the anti-cheat one above. This achievement or statistic is flagged by the game itself as server-authoritative, so no client (SGI included) can write to it. This is a Steam-side restriction, not a bug
+    - **"That achievement couldn't be found."** / **"That statistic couldn't be found."** — usually a stale cached achievement schema. Try the refresh/refetch option above; if it still fails afterward, it's worth reporting
   </Accordion>
 
   <Accordion title='"This game isn’t supported for achievements when signed in with Steam"' id="achievement-game-coordinator-unsupported">

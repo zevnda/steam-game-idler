@@ -27,6 +27,7 @@
     "./settings/free-games",
     "./settings/game-settings",
     "./settings/keybinds",
+    "./settings/help",
     "./settings/debug",
     "---Misc---",
     "./pro",
