@@ -868,3 +868,11 @@ body {
     animation: none;
   }
 }
+
+/* Column layout for every non-virtualized game grid and loading skeleton. The minimum width must
+   match GAME_GRID_MIN_CARD_WIDTH in useGameGridColumns.ts, which sizes the virtualized grids. */
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+}

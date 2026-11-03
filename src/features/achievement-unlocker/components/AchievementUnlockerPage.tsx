@@ -253,9 +253,9 @@ export const AchievementUnlockerPage = () => {
 
             <TabPanel className='min-h-0 flex-1 overflow-y-auto p-0' id='browse'>
               {phase === 'loading' ? (
-                <div className='grid grid-cols-2 gap-4 p-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6'>
+                <div className='game-grid p-6'>
                   {Array.from({ length: 12 }, (_, index) => (
-                    <Skeleton key={index} className='aspect-460/215 rounded-lg' />
+                    <Skeleton key={index} className='aspect-2/3 rounded-xl' />
                   ))}
                 </div>
               ) : gamesErrorCode ? (
@@ -301,9 +301,9 @@ export const AchievementUnlockerPage = () => {
 
             <TabPanel className='min-h-0 flex-1 overflow-y-auto p-0' id='queue'>
               {queueLoading ? (
-                <div className='grid grid-cols-2 gap-4 p-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6'>
+                <div className='game-grid p-6'>
                   {Array.from({ length: 6 }, (_, index) => (
-                    <Skeleton key={index} className='aspect-460/215 rounded-lg' />
+                    <Skeleton key={index} className='aspect-2/3 rounded-xl' />
                   ))}
                 </div>
               ) : queue.length === 0 ? (

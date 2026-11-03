@@ -1,9 +1,7 @@
 import type { OwnedGame } from '@/features/games-list/types'
 import { useTranslation } from 'react-i18next'
 import { TbCheck, TbPlus } from 'react-icons/tb'
-import { Button, Typography } from '@heroui/react'
-import { GameThumbnail } from '@/shared/components/GameThumbnail'
-import { gameCardContextAttrs } from '@/shared/utils/gameCardContext'
+import { GamePosterAction, GamePosterCard } from '@/shared/components/GamePosterCard'
 
 interface FavoriteGameCardProps {
   game: OwnedGame
@@ -12,9 +10,8 @@ interface FavoriteGameCardProps {
   onToggle: () => void
 }
 
-// Used in the "All Games" tab - every owned game with a heart toggle, mirroring IdlingGameCard's
-// layout (thumbnail + name + a single icon-only action button) but for favorite membership
-// instead of idle state.
+// Used in the "All Games" tab - every owned game with a single toggle action for favorite
+// membership.
 export const FavoriteGameCard = ({
   game,
   isFavorited,
@@ -25,35 +22,21 @@ export const FavoriteGameCard = ({
   const displayName = game.name ?? t('dashboard.games.unknownName', { appId: game.appId })
 
   return (
-    <div className='group flex flex-col gap-2' {...gameCardContextAttrs(game.appId, displayName)}>
-      <GameThumbnail appId={game.appId} name={displayName} />
-      <div className='flex items-center justify-between gap-2'>
-        <div className='flex min-w-0 flex-col gap-0.5'>
-          <Typography
-            className='transition-colors duration-150 group-hover:text-foreground'
-            color='muted'
-            title={displayName}
-            truncate
-            type='body-sm'
-            weight='semibold'
-          >
-            {displayName}
-          </Typography>
-        </div>
-        <Button
-          isIconOnly
+    <GamePosterCard
+      actions={
+        <GamePosterAction
           aria-label={
             isFavorited ? `Remove ${displayName} from favorites` : `Add ${displayName} to favorites`
           }
-          className='shrink-0'
           isPending={isPending}
-          size='sm'
-          variant='ghost'
           onPress={onToggle}
         >
           {isFavorited ? <TbCheck fontSize={16} /> : <TbPlus fontSize={16} />}
-        </Button>
-      </div>
-    </div>
+        </GamePosterAction>
+      }
+      appId={game.appId}
+      isSelected={isFavorited}
+      name={displayName}
+    />
   )
 }

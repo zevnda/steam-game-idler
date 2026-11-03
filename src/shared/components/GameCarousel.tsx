@@ -106,7 +106,7 @@ export function GameCarousel<T>({
           </Button>
         </div>
       </div>
-      <div className='no-scrollbar flex gap-4 overflow-x-auto pb-1' ref={scrollRef}>
+      <div className='no-scrollbar flex gap-4 overflow-x-auto py-1' ref={scrollRef}>
         {items.map(item => (
           <div className='shrink-0' key={itemKey(item)} style={{ width: cardWidth }}>
             {renderItem(item)}

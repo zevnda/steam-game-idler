@@ -10,9 +10,8 @@ import { arrayMove, SortableContext } from '@dnd-kit/sortable'
 import { BackToTopButton } from '@/shared/components/BackToTopButton'
 import { useBackToTop } from '@/shared/hooks/useBackToTop'
 import {
+  GAME_CARD_HEIGHT_RATIO,
   GAME_GRID_GAP as GAP,
-  GAME_CARD_INFO_HEIGHT as INFO_HEIGHT,
-  GAME_CARD_THUMBNAIL_ASPECT as THUMBNAIL_ASPECT,
   useResponsiveColumnCount,
 } from '@/shared/hooks/useGameGridColumns'
 
@@ -119,7 +118,7 @@ export const AchievementUnlockerListGrid = ({
   // *between* them, not N gaps (a trailing gap for every column, including the last, which has
   // nothing to gap against).
   const cardWidth = (usableWidth - GAP * (realColumnCount - 1)) / realColumnCount
-  const cardHeight = Math.round(cardWidth * THUMBNAIL_ASPECT) + INFO_HEIGHT
+  const cardHeight = Math.round(cardWidth * GAME_CARD_HEIGHT_RATIO)
   const rowCount = Math.ceil(queue.length / realColumnCount)
 
   const handleDragStart = (event: DragStartEvent) => {

@@ -14,6 +14,7 @@ mod error;
 mod favorites;
 mod free_games;
 mod fs_utils;
+mod game_art;
 mod games;
 mod idling;
 mod inventory;
@@ -156,6 +157,7 @@ pub fn run() {
             auto_idle::commands::set_auto_idle_list_order,
             auto_idle::commands::set_auto_idle_enabled,
             auto_idle::commands::start_auto_idle_games,
+            game_art::resolve_game_art,
             free_games::commands::get_free_games,
             free_games::commands::claim_free_game,
             free_games::commands::get_free_games_settings,

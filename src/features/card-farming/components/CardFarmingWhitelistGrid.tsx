@@ -15,7 +15,7 @@ export const CardFarmingWhitelistGrid = ({
   onRemove,
 }: CardFarmingWhitelistGridProps) => {
   return (
-    <div className='grid grid-cols-2 gap-4 p-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6'>
+    <div className='game-grid p-6'>
       {whitelist.map(game => (
         <CardFarmingWhitelistCard
           key={game.appId}

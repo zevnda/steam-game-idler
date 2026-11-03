@@ -9,21 +9,23 @@ import { BackToTopButton } from '@/shared/components/BackToTopButton'
 import { GameCarousel } from '@/shared/components/GameCarousel'
 import { useBackToTop } from '@/shared/hooks/useBackToTop'
 import {
-  GAME_CARD_INFO_HEIGHT,
-  GAME_CARD_THUMBNAIL_ASPECT,
+  GAME_CARD_HEIGHT_RATIO,
   GAME_GRID_GAP,
   useResponsiveColumnCount,
 } from '@/shared/hooks/useGameGridColumns'
 
-// Fixed carousel card widths matching `main`'s own GamesList.tsx (`w-110`/`w-48`) - "Recommended"/
-// "Recently Played" are a discovery surface with their own horizontal scroll, not part of the
-// responsive column grid below.
-const RECOMMENDED_CARD_WIDTH = 440
-const RECENT_CARD_WIDTH = 192
-// Row heights sized to fit each carousel's own heading + card height - tuned against the actual
-// rendered heights, matching `main`'s equivalent row-height constants (335/210/40).
-const RECOMMENDED_ROW_HEIGHT = 320
-const RECENT_ROW_HEIGHT = 200
+// Fixed carousel card widths - "Recommended"/"Recently Played" are a discovery surface with their
+// own horizontal scroll, not part of the responsive column grid below. Deliberately not much bigger
+// than a grid card: portrait cards are tall, and larger ones would push the whole library below the
+// fold on a default-sized window.
+const RECOMMENDED_CARD_WIDTH = 170
+const RECENT_CARD_WIDTH = 150
+// A carousel's heading row plus its vertical padding and the gap beneath it.
+const CAROUSEL_CHROME_HEIGHT = 72
+const RECOMMENDED_ROW_HEIGHT =
+  Math.round(RECOMMENDED_CARD_WIDTH * GAME_CARD_HEIGHT_RATIO) + CAROUSEL_CHROME_HEIGHT
+const RECENT_ROW_HEIGHT =
+  Math.round(RECENT_CARD_WIDTH * GAME_CARD_HEIGHT_RATIO) + CAROUSEL_CHROME_HEIGHT
 const HEADER_ROW_HEIGHT = 48
 
 type ListRow =
@@ -181,8 +183,7 @@ export const GamesList = ({
   const cardWidth = columnCount
     ? (usableWidth - GAME_GRID_GAP * (columnCount - 1)) / columnCount
     : 0
-  const cardRowHeight =
-    Math.round(cardWidth * GAME_CARD_THUMBNAIL_ASPECT) + GAME_CARD_INFO_HEIGHT + GAME_GRID_GAP
+  const cardRowHeight = Math.round(cardWidth * GAME_CARD_HEIGHT_RATIO) + GAME_GRID_GAP
 
   const rows = useMemo<ListRow[]>(() => {
     const result: ListRow[] = []

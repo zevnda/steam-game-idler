@@ -6,9 +6,8 @@ import { Grid, useGridCallbackRef } from 'react-window'
 import { BackToTopButton } from './BackToTopButton'
 import { useBackToTop } from '@/shared/hooks/useBackToTop'
 import {
+  GAME_CARD_HEIGHT_RATIO,
   GAME_GRID_GAP as GAP,
-  GAME_CARD_INFO_HEIGHT as INFO_HEIGHT,
-  GAME_CARD_THUMBNAIL_ASPECT as THUMBNAIL_ASPECT,
   useResponsiveColumnCount,
 } from '@/shared/hooks/useGameGridColumns'
 
@@ -107,7 +106,7 @@ export const VirtualizedGameGrid = ({ games, renderCard }: VirtualizedGameGridPr
   // This is the same `(usableWidth - GAP * (columnCount - 1)) / columnCount` shape GamesList.tsx's
   // flex-row cards already use correctly.
   const cardWidth = (usableWidth - GAP * (realColumnCount - 1)) / realColumnCount
-  const cardHeight = Math.round(cardWidth * THUMBNAIL_ASPECT) + INFO_HEIGHT
+  const cardHeight = Math.round(cardWidth * GAME_CARD_HEIGHT_RATIO)
   const rowCount = Math.ceil(games.length / realColumnCount)
 
   return (
