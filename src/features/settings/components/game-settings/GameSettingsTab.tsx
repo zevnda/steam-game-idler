@@ -131,12 +131,15 @@ export const GameSettingsTab = () => {
             {t('dashboard.sidebar.nav.games')}
           </Typography>
           <div className='flex items-center gap-2'>
-            <InputGroup>
+            {/* The input's intrinsic width is too wide to share this narrow row, so it has to be the
+                side that gives - otherwise the clear button appearing squeezes the toggle. */}
+            <InputGroup className='min-w-0 flex-1'>
               <InputGroup.Prefix>
                 <RiSearchLine className='text-muted' fontSize={16} />
               </InputGroup.Prefix>
               <InputGroup.Input
                 aria-label={t('common.search.placeholder')}
+                className='min-w-0'
                 placeholder={t('common.search.placeholder')}
                 value={searchTerm}
                 onChange={event => setSearchTerm(event.target.value)}
@@ -151,6 +154,7 @@ export const GameSettingsTab = () => {
             </InputGroup>
             <ToggleButton
               isIconOnly
+              className='shrink-0'
               isDisabled={customizedAppIds.size === 0}
               isSelected={showOnlyCustomized}
               onChange={setShowOnlyCustomized}

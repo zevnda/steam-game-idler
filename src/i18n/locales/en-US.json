@@ -691,7 +691,7 @@
           "description": "Don't farm a game while it's still inside Steam's refund window (bought within the last 14 days with under 2 hours of playtime)."
         },
         "autoFarmCards": {
-          "title": "Automatically farm cards",
+          "title": "Monitor for card drops",
           "description": "Periodically check for owned games with card drops remaining and automatically start farming them."
         },
         "skipNoPlaytime": {
