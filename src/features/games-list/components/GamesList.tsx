@@ -10,11 +10,8 @@ import { RecommendedBanner } from './RecommendedBanner'
 import { cn, Skeleton } from '@heroui/react'
 import { BackToTopButton } from '@/shared/components/BackToTopButton'
 import { useBackToTop } from '@/shared/hooks/useBackToTop'
-import {
-  GAME_CARD_HEIGHT_RATIO,
-  GAME_GRID_GAP,
-  useResponsiveColumnCount,
-} from '@/shared/hooks/useGameGridColumns'
+import { GAME_GRID_GAP, useResponsiveColumnCount } from '@/shared/hooks/useGameGridColumns'
+import { useGameCardMetrics } from '@/shared/stores/gameCardStyleStore'
 
 // Steam's `library_hero` art is 1920x620. The banner keeps that shape until the limits below, then
 // crops, so it never gets too short to fit its contents or tall enough to fill an ultrawide window.
@@ -153,7 +150,8 @@ export const GamesList = ({
   const cardWidth = columnCount
     ? (usableWidth - GAME_GRID_GAP * (columnCount - 1)) / columnCount
     : 0
-  const cardRowHeight = Math.round(cardWidth * GAME_CARD_HEIGHT_RATIO) + GAME_GRID_GAP
+  const { heightRatio } = useGameCardMetrics()
+  const cardRowHeight = Math.round(cardWidth * heightRatio) + GAME_GRID_GAP
   const bannerRowHeight =
     Math.round(
       Math.min(BANNER_MAX_HEIGHT, Math.max(BANNER_MIN_HEIGHT, usableWidth / BANNER_ASPECT_RATIO)),

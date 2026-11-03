@@ -25,6 +25,7 @@ export const AchievementUnlockerQueuePreview = () => {
     >
       {CARDS.map((game, index) => (
         <GamePosterCard
+          forceCover
           key={game.appId}
           {...game}
           actions={

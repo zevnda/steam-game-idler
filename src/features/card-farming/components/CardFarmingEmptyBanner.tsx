@@ -21,6 +21,7 @@ const GamesWithDropsPreview = ({ variant }: { variant: CardFarmingEmptyVariant }
     <PageBannerPreview count={CARDS.length} title={t('dashboard.cardFarming.tabs.gamesWithDrops')}>
       {CARDS.map((game, index) => (
         <GamePosterCard
+          forceCover
           key={game.appId}
           {...game}
           actions={

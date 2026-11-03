@@ -1021,6 +1021,12 @@
           "label": "Disable tooltips",
           "description": "Hide hover tooltips throughout the app."
         },
+        "gameCardStyle": {
+          "label": "Game card style",
+          "description": "Choose the shape of the game cards in your game lists.",
+          "cover": "Cover art",
+          "banner": "Banner art"
+        },
         "background": {
           "label": "Background image",
           "description": "Use a custom image as the app's background.",

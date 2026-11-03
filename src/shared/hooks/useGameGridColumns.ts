@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { flushSync } from 'react-dom'
+import { useGameCardMetrics } from '@/shared/stores/gameCardStyleStore'
 
 // Shared sizing constants for every OwnedGame/GameWithDrops grid card in this rewrite - kept in one
 // place so VirtualizedGameGrid (idling/favorites/full-library grids) and GamesList's carousel-aware
@@ -9,13 +10,11 @@ export const GAME_GRID_PADDING = 24
 // Must match theme.css's `--scrollbar-size` exactly - see VirtualizedGameGrid's
 // original doc comment for why this can't just be react-window's own `getScrollbarSize()`.
 export const GAME_GRID_SCROLLBAR_WIDTH = 14
-// Portrait 2:3 art filling the whole card - must match `GamePosterCard`'s `aspect-2/3`.
-export const GAME_CARD_HEIGHT_RATIO = 3 / 2
-// Must match `.game-grid`'s minimum column width in globals.css, which lays out the non-virtualized
+// A card's height ratio and minimum width come from `useGameCardMetrics` (gameCardStyleStore.ts), and
+// must match `.game-grid`'s minimum column width in globals.css, which lays out the non-virtualized
 // grids and every loading skeleton. Column counts are worked out the same way as CSS `auto-fill` for
 // the same reason, so a grid doesn't change column count when its skeleton swaps for real content.
-// 150 fits 6 columns at the default 1300px window, with another column about every 166px after that.
-export const GAME_GRID_MIN_CARD_WIDTH = 150
+// Cover cards' 150 fits 6 columns at the default 1300px window.
 export const GAME_GRID_MIN_COLUMNS = 2
 
 interface ResponsiveColumnCountOptions {
@@ -43,6 +42,7 @@ export function useResponsiveColumnCount(
   }: ResponsiveColumnCountOptions = {},
 ) {
   const [width, setWidth] = useState(0)
+  const { minCardWidth } = useGameCardMetrics()
 
   useEffect(() => {
     const el = containerRef.current
@@ -57,7 +57,7 @@ export function useResponsiveColumnCount(
   const usableWidth = Math.max(0, width - GAME_GRID_PADDING * 2 - GAME_GRID_SCROLLBAR_WIDTH)
   const fittedColumns = targetCardWidth
     ? Math.round(usableWidth / targetCardWidth)
-    : Math.floor((usableWidth + GAME_GRID_GAP) / (GAME_GRID_MIN_CARD_WIDTH + GAME_GRID_GAP))
+    : Math.floor((usableWidth + GAME_GRID_GAP) / (minCardWidth + GAME_GRID_GAP))
   const columnCount = usableWidth ? Math.min(max, Math.max(min, fittedColumns)) : min
 
   return { width, usableWidth, columnCount }

@@ -29,6 +29,7 @@ export const AutoIdleQueuePreview = () => {
     >
       {CARDS.map((game, index) => (
         <GamePosterCard
+          forceCover
           key={game.appId}
           {...game}
           actions={

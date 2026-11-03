@@ -15,6 +15,7 @@ export const FavoritesPreview = () => {
     <PageBannerPreview count={CARDS.length} title={t('dashboard.sidebar.nav.favorites')}>
       {CARDS.map((game, index) => (
         <GamePosterCard
+          forceCover
           key={game.appId}
           {...game}
           actions={

@@ -2,6 +2,7 @@ import type { ComponentProps, ReactNode } from 'react'
 import { TbCheck } from 'react-icons/tb'
 import { Button, cn } from '@heroui/react'
 import { GamePosterArt } from '@/shared/components/GamePosterArt'
+import { useGameCardStyleStore } from '@/shared/stores/gameCardStyleStore'
 import { gameCardContextAttrs } from '@/shared/utils/gameCardContext'
 
 // Collapses to zero height until the card is hovered or something inside it has keyboard focus. The
@@ -29,6 +30,9 @@ interface GamePosterCardProps {
   // Permanent status line at the bottom, e.g. drops remaining.
   meta?: ReactNode
   actions?: ReactNode
+  // Keeps the tall shape whatever the game card style setting, for the fanned previews in empty
+  // banners, which are laid out around it.
+  forceCover?: boolean
 }
 
 // The one card behind every game grid: portrait art filling the whole card, with the name and that
@@ -49,18 +53,25 @@ export const GamePosterCard = ({
   badge,
   meta,
   actions,
+  forceCover,
 }: GamePosterCardProps) => {
+  const cardStyle = useGameCardStyleStore(state => state.style)
+  const style = forceCover ? 'cover' : cardStyle
   const reveal = isAlwaysRevealed ? 'grid grid-rows-[1fr]' : REVEAL_CLASSNAME
 
   return (
     <div
-      className={cn('group aspect-2/3 w-full', isDimmed && 'opacity-50')}
+      className={cn(
+        'group w-full',
+        style === 'cover' ? 'aspect-2/3' : 'aspect-(--game-card-aspect)',
+        isDimmed && 'opacity-50',
+      )}
       {...(hasContextMenu ? gameCardContextAttrs(appId, name) : {})}
     >
       {/* The glow goes on this element rather than a child, because `overflow-hidden` clips a child's
           shadow but not the element's own. */}
       <div className='relative h-full w-full overflow-hidden rounded-xl bg-surface transition-[translate,box-shadow] duration-150 group-hover:shadow-[0_0_16px_-2px_color-mix(in_oklab,var(--accent)_45%,transparent)] motion-safe:group-hover:-translate-y-1'>
-        <GamePosterArt appId={appId} knownSrc={knownArtSrc} name={name} />
+        <GamePosterArt appId={appId} knownSrc={knownArtSrc} name={name} style={style} />
 
         <div
           className={cn(
@@ -83,7 +94,14 @@ export const GamePosterCard = ({
         <div className='absolute inset-x-0 bottom-0 flex flex-col px-2.5 pb-2.5 text-white'>
           <div className={reveal}>
             <div className='min-h-0 overflow-hidden'>
-              <p className='line-clamp-3 pb-1 text-sm font-semibold leading-snug' title={name}>
+              <p
+                className={cn(
+                  'pb-1 text-sm font-semibold leading-snug',
+                  // A wide card is too short for more than a line alongside its buttons
+                  style === 'cover' ? 'line-clamp-3' : 'line-clamp-1',
+                )}
+                title={name}
+              >
                 {name}
               </p>
             </div>

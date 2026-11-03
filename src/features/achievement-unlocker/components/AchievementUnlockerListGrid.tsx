@@ -9,11 +9,8 @@ import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@
 import { arrayMove, SortableContext } from '@dnd-kit/sortable'
 import { BackToTopButton } from '@/shared/components/BackToTopButton'
 import { useBackToTop } from '@/shared/hooks/useBackToTop'
-import {
-  GAME_CARD_HEIGHT_RATIO,
-  GAME_GRID_GAP as GAP,
-  useResponsiveColumnCount,
-} from '@/shared/hooks/useGameGridColumns'
+import { GAME_GRID_GAP as GAP, useResponsiveColumnCount } from '@/shared/hooks/useGameGridColumns'
+import { useGameCardMetrics } from '@/shared/stores/gameCardStyleStore'
 
 // See VirtualizedGameGrid.tsx's top comment for why horizontal padding is a spacer column instead
 // of CSS padding on the Grid itself.
@@ -118,7 +115,8 @@ export const AchievementUnlockerListGrid = ({
   // *between* them, not N gaps (a trailing gap for every column, including the last, which has
   // nothing to gap against).
   const cardWidth = (usableWidth - GAP * (realColumnCount - 1)) / realColumnCount
-  const cardHeight = Math.round(cardWidth * GAME_CARD_HEIGHT_RATIO)
+  const { heightRatio } = useGameCardMetrics()
+  const cardHeight = Math.round(cardWidth * heightRatio)
   const rowCount = Math.ceil(queue.length / realColumnCount)
 
   const handleDragStart = (event: DragStartEvent) => {

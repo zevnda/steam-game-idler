@@ -5,11 +5,8 @@ import { useEffect, useRef } from 'react'
 import { Grid, useGridCallbackRef } from 'react-window'
 import { BackToTopButton } from './BackToTopButton'
 import { useBackToTop } from '@/shared/hooks/useBackToTop'
-import {
-  GAME_CARD_HEIGHT_RATIO,
-  GAME_GRID_GAP as GAP,
-  useResponsiveColumnCount,
-} from '@/shared/hooks/useGameGridColumns'
+import { GAME_GRID_GAP as GAP, useResponsiveColumnCount } from '@/shared/hooks/useGameGridColumns'
+import { useGameCardMetrics } from '@/shared/stores/gameCardStyleStore'
 
 // Vertical padding is plain `page-toolbar-offset pb-6`, matching `.page-content`, on react-window's own scrollable root (Grid, not a wrapper -
 // so the scrollbar itself stays flush against the true edge). That works because react-window
@@ -106,7 +103,8 @@ export const VirtualizedGameGrid = ({ games, renderCard }: VirtualizedGameGridPr
   // This is the same `(usableWidth - GAP * (columnCount - 1)) / columnCount` shape GamesList.tsx's
   // flex-row cards already use correctly.
   const cardWidth = (usableWidth - GAP * (realColumnCount - 1)) / realColumnCount
-  const cardHeight = Math.round(cardWidth * GAME_CARD_HEIGHT_RATIO)
+  const { heightRatio } = useGameCardMetrics()
+  const cardHeight = Math.round(cardWidth * heightRatio)
   const rowCount = Math.ceil(games.length / realColumnCount)
 
   return (

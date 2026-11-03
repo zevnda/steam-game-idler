@@ -301,7 +301,7 @@ export const AchievementUnlockerPage = () => {
                 {phase === 'loading' ? (
                   <div className='game-grid page-content'>
                     {Array.from({ length: 12 }, (_, index) => (
-                      <Skeleton key={index} className='aspect-2/3 rounded-xl' />
+                      <Skeleton key={index} className='aspect-(--game-card-aspect) rounded-xl' />
                     ))}
                   </div>
                 ) : gamesErrorCode ? (
@@ -345,7 +345,7 @@ export const AchievementUnlockerPage = () => {
                 {queueLoading ? (
                   <div className='game-grid page-content'>
                     {Array.from({ length: 6 }, (_, index) => (
-                      <Skeleton key={index} className='aspect-2/3 rounded-xl' />
+                      <Skeleton key={index} className='aspect-(--game-card-aspect) rounded-xl' />
                     ))}
                   </div>
                 ) : queue.length === 0 ? (

@@ -24,6 +24,7 @@ import { TierBadge } from '@/shared/components/TierBadge'
 import { ToggleSwitch } from '@/shared/components/ToggleSwitch'
 import { useCustomBackgroundStore } from '@/shared/stores/customBackgroundStore'
 import { useDisableTooltipsStore } from '@/shared/stores/disableTooltipsStore'
+import { useGameCardStyleStore } from '@/shared/stores/gameCardStyleStore'
 import { useProModalStore } from '@/shared/stores/proModalStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { applyFont, FONT_STORAGE_KEY } from '@/shared/theme/applyFont'
@@ -110,6 +111,8 @@ export const CustomizationSettingsTab = ({
   const openProModalWithTier = useProModalStore(state => state.openWithTier)
 
   const disableTooltips = useDisableTooltipsStore(state => state.disabled)
+  const gameCardStyle = useGameCardStyleStore(state => state.style)
+  const setGameCardStyle = useGameCardStyleStore(state => state.setStyle)
   const setDisableTooltips = useDisableTooltipsStore(state => state.setDisabled)
   const backgroundDataUrl = useCustomBackgroundStore(state => state.dataUrl)
   const setBackgroundDataUrl = useCustomBackgroundStore(state => state.setDataUrl)
@@ -300,6 +303,43 @@ export const CustomizationSettingsTab = ({
         title={t('dashboard.settings.customization.tooltips.label')}
       >
         <ToggleSwitch isSelected={disableTooltips} onChange={handleToggleTooltips} />
+      </SettingsRow>
+
+      {/* Saved per device rather than in settings.json - see gameCardStyleStore.ts */}
+      <SettingsRow
+        description={t('dashboard.settings.customization.gameCardStyle.description')}
+        showDivider={true}
+        title={t('dashboard.settings.customization.gameCardStyle.label')}
+      >
+        <Select.Root
+          aria-label={t('dashboard.settings.customization.gameCardStyle.label')}
+          className='w-48'
+          selectedKey={gameCardStyle}
+          onSelectionChange={key => setGameCardStyle(key === 'banner' ? 'banner' : 'cover')}
+        >
+          <Select.Trigger>
+            <Select.Value />
+            <Select.Indicator />
+          </Select.Trigger>
+          <Select.Popover>
+            <ListBox>
+              <ListBox.Item
+                id='cover'
+                textValue={t('dashboard.settings.customization.gameCardStyle.cover')}
+              >
+                {t('dashboard.settings.customization.gameCardStyle.cover')}
+                <ListBox.ItemIndicator />
+              </ListBox.Item>
+              <ListBox.Item
+                id='banner'
+                textValue={t('dashboard.settings.customization.gameCardStyle.banner')}
+              >
+                {t('dashboard.settings.customization.gameCardStyle.banner')}
+                <ListBox.ItemIndicator />
+              </ListBox.Item>
+            </ListBox>
+          </Select.Popover>
+        </Select.Root>
       </SettingsRow>
 
       <SettingsRow

@@ -85,7 +85,7 @@ export const IdlingPage = () => {
         {phase === 'loading' && appIds.length > 0 ? (
           <div className='game-grid page-content'>
             {Array.from({ length: appIds.length }, (_, index) => (
-              <Skeleton key={index} className='aspect-2/3 rounded-xl' />
+              <Skeleton key={index} className='aspect-(--game-card-aspect) rounded-xl' />
             ))}
           </div>
         ) : gamesErrorCode ? (

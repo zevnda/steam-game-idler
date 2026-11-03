@@ -15,6 +15,7 @@ const NoGamesPreview = () => {
     <PageBannerPreview count={CARDS.length} title={t('common.tabs.allGames')}>
       {CARDS.map((game, index) => (
         <GamePosterCard
+          forceCover
           key={game.appId}
           {...game}
           actions={

@@ -873,9 +873,21 @@ body {
 
 /* Column layout for every non-virtualized game grid and loading skeleton. The minimum width must
    match GAME_GRID_MIN_CARD_WIDTH in useGameGridColumns.ts, which sizes the virtualized grids. */
+/* Game card shape, chosen in Settings > Customization (see gameCardStyleStore.ts, whose
+   GAME_CARD_STYLE_METRICS must match these). */
+:root {
+  --game-card-aspect: 2 / 3;
+  --game-card-min-width: 150px;
+}
+
+[data-game-card-style='banner'] {
+  --game-card-aspect: 460 / 215;
+  --game-card-min-width: 220px;
+}
+
 .game-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--game-card-min-width), 1fr));
   gap: 1rem;
 }
 

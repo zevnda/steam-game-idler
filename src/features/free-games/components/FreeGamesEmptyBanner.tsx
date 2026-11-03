@@ -21,6 +21,7 @@ const FreeGamesPreview = () => {
         const isClaimed = index === CLAIMED_CARD_INDEX
         return (
           <GamePosterCard
+            forceCover
             key={game.appId}
             actions={
               <Button className='w-full' size='sm' variant={isClaimed ? 'ghost' : undefined}>

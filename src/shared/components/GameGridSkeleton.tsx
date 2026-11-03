@@ -10,7 +10,7 @@ interface GameGridSkeletonProps {
 }
 
 const DEFAULT_GRID_CLASSNAME = 'game-grid page-content'
-const DEFAULT_TILE_CLASSNAME = 'aspect-2/3 rounded-xl'
+const DEFAULT_TILE_CLASSNAME = 'aspect-(--game-card-aspect) rounded-xl'
 
 // Shared loading placeholder for every game/item grid in the app (games list, free games,
 // card farming's browse/queue tabs, inventory manager) - was five copies of the same

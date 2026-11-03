@@ -37,6 +37,7 @@ const IdlingPreview = () => {
     >
       {CARDS.map((game, index) => (
         <GamePosterCard
+          forceCover
           key={game.appId}
           actions={
             <>

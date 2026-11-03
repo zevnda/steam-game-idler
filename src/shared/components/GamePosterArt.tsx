@@ -1,3 +1,4 @@
+import type { GameCardStyle } from '@/shared/stores/gameCardStyleStore'
 import { useEffect, useState } from 'react'
 import { cn } from '@heroui/react'
 import Image from 'next/image'
@@ -10,6 +11,8 @@ interface GamePosterArtProps {
   // A known-good URL to show straight away, skipping the lookup, for art chosen ahead of time rather
   // than a game from someone's library. Falls back to the usual chain below if it ever stops loading.
   knownSrc?: string
+  // Settings > Customization's game card style, see gameCardStyleStore.ts
+  style?: GameCardStyle
 }
 
 const CDN_BASE = 'https://cdn.cloudflare.steamstatic.com/steam/apps'
@@ -48,7 +51,34 @@ const ArtImage = ({
 //   4. A placeholder showing the game's name, since nothing else here would identify the game.
 // Nothing renders until the lookup finishes, so a game with hashed art doesn't flash the wrong
 // image or a failed request first.
-export const GamePosterArt = ({ appId, name, knownSrc }: GamePosterArtProps) => {
+export const GamePosterArt = ({ appId, name, knownSrc, style = 'cover' }: GamePosterArtProps) => {
+  if (style === 'banner') return <BannerArt appId={appId} name={name} />
+  return <CoverArt appId={appId} knownSrc={knownSrc} name={name} />
+}
+
+// The wide card style's art: Steam's `header.jpg`, the 460x215 capsule every game has.
+const BannerArt = ({ appId, name }: { appId: number; name: string }) => {
+  const [isBroken, setIsBroken] = useState(false)
+  if (isBroken) {
+    return (
+      <GameArtPlaceholder>
+        <span className='relative line-clamp-2 px-3 pt-3 text-center text-sm font-semibold text-foreground/80'>
+          {name}
+        </span>
+      </GameArtPlaceholder>
+    )
+  }
+  return (
+    <ArtImage
+      className='object-cover'
+      name={name}
+      src={`${CDN_BASE}/${appId}/header.jpg`}
+      onError={() => setIsBroken(true)}
+    />
+  )
+}
+
+const CoverArt = ({ appId, name, knownSrc }: Omit<GamePosterArtProps, 'style'>) => {
   const [isKnownSrcBroken, setIsKnownSrcBroken] = useState(false)
   const shouldUseKnownSrc = knownSrc !== undefined && !isKnownSrcBroken
   const resolved = useGameArtStore(state => state.resolved[appId])
