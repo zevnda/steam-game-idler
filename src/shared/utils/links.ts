@@ -1,5 +1,7 @@
 import { openUrl } from '@tauri-apps/plugin-opener'
 
+export const DISCORD_URL = 'https://discord.com/invite/5kY2ZbVnZ8'
+
 // Every titlebar/menu/notification external link goes through this rather than calling `openUrl`
 // directly, so a failure (no default browser registered, malformed URL) degrades to a console
 // error instead of an unhandled rejection surfacing as a crash toast.

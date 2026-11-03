@@ -14,7 +14,7 @@ import { Dropdown, toast } from '@heroui/react'
 import { AppTooltip } from '@/shared/components/AppTooltip'
 import { useUpdateStore } from '@/shared/stores/updateStore'
 import { logFrontendWarn } from '@/shared/utils/frontendLogging'
-import { openExternalLink } from '@/shared/utils/links'
+import { DISCORD_URL, openExternalLink } from '@/shared/utils/links'
 import { canAutoUpdateCheck, fetchLatest, performUpdate } from '@/shared/utils/update'
 
 const GITHUB_ISSUE_URL =
@@ -72,7 +72,7 @@ export const Menu = () => {
         )
         break
       case 'discord':
-        openExternalLink('https://discord.com/invite/5kY2ZbVnZ8')
+        openExternalLink(DISCORD_URL)
         break
       case 'changelog':
         setShowChangelog(true)
