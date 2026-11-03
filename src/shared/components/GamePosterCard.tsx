@@ -57,7 +57,9 @@ export const GamePosterCard = ({
       className={cn('group aspect-2/3 w-full', isDimmed && 'opacity-50')}
       {...(hasContextMenu ? gameCardContextAttrs(appId, name) : {})}
     >
-      <div className='relative h-full w-full overflow-hidden rounded-xl bg-surface transition-[translate] duration-150 motion-safe:group-hover:-translate-y-1'>
+      {/* The glow goes on this element rather than a child, because `overflow-hidden` clips a child's
+          shadow but not the element's own. */}
+      <div className='relative h-full w-full overflow-hidden rounded-xl bg-surface transition-[translate,box-shadow] duration-150 group-hover:shadow-[0_0_16px_-2px_color-mix(in_oklab,var(--accent)_45%,transparent)] motion-safe:group-hover:-translate-y-1'>
         <GamePosterArt appId={appId} knownSrc={knownArtSrc} name={name} />
 
         <div
@@ -99,8 +101,8 @@ export const GamePosterCard = ({
 
         <div
           className={cn(
-            'pointer-events-none absolute inset-0 rounded-xl ring-inset transition-shadow duration-150 group-hover:ring-2 group-hover:ring-accent',
-            isSelected ? 'ring-2 ring-accent/70' : 'ring-1 ring-white/10',
+            'pointer-events-none absolute inset-0 rounded-xl ring-inset transition-shadow duration-150',
+            isSelected ? 'ring-2 ring-accent' : 'ring-1 ring-white/10 group-hover:ring-accent',
           )}
         />
       </div>

@@ -47,7 +47,7 @@ const RunningDot = ({ className }: { className?: string }) => (
 //
 // Visual hierarchy: inactive items are muted (icon + label) and only go full `text-foreground` on
 // hover or when active, so the active page reads at a glance instead of every row competing at full
-// brightness. Icons render at a 1.5 stroke (Tabler's default is 2) so their line weight matches the
+// brightness. The active row also gets an accent icon and a marker at the window edge. Icons render at a 1.5 stroke (Tabler's default is 2) so their line weight matches the
 // 14px label instead of reading bolder than the text beside it. Labels are `font-semibold` rather
 // than medium - in the muted inactive colour, medium starts to look washed out, while semibold
 // stays crisp.
@@ -72,7 +72,7 @@ export const SidebarItem = ({
         // Fixed `h-9` rather than `py-2` - with padding alone the row's height came from its
         // content, so a collapsed (icon-only, 18px) row was 2px shorter than an expanded one (20px
         // label line-height), and the whole list visibly shifted on every collapse/expand.
-        'flex h-9 items-center gap-3 rounded-lg px-3 text-sm font-semibold outline-none transition-colors',
+        'relative flex h-9 items-center gap-3 rounded-lg px-3 text-sm font-semibold outline-none transition-colors',
         'focus-visible:ring-2 focus-visible:ring-focus',
         collapsed && 'justify-center px-0',
         isActive
@@ -81,17 +81,29 @@ export const SidebarItem = ({
       )}
       href={href}
     >
+      {/* Sits in the sidebar's 8px side padding, against the edge of the window. Always mounted so
+          it can grow in and shrink out. */}
+      <span
+        aria-hidden
+        className={cn(
+          'absolute top-1/2 -left-2 h-4 w-0.75 -translate-y-1/2 rounded-r-full bg-accent transition-[scale,opacity] duration-200',
+          isActive ? 'scale-y-100 opacity-100' : 'scale-y-50 opacity-0',
+        )}
+      />
       <Icon
         // Collapsed + running: no room for the dot beside a lone icon, so the icon itself carries
         // the signal instead - accent colour plus `animate-pulse` (a 2s opacity breathe, the same
-        // cadence as the dot's ping). Otherwise no colour of its own (inherits the link's
-        // muted/foreground) unless gold-highlighted. Branches are mutually exclusive since two
-        // `text-*` classes on one element resolve by stylesheet order, not class order.
+        // cadence as the dot's ping). Gold-highlighted keeps its gold on the active page, so that
+        // signal isn't lost there. Otherwise accent when active, or no colour of its own (inherits
+        // the link's muted/foreground). Branches are mutually exclusive since two `text-*` classes
+        // on one element resolve by stylesheet order, not class order.
         className={cn(
-          'shrink-0',
+          'shrink-0 transition-colors duration-200',
           collapsed && running
             ? 'text-accent motion-safe:animate-pulse'
-            : iconHighlighted && 'text-[#ffc700]',
+            : iconHighlighted
+              ? 'text-[#ffc700]'
+              : isActive && 'text-accent',
         )}
         fontSize={18}
         strokeWidth={1.5}

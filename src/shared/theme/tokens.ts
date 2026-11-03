@@ -1,7 +1,7 @@
 // The token contract every theme (a fixed preset in `presets.ts`, or - later - a Gamer-tier
 // user-picked custom theme) must conform to. One key per CSS custom property `theme.css` defines
 // for the `[data-theme='dark']` elevation model (see that file's own doc comment for what each
-// tier means) - accent/success/warning/danger/spacing/radius stay HeroUI's stock values regardless
+// tier means) - success/warning/danger/spacing/radius stay HeroUI's stock values regardless
 // of theme, matching `main`'s own minimal-touch approach to its equivalent skin system.
 //
 // Deliberately a plain data shape, not tied to how a theme's values are produced - `presets.ts`
@@ -21,7 +21,7 @@ export interface ThemeTokens {
   scrollbarThumb: string
   scrollbarTrack: string
   // Optional HeroUI accent override (switches, selected tabs, progress bars, focus rings - `--focus`
-  // already resolves through `--accent`). A preset leaving them out keeps HeroUI's stock blue, and
+  // already resolves through `--accent`). A preset leaving them out keeps the default blue, and
   // `applyTheme()` clears any previous override.
   accent?: string
   accentForeground?: string

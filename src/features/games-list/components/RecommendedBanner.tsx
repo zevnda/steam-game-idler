@@ -13,6 +13,7 @@ import Image from 'next/image'
 import { useAchievementManagerStore } from '@/shared/stores/achievementManagerStore'
 import { usePlatformStore } from '@/shared/stores/platformStore'
 import { gameCardContextAttrs } from '@/shared/utils/gameCardContext'
+import { revealTitleIfTruncated } from '@/shared/utils/revealTitleIfTruncated'
 
 const AUTO_ADVANCE_MS = 7000
 
@@ -113,11 +114,13 @@ export const RecommendedBanner = ({
                     alt={name}
                     className='object-contain object-left drop-shadow-[0_2px_12px_rgba(0,0,0,0.75)]'
                     src={logo}
-                    title={name}
                   />
                 </div>
               ) : (
-                <p className='line-clamp-2 max-w-md text-2xl font-bold drop-shadow-md' title={name}>
+                <p
+                  className='line-clamp-2 max-w-md text-2xl font-bold drop-shadow-md'
+                  onMouseEnter={revealTitleIfTruncated}
+                >
                   {name}
                 </p>
               )}

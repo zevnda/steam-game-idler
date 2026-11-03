@@ -37,27 +37,27 @@ function makeTintedTokens(hue: number, chroma: number, canvas = 0.16) {
 // Every preset here is Casual-tier gated - enforced by `useTheme.ts`/`CustomizationSettingsTab.tsx`
 // via `hasCasualAccess`, not by anything in this file.
 export const THEME_PRESETS = {
-  // No accent override: HeroUI's stock accent is already this blue.
+  // No accent override: `theme.css`'s default accent is already this blue.
   blue: makeTintedTokens(255, 0.032),
   // Warm enough to stay distinct from `--danger`, so a switch that's on doesn't read as an error.
   red: {
     ...makeTintedTokens(20, 0.025),
-    accent: 'oklch(0.68 0.19 28)',
+    accent: 'oklch(0.67 0.15 28)',
     accentForeground: 'var(--snow)',
   },
   purple: {
     ...makeTintedTokens(305, 0.038),
-    accent: 'oklch(0.68 0.17 305)',
+    accent: 'oklch(0.68 0.135 305)',
     accentForeground: 'var(--snow)',
   },
   pink: {
     ...makeTintedTokens(350, 0.028),
-    accent: 'oklch(0.74 0.15 350)',
+    accent: 'oklch(0.74 0.12 350)',
     accentForeground: 'var(--eclipse)',
   },
   orange: {
     ...makeTintedTokens(55, 0.022),
-    accent: 'oklch(0.75 0.16 60)',
+    accent: 'oklch(0.75 0.13 60)',
     accentForeground: 'var(--eclipse)',
   },
   // Not hue-shifted like the others - a darker, lower-chroma variant of the same neutral hue

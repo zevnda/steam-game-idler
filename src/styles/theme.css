@@ -7,7 +7,7 @@
    `@layer base` (node_modules/@heroui/styles/dist/themes/default/variables.css); this file is
    deliberately left unlayered, so per the CSS cascade-layers spec these declarations always win
    over HeroUI's regardless of import order or selector specificity - no `!important` needed.
-   Anything not re-declared here (accent/success/warning/danger, spacing, radius, etc.) keeps
+   Anything not re-declared here (success/warning/danger, spacing, radius, etc.) keeps
    HeroUI's stock value untouched.
 
    Elevation model - each step is a deliberate, perceptible lightness jump. Before this file
@@ -36,6 +36,10 @@
    not before.
 */
 [data-theme='dark'] {
+  /* HeroUI's stock accent (chroma 0.195) looks too vivid against a canvas this dark. Dark presets
+     without an accent of their own inherit this too. */
+  --accent: oklch(0.63 0.15 254);
+
   --background: #0b0c0e;
 
   --surface: #16171b;
