@@ -106,6 +106,10 @@ pub enum CompletedFarmReason {
     /// that setting restricts farming to unplayed games only. Whitelist-only reporting, same
     /// reasoning as `RefundWindow`.
     SkippedPlayed,
+    /// Reached its effective `max_playtime` cap. Reported for a whitelist member, and for a
+    /// general-pool game that was actively being farmed when it crossed the cap; a general-pool
+    /// game already over it just quietly isn't considered, same reasoning as `RefundWindow`.
+    MaxPlaytime,
 }
 
 /// One game a farming cycle stopped tracking this session, tagged with why.

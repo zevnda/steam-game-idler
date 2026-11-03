@@ -16,7 +16,11 @@ You'll find this page under <MockButton type='context-cog' content='Settings →
 
 ## Playtime
 
-These limits apply everywhere a game can be idled: manual [Playtime Booster](/docs/features/playtime-booster), [Auto-Idle](/docs/features/auto-idle), and the [Achievement Unlocker](/docs/features/achievement-unlocker) all respect them. [Card Farming](/docs/features/card-farming) does not currently check this limit — a game you're farming cards for keeps accumulating playtime regardless of any max playtime set for it, unless something else (Playtime Booster, Auto-Idle, or the Achievement Unlocker) is also idling it.
+These limits apply everywhere a game can be idled: manual [Playtime Booster](/docs/features/playtime-booster), [Auto-Idle](/docs/features/auto-idle), [Card Farming](/docs/features/card-farming), and the [Achievement Unlocker](/docs/features/achievement-unlocker) all respect them.
+
+Card Farming skips any game at its limit and stops one that reaches it, within about one farming pass, even if it still has cards to drop. Some accounts need a few hours of playtime before cards start dropping, so a low limit for all games can stop those accounts from getting any drops. A per-game limit lets you avoid that.
+
+The Achievement Unlocker only applies these limits to games it's idling. With [Idle While Unlocking](/docs/settings/achievement-unlocker#idle-while-unlocking) turned off, or after you stop a game from the Idling page, that game keeps unlocking achievements even if it's over its limit, because unlocking alone doesn't add playtime.
 
 ### Max Playtime (All Games)
 

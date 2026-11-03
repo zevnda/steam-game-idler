@@ -48,7 +48,12 @@ export type FarmingPhase = 'readyFarm' | 'bulkIdle'
 
 // Mirrors src-tauri/src/card_farming/mod.rs::CompletedFarmReason.
 export type CompletedFarmReason =
-  'dropsExhausted' | 'noDropsRemaining' | 'refundWindow' | 'skippedUnplayed' | 'skippedPlayed'
+  | 'dropsExhausted'
+  | 'noDropsRemaining'
+  | 'refundWindow'
+  | 'skippedUnplayed'
+  | 'skippedPlayed'
+  | 'maxPlaytime'
 
 // Mirrors src-tauri/src/card_farming/mod.rs::CompletedFarm.
 export interface CompletedFarm {

@@ -85,7 +85,9 @@ export const CardFarmingGameRow = ({
                   ? t('dashboard.cardFarming.progress.completedSkippedUnplayed')
                   : reason === 'skippedPlayed'
                     ? t('dashboard.cardFarming.progress.completedSkippedPlayed')
-                    : t('dashboard.cardFarming.progress.completedNoDropsRemaining')}
+                    : reason === 'maxPlaytime'
+                      ? t('dashboard.achievementUnlocker.progress.completedMaxPlaytime')
+                      : t('dashboard.cardFarming.progress.completedNoDropsRemaining')}
             </Typography>
           </div>
         ) : (

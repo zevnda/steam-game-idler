@@ -8,9 +8,11 @@
 //! 1. **Exclude/skip already-over-cap games from automatic queues** - `auto_idle` and
 //!    `achievement_unlocker`'s own queue-building code each call `settings::is_over_cap` directly
 //!    (see each module's queue-building function) and drop a game that's already at or over its
-//!    cap, same as any other "not eligible" filter they already apply (card farming doesn't - see
-//!    the TODO below). `idling::commands::toggle_manual_idle`'s manual start path calls it too,
-//!    returning `AppError::MaxPlaytimeCapReached` instead of starting.
+//!    cap, same as any other "not eligible" filter they already apply, as does
+//!    `card_farming::manager::resolve_candidates`. `idling::commands::toggle_manual_idle`'s manual
+//!    start path calls it too, returning `AppError::MaxPlaytimeCapReached` instead of starting. The
+//!    unlocker only applies the cap to a game it will actually idle, since unlocking alone adds no
+//!    playtime (see `achievement_unlocker::manager::max_playtime_applies`).
 //! 2. **Stop a game the instant it crosses the cap while already running** - split across two
 //!    mechanisms rather than one, because achievement-unlocker/card-farming each keep their own
 //!    active-game bookkeeping outside `idling::claims::IdleClaimsRegistry` (see
@@ -20,8 +22,8 @@
 //!      their own beyond the claims registry.
 //!    - `achievement_unlocker::manager::run_scan_phase`'s over-cap pre-check covers the
 //!      unlocker natively inside its own loop so its local active-game state stays in sync.
-//!      TODO: card farming lost both effects in the two-phase rebuild (#2051) - see
-//!      [`enforcement`]'s module doc comment.
+//!    - `card_farming::manager::resolve_candidates` covers card farming the same way, re-checking
+//!      every pass against the playtime freshly scraped from the badge page.
 
 pub mod commands;
 pub mod enforcement;
