@@ -25,7 +25,6 @@ import { useAchievementUnlockerConcurrencyGuard } from '@/shared/hooks/useAchiev
 import { useAgentReauthWatcher } from '@/shared/hooks/useAgentReauthWatcher'
 import { useAntiAwayStatus } from '@/shared/hooks/useAntiAwayStatus'
 import { useAutoUpdateGamesListStatus } from '@/shared/hooks/useAutoUpdateGamesListStatus'
-import { useCarouselSettingsSync } from '@/shared/hooks/useCarouselSettingsSync'
 import { useCheckSubscription } from '@/shared/hooks/useCheckSubscription'
 import { useDashboardShortcuts } from '@/shared/hooks/useDashboardShortcuts'
 import { useDisableTooltipsSync } from '@/shared/hooks/useDisableTooltipsSync'
@@ -71,7 +70,6 @@ export const DashboardShell = ({ children }: DashboardShellProps) => {
   useFreeGamesWatcher()
   useFreeGameClaimCorrections()
   useDisableTooltipsSync()
-  useCarouselSettingsSync()
   useSteamMonitor()
   useSteamCookiesSync()
   useSortPreferencesSync()

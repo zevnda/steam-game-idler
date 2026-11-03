@@ -185,8 +185,6 @@ export const SettingsModal = () => {
     saveTheme,
     saveFont,
     saveDisableTooltips,
-    saveShowRecommendedCarousel,
-    saveShowRecentCarousel,
     saveCustomBackground,
     clearCustomBackground,
   } = useSettingsModal()
@@ -315,8 +313,6 @@ export const SettingsModal = () => {
                     onRefresh={refresh}
                     onSaveCustomBackground={saveCustomBackground}
                     onSaveDisableTooltips={saveDisableTooltips}
-                    onSaveShowRecentCarousel={saveShowRecentCarousel}
-                    onSaveShowRecommendedCarousel={saveShowRecommendedCarousel}
                     onSaveTheme={saveTheme}
                     onSaveFont={saveFont}
                   />

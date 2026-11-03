@@ -876,3 +876,32 @@ body {
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 1rem;
 }
+
+/* RecommendedBanner.tsx - the art's fade up from dark, settling out of a slight zoom, and the title's
+   plain fade alongside it. Both durations and the easing match the per-slide image transition in
+   that component. */
+@keyframes banner-settle {
+  from {
+    scale: 1.04;
+    opacity: 0;
+  }
+  to {
+    scale: 1;
+    opacity: 1;
+  }
+}
+
+.banner-settle {
+  animation: banner-settle 0.7s ease both;
+}
+
+.banner-title-fade {
+  animation: pro-fade-in 0.7s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banner-settle,
+  .banner-title-fade {
+    animation: none;
+  }
+}

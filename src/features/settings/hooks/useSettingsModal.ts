@@ -202,34 +202,6 @@ export const useSettingsModal = () => {
     }
   }, [])
 
-  // Mirrors `saveAntiAway` exactly. `GamesPage`/`CardFarmingPage` read `carouselSettingsStore`
-  // directly - `CustomizationSettingsTab`'s handlers write that store after a successful save.
-  const saveShowRecommendedCarousel = useCallback(async (enabled: boolean) => {
-    setActionErrorCode(null)
-    try {
-      setSettings(await invoke<Settings>('set_show_recommended_carousel', { enabled }))
-      logFrontendInfo('useSettingsModal', 'show recommended carousel setting saved', { enabled })
-      return true
-    } catch (error) {
-      console.error('Error in (set_show_recommended_carousel):', error)
-      setActionErrorCode(String(error))
-      return false
-    }
-  }, [])
-
-  const saveShowRecentCarousel = useCallback(async (enabled: boolean) => {
-    setActionErrorCode(null)
-    try {
-      setSettings(await invoke<Settings>('set_show_recent_carousel', { enabled }))
-      logFrontendInfo('useSettingsModal', 'show recent carousel setting saved', { enabled })
-      return true
-    } catch (error) {
-      console.error('Error in (set_show_recent_carousel):', error)
-      setActionErrorCode(String(error))
-      return false
-    }
-  }, [])
-
   // Unlike the toggles above, this persists a file (see `customization::set_background`) - `path`
   // comes from `@tauri-apps/plugin-dialog`'s file picker, resolved by
   // `CustomizationSettingsTab`'s own handler, which also refreshes `customBackgroundStore` with the
@@ -277,8 +249,6 @@ export const useSettingsModal = () => {
     saveTheme,
     saveFont,
     saveDisableTooltips,
-    saveShowRecommendedCarousel,
-    saveShowRecentCarousel,
     saveCustomBackground,
     clearCustomBackground,
   }

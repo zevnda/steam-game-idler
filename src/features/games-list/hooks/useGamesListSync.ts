@@ -62,6 +62,9 @@ export async function fetchGamesList(
     updateEntry(key, {
       games: fresh.games,
       possiblyPrivate: fresh.possiblyPrivate,
+      // Not only cleared when a fetch starts: fetches can overlap, and an earlier one failing after
+      // this one started would otherwise leave its error screen covering the list this just loaded.
+      errorCode: null,
       phase: 'ready',
       lastFetchedAt: Date.now(),
       isRefreshing: false,

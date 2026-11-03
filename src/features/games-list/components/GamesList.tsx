@@ -1,12 +1,14 @@
 import type { RowComponentProps } from 'react-window'
+import type { RecommendedSlide } from '../hooks/useRecommendedSlides'
 import type { OwnedGame } from '../types'
 import { useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { List, useListCallbackRef } from 'react-window'
+import { useRecommendedSlides } from '../hooks/useRecommendedSlides'
 import { GameCard } from './GameCard'
-import { Typography } from '@heroui/react'
+import { RecommendedBanner } from './RecommendedBanner'
+import { Skeleton, Typography } from '@heroui/react'
 import { BackToTopButton } from '@/shared/components/BackToTopButton'
-import { GameCarousel } from '@/shared/components/GameCarousel'
 import { useBackToTop } from '@/shared/hooks/useBackToTop'
 import {
   GAME_CARD_HEIGHT_RATIO,
@@ -14,32 +16,19 @@ import {
   useResponsiveColumnCount,
 } from '@/shared/hooks/useGameGridColumns'
 
-// Fixed carousel card widths - "Recommended"/"Recently Played" are a discovery surface with their
-// own horizontal scroll, not part of the responsive column grid below. Deliberately not much bigger
-// than a grid card: portrait cards are tall, and larger ones would push the whole library below the
-// fold on a default-sized window.
-const RECOMMENDED_CARD_WIDTH = 170
-const RECENT_CARD_WIDTH = 150
-// A carousel's heading row plus its vertical padding and the gap beneath it.
-const CAROUSEL_CHROME_HEIGHT = 72
-const RECOMMENDED_ROW_HEIGHT =
-  Math.round(RECOMMENDED_CARD_WIDTH * GAME_CARD_HEIGHT_RATIO) + CAROUSEL_CHROME_HEIGHT
-const RECENT_ROW_HEIGHT =
-  Math.round(RECENT_CARD_WIDTH * GAME_CARD_HEIGHT_RATIO) + CAROUSEL_CHROME_HEIGHT
+// Steam's `library_hero` art is 1920x620. The banner keeps that shape until the limits below, then
+// crops, so it never gets too short to fit its contents or tall enough to fill an ultrawide window.
+const BANNER_ASPECT_RATIO = 1920 / 620
+const BANNER_MIN_HEIGHT = 340
+const BANNER_MAX_HEIGHT = 420
+const BANNER_BOTTOM_GAP = 24
 const HEADER_ROW_HEIGHT = 48
 
-type ListRow =
-  | { type: 'recommended' }
-  | { type: 'recent' }
-  | { type: 'header' }
-  | { type: 'games'; games: OwnedGame[] }
+type ListRow = { type: 'recommended' } | { type: 'header' } | { type: 'games'; games: OwnedGame[] }
 
 interface GamesListProps {
   games: OwnedGame[]
   recommendedGames: OwnedGame[]
-  recentGames: OwnedGame[]
-  showRecommendedCarousel: boolean
-  showRecentCarousel: boolean
   idlingAppIds: number[]
   idlePendingAppIds: Set<number>
   idleStartTimes: Record<number, number>
@@ -50,10 +39,8 @@ interface RowProps {
   rows: ListRow[]
   cardWidth: number
   cardRowHeight: number
-  recommendedGames: OwnedGame[]
-  recentGames: OwnedGame[]
-  recommendedTitle: string
-  recentTitle: string
+  bannerRowHeight: number
+  recommendedSlides: RecommendedSlide[]
   allGamesTitle: string
   idlingAppIds: number[]
   idlePendingAppIds: Set<number>
@@ -61,13 +48,12 @@ interface RowProps {
   onToggleIdle: (appId: number) => void
 }
 
-// react-window `List` row height must be known ahead of time - `recommended`/`recent`/`header`
-// rows are fixed constants, plain `games` rows use the responsive `cardRowHeight` computed from
-// the measured container width (see `useResponsiveColumnCount`).
+// react-window `List` row height must be known ahead of time - the `recommended` and plain `games`
+// rows are computed from the measured container width (see `useResponsiveColumnCount`), the
+// `header` row is a fixed constant.
 const getRowHeight = (index: number, props: RowProps) => {
   const row = props.rows[index]
-  if (row.type === 'recommended') return RECOMMENDED_ROW_HEIGHT
-  if (row.type === 'recent') return RECENT_ROW_HEIGHT
+  if (row.type === 'recommended') return props.bannerRowHeight
   if (row.type === 'header') return HEADER_ROW_HEIGHT
   return props.cardRowHeight
 }
@@ -86,10 +72,7 @@ const GamesListRow = ({
   rows,
   cardWidth,
   cardRowHeight,
-  recommendedGames,
-  recentGames,
-  recommendedTitle,
-  recentTitle,
+  recommendedSlides,
   allGamesTitle,
   idlingAppIds,
   idlePendingAppIds,
@@ -110,28 +93,17 @@ const GamesListRow = ({
 
   if (row.type === 'recommended') {
     return (
-      <div className='px-6' style={style}>
-        <GameCarousel
-          autoScrollIntervalMs={7000}
-          cardWidth={RECOMMENDED_CARD_WIDTH}
-          itemKey={game => game.appId}
-          items={recommendedGames}
-          renderItem={renderGameCard}
-          title={recommendedTitle}
-        />
-      </div>
-    )
-  }
-  if (row.type === 'recent') {
-    return (
-      <div className='px-6' style={style}>
-        <GameCarousel
-          cardWidth={RECENT_CARD_WIDTH}
-          itemKey={game => game.appId}
-          items={recentGames}
-          renderItem={renderGameCard}
-          title={recentTitle}
-        />
+      <div className='px-6' style={{ ...style, paddingBottom: BANNER_BOTTOM_GAP }}>
+        {recommendedSlides.length > 0 ? (
+          <RecommendedBanner
+            idlePendingAppIds={idlePendingAppIds}
+            idlingAppIds={idlingAppIds}
+            slides={recommendedSlides}
+            onToggleIdle={onToggleIdle}
+          />
+        ) : (
+          <Skeleton className='h-full w-full rounded-2xl' />
+        )}
       </div>
     )
   }
@@ -147,8 +119,8 @@ const GamesListRow = ({
     // own independent grid/flex container, so `1fr` tracks size to that row's own content alone;
     // a row whose card has an unusually long title (breaking `min-width:0` truncation upstream)
     // could grow its column wider than the same column in every other row, since track sizing
-    // isn't shared/synced across separate containers. A fixed pixel width - the same technique
-    // GameCarousel already uses - guarantees every row's columns line up regardless of content.
+    // isn't shared/synced across separate containers. A fixed pixel width guarantees every row's
+    // columns line up regardless of content.
     <div
       className='flex px-6'
       style={{ ...style, gap: GAME_GRID_GAP, height: (style.height as number) - GAME_GRID_GAP }}
@@ -165,9 +137,6 @@ const GamesListRow = ({
 export const GamesList = ({
   games,
   recommendedGames,
-  recentGames,
-  showRecommendedCarousel,
-  showRecentCarousel,
   idlingAppIds,
   idlePendingAppIds,
   idleStartTimes,
@@ -184,33 +153,32 @@ export const GamesList = ({
     ? (usableWidth - GAME_GRID_GAP * (columnCount - 1)) / columnCount
     : 0
   const cardRowHeight = Math.round(cardWidth * GAME_CARD_HEIGHT_RATIO) + GAME_GRID_GAP
+  const bannerRowHeight =
+    Math.round(
+      Math.min(BANNER_MAX_HEIGHT, Math.max(BANNER_MIN_HEIGHT, usableWidth / BANNER_ASPECT_RATIO)),
+    ) + BANNER_BOTTOM_GAP
+
+  // The row is held open with a skeleton while games are being checked, then dropped if none of
+  // them turn out to have usable art.
+  const { slides: recommendedSlides, isChecking } = useRecommendedSlides(recommendedGames)
+  const showBanner = recommendedSlides.length > 0 || isChecking
 
   const rows = useMemo<ListRow[]>(() => {
     const result: ListRow[] = []
-    if (showRecommendedCarousel && recommendedGames.length > 0) result.push({ type: 'recommended' })
-    if (showRecentCarousel && recentGames.length > 0) result.push({ type: 'recent' })
+    if (showBanner) result.push({ type: 'recommended' })
     result.push({ type: 'header' })
     for (let i = 0; i < games.length; i += columnCount) {
       result.push({ type: 'games', games: games.slice(i, i + columnCount) })
     }
     return result
-  }, [
-    showRecommendedCarousel,
-    recommendedGames,
-    showRecentCarousel,
-    recentGames,
-    games,
-    columnCount,
-  ])
+  }, [showBanner, games, columnCount])
 
   const rowProps: RowProps = {
     rows,
     cardWidth,
     cardRowHeight,
-    recommendedGames,
-    recentGames,
-    recommendedTitle: t('dashboard.games.carousels.recommended'),
-    recentTitle: t('dashboard.games.carousels.recent'),
+    bannerRowHeight,
+    recommendedSlides,
     allGamesTitle: t('common.tabs.allGames'),
     idlingAppIds,
     idlePendingAppIds,

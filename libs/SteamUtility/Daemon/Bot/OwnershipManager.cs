@@ -14,6 +14,22 @@ namespace SteamUtility.Daemon.Bot
     // Steam client needed. Correctly reflects Family Sharing / borrowed games.
     public sealed class OwnershipManager
     {
+        // SteamKit2 cancels a job after 10 seconds without a response by default. A normal fetch of
+        // around 800 games already takes about 8 seconds in total, so a slow or throttling Steam
+        // pushed these full-library requests past that limit and failed them outright. Each part of
+        // a multi-part response extends the deadline, so this only limits silence between parts.
+        private static readonly TimeSpan PicsJobTimeout = TimeSpan.FromSeconds(30);
+
+        // Fetches running right now, shared by anyone asking for the same thing. Each one requests
+        // the account's entire license and app list from Steam, and repeated triggers (reloading the
+        // window, an account switch landing during a refresh) used to stack up as separate full
+        // requests that all then competed for the same slow responses.
+        private readonly object _inFlightLock = new();
+        private readonly Dictionary<
+            (bool GamesOnly, string Language),
+            Task<IReadOnlyList<OwnedGame>>
+        > _inFlightFetches = new();
+
         // Payment methods that were never an actual money transaction through Steam's checkout -
         // Steam's refund policy has nothing to refund for these regardless of how recently the
         // license was granted, so they're excluded entirely from "recently purchased" tracking
@@ -61,7 +77,49 @@ namespace SteamUtility.Daemon.Bot
             "Game",
         };
 
-        public async Task<IReadOnlyList<OwnedGame>> GetOwnedGamesAsync(
+        public Task<IReadOnlyList<OwnedGame>> GetOwnedGamesAsync(
+            SteamBot bot,
+            bool gamesOnly,
+            string language
+        )
+        {
+            var key = (gamesOnly, language);
+            lock (_inFlightLock)
+            {
+                if (_inFlightFetches.TryGetValue(key, out var inFlight))
+                {
+                    return inFlight;
+                }
+
+                var fetch = RunFetchAsync(bot, gamesOnly, language);
+                _inFlightFetches[key] = fetch;
+                return fetch;
+            }
+        }
+
+        private async Task<IReadOnlyList<OwnedGame>> RunFetchAsync(
+            SteamBot bot,
+            bool gamesOnly,
+            string language
+        )
+        {
+            // Hands control back straight away, so GetOwnedGamesAsync has registered this fetch and
+            // released its lock before the removal below can possibly run.
+            await Task.Yield();
+            try
+            {
+                return await FetchOwnedGamesAsync(bot, gamesOnly, language);
+            }
+            finally
+            {
+                lock (_inFlightLock)
+                {
+                    _inFlightFetches.Remove((gamesOnly, language));
+                }
+            }
+        }
+
+        private async Task<IReadOnlyList<OwnedGame>> FetchOwnedGamesAsync(
             SteamBot bot,
             bool gamesOnly,
             string language
@@ -100,10 +158,12 @@ namespace SteamUtility.Daemon.Bot
                     .Select(appId => new SteamApps.PICSRequest(appId))
                     .ToList();
 
-                var appResultSet = await bot.SteamAppsHandler.PICSGetProductInfo(
+                var appsJob = bot.SteamAppsHandler.PICSGetProductInfo(
                     apps: appRequests,
                     packages: Enumerable.Empty<SteamApps.PICSRequest>()
                 );
+                appsJob.Timeout = PicsJobTimeout;
+                var appResultSet = await appsJob;
 
                 var playtimes = await GetPlaytimesAsync(bot);
 
@@ -276,10 +336,12 @@ namespace SteamUtility.Daemon.Bot
             // whichever one we see first.
             var licensesByPackageId = bot.OwnedLicenses.ToLookup(license => license.PackageID);
 
-            var packageResultSet = await bot.SteamAppsHandler.PICSGetProductInfo(
+            var packagesJob = bot.SteamAppsHandler.PICSGetProductInfo(
                 apps: Enumerable.Empty<SteamApps.PICSRequest>(),
                 packages: packageRequests
             );
+            packagesJob.Timeout = PicsJobTimeout;
+            var packageResultSet = await packagesJob;
 
             foreach (var result in packageResultSet.Results!)
             {

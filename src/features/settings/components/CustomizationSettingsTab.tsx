@@ -22,7 +22,6 @@ import {
 import { SettingsRow } from '@/shared/components/SettingsRow'
 import { TierBadge } from '@/shared/components/TierBadge'
 import { ToggleSwitch } from '@/shared/components/ToggleSwitch'
-import { useCarouselSettingsStore } from '@/shared/stores/carouselSettingsStore'
 import { useCustomBackgroundStore } from '@/shared/stores/customBackgroundStore'
 import { useDisableTooltipsStore } from '@/shared/stores/disableTooltipsStore'
 import { useProModalStore } from '@/shared/stores/proModalStore'
@@ -47,8 +46,6 @@ interface CustomizationSettingsTabProps {
   onRefresh: () => void
   onSaveTheme: (theme: string) => Promise<boolean>
   onSaveDisableTooltips: (enabled: boolean) => Promise<boolean>
-  onSaveShowRecommendedCarousel: (enabled: boolean) => Promise<boolean>
-  onSaveShowRecentCarousel: (enabled: boolean) => Promise<boolean>
   onSaveCustomBackground: (path: string) => Promise<boolean>
   onClearCustomBackground: () => Promise<boolean>
   onSaveFont: (font: string) => Promise<boolean>
@@ -103,8 +100,6 @@ export const CustomizationSettingsTab = ({
   onRefresh,
   onSaveTheme,
   onSaveDisableTooltips,
-  onSaveShowRecommendedCarousel,
-  onSaveShowRecentCarousel,
   onSaveCustomBackground,
   onClearCustomBackground,
   onSaveFont,
@@ -116,10 +111,6 @@ export const CustomizationSettingsTab = ({
 
   const disableTooltips = useDisableTooltipsStore(state => state.disabled)
   const setDisableTooltips = useDisableTooltipsStore(state => state.setDisabled)
-  const showRecommended = useCarouselSettingsStore(state => state.showRecommended)
-  const setShowRecommended = useCarouselSettingsStore(state => state.setShowRecommended)
-  const showRecent = useCarouselSettingsStore(state => state.showRecent)
-  const setShowRecent = useCarouselSettingsStore(state => state.setShowRecent)
   const backgroundDataUrl = useCustomBackgroundStore(state => state.dataUrl)
   const setBackgroundDataUrl = useCustomBackgroundStore(state => state.setDataUrl)
   const [isChoosingBackground, setIsChoosingBackground] = useState(false)
@@ -135,24 +126,6 @@ export const CustomizationSettingsTab = ({
     const ok = await onSaveDisableTooltips(next)
     if (ok) {
       setDisableTooltips(next)
-    } else {
-      reportError(actionErrorCode)
-    }
-  }
-
-  const handleToggleRecommended = async (next: boolean) => {
-    const ok = await onSaveShowRecommendedCarousel(next)
-    if (ok) {
-      setShowRecommended(next)
-    } else {
-      reportError(actionErrorCode)
-    }
-  }
-
-  const handleToggleRecent = async (next: boolean) => {
-    const ok = await onSaveShowRecentCarousel(next)
-    if (ok) {
-      setShowRecent(next)
     } else {
       reportError(actionErrorCode)
     }
@@ -327,20 +300,6 @@ export const CustomizationSettingsTab = ({
         title={t('dashboard.settings.customization.tooltips.label')}
       >
         <ToggleSwitch isSelected={disableTooltips} onChange={handleToggleTooltips} />
-      </SettingsRow>
-
-      <SettingsRow
-        description={t('dashboard.settings.customization.carousels.recommended.description')}
-        title={t('dashboard.settings.customization.carousels.recommended.label')}
-      >
-        <ToggleSwitch isSelected={showRecommended} onChange={handleToggleRecommended} />
-      </SettingsRow>
-
-      <SettingsRow
-        description={t('dashboard.settings.customization.carousels.recent.description')}
-        title={t('dashboard.settings.customization.carousels.recent.label')}
-      >
-        <ToggleSwitch isSelected={showRecent} onChange={handleToggleRecent} />
       </SettingsRow>
 
       <SettingsRow

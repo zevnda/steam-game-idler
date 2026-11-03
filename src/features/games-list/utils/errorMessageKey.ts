@@ -16,6 +16,7 @@ const KNOWN_ERROR_KEYS: Record<string, TranslationKey> = {
   agent_session_not_found: 'common.errors.sessionNotFound',
   agent_steam_id_unknown: 'common.errors.steamIdUnknown',
   agent_request_timeout: 'common.errors.timeout',
+  steam_request_timeout: 'common.errors.timeout',
   agent_process_exited: 'common.errors.processExited',
   steam_api_request_failed: 'dashboard.games.errors.webApiUnavailable',
   steam_api_response_invalid: 'dashboard.games.errors.webApiUnavailable',

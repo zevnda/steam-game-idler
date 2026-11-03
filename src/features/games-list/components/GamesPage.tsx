@@ -13,7 +13,6 @@ import { PageBody } from '@/shared/components/dashboard/PageBody'
 import { GameGridSkeleton } from '@/shared/components/GameGridSkeleton'
 import { useOwnedGameSort } from '@/shared/hooks/useOwnedGameSort'
 import { searchGames } from '@/shared/search/fuzzySearch'
-import { useCarouselSettingsStore } from '@/shared/stores/carouselSettingsStore'
 import { useSearchStore } from '@/shared/stores/searchStore'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
@@ -63,22 +62,10 @@ export const GamesPage = () => {
   // component's own trigger, not the store's general `isRefreshing`.
   const showSkeleton = phase === 'loading' || isManualRefreshing
 
-  const showRecommendedCarousel = useCarouselSettingsStore(state => state.showRecommended)
-  const showRecentCarousel = useCarouselSettingsStore(state => state.showRecent)
-  // Independent of `searchQuery`/`filteredGames` - these are a discovery surface, not the searched
-  // list itself (mirrors `main`'s own carousels, which never read its search state either). Capped
-  // at 20/15 respectively so a large library still renders a bounded-length carousel without
-  // needing `VirtualizedGameGrid`'s own virtualization (see `GameCarousel`'s doc comment).
+  // Independent of `searchQuery`/`filteredGames` - this is a discovery surface, not the searched
+  // list itself. Capped so `useRecommendedSlides` has a bounded set of candidates to check.
   const recommendedGames = useMemo(
     () => games.filter(game => game.playtimeForeverMinutes === 0).slice(0, 20),
-    [games],
-  )
-  const recentGames = useMemo(
-    () =>
-      games
-        .filter(game => game.rtimeLastPlayed > 0)
-        .sort((a, b) => b.rtimeLastPlayed - a.rtimeLastPlayed)
-        .slice(0, 15),
     [games],
   )
 
@@ -96,6 +83,23 @@ export const GamesPage = () => {
     return null
   }
 
+  const errorAlert = errorCode && (
+    <>
+      <Alert className='max-w-md' status='danger'>
+        <Alert.Indicator />
+        <Alert.Content>
+          <Alert.Title>{t('dashboard.games.errors.title')}</Alert.Title>
+          <Alert.Description>
+            {t(errorMessageKey(errorCode), { code: errorCode })}
+          </Alert.Description>
+        </Alert.Content>
+      </Alert>
+      <Button variant='secondary' onPress={refresh}>
+        {t('common.actions.tryAgain')}
+      </Button>
+    </>
+  )
+
   return (
     <div className='flex h-full flex-col'>
       <GamesPageHeader
@@ -107,6 +111,13 @@ export const GamesPage = () => {
         onSortStyleChange={style => setSortStyle('games', style)}
       />
       <PageBody>
+        {/* A failed refresh with a list already loaded only earns a notice: the games on screen are
+            still correct, and replacing them would make a brief Steam stall look like a lost
+            library. */}
+        {!showSkeleton && errorCode && games.length > 0 && (
+          <div className='px-6 py-4'>{errorAlert}</div>
+        )}
+
         {!showSkeleton && !errorCode && possiblyPrivate && (
           <div className='px-6 py-4'>
             <Alert status='warning'>
@@ -139,20 +150,9 @@ export const GamesPage = () => {
 
         {showSkeleton ? (
           <GameGridSkeleton />
-        ) : errorCode ? (
+        ) : errorCode && games.length === 0 ? (
           <div className='flex flex-1 flex-col items-center justify-center gap-4 p-8'>
-            <Alert className='max-w-md' status='danger'>
-              <Alert.Indicator />
-              <Alert.Content>
-                <Alert.Title>{t('dashboard.games.errors.title')}</Alert.Title>
-                <Alert.Description>
-                  {t(errorMessageKey(errorCode), { code: errorCode })}
-                </Alert.Description>
-              </Alert.Content>
-            </Alert>
-            <Button variant='secondary' onPress={refresh}>
-              {t('common.actions.tryAgain')}
-            </Button>
+            {errorAlert}
           </div>
         ) : games.length === 0 ? (
           <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
@@ -181,10 +181,7 @@ export const GamesPage = () => {
               idlePendingAppIds={idlePendingAppIds}
               idleStartTimes={idleStartTimes}
               idlingAppIds={idlingAppIds}
-              recentGames={recentGames}
               recommendedGames={recommendedGames}
-              showRecentCarousel={showRecentCarousel}
-              showRecommendedCarousel={showRecommendedCarousel}
               onToggleIdle={toggleIdle}
             />
           </div>

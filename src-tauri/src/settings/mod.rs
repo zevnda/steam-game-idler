@@ -89,15 +89,6 @@ pub struct Settings {
     /// `false` (tooltips shown), matching `main`.
     #[serde(default)]
     pub disable_tooltips: bool,
-    /// Whether the Games List page shows the "Recommended" (unplayed games) carousel - a free-tier
-    /// visibility preference, independent of the Casual/Gamer gates above. Defaults `true`,
-    /// matching `main`.
-    #[serde(default = "default_true")]
-    pub show_recommended_carousel: bool,
-    /// Whether the Games List page shows the "Recently Played" carousel. Defaults `true`, matching
-    /// `main`.
-    #[serde(default = "default_true")]
-    pub show_recent_carousel: bool,
     /// Active app-wide font key (`"inter"` or a `src/shared/theme/font.ts` `FontPreset` key) - a
     /// UI preference of this installation, matching `theme`. Casual-tier gated the same way. All
     /// fonts are pre-bundled at build time (self-hosted, no runtime network dependency), so
@@ -122,10 +113,6 @@ fn default_font() -> String {
     "inter".to_string()
 }
 
-fn default_true() -> bool {
-    true
-}
-
 /// Not `#[derive(Default)]` - `close_to_tray` needs to default to `true` (see its own doc
 /// comment), which a derived `Default` can't express since it always uses `bool::default()`
 /// (`false`) per field regardless of this struct's own `#[serde(default = ...)]` attribute. Kept
@@ -144,8 +131,6 @@ impl Default for Settings {
             theme: default_theme(),
             custom_background: None,
             disable_tooltips: false,
-            show_recommended_carousel: default_true(),
-            show_recent_carousel: default_true(),
             font: default_font(),
         }
     }
@@ -317,26 +302,6 @@ pub fn set_disable_tooltips(
     enabled: bool,
 ) -> Result<Settings, String> {
     mutate(app_handle, |settings| settings.disable_tooltips = enabled)
-}
-
-/// Sets the "show Recommended carousel" toggle. See [`Settings::show_recommended_carousel`].
-pub fn set_show_recommended_carousel(
-    app_handle: &tauri::AppHandle,
-    enabled: bool,
-) -> Result<Settings, String> {
-    mutate(app_handle, |settings| {
-        settings.show_recommended_carousel = enabled
-    })
-}
-
-/// Sets the "show Recently Played carousel" toggle. See [`Settings::show_recent_carousel`].
-pub fn set_show_recent_carousel(
-    app_handle: &tauri::AppHandle,
-    enabled: bool,
-) -> Result<Settings, String> {
-    mutate(app_handle, |settings| {
-        settings.show_recent_carousel = enabled
-    })
 }
 
 /// Resets every app-wide preference back to its default, for `debug::commands::reset_settings`.

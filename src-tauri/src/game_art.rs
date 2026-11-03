@@ -1,4 +1,4 @@
-//! Resolves each game's portrait (600x900) art through Steam's public store API.
+//! Resolves each game's portrait (600x900) and wide hero art through Steam's public store API.
 //!
 //! `steam/apps/<id>/library_600x900.jpg` can't be relied on by itself: many games now serve their
 //! portrait art from a content-hashed path, and some under a different filename altogether
@@ -27,7 +27,7 @@ use crate::error::{AppError, AppResult};
 use crate::fs_utils::atomic_write_json;
 use crate::platform;
 
-const CACHE_FILE_NAME: &str = "game_art.json";
+const CACHE_FILE_NAME: &str = "game_assets.json";
 const STORE_ITEMS_URL: &str = "https://api.steampowered.com/IStoreBrowseService/GetItems/v1/";
 // `asset_url_format` is relative to this host. The hashed paths 404 on
 // `cdn.cloudflare.steamstatic.com`, which the rest of the app uses for plain `header.jpg` URLs.
@@ -43,9 +43,17 @@ const MISSING_TTL_SECS: u64 = 7 * 24 * 60 * 60;
 // Steam response can't hold up lookups that the cache could answer straight away.
 static CACHE_LOCK: LazyLock<Mutex<()>> = LazyLock::new(|| Mutex::new(()));
 
+/// A game's art URLs, each `None` when Steam has none of that kind for it.
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
+pub struct GameArt {
+    portrait: Option<String>,
+    hero: Option<String>,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct CachedArt {
-    url: Option<String>,
+    #[serde(flatten)]
+    art: GameArt,
     fetched_at: u64,
 }
 
@@ -77,6 +85,7 @@ struct StoreItem {
 struct StoreAssets {
     asset_url_format: Option<String>,
     library_capsule: Option<String>,
+    library_hero: Option<String>,
 }
 
 fn now_secs() -> u64 {
@@ -87,7 +96,7 @@ fn now_secs() -> u64 {
 }
 
 fn is_fresh(entry: &CachedArt, now: u64) -> bool {
-    let ttl = if entry.url.is_some() {
+    let ttl = if entry.art.portrait.is_some() {
         FOUND_TTL_SECS
     } else {
         MISSING_TTL_SECS
@@ -95,13 +104,19 @@ fn is_fresh(entry: &CachedArt, now: u64) -> bool {
     now.saturating_sub(entry.fetched_at) < ttl
 }
 
-fn portrait_url(assets: &StoreAssets) -> Option<String> {
+fn asset_url(assets: &StoreAssets, filename: Option<&str>) -> Option<String> {
     let format = assets.asset_url_format.as_deref()?;
-    let filename = assets.library_capsule.as_deref()?;
     Some(format!(
         "{ASSET_BASE_URL}{}",
-        format.replace("${FILENAME}", filename)
+        format.replace("${FILENAME}", filename?)
     ))
+}
+
+fn art_from_assets(assets: &StoreAssets) -> GameArt {
+    GameArt {
+        portrait: asset_url(assets, assets.library_capsule.as_deref()),
+        hero: asset_url(assets, assets.library_hero.as_deref()),
+    }
 }
 
 fn cache_path(app_handle: &AppHandle) -> AppResult<PathBuf> {
@@ -125,7 +140,7 @@ fn read_cache(path: &PathBuf) -> ArtCache {
     })
 }
 
-async fn fetch_batch(client: &Client, app_ids: &[u32]) -> AppResult<HashMap<u32, Option<String>>> {
+async fn fetch_batch(client: &Client, app_ids: &[u32]) -> AppResult<HashMap<u32, GameArt>> {
     let ids: Vec<_> = app_ids
         .iter()
         .map(|app_id| serde_json::json!({ "appid": app_id }))
@@ -152,26 +167,28 @@ async fn fetch_batch(client: &Client, app_ids: &[u32]) -> AppResult<HashMap<u32,
     Ok(results_for_batch(app_ids, body.response.store_items))
 }
 
-// Every requested id gets an entry, `None` when Steam has no portrait for it, so a game without one
-// is remembered instead of being looked up again every time its card renders.
-fn results_for_batch(app_ids: &[u32], items: Vec<StoreItem>) -> HashMap<u32, Option<String>> {
-    let mut results: HashMap<u32, Option<String>> =
-        app_ids.iter().map(|app_id| (*app_id, None)).collect();
+// Every requested id gets an entry, empty when Steam has no art for it, so a game without any is
+// remembered instead of being looked up again every time its card renders.
+fn results_for_batch(app_ids: &[u32], items: Vec<StoreItem>) -> HashMap<u32, GameArt> {
+    let mut results: HashMap<u32, GameArt> = app_ids
+        .iter()
+        .map(|app_id| (*app_id, GameArt::default()))
+        .collect();
     for item in items {
-        if let Some(entry) = results.get_mut(&item.appid) {
-            *entry = item.assets.as_ref().and_then(portrait_url);
+        if let (Some(entry), Some(assets)) = (results.get_mut(&item.appid), &item.assets) {
+            *entry = art_from_assets(assets);
         }
     }
     results
 }
 
-/// Returns each id's portrait URL, or `None` for a game known to have none. An id is left out
-/// entirely if Steam couldn't be reached for it, which the frontend treats as "try the fallbacks".
+/// Returns each id's art URLs. An id is left out entirely if Steam couldn't be reached for it, which
+/// the frontend treats as "try the fallbacks".
 #[tauri::command]
 pub async fn resolve_game_art(
     app_handle: AppHandle,
     app_ids: Vec<u32>,
-) -> AppResult<HashMap<u32, Option<String>>> {
+) -> AppResult<HashMap<u32, GameArt>> {
     let path = cache_path(&app_handle)?;
     let now = now_secs();
 
@@ -185,7 +202,7 @@ pub async fn resolve_game_art(
     for app_id in app_ids {
         match cached.get(&app_id) {
             Some(entry) if is_fresh(entry, now) => {
-                results.insert(app_id, entry.url.clone());
+                results.insert(app_id, entry.art.clone());
             }
             _ => missing.push(app_id),
         }
@@ -208,7 +225,10 @@ pub async fn resolve_game_art(
         return Ok(results);
     }
 
-    let found = fetched.values().filter(|url| url.is_some()).count();
+    let found = fetched
+        .values()
+        .filter(|art| art.portrait.is_some())
+        .count();
     tracing::info!(
         requested = missing.len(),
         found,
@@ -220,11 +240,11 @@ pub async fn resolve_game_art(
         // requests above aren't overwritten.
         let _guard = CACHE_LOCK.lock().await;
         let mut cache = read_cache(&path);
-        for (app_id, url) in &fetched {
+        for (app_id, art) in &fetched {
             cache.insert(
                 *app_id,
                 CachedArt {
-                    url: url.clone(),
+                    art: art.clone(),
                     fetched_at: now,
                 },
             );
@@ -242,39 +262,49 @@ pub async fn resolve_game_art(
 mod tests {
     use super::*;
 
-    fn assets(format: Option<&str>, capsule: Option<&str>) -> StoreAssets {
+    fn assets(format: Option<&str>, capsule: Option<&str>, hero: Option<&str>) -> StoreAssets {
         StoreAssets {
             asset_url_format: format.map(String::from),
             library_capsule: capsule.map(String::from),
+            library_hero: hero.map(String::from),
         }
     }
 
     #[test]
-    fn builds_a_hashed_portrait_url() {
-        let url = portrait_url(&assets(
+    fn builds_hashed_asset_urls() {
+        let art = art_from_assets(&assets(
             Some("steam/apps/570/${FILENAME}?t=1791407503"),
             Some("6cddc26c/library_capsule.jpg"),
+            Some("0e4a18e7/library_hero.jpg"),
         ));
+        let base = "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/570";
         assert_eq!(
-            url.as_deref(),
-            Some("https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/570/6cddc26c/library_capsule.jpg?t=1791407503")
+            art.portrait,
+            Some(format!("{base}/6cddc26c/library_capsule.jpg?t=1791407503"))
+        );
+        assert_eq!(
+            art.hero,
+            Some(format!("{base}/0e4a18e7/library_hero.jpg?t=1791407503"))
         );
     }
 
     #[test]
-    fn no_portrait_without_both_asset_fields() {
+    fn a_missing_asset_or_format_leaves_that_url_empty() {
+        let art = art_from_assets(&assets(
+            Some("steam/apps/1/${FILENAME}"),
+            None,
+            Some("h.jpg"),
+        ));
+        assert_eq!(art.portrait, None);
+        assert!(art.hero.is_some());
         assert_eq!(
-            portrait_url(&assets(Some("steam/apps/1/${FILENAME}"), None)),
-            None
-        );
-        assert_eq!(
-            portrait_url(&assets(None, Some("library_600x900.jpg"))),
-            None
+            art_from_assets(&assets(None, Some("c.jpg"), Some("h.jpg"))),
+            GameArt::default()
         );
     }
 
     #[test]
-    fn delisted_ids_are_remembered_as_having_no_portrait() {
+    fn delisted_ids_are_remembered_as_having_no_art() {
         // The real response shape: a delisted id comes back with `appid` zeroed, so it can't be
         // matched to anything in the batch (its `id` field is a different identifier space).
         let body: GetItemsResponse = serde_json::from_str(
@@ -285,8 +315,9 @@ mod tests {
         )
         .unwrap();
         let results = results_for_batch(&[480, 400], body.response.store_items);
-        assert_eq!(results[&480], None);
+        assert_eq!(results[&480], GameArt::default());
         assert!(results[&400]
+            .portrait
             .as_deref()
             .unwrap()
             .ends_with("library_600x900.jpg"));
@@ -295,18 +326,16 @@ mod tests {
     #[test]
     fn a_missing_portrait_expires_sooner_than_a_found_one() {
         let now = FOUND_TTL_SECS + 1000;
-        let age = |secs| now - secs;
-        let found = |fetched_at| CachedArt {
-            url: Some("u".into()),
-            fetched_at,
-        };
-        let missing = |fetched_at| CachedArt {
-            url: None,
-            fetched_at,
+        let entry = |portrait: Option<&str>, age: u64| CachedArt {
+            art: GameArt {
+                portrait: portrait.map(String::from),
+                hero: None,
+            },
+            fetched_at: now - age,
         };
 
-        assert!(is_fresh(&found(age(MISSING_TTL_SECS + 1)), now));
-        assert!(!is_fresh(&missing(age(MISSING_TTL_SECS + 1)), now));
-        assert!(!is_fresh(&found(age(FOUND_TTL_SECS + 1)), now));
+        assert!(is_fresh(&entry(Some("u"), MISSING_TTL_SECS + 1), now));
+        assert!(!is_fresh(&entry(None, MISSING_TTL_SECS + 1), now));
+        assert!(!is_fresh(&entry(Some("u"), FOUND_TTL_SECS + 1), now));
     }
 }

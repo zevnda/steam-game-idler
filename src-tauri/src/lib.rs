@@ -175,8 +175,6 @@ pub fn run() {
             settings::commands::set_theme,
             settings::commands::set_font,
             settings::commands::set_disable_tooltips,
-            settings::commands::set_show_recommended_carousel,
-            settings::commands::set_show_recent_carousel,
             customization::commands::set_custom_background,
             customization::commands::clear_custom_background,
             customization::commands::get_custom_background_data_url,

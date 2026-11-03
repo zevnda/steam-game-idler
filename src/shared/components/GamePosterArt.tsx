@@ -54,7 +54,7 @@ export const GamePosterArt = ({ appId, name }: GamePosterArtProps) => {
 
   if (resolved === undefined) return null
 
-  const portraits = [resolved, `${CDN_BASE}/${appId}/library_600x900.jpg`].filter(
+  const portraits = [resolved.portrait, `${CDN_BASE}/${appId}/library_600x900.jpg`].filter(
     (url): url is string => url !== null,
   )
   const portrait = portraits[step]

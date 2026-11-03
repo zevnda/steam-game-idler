@@ -390,8 +390,7 @@
       "count_other": "{{count}} games",
       "unknownName": "App {{appId}}",
       "carousels": {
-        "recommended": "Recommended",
-        "recent": "Recently Played"
+        "recommended": "Recommended"
       },
       "sort": {
         "playtimeDesc": "Playtime (High to Low)",
@@ -1040,16 +1039,6 @@
         "tooltips": {
           "label": "Disable tooltips",
           "description": "Hide hover tooltips throughout the app."
-        },
-        "carousels": {
-          "recommended": {
-            "label": "Show Recommended carousel",
-            "description": "Show a row of unplayed games at the top of the games list."
-          },
-          "recent": {
-            "label": "Show Recently Played carousel",
-            "description": "Show a row of your most recently played games at the top of the games list."
-          }
         },
         "background": {
           "label": "Background image",

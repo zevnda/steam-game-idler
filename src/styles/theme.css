@@ -110,10 +110,3 @@
   background: var(--scrollbar-thumb);
   border-radius: 6px;
 }
-
-/* Hides the scrollbar on an element that still needs to scroll (e.g. GameCarousel's horizontal
-   row) - it already has its own chevron buttons for non-pointer users, so a persistent scrollbar
-   is just visual noise `main`'s carousels didn't have either. */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
