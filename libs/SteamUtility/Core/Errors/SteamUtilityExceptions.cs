@@ -42,8 +42,9 @@ namespace SteamUtility.Core.Errors
             ) { }
     }
 
-    // Steam stopped responding partway through a multi-part response. Same code as a request that
-    // never got any response (see ExceptionMapper), since both mean the same thing to a caller.
+    // Steam stopped responding partway through a multi-part response, or answered without the details
+    // it was asked for. Same code as a request that never got any response (see ExceptionMapper), since
+    // all of them mean the same thing to a caller: nothing usable came back, so try again.
     public sealed class SteamResponseIncompleteException : SteamUtilityException
     {
         public SteamResponseIncompleteException()

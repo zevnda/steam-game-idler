@@ -24,6 +24,14 @@ namespace SteamUtility.Daemon.Bot
         // whole library in a single request is the most likely thing to come back incomplete.
         private const int PicsBatchSize = 250;
 
+        // Steam sometimes answers app requests with a change number and hash for every app but no
+        // details, for all but a few random ones, while still marking the response complete. It was
+        // seen at 97-99% of a library, turning 773 games into 78, then 5, with the license list
+        // unchanged, and lasting long enough to survive retries and restarts. Requesting fewer apps or
+        // using access tokens made no difference, so it can't be worked around from here. Well above
+        // what a healthy response should have: a library is real apps, which have details.
+        private const double MaxBlankAppShare = 0.9;
+
         // Fetches running right now, shared by anyone asking for the same thing. Each one requests
         // the account's entire license and app list from Steam, and repeated triggers (reloading the
         // window, an account switch landing during a refresh) used to stack up as separate full
@@ -198,6 +206,11 @@ namespace SteamUtility.Daemon.Bot
                         });
                     }
                 }
+
+                Log.Info(
+                    "OwnershipManager",
+                    $"Built library: games={games.Count} steamOwnedCount={playtimes.Count} gamesOnly={gamesOnly}"
+                );
             }
 
             return games;
@@ -317,7 +330,7 @@ namespace SteamUtility.Daemon.Bot
             return result;
         }
 
-        // Throws if any batch comes back incomplete. SteamKit2 doesn't treat that as a failure: once at
+        // Throws if any batch is marked incomplete. SteamKit2 doesn't treat that as a failure: once at
         // least one part of a response has arrived, a timeout returns whatever it has with Complete
         // false. Using that as if it were everything silently turned a stalled response into a
         // library of a handful of games, which then overwrote the cached list. Failing here leaves
@@ -330,6 +343,8 @@ namespace SteamUtility.Daemon.Bot
         {
             var results = new List<SteamApps.PICSProductInfoCallback>();
             var none = Enumerable.Empty<SteamApps.PICSRequest>();
+            var kind = arePackages ? "packages" : "apps";
+            int returned = 0, unknown = 0, missingToken = 0, blank = 0, parts = 0, shortBatches = 0;
             foreach (var batch in requests.Chunk(PicsBatchSize))
             {
                 var job = bot.SteamAppsHandler.PICSGetProductInfo(
@@ -344,7 +359,52 @@ namespace SteamUtility.Daemon.Bot
                 }
 
                 results.AddRange(resultSet.Results!);
+
+                // Logged so a short library can be explained from a user's log file.
+                int batchAccountedFor = 0;
+                foreach (var part in resultSet.Results!)
+                {
+                    parts++;
+                    var items = arePackages ? part.Packages : part.Apps;
+                    var unknownIds = arePackages ? part.UnknownPackages : part.UnknownApps;
+                    batchAccountedFor += items.Count + unknownIds.Count;
+                    returned += items.Count;
+                    unknown += unknownIds.Count;
+                    foreach (var info in items.Values)
+                    {
+                        if (info.MissingToken)
+                        {
+                            missingToken++;
+                        }
+                        var hasDetails = arePackages
+                            ? info.KeyValues["appids"].Children.Count > 0
+                            : info.KeyValues["common"].Children.Count > 0;
+                        if (!hasDetails)
+                        {
+                            blank++;
+                        }
+                    }
+                }
+
+                if (batchAccountedFor < batch.Length)
+                {
+                    shortBatches++;
+                }
             }
+
+            Log.Info(
+                "OwnershipManager",
+                $"Fetched {kind}: requested={requests.Count} returned={returned} unknown={unknown} missingToken={missingToken} blank={blank} parts={parts} shortBatches={shortBatches}"
+            );
+
+            // Failing leaves the last good list in place, where using this would overwrite the cache
+            // with a library of a handful of games. Apps only: a package legitimately can have no apps.
+            if (!arePackages && blank > requests.Count * MaxBlankAppShare)
+            {
+                Log.Warn("OwnershipManager", $"Rejecting blank app details: blank={blank} requested={requests.Count}");
+                throw new SteamResponseIncompleteException();
+            }
+
 
             return results;
         }
