@@ -180,7 +180,14 @@ export const GamesList = ({
   useEffect(() => {
     const element = listApi?.element
     if (!element) return
-    const update = () => setIsToolbarStuck(element.scrollTop >= toolbarRowTop)
+    const update = () => {
+      setIsToolbarStuck(element.scrollTop >= toolbarRowTop)
+      // Keeps the scrollbar out from under the bar once it's docked, without starting partway down
+      // the page before then. Growing with the scroll rather than switching on when the bar docks,
+      // since a sudden change to the track's length would make the thumb jump.
+      const docked = toolbarRowTop === 0 ? 1 : Math.min(1, element.scrollTop / toolbarRowTop)
+      element.style.setProperty('--games-list-scrollbar-inset', `${docked * TOOLBAR_HEIGHT}px`)
+    }
     update()
     element.addEventListener('scroll', update, { passive: true })
     return () => element.removeEventListener('scroll', update)
@@ -215,7 +222,7 @@ export const GamesList = ({
     <div className='relative h-full w-full' ref={containerRef}>
       {width > 0 && (
         <List
-          className='pb-6'
+          className='games-list-scroller pb-6'
           listRef={setListApi}
           rowComponent={GamesListRow}
           rowCount={rows.length}

@@ -922,6 +922,22 @@ body {
   position: relative;
   z-index: 10;
   margin-bottom: calc(var(--page-toolbar-height) * -1);
+  /* The content below always leaves room for a scrollbar, and this bar sits outside that scroller,
+     so without this its controls wouldn't line up with the right edge of the content. */
+  padding-right: calc(1.5rem + var(--scrollbar-size));
+}
+
+/* The Games list's bar sits inside the scroller, so the scrollbar's room is already taken off. */
+.games-list-scroller .page-toolbar {
+  padding-right: 1.5rem;
+}
+
+/* Reserves the scrollbar's room on a page's scrollers even when they don't overflow. Otherwise a
+   grid would be wider with a few games than with many, and shift when a list grows long enough. Not
+   on one wrapping a virtualized grid, which scrolls and reserves that room itself: both reserving it
+   would leave an empty strip beside the real scrollbar. */
+main .overflow-y-auto:not(.inventory-filter-panel, :has([role='grid'])) {
+  scrollbar-gutter: stable;
 }
 
 .page-toolbar-frosted {
@@ -933,6 +949,20 @@ body {
 /* Without blur, content scrolling behind a see-through bar would be unreadable, so it goes opaque. */
 .page-toolbar-solid {
   background: var(--background);
+}
+
+/* Scroll containers run up behind the bar so content can frost through it, but their scrollbars
+   shouldn't. Starting the track below the bar also keeps the thumb out from under it. Matched from
+   `main`, since which element scrolls varies by page (a tab panel, a virtualized grid, a filter
+   panel), and overlays render outside `main`, so their scrollbars aren't affected. The Games list
+   is the exception, since its bar starts further down the page: GamesList.tsx sets its inset as the
+   bar scrolls up to dock. */
+main:has(.page-toolbar) *:not(.games-list-scroller)::-webkit-scrollbar-track {
+  margin-top: var(--page-toolbar-height);
+}
+
+.games-list-scroller::-webkit-scrollbar-track {
+  margin-top: var(--games-list-scrollbar-inset, 0);
 }
 
 /* Keeps content clear of the bar at the top of its scroll range. Virtualized grids and the like use

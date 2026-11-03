@@ -29,7 +29,7 @@ export const GameGridSkeleton = ({
   tileClassName = DEFAULT_TILE_CLASSNAME,
   gridClassName = DEFAULT_GRID_CLASSNAME,
 }: GameGridSkeletonProps) => (
-  <div className='max-h-screen min-h-0 flex-1 overflow-hidden'>
+  <div className='max-h-screen min-h-0 flex-1 overflow-hidden [scrollbar-gutter:stable]'>
     <div className={gridClassName}>
       {Array.from({ length: count }, (_, index) => (
         <Skeleton key={index} className={tileClassName} />

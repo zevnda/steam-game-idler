@@ -113,8 +113,8 @@ export const InventoryFilterPanel = ({
   }
 
   return (
-    <div className='flex h-full w-56 shrink-0 flex-col gap-4 overflow-y-auto overflow-x-hidden page-toolbar-offset border-r border-border pb-4 pl-6 pr-4'>
-      <InputGroup isDisabled={isDisabled}>
+    <div className='inventory-filter-panel flex h-full w-56 shrink-0 flex-col gap-4 overflow-y-auto overflow-x-hidden border-r border-border pb-4 pl-6 pr-4 pt-[calc(var(--page-toolbar-height)+0.75rem)]'>
+      <InputGroup className='rounded-full' isDisabled={isDisabled}>
         <InputGroup.Prefix>
           <RiSearchLine className='text-muted' fontSize={16} />
         </InputGroup.Prefix>

@@ -3310,14 +3310,16 @@ html[data-scheme='light'] .changelog-tag--fixed {
   --tag: oklch(0.6 0.14 70);
 }
 
-/* same thin scrollbar as the app's own scroll areas */
+/* same scrollbar as the app's own scroll areas (src/styles/theme.css): an 8px thumb inset 3px from
+   each edge by a transparent border */
 .changelog-embed__scroll::-webkit-scrollbar {
-  width: 4px;
+  width: 14px;
 }
 
 .changelog-embed__scroll::-webkit-scrollbar-thumb {
-  background: var(--cl-scrollbar-thumb);
-  border-radius: 6px;
+  border: 3px solid transparent;
+  border-radius: 14px;
+  background: var(--cl-scrollbar-thumb) padding-box;
 }
 
 .changelog-embed__scroll::-webkit-scrollbar-track {

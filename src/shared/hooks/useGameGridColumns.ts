@@ -6,9 +6,9 @@ import { flushSync } from 'react-dom'
 // row list (games-list's own page) size their plain (non-carousel) cards identically.
 export const GAME_GRID_GAP = 16
 export const GAME_GRID_PADDING = 24
-// Must match theme.css's `::-webkit-scrollbar { width: 4px }` exactly - see VirtualizedGameGrid's
+// Must match theme.css's `--scrollbar-size` exactly - see VirtualizedGameGrid's
 // original doc comment for why this can't just be react-window's own `getScrollbarSize()`.
-export const GAME_GRID_SCROLLBAR_WIDTH = 4
+export const GAME_GRID_SCROLLBAR_WIDTH = 14
 // Portrait 2:3 art filling the whole card - must match `GamePosterCard`'s `aspect-2/3`.
 export const GAME_CARD_HEIGHT_RATIO = 3 / 2
 // Must match `.game-grid`'s minimum column width in globals.css, which lays out the non-virtualized

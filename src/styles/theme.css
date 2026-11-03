@@ -88,7 +88,8 @@
   --button-fg: var(--black);
 }
 
-/* App-wide scrollbar styling, matching `main`'s width/shape (4px, 6px-rounded thumb) via
+/* App-wide scrollbar styling (a fully rounded 8px thumb, inset 3px from each edge by a transparent
+   border, so it doesn't sit hard against the side of the window) via
    `::-webkit-scrollbar` pseudo-elements - available since this app only ever runs on WebView2
    (Chromium), so no cross-browser fallback is needed. Deliberately NOT using HeroUI's own
    `scrollbar-color`/`scrollbar-width` system (see node_modules/@heroui/styles/dist/base/base.css)
@@ -97,9 +98,13 @@
    to-close. `::-webkit-scrollbar` only ever renders on elements that actually overflow, and a
    modal backdrop never does, so it doesn't carry the same risk - `main` ran this exact mechanism
    globally in production without issue. */
+:root {
+  --scrollbar-size: 14px;
+}
+
 ::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
 }
 
 ::-webkit-scrollbar-track {
@@ -107,6 +112,11 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb);
-  border-radius: 6px;
+  border: 3px solid transparent;
+  border-radius: var(--scrollbar-size);
+  background: var(--scrollbar-thumb) padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklch, var(--scrollbar-thumb) 75%, var(--foreground)) padding-box;
 }

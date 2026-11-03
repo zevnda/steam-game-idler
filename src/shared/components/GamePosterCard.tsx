@@ -6,8 +6,10 @@ import { gameCardContextAttrs } from '@/shared/utils/gameCardContext'
 
 // Collapses to zero height until the card is hovered or something inside it has keyboard focus. The
 // content stays mounted and focusable throughout, so keyboard users can still reach the actions.
+// `focus-visible`, not `focus-within`: a clicked button keeps focus, which would leave the card stuck
+// open after the pointer moves away.
 const REVEAL_CLASSNAME =
-  'grid grid-rows-[0fr] transition-[grid-template-rows] duration-150 group-focus-within:grid-rows-[1fr] group-hover:grid-rows-[1fr]'
+  'grid grid-rows-[0fr] transition-[grid-template-rows] duration-150 group-has-focus-visible:grid-rows-[1fr] group-hover:grid-rows-[1fr]'
 
 interface GamePosterCardProps {
   appId: number
@@ -63,7 +65,7 @@ export const GamePosterCard = ({
             'pointer-events-none absolute inset-x-0 bottom-0 h-3/4 bg-linear-to-t from-black/95 via-black/65 to-transparent transition-opacity duration-150',
             meta || isAlwaysRevealed
               ? 'opacity-100'
-              : 'opacity-0 group-focus-within:opacity-100 group-hover:opacity-100',
+              : 'opacity-0 group-has-focus-visible:opacity-100 group-hover:opacity-100',
           )}
         />
 
