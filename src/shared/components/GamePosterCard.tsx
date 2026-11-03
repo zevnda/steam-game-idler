@@ -1,4 +1,5 @@
 import type { ComponentProps, ReactNode } from 'react'
+import { createContext, useContext } from 'react'
 import { TbCheck } from 'react-icons/tb'
 import { Button, cn } from '@heroui/react'
 import { GamePosterArt } from '@/shared/components/GamePosterArt'
@@ -11,6 +12,11 @@ import { gameCardContextAttrs } from '@/shared/utils/gameCardContext'
 // open after the pointer moves away.
 const REVEAL_CLASSNAME =
   'grid grid-rows-[0fr] transition-[grid-template-rows] duration-150 group-has-focus-visible:grid-rows-[1fr] group-hover:grid-rows-[1fr]'
+
+// True while a card in a reorderable grid is being dragged. Every card there then stays in its resting
+// state: the one being dragged sits under the pointer the whole time, and the others are hovered in
+// turn as it passes over them, so their buttons would keep popping open mid-drag.
+export const GameCardDragContext = createContext(false)
 
 interface GamePosterCardProps {
   appId: number
@@ -35,8 +41,8 @@ interface GamePosterCardProps {
   forceCover?: boolean
 }
 
-// The one card behind every game grid: portrait art filling the whole card, with the name and that
-// page's actions rising over it on hover. Each page supplies only what differs, its `actions` and
+// The one card behind every game grid: art filling the whole card with the name over it, and that
+// page's actions opening below the name on hover. Each page supplies only what differs, its `actions` and
 // status, which is how the different button sets across pages share a single design.
 //
 // `group` sits on an outer box that doesn't move while the inner one lifts. If they were the same
@@ -57,7 +63,12 @@ export const GamePosterCard = ({
 }: GamePosterCardProps) => {
   const cardStyle = useGameCardStyleStore(state => state.style)
   const style = forceCover ? 'cover' : cardStyle
-  const reveal = isAlwaysRevealed ? 'grid grid-rows-[1fr]' : REVEAL_CLASSNAME
+  const isDragActive = useContext(GameCardDragContext)
+  const reveal = isAlwaysRevealed
+    ? 'grid grid-rows-[1fr]'
+    : isDragActive
+      ? 'grid grid-rows-[0fr]'
+      : REVEAL_CLASSNAME
 
   return (
     <div
@@ -70,15 +81,25 @@ export const GamePosterCard = ({
     >
       {/* The glow goes on this element rather than a child, because `overflow-hidden` clips a child's
           shadow but not the element's own. */}
-      <div className='relative h-full w-full overflow-hidden rounded-xl bg-surface transition-[translate,box-shadow] duration-150 group-hover:shadow-[0_0_16px_-2px_color-mix(in_oklab,var(--accent)_45%,transparent)] motion-safe:group-hover:-translate-y-1'>
+      <div
+        className={cn(
+          'relative h-full w-full overflow-hidden rounded-xl bg-surface transition-[translate,box-shadow] duration-150',
+          !isDragActive &&
+            'group-hover:shadow-[0_0_16px_-2px_color-mix(in_oklab,var(--accent)_45%,transparent)] motion-safe:group-hover:-translate-y-1',
+        )}
+      >
         <GamePosterArt appId={appId} knownSrc={knownArtSrc} name={name} style={style} />
 
+        {/* Always there, so the name below stays readable, and rising with it on hover to sit behind
+            the buttons too. */}
         <div
           className={cn(
-            'pointer-events-none absolute inset-x-0 bottom-0 h-3/4 bg-linear-to-t from-black/95 via-black/65 to-transparent transition-opacity duration-150',
+            'pointer-events-none absolute inset-x-0 bottom-0 bg-linear-to-t from-black/95 via-black/65 to-transparent transition-[height] duration-150',
             meta || isAlwaysRevealed
-              ? 'opacity-100'
-              : 'opacity-0 group-has-focus-visible:opacity-100 group-hover:opacity-100',
+              ? 'h-3/4'
+              : isDragActive
+                ? 'h-2/5'
+                : 'h-2/5 group-has-focus-visible:h-3/4 group-hover:h-3/4',
           )}
         />
 
@@ -92,11 +113,13 @@ export const GamePosterCard = ({
 
         {/* White rather than theme colours: this always sits on the dark gradient, over artwork. */}
         <div className='absolute inset-x-0 bottom-0 flex flex-col px-2.5 pb-2.5 text-white'>
-          <div className={reveal}>
+          {/* Always shown, rising as the buttons open below it on hover. The shadow helps on art
+              that's bright right behind the text. */}
+          <div className='grid grid-rows-[1fr]'>
             <div className='min-h-0 overflow-hidden'>
               <p
                 className={cn(
-                  'pb-1 text-sm font-semibold leading-snug',
+                  'pb-1 text-sm font-semibold leading-snug [text-shadow:0_1px_2px_rgb(0_0_0/0.9),0_0_10px_rgb(0_0_0/0.7)]',
                   // A wide card is too short for more than a line alongside its buttons
                   style === 'cover' ? 'line-clamp-3' : 'line-clamp-1',
                 )}
@@ -120,7 +143,9 @@ export const GamePosterCard = ({
         <div
           className={cn(
             'pointer-events-none absolute inset-0 rounded-xl ring-inset transition-shadow duration-150',
-            isSelected ? 'ring-2 ring-accent' : 'ring-1 ring-white/10 group-hover:ring-accent',
+            isSelected
+              ? 'ring-2 ring-accent'
+              : cn('ring-1 ring-white/10', !isDragActive && 'group-hover:ring-accent'),
           )}
         />
       </div>

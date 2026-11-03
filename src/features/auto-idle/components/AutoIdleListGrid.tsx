@@ -5,6 +5,7 @@ import { AutoIdleListCard } from './AutoIdleListCard'
 import { SortableAutoIdleListCard } from './SortableAutoIdleListCard'
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, SortableContext } from '@dnd-kit/sortable'
+import { GameCardDragContext } from '@/shared/components/GamePosterCard'
 
 interface AutoIdleListGridProps {
   games: AutoIdleEntry[]
@@ -41,31 +42,33 @@ export const AutoIdleListGrid = ({
   }
 
   return (
-    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <SortableContext items={games.map(item => item.appId)}>
-        <div className='game-grid page-content'>
-          {games.map(game => (
-            <SortableAutoIdleListCard
-              key={game.appId}
-              game={game}
-              isDragging={activeId === game.appId}
-              isPending={pendingAppIds.has(game.appId)}
-              onRemove={() => onRemove(game.appId)}
-              onToggleEnabled={() => onToggleEnabled(game.appId, !game.enabled)}
+    <GameCardDragContext.Provider value={activeId !== null}>
+      <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+        <SortableContext items={games.map(item => item.appId)}>
+          <div className='game-grid page-content'>
+            {games.map(game => (
+              <SortableAutoIdleListCard
+                key={game.appId}
+                game={game}
+                isDragging={activeId === game.appId}
+                isPending={pendingAppIds.has(game.appId)}
+                onRemove={() => onRemove(game.appId)}
+                onToggleEnabled={() => onToggleEnabled(game.appId, !game.enabled)}
+              />
+            ))}
+          </div>
+        </SortableContext>
+        <DragOverlay dropAnimation={null}>
+          {activeItem ? (
+            <AutoIdleListCard
+              game={activeItem}
+              isPending={false}
+              onRemove={() => {}}
+              onToggleEnabled={() => {}}
             />
-          ))}
-        </div>
-      </SortableContext>
-      <DragOverlay dropAnimation={null}>
-        {activeItem ? (
-          <AutoIdleListCard
-            game={activeItem}
-            isPending={false}
-            onRemove={() => {}}
-            onToggleEnabled={() => {}}
-          />
-        ) : null}
-      </DragOverlay>
-    </DndContext>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
+    </GameCardDragContext.Provider>
   )
 }
