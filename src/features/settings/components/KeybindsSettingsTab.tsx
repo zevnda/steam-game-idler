@@ -74,7 +74,11 @@ export const KeybindsSettingsTab = () => {
         <KeybindSection title={t('dashboard.settings.keybinds.navigation')}>
           <KeybindRow keys={['Ctrl', ']']} label={t('dashboard.settings.keybinds.nextPage')} />
           <KeybindRow keys={['Ctrl', '[']} label={t('dashboard.settings.keybinds.prevPage')} />
-          <KeybindRow keys={['/']} label={t('dashboard.settings.keybinds.openSearch')} />
+          <KeybindRow
+            altKeys={['/']}
+            keys={['Ctrl', 'K']}
+            label={t('dashboard.settings.keybinds.openSearch')}
+          />
           <KeybindRow
             keys={['Ctrl', ',']}
             label={t('dashboard.settings.keybinds.toggleSettings')}
