@@ -325,6 +325,18 @@ entirely (`platform::is_portable()`); on Linux, only the AppImage build can self
 installs live in `/usr/bin`, owned by the system package manager, so they can't self-update and the
 tray's "Check for updates" entry is hidden entirely for them.
 
+**Merging the version-bump PR is the one go-live moment for both update endpoints.** `release.yml`'s
+`publish` verifies the built files (`scripts/verify-latest-json.mjs`), uploads only the binaries to
+R2, creates the GitHub release, downloads and verifies what each host serves, and only then opens the
+PR. Merging updates `latest.json` on `main` (the GitHub endpoint) and triggers
+`publish-r2-manifest.yml`, which publishes R2's `latest.json` and then deletes the superseded binaries.
+If `publish` fails after creating the release, it deletes that release and its tag, so **retry a failed
+release under the same version**: `fetch_previous_version` reads the latest GitHub release while the
+version files on `main` only move on merge, so a leftover release would break the next run's version
+bump. If `publish-r2-manifest.yml` fails, R2 keeps serving the previous version with its files intact -
+re-run it. These checks prove an update is signed and downloadable, not that the new version launches
+or that its own updater works, so run a release that touched updater code on a VM before merging.
+
 **Version policy (remote deprecation)**: `version-policy.json` (repo root, hand-edited, never
 CI-regenerated - deliberately separate from `latest.json`, which `release.yml` rewrites every
 release) holds `recommendedVersion` (older builds get a dismissible "update soon" nag) and
