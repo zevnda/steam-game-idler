@@ -678,7 +678,6 @@
           "description": "跳过仍在 Steam 退款期限内的游戏（购买后14天、游戏时间不超过2小时）。"
         },
         "autoFarmCards": {
-          "title": "自动挂卡",
           "description": "定期检查已拥有游戏中仍有卡牌掉落的游戏，并自动开始挂卡"
         },
         "skipNoPlaytime": {

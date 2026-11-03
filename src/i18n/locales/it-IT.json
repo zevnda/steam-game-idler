@@ -3,6 +3,7 @@
     "actions": {
       "submit": "Invia",
       "cancel": "Annulla",
+      "close": "Chiudi",
       "tryAgain": "Riprova",
       "continue": "Continua",
       "refresh": "Aggiorna",
@@ -76,7 +77,8 @@
     "status": {
       "saved": "Salvato",
       "cleared": "Cancellato",
-      "paused": "In pausa"
+      "paused": "In pausa",
+      "running": "In esecuzione"
     },
     "steamWarning": {
       "title": "Avviso",
@@ -105,6 +107,20 @@
     "completedThisSessionCount": "Completati in questa sessione ({{count}})",
     "gamesQueuedCount_one": "{{count}} gioco in coda",
     "gamesQueuedCount_other": "{{count}} giochi in coda"
+  },
+  "versionPolicy": {
+    "outdated": {
+      "title": "Aggiornamento consigliato",
+      "description": "Questa versione di Steam Game Idler smetterà presto di funzionare. Aggiorna ora per continuare a usare l'app senza interruzioni."
+    },
+    "unsupported": {
+      "title": "Aggiornamento necessario",
+      "description": "Questa versione di Steam Game Idler non è più supportata. Aggiorna all'ultima versione per continuare a usare l'app."
+    },
+    "currentVersion": "La tua versione: {{version}}",
+    "installUpdate": "Installa aggiornamento",
+    "downloadUpdate": "Scarica aggiornamento",
+    "remindLater": "Ricordamelo più tardi"
   },
   "update": {
     "downloading": "Download dell'aggiornamento..."
@@ -164,7 +180,8 @@
         "description": "Usa SGI senza pubblicità per un'interfaccia completamente pulita e senza distrazioni."
       },
       "themes": {
-        "title": "Temi esclusivi"
+        "title": "Temi esclusivi",
+        "description": "Personalizza SGI con temi colore esclusivi e temi animati originali."
       },
       "customBackground": {
         "title": "Immagine di sfondo personalizzata"
@@ -184,6 +201,7 @@
         "description": "Accedi e gestisci più account Steam contemporaneamente."
       },
       "autoFarmCards": {
+        "title": "Monitoraggio carte",
         "description": "SGI monitora la tua libreria e avvia automaticamente la raccolta per qualsiasi gioco con carte ancora disponibili."
       },
       "gamesList": {
@@ -271,6 +289,7 @@
     "landing": {
       "title": "Accedi a Steam Game Idler",
       "agentButton": "Accesso con Steam",
+      "localButton": "Accesso locale",
       "localAlreadySignedIn": "Un account del client Steam locale ha già effettuato l'accesso: può essercene solo uno alla volta.",
       "acknowledge": "Continuando, accetti i <0>Termini di servizio</0> e confermi di aver letto la nostra <1>Informativa sulla privacy</1>."
     },
@@ -323,6 +342,9 @@
   },
   "dashboard": {
     "sidebar": {
+      "goPro": {
+        "title": "Sblocca i vantaggi PRO"
+      },
       "nav": {
         "games": "Giochi",
         "idling": "Idle",
@@ -373,7 +395,9 @@
         "playtimeDesc": "Tempo di gioco (decrescente)",
         "playtimeAsc": "Tempo di gioco (crescente)",
         "recentlyPlayedDesc": "Recenti prima",
-        "recentlyPlayedAsc": "Meno recenti prima"
+        "recentlyPlayedAsc": "Meno recenti prima",
+        "achievementsDesc": "Completamento (maggiore)",
+        "achievementsAsc": "Completamento (minore)"
       },
       "empty": {
         "title": "Nessun gioco trovato",
@@ -486,7 +510,27 @@
       "noDescription": "Nessuna descrizione",
       "protectedTooltip": "Impostato dal server del gioco e non modificabile dai client.",
       "edited": "Modificato",
+      "incrementOnly": "Può solo aumentare",
       "incrementOnlyTooltip": "Questa statistica può solo aumentare, mai diminuire.",
+      "sets": {
+        "baseGame": "Gioco base",
+        "dlc": "DLC",
+        "notOwned": "Non posseduto"
+      },
+      "archived": {
+        "badge": "Archiviato"
+      },
+      "views": {
+        "all": "Tutti gli obiettivi"
+      },
+      "filters": {
+        "all": "Tutti",
+        "locked": "Bloccati",
+        "unlocked": "Sbloccati"
+      },
+      "selection": {
+        "selectAll": "Seleziona tutti"
+      },
       "sort": {
         "percent": "% sblocco globale",
         "unlocked": "Prima sbloccati",
@@ -563,7 +607,9 @@
         "unsupportedGameCoordinator": "Questo gioco non è supportato per gli obiettivi quando l'accesso è effettuato con Steam: usa invece il client Steam locale.",
         "unsupportedGameCoordinatorLinux": "Questo gioco non è supportato per gli obiettivi quando l'accesso è effettuato con Steam.",
         "generic": "Qualcosa è andato storto durante il caricamento degli obiettivi. Riprova. ({{code}})"
-      }
+      },
+      "pendingChanges_one": "{{count}} modifica",
+      "pendingChanges_other": "{{count}} modifiche"
     },
     "cardFarming": {
       "status": {
@@ -645,7 +691,6 @@
           "description": "Non raccogliere carte da un gioco finché si trova ancora nel periodo di rimborso di Steam (acquistato negli ultimi 14 giorni con meno di 2 ore di gioco)."
         },
         "autoFarmCards": {
-          "title": "Raccolta carte automatica",
           "description": "Controlla periodicamente i giochi posseduti con carte rimanenti e avvia automaticamente la raccolta."
         },
         "skipNoPlaytime": {
@@ -713,6 +758,12 @@
         "protectedSection": {
           "title": "Obiettivi protetti"
         },
+        "unownedDlcSection": {
+          "title": "Da DLC che non possiedi"
+        },
+        "archivedSection": {
+          "title": "Obiettivi archiviati"
+        },
         "protectedAlert": {
           "description": "Sblocco obiettivi esclude i giochi che hanno anche un solo obiettivo protetto. Questo ordine di sblocco non verrà quindi utilizzato."
         },
@@ -757,7 +808,8 @@
         "title": "Impossibile aggiornare Sblocco obiettivi",
         "queueCacheIoFailed": "Impossibile leggere o scrivere la coda di Sblocco obiettivi.",
         "settingsIoFailed": "Impossibile leggere o scrivere le impostazioni di Sblocco obiettivi.",
-        "orderIoFailed": "Impossibile leggere o scrivere l'ordine degli obiettivi di questo gioco."
+        "orderIoFailed": "Impossibile leggere o scrivere l'ordine degli obiettivi di questo gioco.",
+        "libraryRunInProgress": "Impossibile avviare Sblocco obiettivi mentre è in corso il blocco o lo sblocco degli obiettivi della libreria dalle impostazioni di Debug. Riprova al termine dell'operazione."
       }
     },
     "autoIdle": {
@@ -1017,7 +1069,24 @@
             "pink": "Rosa",
             "orange": "Arancione",
             "black": "Nero",
-            "white": "Bianco"
+            "white": "Bianco",
+            "synthwave": "Synthwave",
+            "aurora": "Aurora",
+            "nebula": "Nebulosa",
+            "terminal": "Terminale",
+            "ember": "Brace",
+            "abyss": "Abisso",
+            "sugarDay": "Sugar Day",
+            "sugarNight": "Sugar Night",
+            "sakura": "Sakura",
+            "lofiRain": "Pioggia lo-fi",
+            "fireflies": "Lucciole",
+            "holo": "Ologramma",
+            "blackHole": "Buco nero",
+            "lavaLamp": "Lampada lava",
+            "circuit": "Circuito",
+            "luxe": "Lusso",
+            "arcade": "Arcade"
           }
         },
         "font": {
@@ -1135,8 +1204,28 @@
           "confirmTitle": "Cancellare tutti i dati locali?",
           "confirmDescription": "Disconnette ogni account, ferma ogni automazione in esecuzione, cancella i log e cancella i dati dell'app archiviati localmente su questo dispositivo (ricerche recenti, blocchi inventario, ecc.). L'operazione non può essere annullata."
         },
+        "lockAllAchievements": {
+          "button": "Blocca tutti gli obiettivi delle app",
+          "confirmTitle": "Bloccare tutti gli obiettivi di tutte le app?",
+          "confirmDescription": "Blocca tutti gli obiettivi di ogni app posseduta da questo account (giochi, mod, strumenti e altro). L'operazione può richiedere diversi minuti, o anche ore per una libreria grande, e non può essere annullata.",
+          "success": "Bloccati {{achievements}} obiettivi in {{games}} app",
+          "partial": "Bloccati {{achievements}} obiettivi in {{games}} app. Impossibile aggiornare {{failed}} app: controlla il log per i dettagli."
+        },
+        "allAchievementsRun": {
+          "running": "Elaborazione della libreria in corso. Lascia l'app aperta fino al completamento.",
+          "progress": "{{completed}} app su {{total}} completate · {{achievements}} obiettivi modificati. Lascia l'app aperta fino al completamento."
+        },
+        "unlockAllAchievements": {
+          "button": "Sblocca tutti gli obiettivi delle app",
+          "confirmTitle": "Sbloccare tutti gli obiettivi di tutte le app?",
+          "confirmDescription": "Sblocca tutti gli obiettivi di ogni app posseduta da questo account (giochi, mod, strumenti e altro). L'operazione può richiedere diversi minuti, o anche ore per una libreria grande.",
+          "success": "Sbloccati {{achievements}} obiettivi in {{games}} app",
+          "partial": "Sbloccati {{achievements}} obiettivi in {{games}} app. Impossibile aggiornare {{failed}} app: controlla il log per i dettagli."
+        },
         "errors": {
-          "logIoFailed": "Impossibile leggere o scrivere il file di log."
+          "logIoFailed": "Impossibile leggere o scrivere il file di log.",
+          "achievementUnlockerRunning": "Ferma prima Sblocco obiettivi: potrebbe annullare le modifiche o intervenire sugli stessi obiettivi.",
+          "libraryRunInProgress": "Il blocco o lo sblocco degli obiettivi della libreria è già in corso. Attendi il completamento."
         }
       },
       "footer": {

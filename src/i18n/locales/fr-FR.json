@@ -635,7 +635,6 @@
           "description": "Ne pas farmer un jeu tant qu'il est dans la fenêtre de remboursement de Steam (acheté durant les 14 derniers jours avec moins de 2 heures de jeu)."
         },
         "autoFarmCards": {
-          "title": "Farmer les cartes automatiquement",
           "description": "Vérifier régulièrement quels jeux de votre collection disposent encore de drops de cartes et lancer automatiquement le farming."
         },
         "skipNoPlaytime": {
