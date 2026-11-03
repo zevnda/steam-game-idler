@@ -1,0 +1,89 @@
+name: Publish R2 update manifest
+
+# Puts a release live on the R2 update endpoint when its version-bump PR merges, so merging is the one
+# go-live moment for both endpoints: main's latest.json is what raw.githubusercontent.com serves, and
+# this copies it to R2. A failure here leaves R2 serving the previous version, whose files are still
+# there - only a successful publish deletes them - so re-running this workflow is always the fix.
+#
+# Merges of anything other than a version bump don't touch latest.json, so they never trigger this.
+# workflow_dispatch is for re-running by hand, e.g. after backfilling R2 following a skip_r2_upload
+# release. It's also a safe way to test this workflow: with no version change it re-publishes the same
+# manifest and deletes nothing.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - latest.json
+  workflow_dispatch:
+
+# Queued rather than cancelled so two quick merges can't leave an older manifest published last
+concurrency:
+  group: publish-r2-manifest
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Build R2 latest.json variant
+        run: node scripts/verify-latest-json.mjs r2-manifest --in latest.json --out latest-r2.json
+
+      - name: Verify the update files on R2
+        # release.yml already uploaded and verified these, but this is the last check before users
+        # are pointed at them, and it also covers a skip_r2_upload release that was backfilled by hand.
+        run: node scripts/verify-latest-json.mjs remote --latest latest-r2.json
+
+      - name: Find superseded R2 files
+        id: stale
+        # Must run before the upload below, since it reads the manifest that upload replaces
+        run: |
+          set -euo pipefail
+          names="$(node scripts/verify-latest-json.mjs stale-r2-files --current latest-r2.json)"
+          echo "Superseded files: ${names:-none}"
+          {
+            echo "names<<EOF"
+            echo "$names"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Publish latest.json to Cloudflare R2
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        # `no-store` so Cloudflare's edge never caches it - every update check is guaranteed fresh
+        run: |
+          set -euo pipefail
+          npx --yes wrangler r2 object put "steam-game-idler/updater/latest.json" \
+            --file=./latest-r2.json \
+            --content-type="application/json" \
+            --cache-control="no-store" \
+            --remote
+
+      - name: Delete superseded R2 files
+        if: steps.stale.outputs.names != ''
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          STALE_NAMES: ${{ steps.stale.outputs.names }}
+        # By exact key because `wrangler r2 object` has no list subcommand (confirmed against the real
+        # CLI). R2's DELETE is idempotent - confirmed against this bucket - so a re-run is harmless.
+        run: |
+          set -euo pipefail
+          while IFS= read -r name; do
+            if [ -n "$name" ]; then
+              npx --yes wrangler r2 object delete "steam-game-idler/updater/${name}" --remote
+            fi
+          done <<< "$STALE_NAMES"

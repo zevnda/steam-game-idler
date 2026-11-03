@@ -54,8 +54,9 @@ on:
         # Escape hatch for a Cloudflare-side outage/misconfiguration: `publish`'s R2 upload step
         # hard-fails by default (deliberately, so a broken upload is never silently missed) - if
         # that step fails, re-dispatch the same release with this enabled to let the GitHub
-        # release/PR/Discord ping proceed anyway, then backfill R2 by hand
-        # (`wrangler r2 object put`) once it's working again.
+        # release/PR/Discord ping proceed anyway, then backfill the binaries by hand
+        # (`wrangler r2 object put`) once it's working again and re-run publish-r2-manifest.yml,
+        # which fails until they're there. R2 stays on the previous version in the meantime.
         description: "Skip Cloudflare R2 upload"
         required: false
         type: boolean
@@ -157,9 +158,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [fetch_previous_version, validate_version]
     timeout-minutes: 5
-    outputs:
-      previous_windows_name: ${{ steps.capture_previous_r2_names.outputs.previous_windows_name }}
-      previous_linux_name: ${{ steps.capture_previous_r2_names.outputs.previous_linux_name }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -168,36 +166,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
-
-      - name: Capture previous release's R2 filenames
-        id: capture_previous_r2_names
-        # Reads latest.json before "Update version numbers" (next step) overwrites it in place -
-        # at this point it still holds the previous release's own real, published GitHub urls, so
-        # taking each platform url's basename gives the previous release's actual filenames, not a
-        # guess reconstructed from the previous version number. `publish`'s cleanup step uses these
-        # to delete exactly the previous release's R2 objects and nothing else, without assuming a
-        # naming pattern holds - Tauri's Linux bundle naming specifically isn't guaranteed (see
-        # build_linux_bundle's own glob-discovery step and its comment on why a hardcoded guess
-        # there is a footgun) - reusing real, already-published data sidesteps that risk entirely.
-        run: |
-          python3 -c "
-          import json
-          import os
-          from urllib.parse import urlparse
-
-          with open('latest.json', 'r') as f:
-              latest_json = json.load(f)
-
-          platforms = latest_json.get('platforms', {})
-          windows_name = os.path.basename(urlparse(platforms['windows-x86_64']['url']).path) if 'windows-x86_64' in platforms else ''
-          linux_name = os.path.basename(urlparse(platforms['linux-x86_64']['url']).path) if 'linux-x86_64' in platforms else ''
-
-          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
-              f.write(f'previous_windows_name={windows_name}\n')
-              f.write(f'previous_linux_name={linux_name}\n')
-
-          print(f'Previous release R2 filenames: windows={windows_name} linux={linux_name}')
-          "
 
       - name: Update version numbers
         shell: pwsh
@@ -1012,6 +980,31 @@ jobs:
           print('Merged platform signatures into latest.json')
           "
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Verify built update files
+        # The first gate, before anything goes public: latest.json's shape, the updater key and
+        # endpoints every installed copy has baked in, and each signature against the built file. See
+        # scripts/verify-latest-json.mjs. Runs on dry runs too, so a dry run exercises it for real.
+        env:
+          VERSION: ${{ github.event.inputs.version }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+          WINDOWS_RESULT: ${{ needs.build_windows_bundle.result }}
+        run: |
+          set -euo pipefail
+          dist_args=(--dist linux-x86_64=dist-linux)
+          if [ "$WINDOWS_RESULT" = "success" ]; then
+            dist_args+=(--dist windows-x86_64=dist-windows)
+          elif [ "$DRY_RUN" != "true" ]; then
+            # latest.json's Windows entry would still hold the previous release's signature
+            echo "::error::A real release can't ship without the Windows bundle (result: $WINDOWS_RESULT)"
+            exit 1
+          fi
+          node scripts/verify-latest-json.mjs built --latest latest.json --version "$VERSION" "${dist_args[@]}"
+
       # China-reachable fallback for the Tauri updater: raw.githubusercontent.com and
       # objects.githubusercontent.com (release assets) are both confirmed unreliable from mainland
       # China (real ITDOG testing: ~34%/~21% failure rates, DNS-hijack signature on the former) -
@@ -1023,66 +1016,26 @@ jobs:
       # `skip_r2_upload` dispatch input above is the explicit, deliberate opt-out for a real
       # Cloudflare-side outage.
       #
-      # Old updater/ files get cleaned up too (see "Delete previous release's R2 updater files"
-      # below), but not via listing - `wrangler r2 object` only has get/put/delete (confirmed
-      # against the real CLI, no `list` subcommand exists despite some docs/discussion implying
-      # otherwise). Instead, the immediately-previous release's real filenames are captured by
-      # prepare's capture_previous_r2_names step (before this release's version bump overwrites
-      # latest.json) and deleted by exact key once this release's own upload succeeds - narrowly
-      # scoped to just the one prior release, never a broader sweep.
-      - name: Setup Node.js for R2 upload
-        if: github.event.inputs.dry_run != 'true' && github.event.inputs.skip_r2_upload != 'true'
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-
+      # Only the binaries are uploaded here. Nothing points at them yet, so a failure anywhere in
+      # this job is invisible to users. R2's latest.json and the cleanup of the previous binaries
+      # happen in publish-r2-manifest.yml when the version-bump PR merges, so both update endpoints
+      # go live together.
       - name: Build R2 latest.json variant
         id: build_r2_latest
-        if: github.event.inputs.dry_run != 'true' && github.event.inputs.skip_r2_upload != 'true'
-        # Same latest.json as just merged above, but with each platform's `url` rewritten to the
-        # R2-hosted equivalent - `signature` values are untouched, since minisign signs the binary
-        # bytes, which are identical on both hosts, only the download URL differs. The filename is
-        # taken from the existing GitHub url's basename rather than reconstructed from a hardcoded
-        # naming pattern, so this never has to independently guess Tauri's bundle-naming convention
-        # (same caution build_linux_bundle's own "Update latest.json with signature" step already
-        # takes, for the same reason).
-        run: |
-          python3 -c "
-          import json
-          import os
-          from urllib.parse import urlparse
+        # Runs on dry runs too, purely to exercise it - nothing uploads the result there
+        run: node scripts/verify-latest-json.mjs r2-manifest --in latest.json --out latest-r2.json
 
-          with open('latest.json', 'r') as f:
-              latest_json = json.load(f)
-
-          r2_base = 'https://cdn-steamgameidler.com/updater'
-          filenames = {}
-
-          for platform_key, platform_data in latest_json['platforms'].items():
-              filename = os.path.basename(urlparse(platform_data['url']).path)
-              platform_data['url'] = f'{r2_base}/{filename}'
-              filenames[platform_key] = filename
-
-          with open('latest-r2.json', 'w') as f:
-              json.dump(latest_json, f, indent=2)
-
-          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
-              f.write(f\"windows_name={filenames['windows-x86_64']}\n\")
-              f.write(f\"linux_name={filenames['linux-x86_64']}\n\")
-
-          print('Built R2 latest.json variant')
-          "
-
-      - name: Upload updater files to Cloudflare R2
+      - name: Upload updater binaries to Cloudflare R2
         if: github.event.inputs.dry_run != 'true' && github.event.inputs.skip_r2_upload != 'true'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           WINDOWS_NAME: ${{ steps.build_r2_latest.outputs.windows_name }}
           LINUX_NAME: ${{ steps.build_r2_latest.outputs.linux_name }}
-        # `latest.json` gets `no-store` so Cloudflare's edge never caches it (every check is
-        # guaranteed fresh, no TTL window at all) - the two binaries get a long, immutable cache
-        # instead, safe since their filenames are version-stamped and never reused.
+        # The binaries get a long, immutable cache, safe since their filenames are version-stamped.
+        # Re-uploading after a failed release is still fine, because the verification below uses its
+        # own cache entry (see scripts/verify-latest-json.mjs) and nothing else fetches them until
+        # the manifest goes live.
         #
         # WINDOWS_NAME/LINUX_NAME (dotted, e.g. Steam.Game.Idler_6.2.2_x64-setup.nsis.zip) come
         # from the committed latest.json's GitHub url, which GitHub itself rewrites space->dot for
@@ -1109,49 +1062,15 @@ jobs:
             exit 1
           fi
 
-          WINDOWS_LOCAL="${windows_files[0]}"
-          LINUX_LOCAL="${linux_files[0]}"
-
-          npx --yes wrangler r2 object put "steam-game-idler/updater/latest.json" \
-            --file=./latest-r2.json \
-            --content-type="application/json" \
-            --cache-control="no-store" \
-            --remote
-
           npx --yes wrangler r2 object put "steam-game-idler/updater/${WINDOWS_NAME}" \
-            --file="${WINDOWS_LOCAL}" \
+            --file="${windows_files[0]}" \
             --cache-control="public, max-age=31536000, immutable" \
             --remote
 
           npx --yes wrangler r2 object put "steam-game-idler/updater/${LINUX_NAME}" \
-            --file="${LINUX_LOCAL}" \
+            --file="${linux_files[0]}" \
             --cache-control="public, max-age=31536000, immutable" \
             --remote
-
-      - name: Delete previous release's R2 updater files
-        if: github.event.inputs.dry_run != 'true' && github.event.inputs.skip_r2_upload != 'true'
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          PREVIOUS_WINDOWS_NAME: ${{ needs.prepare.outputs.previous_windows_name }}
-          PREVIOUS_LINUX_NAME: ${{ needs.prepare.outputs.previous_linux_name }}
-        # Runs only after this release's own 3 files are confirmed uploaded above, so a failure
-        # here never leaves updater/ without a working current release. Deletes exactly the
-        # immediately-previous release's 2 binaries (never latest.json itself, which was already
-        # overwritten in place by the upload step above) - names came from prepare's
-        # capture_previous_r2_names step, which read them from latest.json before this release's
-        # version bump overwrote it, so they're the previous release's real filenames, not a
-        # guessed pattern. No special-casing for "nothing to delete" (e.g. this being the first
-        # release ever to use R2, or a previous release that had skip_r2_upload set): R2's DELETE
-        # is idempotent - confirmed for real against this exact bucket - deleting an object that
-        # was never there still exits 0, so plain set -euo pipefail already does the right thing -
-        # only a genuine failure (bad auth, wrong bucket, network issue) fails this step, which is
-        # deliberate, matching the upload step's own hard-fail-by-default design above.
-        run: |
-          set -euo pipefail
-
-          npx --yes wrangler r2 object delete "steam-game-idler/updater/${PREVIOUS_WINDOWS_NAME}" --remote
-          npx --yes wrangler r2 object delete "steam-game-idler/updater/${PREVIOUS_LINUX_NAME}" --remote
 
       - name: Restore built Cargo.lock
         if: needs.build_windows_bundle.result == 'success'
@@ -1177,39 +1096,16 @@ jobs:
             dist-linux/*
             latest.json
 
-      - uses: actions/create-github-app-token@v1
-        id: generate-token
-        if: github.event.inputs.dry_run != 'true'
-        with:
-          app-id: ${{ secrets.APP_ID }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
-
-      - name: Create PR for version changes
-        id: create-pr
-        # Skipped on a dry run - main has none of this branch's commits yet, so a PR opened from
-        # here would show the entire branch diff against main (computed at the merge-base), not a
-        # clean version bump.
-        if: github.event.inputs.dry_run != 'true'
-        uses: peter-evans/create-pull-request@v7
-        with:
-          token: ${{ steps.generate-token.outputs.token }}
-          commit-message: "chore(version): bump to ${{ github.event.inputs.version }}"
-          title: "chore(version): bump to ${{ github.event.inputs.version }}"
-          body: |
-            Automated version bump for release [v${{ github.event.inputs.version }}](https://github.com/${{ github.repository }}/releases/tag/${{ github.event.inputs.version }})
-
-            Generated by workflow run [${{ github.run_id }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-
-            Merging this PR allows the release to be distributed through Tauri Updater for auto-updates
-          branch: "version-bump-${{ github.event.inputs.version }}-${{ github.run_id }}"
-          base: "main"
-          add-paths: |
-            src-tauri/tauri.conf.json
-            latest.json
-            package.json
-            src-tauri/Cargo.toml
-            src-tauri/Cargo.lock
-          sign-commits: true
+      - name: Verify currently published update files (dry run)
+        # A real release can't be rehearsed, but this proves the download checks work from a GitHub
+        # runner by running them against what's live right now, with no side effects.
+        if: github.event.inputs.dry_run == 'true'
+        run: |
+          set -euo pipefail
+          curl -fsSL https://raw.githubusercontent.com/zevnda/steam-game-idler/main/latest.json -o published-github.json
+          curl -fsSL https://cdn-steamgameidler.com/updater/latest.json -o published-r2.json
+          node scripts/verify-latest-json.mjs remote --latest published-github.json
+          node scripts/verify-latest-json.mjs remote --latest published-r2.json
 
       - name: Generate release notes
         if: github.event.inputs.dry_run != 'true'
@@ -1251,6 +1147,7 @@ jobs:
             return cleanedBody;
 
       - name: Create release
+        id: create_release
         if: github.event.inputs.dry_run != 'true'
         uses: softprops/action-gh-release@v1
         env:
@@ -1269,6 +1166,79 @@ jobs:
             ./dist-linux/*.AppImage.tar.gz.sig
             ./dist-linux/*.deb
             ./dist-linux/*.rpm
+
+      - name: Verify published update files
+        # Downloads what users would actually receive from each host, which also catches a url that
+        # doesn't match the uploaded asset's real name. Goes red before the PR exists, so a bad release
+        # has nothing to merge and existing users stay on the current version.
+        if: github.event.inputs.dry_run != 'true'
+        env:
+          VERSION: ${{ github.event.inputs.version }}
+          SKIP_R2: ${{ github.event.inputs.skip_r2_upload }}
+        run: |
+          set -euo pipefail
+          node scripts/verify-latest-json.mjs remote --latest latest.json --version "$VERSION"
+          if [ "$SKIP_R2" != "true" ]; then
+            node scripts/verify-latest-json.mjs remote --latest latest-r2.json --version "$VERSION"
+          fi
+
+      - uses: actions/create-github-app-token@v1
+        id: generate-token
+        if: github.event.inputs.dry_run != 'true'
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Create PR for version changes
+        id: create-pr
+        # Skipped on a dry run - main has none of this branch's commits yet, so a PR opened from
+        # here would show the entire branch diff against main (computed at the merge-base), not a
+        # clean version bump.
+        if: github.event.inputs.dry_run != 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          commit-message: "chore(version): bump to ${{ github.event.inputs.version }}"
+          title: "chore(version): bump to ${{ github.event.inputs.version }}"
+          body: |
+            Automated version bump for release [v${{ github.event.inputs.version }}](https://github.com/${{ github.repository }}/releases/tag/${{ github.event.inputs.version }})
+
+            Generated by workflow run [${{ github.run_id }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+            Merging this PR allows the release to be distributed through Tauri Updater for auto-updates
+          branch: "version-bump-${{ github.event.inputs.version }}-${{ github.run_id }}"
+          base: "main"
+          add-paths: |
+            src-tauri/tauri.conf.json
+            latest.json
+            package.json
+            src-tauri/Cargo.toml
+            src-tauri/Cargo.lock
+          sign-commits: true
+
+      - name: Roll back failed release
+        # fetch_previous_version reads the latest GitHub release, while the version files on main only
+        # move when the PR merges. A release left behind with no merged PR would make the next run's
+        # "Update version numbers" step fail, because the two no longer agree. Deleting the release and
+        # its tag puts everything back so the same version can simply be dispatched again. Sits straight
+        # after the PR step so a failure in the artifact cleanup below can't delete a good release.
+        # Also covers a failed "Create release" step, which can leave a release with missing assets.
+        if: |
+          (failure() || cancelled()) &&
+          (steps.create_release.outcome == 'success' ||
+           steps.create_release.outcome == 'failure' ||
+           steps.create_release.outcome == 'cancelled')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ github.event.inputs.version }}
+        run: |
+          set -euo pipefail
+          if gh release view "$VERSION" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            gh release delete "$VERSION" --repo "$GITHUB_REPOSITORY" --yes --cleanup-tag
+            echo "::warning::Deleted failed release $VERSION. Fix the problem and dispatch $VERSION again."
+          else
+            echo "No release $VERSION to delete"
+          fi
 
       - name: Cleanup version-files artifact
         if: always()
