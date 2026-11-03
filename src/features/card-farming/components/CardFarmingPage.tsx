@@ -90,6 +90,7 @@ export const CardFarmingPage = () => {
     errorCode,
     connectErrorCode,
     browseGames,
+    blacklistedDropGames,
     isBrowseLoading,
     removeBrowseGame,
     refreshBrowse,
@@ -148,6 +149,10 @@ export const CardFarmingPage = () => {
     [filteredBrowseGames, sortStyle],
   )
   const whitelistedAppIds = useMemo(() => new Set(whitelist.map(game => game.appId)), [whitelist])
+  const dropsByAppId = useMemo(
+    () => new Map([...browseGames, ...blacklistedDropGames].map(game => [game.appId, game])),
+    [browseGames, blacklistedDropGames],
+  )
   // Connect-time failures (a bad cookie paste, or the connect panel's own automatic-path failure)
   // render inline inside CardFarmingStartPanel's errorSlot instead - see that component's doc
   // comment - so this page-level banner only needs to cover errors reachable while already
@@ -438,6 +443,7 @@ export const CardFarmingPage = () => {
                   </PageBannerArea>
                 ) : (
                   <CardFarmingWhitelistGrid
+                    dropsByAppId={dropsByAppId}
                     pendingAppIds={pendingAppIds}
                     whitelist={whitelist}
                     onRemove={removeFromWhitelist}
@@ -457,6 +463,7 @@ export const CardFarmingPage = () => {
                   </PageBannerArea>
                 ) : (
                   <CardFarmingBlacklistGrid
+                    dropsByAppId={dropsByAppId}
                     blacklist={blacklist}
                     pendingAppIds={pendingBlacklistAppIds}
                     onRemove={handleUnblacklist}

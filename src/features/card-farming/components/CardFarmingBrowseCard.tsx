@@ -1,6 +1,6 @@
 import type { GameWithDrops } from '../types'
-import { useTranslation } from 'react-i18next'
 import { TbBan, TbCheck, TbPlus } from 'react-icons/tb'
+import { CardFarmingCardChips } from './CardFarmingCardChips'
 import { GamePosterAction, GamePosterCard } from '@/shared/components/GamePosterCard'
 
 interface CardFarmingBrowseCardProps {
@@ -26,8 +26,6 @@ export const CardFarmingBrowseCard = ({
   onToggleWhitelist,
   onBlacklist,
 }: CardFarmingBrowseCardProps) => {
-  const { t } = useTranslation()
-
   return (
     <GamePosterCard
       actions={
@@ -51,8 +49,8 @@ export const CardFarmingBrowseCard = ({
         </>
       }
       appId={game.appId}
+      badge={<CardFarmingCardChips appId={game.appId} drops={game} isSelected={isWhitelisted} />}
       isSelected={isWhitelisted}
-      meta={t('dashboard.cardFarming.progress.dropsRemaining', { count: game.remaining })}
       name={game.name}
     />
   )

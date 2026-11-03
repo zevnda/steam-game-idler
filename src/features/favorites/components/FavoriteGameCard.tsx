@@ -23,6 +23,7 @@ export const FavoriteGameCard = ({
 
   return (
     <GamePosterCard
+      showStats
       actions={
         <GamePosterAction
           aria-label={

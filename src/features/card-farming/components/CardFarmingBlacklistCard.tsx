@@ -1,9 +1,11 @@
-import type { CardFarmingBlacklistEntry } from '../types'
+import type { CardFarmingBlacklistEntry, GameWithDrops } from '../types'
 import { TbX } from 'react-icons/tb'
+import { CardFarmingCardChips } from './CardFarmingCardChips'
 import { GamePosterAction, GamePosterCard } from '@/shared/components/GamePosterCard'
 
 interface CardFarmingBlacklistCardProps {
   game: CardFarmingBlacklistEntry
+  drops: GameWithDrops | undefined
   isPending: boolean
   onRemove: () => void
 }
@@ -12,6 +14,7 @@ interface CardFarmingBlacklistCardProps {
 // neither list has any ordering concept, only membership.
 export const CardFarmingBlacklistCard = ({
   game,
+  drops,
   isPending,
   onRemove,
 }: CardFarmingBlacklistCardProps) => {
@@ -27,6 +30,7 @@ export const CardFarmingBlacklistCard = ({
         </GamePosterAction>
       }
       appId={game.appId}
+      badge={<CardFarmingCardChips appId={game.appId} drops={drops} />}
       name={game.name}
     />
   )

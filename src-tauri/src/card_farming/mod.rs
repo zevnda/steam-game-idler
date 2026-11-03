@@ -68,6 +68,17 @@ pub struct GameWithDrops {
     pub playtime_hours: f32,
 }
 
+/// [`commands::get_games_with_drops`]'s result. `blacklisted` holds the blacklisted games' own drop
+/// counts, kept separate so nothing that browses or farms ever sees them: they only label those
+/// games on the Blacklist tab. They come from the same badges-page scrape, so they cost no extra
+/// request.
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GamesWithDropsResult {
+    pub games: Vec<GameWithDrops>,
+    pub blacklisted: Vec<GameWithDrops>,
+}
+
 /// Which phase the cycle is currently running - see this module's doc comment. Never both at once.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "camelCase")]

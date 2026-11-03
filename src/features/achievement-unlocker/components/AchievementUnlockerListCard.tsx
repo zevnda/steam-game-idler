@@ -21,6 +21,7 @@ export const AchievementUnlockerListCard = ({
 }: AchievementUnlockerListCardProps) => {
   return (
     <GamePosterCard
+      showStats
       actions={
         <>
           <GamePosterAction aria-label={`Edit unlock order for ${game.name}`} onPress={onEditOrder}>

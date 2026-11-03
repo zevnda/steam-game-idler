@@ -1,9 +1,10 @@
-import type { CardFarmingBlacklistEntry } from '../types'
+import type { CardFarmingBlacklistEntry, GameWithDrops } from '../types'
 import { CardFarmingBlacklistCard } from './CardFarmingBlacklistCard'
 
 interface CardFarmingBlacklistGridProps {
   blacklist: CardFarmingBlacklistEntry[]
   pendingAppIds: Set<number>
+  dropsByAppId: Map<number, GameWithDrops>
   onRemove: (appId: number) => void
 }
 
@@ -12,6 +13,7 @@ interface CardFarmingBlacklistGridProps {
 export const CardFarmingBlacklistGrid = ({
   blacklist,
   pendingAppIds,
+  dropsByAppId,
   onRemove,
 }: CardFarmingBlacklistGridProps) => {
   return (
@@ -19,6 +21,7 @@ export const CardFarmingBlacklistGrid = ({
       {blacklist.map(game => (
         <CardFarmingBlacklistCard
           key={game.appId}
+          drops={dropsByAppId.get(game.appId)}
           game={game}
           isPending={pendingAppIds.has(game.appId)}
           onRemove={() => onRemove(game.appId)}

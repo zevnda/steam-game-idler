@@ -23,6 +23,7 @@ export const AchievementUnlockerGameCard = ({
 
   return (
     <GamePosterCard
+      showStats
       actions={
         <GamePosterAction
           aria-label={isQueued ? `Remove ${displayName}` : `Add ${displayName}`}

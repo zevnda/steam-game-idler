@@ -3,6 +3,7 @@ import { createContext, useContext } from 'react'
 import { TbCheck } from 'react-icons/tb'
 import { Button, cn } from '@heroui/react'
 import { GamePosterArt } from '@/shared/components/GamePosterArt'
+import { GameStatChips } from '@/shared/components/GameStatChips'
 import { useGameCardStyleStore } from '@/shared/stores/gameCardStyleStore'
 import { gameCardContextAttrs } from '@/shared/utils/gameCardContext'
 
@@ -39,6 +40,8 @@ interface GamePosterCardProps {
   // Keeps the tall shape whatever the game card style setting, for the fanned previews in empty
   // banners, which are laid out around it.
   forceCover?: boolean
+  // TEMP: playtime and achievement chips, see GameStatChips
+  showStats?: boolean
 }
 
 // The one card behind every game grid: art filling the whole card with the name over it, and that
@@ -60,6 +63,7 @@ export const GamePosterCard = ({
   meta,
   actions,
   forceCover,
+  showStats,
 }: GamePosterCardProps) => {
   const cardStyle = useGameCardStyleStore(state => state.style)
   const style = forceCover ? 'cover' : cardStyle
@@ -104,6 +108,10 @@ export const GamePosterCard = ({
         />
 
         {badge}
+
+        {showStats && (
+          <GameStatChips appId={appId} isSelected={Boolean(isSelected)} showPlaytime={!badge} />
+        )}
 
         {isSelected && (
           <div className='absolute right-1.5 top-1.5 flex size-6 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-md'>

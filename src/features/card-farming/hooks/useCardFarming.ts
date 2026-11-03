@@ -206,6 +206,7 @@ export const useCardFarming = () => {
     errorCode,
     connectErrorCode,
     browseGames: browse.games,
+    blacklistedDropGames: browse.blacklistedGames,
     isBrowseLoading: browse.isLoading,
     removeBrowseGame: browse.removeGame,
     refreshBrowse,

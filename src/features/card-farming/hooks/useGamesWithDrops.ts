@@ -1,4 +1,4 @@
-import type { GameWithDrops, SteamCookies } from '../types'
+import type { GamesWithDropsResult, GameWithDrops, SteamCookies } from '../types'
 import { useCallback, useState } from 'react'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 import { invoke } from '@/shared/utils/invoke'
@@ -10,6 +10,7 @@ import { invoke } from '@/shared/utils/invoke'
 export const useGamesWithDrops = () => {
   const account = useSessionStore(state => state.account)
   const [games, setGames] = useState<GameWithDrops[]>([])
+  const [blacklistedGames, setBlacklistedGames] = useState<GameWithDrops[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [errorCode, setErrorCode] = useState<string | null>(null)
 
@@ -27,12 +28,12 @@ export const useGamesWithDrops = () => {
       setIsLoading(true)
       setErrorCode(null)
       try {
-        setGames(
-          await invoke<GameWithDrops[]>('get_games_with_drops', {
-            account,
-            manualCookies: manualCookies ?? null,
-          }),
-        )
+        const result = await invoke<GamesWithDropsResult>('get_games_with_drops', {
+          account,
+          manualCookies: manualCookies ?? null,
+        })
+        setGames(result.games)
+        setBlacklistedGames(result.blacklisted)
         return null
       } catch (error) {
         console.error('Error in (get_games_with_drops) [browse]:', error)
@@ -46,13 +47,17 @@ export const useGamesWithDrops = () => {
     [account],
   )
 
-  // Optimistic local removal for a just-blacklisted game - `get_games_with_drops` already
-  // excludes blacklisted app IDs server-side (see `card_farming::blacklist`'s doc comment), so the
-  // next `refresh` would drop it anyway; this just avoids waiting on a round trip for the browse
-  // card to disappear.
+  // Optimistic local move for a just-blacklisted game - `get_games_with_drops` already splits
+  // blacklisted app IDs out server-side (see `card_farming::blacklist`'s doc comment), so the next
+  // `refresh` would do the same; this just avoids waiting on a round trip for the browse card to
+  // disappear, and keeps its drop count for the Blacklist tab meanwhile.
   const removeGame = useCallback((appId: number) => {
-    setGames(prev => prev.filter(game => game.appId !== appId))
+    setGames(prev => {
+      const game = prev.find(entry => entry.appId === appId)
+      if (game) setBlacklistedGames(blacklisted => [...blacklisted, game])
+      return prev.filter(entry => entry.appId !== appId)
+    })
   }, [])
 
-  return { games, isLoading, errorCode, refresh, removeGame }
+  return { games, blacklistedGames, isLoading, errorCode, refresh, removeGame }
 }

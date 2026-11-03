@@ -32,6 +32,7 @@ export const GameCard = ({
 
   return (
     <GamePosterCard
+      showStats
       actions={
         <>
           <GamePosterAction

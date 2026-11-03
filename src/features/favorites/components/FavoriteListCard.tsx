@@ -12,6 +12,7 @@ interface FavoriteListCardProps {
 export const FavoriteListCard = ({ favorite, isPending, onRemove }: FavoriteListCardProps) => {
   return (
     <GamePosterCard
+      showStats
       actions={
         <GamePosterAction
           aria-label={`Remove ${favorite.name} from favorites`}

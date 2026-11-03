@@ -1,9 +1,10 @@
-import type { CardFarmingWhitelistEntry } from '../types'
+import type { CardFarmingWhitelistEntry, GameWithDrops } from '../types'
 import { CardFarmingWhitelistCard } from './CardFarmingWhitelistCard'
 
 interface CardFarmingWhitelistGridProps {
   whitelist: CardFarmingWhitelistEntry[]
   pendingAppIds: Set<number>
+  dropsByAppId: Map<number, GameWithDrops>
   onRemove: (appId: number) => void
 }
 
@@ -12,6 +13,7 @@ interface CardFarmingWhitelistGridProps {
 export const CardFarmingWhitelistGrid = ({
   whitelist,
   pendingAppIds,
+  dropsByAppId,
   onRemove,
 }: CardFarmingWhitelistGridProps) => {
   return (
@@ -19,6 +21,7 @@ export const CardFarmingWhitelistGrid = ({
       {whitelist.map(game => (
         <CardFarmingWhitelistCard
           key={game.appId}
+          drops={dropsByAppId.get(game.appId)}
           game={game}
           isPending={pendingAppIds.has(game.appId)}
           onRemove={() => onRemove(game.appId)}

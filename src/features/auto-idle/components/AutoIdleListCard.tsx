@@ -23,6 +23,7 @@ export const AutoIdleListCard = ({
 }: AutoIdleListCardProps) => {
   return (
     <GamePosterCard
+      showStats
       actions={
         <>
           <Switch
