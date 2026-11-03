@@ -23,6 +23,30 @@ interface SteamCredentialsTabProps {
   onAcquire: () => Promise<boolean>
 }
 
+// Sits in this tab's title row, which SettingsPanel owns so it stays still while the tab's content
+// animates in. Hidden for the one case with nothing to explain: a Gamer-tier agent-mode account
+// never needs cookies at all (see below).
+export const SteamCredentialsDocsLink = () => {
+  const { t } = useTranslation()
+  const account = useSessionStore(state => state.account)
+  const subscriptionTier = useSubscriptionStore(state => state.subscriptionTier)
+
+  if (account?.mode === 'agent' && hasGamerAccess(subscriptionTier)) return null
+
+  return (
+    <Button
+      size='sm'
+      variant='secondary'
+      className='inline-flex shrink-0 items-center gap-1 text-sm duration-150 cursor-pointer'
+      type='button'
+      onClick={() => openExternalLink(STEAM_CREDENTIALS_DOCS_URL)}
+    >
+      {t('common.learnMore')}
+      <TbExternalLink fontSize={14} />
+    </Button>
+  )
+}
+
 // The Steam Credentials category of the (app-wide) SettingsModal - lets a CLI-mode user save
 // Steam Community cookies (sid/sls/sma) once, either automatically (gamer-tier) or by pasting them
 // manually, so CardFarmingStartPanel/InventoryConnectPanel's own manual-entry tab doesn't need them
@@ -33,9 +57,9 @@ interface SteamCredentialsTabProps {
 // tabs/form/error-display/clear-button - that used to drift out of sync with
 // CardFarmingStartPanel/InventoryConnectPanel (no inline error display at all, a stale-closure bug
 // that dropped error toasts on a first-ever failed save) - see that component's own doc comment for
-// the shared contract. Uses `variant='embedded'` since this tab renders its own title row (it also
-// needs a "Learn more" docs link inline with it, which the shared component has no slot for) rather
-// than the standalone centered-card presentation CardFarmingStartPanel/InventoryConnectPanel use.
+// the shared contract. Uses `variant='embedded'` since SettingsPanel renders this tab's title row
+// (with `SteamCredentialsDocsLink` above inline in it) rather than the standalone centered-card
+// presentation CardFarmingStartPanel/InventoryConnectPanel use.
 //
 // Only a Gamer-tier agent-mode account never needs this (it derives cookies straight from its
 // live daemon session unconditionally - see `session.rs::derive_from_agent_session`) - shown as
@@ -88,9 +112,6 @@ export const SteamCredentialsTab = ({
   if (isLoading) {
     return (
       <div className='flex flex-col gap-4'>
-        <Typography type='h3' className='font-bold mb-4'>
-          {t('dashboard.settings.steamCredentials.title')}
-        </Typography>
         {Array.from({ length: 3 }, (_, index) => (
           <Skeleton key={index} className='h-10 w-full rounded-lg' />
         ))}
@@ -100,23 +121,6 @@ export const SteamCredentialsTab = ({
 
   return (
     <div className='flex flex-col gap-5'>
-      <div className='flex items-center justify-between gap-4'>
-        <Typography type='h3' className='font-bold'>
-          {t('dashboard.settings.steamCredentials.title')}
-        </Typography>
-        {!(account?.mode === 'agent' && canUseAutomatic) && (
-          <Button
-            size='sm'
-            variant='secondary'
-            className='inline-flex shrink-0 items-center gap-1 text-sm duration-150 cursor-pointer'
-            type='button'
-            onClick={() => openExternalLink(STEAM_CREDENTIALS_DOCS_URL)}
-          >
-            {t('common.learnMore')}
-            <TbExternalLink fontSize={14} />
-          </Button>
-        )}
-      </div>
       <Typography color='muted' type='body-sm'>
         {t('dashboard.settings.steamCredentials.description')}
       </Typography>

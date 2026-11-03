@@ -9,6 +9,7 @@ import { GamesPageHeader } from './GamesPageHeader'
 import { Alert, Button, EmptyState, Typography } from '@heroui/react'
 import { useRouter } from 'next/router'
 import { useIdling } from '@/features/idling/hooks/useIdling'
+import { PageBody } from '@/shared/components/dashboard/PageBody'
 import { GameGridSkeleton } from '@/shared/components/GameGridSkeleton'
 import { useOwnedGameSort } from '@/shared/hooks/useOwnedGameSort'
 import { searchGames } from '@/shared/search/fuzzySearch'
@@ -105,89 +106,90 @@ export const GamesPage = () => {
         onRefresh={refresh}
         onSortStyleChange={style => setSortStyle('games', style)}
       />
+      <PageBody>
+        {!showSkeleton && !errorCode && possiblyPrivate && (
+          <div className='px-6 py-4'>
+            <Alert status='warning'>
+              <Alert.Indicator />
+              <Alert.Content>
+                <Alert.Title>{t('dashboard.games.privacyWarning.title')}</Alert.Title>
+                <Alert.Description>
+                  {t('dashboard.games.privacyWarning.description')}
+                </Alert.Description>
+              </Alert.Content>
+              <div className='flex shrink-0 gap-2'>
+                <Button
+                  size='sm'
+                  variant='secondary'
+                  onPress={() => openExternalLink(STEAM_PRIVACY_SETTINGS_URL)}
+                >
+                  {t('dashboard.games.privacyWarning.changeSettings')}
+                </Button>
+                <Button
+                  size='sm'
+                  variant='secondary'
+                  onPress={() => useSettingsModalStore.getState().open('general')}
+                >
+                  {t('dashboard.games.privacyWarning.useOwnKey')}
+                </Button>
+              </div>
+            </Alert>
+          </div>
+        )}
 
-      {!showSkeleton && !errorCode && possiblyPrivate && (
-        <div className='px-6 py-4'>
-          <Alert status='warning'>
-            <Alert.Indicator />
-            <Alert.Content>
-              <Alert.Title>{t('dashboard.games.privacyWarning.title')}</Alert.Title>
-              <Alert.Description>
-                {t('dashboard.games.privacyWarning.description')}
-              </Alert.Description>
-            </Alert.Content>
-            <div className='flex shrink-0 gap-2'>
-              <Button
-                size='sm'
-                variant='secondary'
-                onPress={() => openExternalLink(STEAM_PRIVACY_SETTINGS_URL)}
-              >
-                {t('dashboard.games.privacyWarning.changeSettings')}
-              </Button>
-              <Button
-                size='sm'
-                variant='secondary'
-                onPress={() => useSettingsModalStore.getState().open('general')}
-              >
-                {t('dashboard.games.privacyWarning.useOwnKey')}
-              </Button>
-            </div>
-          </Alert>
-        </div>
-      )}
-
-      {showSkeleton ? (
-        <GameGridSkeleton />
-      ) : errorCode ? (
-        <div className='flex flex-1 flex-col items-center justify-center gap-4 p-8'>
-          <Alert className='max-w-md' status='danger'>
-            <Alert.Indicator />
-            <Alert.Content>
-              <Alert.Title>{t('dashboard.games.errors.title')}</Alert.Title>
-              <Alert.Description>
-                {t(errorMessageKey(errorCode), { code: errorCode })}
-              </Alert.Description>
-            </Alert.Content>
-          </Alert>
-          <Button variant='secondary' onPress={refresh}>
-            {t('common.actions.tryAgain')}
-          </Button>
-        </div>
-      ) : games.length === 0 ? (
-        <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-          <TbDeviceGamepad2 fontSize={40} />
-          <Typography type='h3'>{t('dashboard.games.empty.title')}</Typography>
-          <Typography color='muted' type='body-sm'>
-            {t('dashboard.games.empty.description')}
-          </Typography>
-        </EmptyState>
-      ) : filteredGames.length === 0 ? (
-        <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-          <RiSearchLine fontSize={40} />
-          <Typography type='h3'>{t('common.search.noResultsTitle')}</Typography>
-          <Typography color='muted' type='body-sm'>
-            {t('common.search.noResultsDescription')}
-          </Typography>
-        </EmptyState>
-      ) : (
-        // `overflow-hidden`, not `-auto` - GamesList is now a virtualized list that scrolls
-        // internally (react-window's List owns its own scroll container, and the carousels are
-        // rows within it - see GamesList.tsx), this wrapper just needs to give it a definite
-        // height to fill.
-        <div className='flex-1 overflow-hidden'>
-          <GamesList
-            games={sortedFilteredGames}
-            idlePendingAppIds={idlePendingAppIds}
-            idleStartTimes={idleStartTimes}
-            idlingAppIds={idlingAppIds}
-            recentGames={recentGames}
-            recommendedGames={recommendedGames}
-            showRecentCarousel={showRecentCarousel}
-            showRecommendedCarousel={showRecommendedCarousel}
-            onToggleIdle={toggleIdle}
-          />
-        </div>
-      )}
+        {showSkeleton ? (
+          <GameGridSkeleton />
+        ) : errorCode ? (
+          <div className='flex flex-1 flex-col items-center justify-center gap-4 p-8'>
+            <Alert className='max-w-md' status='danger'>
+              <Alert.Indicator />
+              <Alert.Content>
+                <Alert.Title>{t('dashboard.games.errors.title')}</Alert.Title>
+                <Alert.Description>
+                  {t(errorMessageKey(errorCode), { code: errorCode })}
+                </Alert.Description>
+              </Alert.Content>
+            </Alert>
+            <Button variant='secondary' onPress={refresh}>
+              {t('common.actions.tryAgain')}
+            </Button>
+          </div>
+        ) : games.length === 0 ? (
+          <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
+            <TbDeviceGamepad2 fontSize={40} />
+            <Typography type='h3'>{t('dashboard.games.empty.title')}</Typography>
+            <Typography color='muted' type='body-sm'>
+              {t('dashboard.games.empty.description')}
+            </Typography>
+          </EmptyState>
+        ) : filteredGames.length === 0 ? (
+          <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
+            <RiSearchLine fontSize={40} />
+            <Typography type='h3'>{t('common.search.noResultsTitle')}</Typography>
+            <Typography color='muted' type='body-sm'>
+              {t('common.search.noResultsDescription')}
+            </Typography>
+          </EmptyState>
+        ) : (
+          // `overflow-hidden`, not `-auto` - GamesList is now a virtualized list that scrolls
+          // internally (react-window's List owns its own scroll container, and the carousels are
+          // rows within it - see GamesList.tsx), this wrapper just needs to give it a definite
+          // height to fill.
+          <div className='flex-1 overflow-hidden'>
+            <GamesList
+              games={sortedFilteredGames}
+              idlePendingAppIds={idlePendingAppIds}
+              idleStartTimes={idleStartTimes}
+              idlingAppIds={idlingAppIds}
+              recentGames={recentGames}
+              recommendedGames={recommendedGames}
+              showRecentCarousel={showRecentCarousel}
+              showRecommendedCarousel={showRecommendedCarousel}
+              onToggleIdle={toggleIdle}
+            />
+          </div>
+        )}
+      </PageBody>
     </div>
   )
 }

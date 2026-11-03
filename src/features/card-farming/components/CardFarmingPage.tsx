@@ -31,6 +31,7 @@ import {
   Typography,
 } from '@heroui/react'
 import { useRouter } from 'next/router'
+import { PageBody } from '@/shared/components/dashboard/PageBody'
 import { GameGridSkeleton } from '@/shared/components/GameGridSkeleton'
 import { GameListTabPanel } from '@/shared/components/GameListTabPanel'
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
@@ -260,221 +261,226 @@ export const CardFarmingPage = () => {
         onStart={start}
         onStop={handleStop}
       />
+      <PageBody>
+        {connected && displayedErrorCode && (
+          <div className='px-6 pt-4'>
+            <Alert status='danger'>
+              <Alert.Indicator />
+              <Alert.Content>
+                <Alert.Title>{t('dashboard.cardFarming.errors.title')}</Alert.Title>
+                <Alert.Description>
+                  {t(errorMessageKey(displayedErrorCode), { code: displayedErrorCode })}
+                </Alert.Description>
+              </Alert.Content>
+            </Alert>
+          </div>
+        )}
 
-      {connected && displayedErrorCode && (
-        <div className='px-6 pt-4'>
-          <Alert status='danger'>
-            <Alert.Indicator />
-            <Alert.Content>
-              <Alert.Title>{t('dashboard.cardFarming.errors.title')}</Alert.Title>
-              <Alert.Description>
-                {t(errorMessageKey(displayedErrorCode), { code: displayedErrorCode })}
-              </Alert.Description>
-            </Alert.Content>
-          </Alert>
-        </div>
-      )}
-
-      {state.isFarming || showFinishedSummary ? (
-        <div className='min-h-0 flex-1 overflow-y-auto'>
-          <CardFarmingProgressView
-            hoursUntilFarmable={hoursUntilFarmable}
-            state={state}
-            onDismissFinished={
-              showFinishedSummary && accountKey ? () => dismissFinished(accountKey) : undefined
-            }
-          />
-        </div>
-      ) : isChecking || isAutoConnecting ? (
-        // Neutral loading state for the (usually brief) window before the shared credentials
-        // check - and any trusted auto-connect attempt it kicks off - has settled, so an account
-        // with already-valid cookies never flashes the connect panel first (see
-        // useAutoConnectSteamCookies's doc comment).
-        <GameGridSkeleton />
-      ) : !connected ? (
-        <div className='flex flex-1 items-center justify-center overflow-y-auto'>
-          <CardFarmingStartPanel
-            errorCode={connectErrorCode}
-            isConnecting={isConnecting}
-            onConnect={connect}
-          />
-        </div>
-      ) : (
-        <TabsRoot
-          className='flex min-h-0 flex-1 flex-col'
-          selectedKey={activeTab}
-          onSelectionChange={key => setActiveTab(key as CardFarmingTab)}
-        >
-          {/* `flex-wrap`: the tab labels are `whitespace-nowrap`, so in a longer locale at the
+        {state.isFarming || showFinishedSummary ? (
+          <div className='min-h-0 flex-1 overflow-y-auto'>
+            <CardFarmingProgressView
+              hoursUntilFarmable={hoursUntilFarmable}
+              state={state}
+              onDismissFinished={
+                showFinishedSummary && accountKey ? () => dismissFinished(accountKey) : undefined
+              }
+            />
+          </div>
+        ) : isChecking || isAutoConnecting ? (
+          // Neutral loading state for the (usually brief) window before the shared credentials
+          // check - and any trusted auto-connect attempt it kicks off - has settled, so an account
+          // with already-valid cookies never flashes the connect panel first (see
+          // useAutoConnectSteamCookies's doc comment).
+          <GameGridSkeleton />
+        ) : !connected ? (
+          <div className='flex flex-1 items-center justify-center overflow-y-auto'>
+            <CardFarmingStartPanel
+              errorCode={connectErrorCode}
+              isConnecting={isConnecting}
+              onConnect={connect}
+            />
+          </div>
+        ) : (
+          <TabsRoot
+            className='flex min-h-0 flex-1 flex-col'
+            selectedKey={activeTab}
+            onSelectionChange={key => setActiveTab(key as CardFarmingTab)}
+          >
+            {/* `flex-wrap`: the tab labels are `whitespace-nowrap`, so in a longer locale at the
               minimum window width the tabs + sort select no longer fit on one line - the select
               drops below the tabs instead of overflowing. Same on every tabbed page (AutoIdle,
               Favorites, AchievementUnlocker). No-op wherever everything fits. */}
-          <div className='mx-6 mt-4 flex flex-wrap items-center justify-between gap-3'>
-            <TabListContainer className='shrink-0'>
-              <TabList>
-                <Tab className='whitespace-nowrap' id='browse'>
-                  {t('dashboard.cardFarming.tabs.gamesWithDrops')}
-                  <TabIndicator />
-                </Tab>
-                <Tab className='whitespace-nowrap' id='whitelist'>
-                  {t('dashboard.cardFarming.tabs.whitelisted')}
-                  <TabIndicator />
-                </Tab>
-                <Tab className='whitespace-nowrap' id='blacklist'>
-                  {t('dashboard.cardFarming.tabs.blacklisted')}
-                  <TabIndicator />
-                </Tab>
-              </TabList>
-            </TabListContainer>
-            {activeTab === 'browse' && (
-              <GameSortSelect
-                ariaLabel={t('dashboard.inventoryManager.sort.label')}
-                options={CARD_FARMING_SORT_STYLES.map(style => ({
-                  id: style,
-                  label: t(CARD_FARMING_SORT_LABEL_KEYS[style]),
-                }))}
-                value={sortStyle}
-                onChange={style => setSortStyle('cardFarming', style)}
-              />
-            )}
-            {activeTab === 'whitelist' && whitelist.length > 0 && (
-              <Button
-                className='shrink-0'
-                variant='danger'
-                onPress={() => setConfirmClearTarget('whitelist')}
-              >
-                {t('common.actions.clear')}
-              </Button>
-            )}
-            {activeTab === 'blacklist' && blacklist.length > 0 && (
-              <Button
-                className='shrink-0'
-                variant='danger'
-                onPress={() => setConfirmClearTarget('blacklist')}
-              >
-                {t('common.actions.clear')}
-              </Button>
-            )}
-          </div>
-
-          <GameListTabPanel id='browse'>
-            {isBrowseLoading ? (
-              <GameGridSkeleton />
-            ) : browseGames.length === 0 ? (
-              <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-                <TbCards fontSize={40} />
-                <Typography type='h3'>{t('dashboard.cardFarming.browseEmpty.title')}</Typography>
-                <Typography color='muted' type='body-sm'>
-                  {t('dashboard.cardFarming.browseEmpty.description')}
-                </Typography>
-              </EmptyState>
-            ) : filteredBrowseGames.length === 0 ? (
-              <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-                <RiSearchLine fontSize={40} />
-                <Typography type='h3'>{t('common.search.noResultsTitle')}</Typography>
-                <Typography color='muted' type='body-sm'>
-                  {t('common.search.noResultsDescription')}
-                </Typography>
-              </EmptyState>
-            ) : (
-              <CardFarmingBrowseGrid
-                games={sortedBrowseGames}
-                pendingAppIds={pendingAppIds}
-                pendingBlacklistAppIds={pendingBlacklistAppIds}
-                whitelistedAppIds={whitelistedAppIds}
-                onBlacklist={handleBlacklist}
-                onToggleWhitelist={game => toggleWhitelisted(game.appId, game.name)}
-              />
-            )}
-          </GameListTabPanel>
-
-          <GameListTabPanel id='whitelist'>
-            {whitelistLoading ? (
-              <GameGridSkeleton />
-            ) : whitelist.length === 0 ? (
-              <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-                <TbCards fontSize={40} />
-                <Typography type='h3'>{t('dashboard.cardFarming.whitelistEmpty.title')}</Typography>
-                <Typography color='muted' type='body-sm'>
-                  {t('dashboard.cardFarming.whitelistEmpty.description')}
-                </Typography>
-              </EmptyState>
-            ) : (
-              <CardFarmingWhitelistGrid
-                pendingAppIds={pendingAppIds}
-                whitelist={whitelist}
-                onRemove={removeFromWhitelist}
-              />
-            )}
-          </GameListTabPanel>
-
-          <GameListTabPanel id='blacklist'>
-            {blacklistLoading ? (
-              <GameGridSkeleton />
-            ) : blacklist.length === 0 ? (
-              <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-                <TbBan fontSize={40} />
-                <Typography type='h3'>{t('dashboard.cardFarming.blacklistEmpty.title')}</Typography>
-                <Typography color='muted' type='body-sm'>
-                  {t('dashboard.cardFarming.blacklistEmpty.description')}
-                </Typography>
-              </EmptyState>
-            ) : (
-              <CardFarmingBlacklistGrid
-                blacklist={blacklist}
-                pendingAppIds={pendingBlacklistAppIds}
-                onRemove={handleUnblacklist}
-              />
-            )}
-          </GameListTabPanel>
-        </TabsRoot>
-      )}
-
-      <AlertDialog
-        isOpen={confirmClearTarget !== null}
-        onOpenChange={open => setConfirmClearTarget(open ? confirmClearTarget : null)}
-      >
-        <AlertDialog.Backdrop>
-          <AlertDialog.Container>
-            <AlertDialog.Dialog>
-              <AlertDialog.Header>
-                <AlertDialog.Heading>
-                  {confirmClearTarget === 'blacklist'
-                    ? t('dashboard.cardFarming.confirmClearBlacklist.title')
-                    : t('dashboard.cardFarming.confirmClearWhitelist.title')}
-                </AlertDialog.Heading>
-              </AlertDialog.Header>
-              <AlertDialog.Body>
-                {confirmClearTarget === 'blacklist'
-                  ? t('dashboard.cardFarming.confirmClearBlacklist.description', {
-                      count: blacklist.length,
-                    })
-                  : t('dashboard.cardFarming.confirmClearWhitelist.description', {
-                      count: whitelist.length,
-                    })}
-              </AlertDialog.Body>
-              <AlertDialog.Footer>
-                <Button variant='secondary' onPress={() => setConfirmClearTarget(null)}>
-                  {t('common.actions.cancel')}
-                </Button>
+            <div className='mx-6 mt-4 flex flex-wrap items-center justify-between gap-3'>
+              <TabListContainer className='shrink-0'>
+                <TabList>
+                  <Tab className='whitespace-nowrap' id='browse'>
+                    {t('dashboard.cardFarming.tabs.gamesWithDrops')}
+                    <TabIndicator />
+                  </Tab>
+                  <Tab className='whitespace-nowrap' id='whitelist'>
+                    {t('dashboard.cardFarming.tabs.whitelisted')}
+                    <TabIndicator />
+                  </Tab>
+                  <Tab className='whitespace-nowrap' id='blacklist'>
+                    {t('dashboard.cardFarming.tabs.blacklisted')}
+                    <TabIndicator />
+                  </Tab>
+                </TabList>
+              </TabListContainer>
+              {activeTab === 'browse' && (
+                <GameSortSelect
+                  ariaLabel={t('dashboard.inventoryManager.sort.label')}
+                  options={CARD_FARMING_SORT_STYLES.map(style => ({
+                    id: style,
+                    label: t(CARD_FARMING_SORT_LABEL_KEYS[style]),
+                  }))}
+                  value={sortStyle}
+                  onChange={style => setSortStyle('cardFarming', style)}
+                />
+              )}
+              {activeTab === 'whitelist' && whitelist.length > 0 && (
                 <Button
+                  className='shrink-0'
                   variant='danger'
-                  onPress={() => {
-                    if (confirmClearTarget === 'blacklist') {
-                      clearBlacklist()
-                    } else {
-                      clearWhitelist()
-                    }
-                    setConfirmClearTarget(null)
-                  }}
+                  onPress={() => setConfirmClearTarget('whitelist')}
                 >
                   {t('common.actions.clear')}
                 </Button>
-              </AlertDialog.Footer>
-            </AlertDialog.Dialog>
-          </AlertDialog.Container>
-        </AlertDialog.Backdrop>
-      </AlertDialog>
+              )}
+              {activeTab === 'blacklist' && blacklist.length > 0 && (
+                <Button
+                  className='shrink-0'
+                  variant='danger'
+                  onPress={() => setConfirmClearTarget('blacklist')}
+                >
+                  {t('common.actions.clear')}
+                </Button>
+              )}
+            </div>
+
+            <GameListTabPanel id='browse'>
+              {isBrowseLoading ? (
+                <GameGridSkeleton />
+              ) : browseGames.length === 0 ? (
+                <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
+                  <TbCards fontSize={40} />
+                  <Typography type='h3'>{t('dashboard.cardFarming.browseEmpty.title')}</Typography>
+                  <Typography color='muted' type='body-sm'>
+                    {t('dashboard.cardFarming.browseEmpty.description')}
+                  </Typography>
+                </EmptyState>
+              ) : filteredBrowseGames.length === 0 ? (
+                <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
+                  <RiSearchLine fontSize={40} />
+                  <Typography type='h3'>{t('common.search.noResultsTitle')}</Typography>
+                  <Typography color='muted' type='body-sm'>
+                    {t('common.search.noResultsDescription')}
+                  </Typography>
+                </EmptyState>
+              ) : (
+                <CardFarmingBrowseGrid
+                  games={sortedBrowseGames}
+                  pendingAppIds={pendingAppIds}
+                  pendingBlacklistAppIds={pendingBlacklistAppIds}
+                  whitelistedAppIds={whitelistedAppIds}
+                  onBlacklist={handleBlacklist}
+                  onToggleWhitelist={game => toggleWhitelisted(game.appId, game.name)}
+                />
+              )}
+            </GameListTabPanel>
+
+            <GameListTabPanel id='whitelist'>
+              {whitelistLoading ? (
+                <GameGridSkeleton />
+              ) : whitelist.length === 0 ? (
+                <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
+                  <TbCards fontSize={40} />
+                  <Typography type='h3'>
+                    {t('dashboard.cardFarming.whitelistEmpty.title')}
+                  </Typography>
+                  <Typography color='muted' type='body-sm'>
+                    {t('dashboard.cardFarming.whitelistEmpty.description')}
+                  </Typography>
+                </EmptyState>
+              ) : (
+                <CardFarmingWhitelistGrid
+                  pendingAppIds={pendingAppIds}
+                  whitelist={whitelist}
+                  onRemove={removeFromWhitelist}
+                />
+              )}
+            </GameListTabPanel>
+
+            <GameListTabPanel id='blacklist'>
+              {blacklistLoading ? (
+                <GameGridSkeleton />
+              ) : blacklist.length === 0 ? (
+                <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
+                  <TbBan fontSize={40} />
+                  <Typography type='h3'>
+                    {t('dashboard.cardFarming.blacklistEmpty.title')}
+                  </Typography>
+                  <Typography color='muted' type='body-sm'>
+                    {t('dashboard.cardFarming.blacklistEmpty.description')}
+                  </Typography>
+                </EmptyState>
+              ) : (
+                <CardFarmingBlacklistGrid
+                  blacklist={blacklist}
+                  pendingAppIds={pendingBlacklistAppIds}
+                  onRemove={handleUnblacklist}
+                />
+              )}
+            </GameListTabPanel>
+          </TabsRoot>
+        )}
+
+        <AlertDialog
+          isOpen={confirmClearTarget !== null}
+          onOpenChange={open => setConfirmClearTarget(open ? confirmClearTarget : null)}
+        >
+          <AlertDialog.Backdrop>
+            <AlertDialog.Container>
+              <AlertDialog.Dialog>
+                <AlertDialog.Header>
+                  <AlertDialog.Heading>
+                    {confirmClearTarget === 'blacklist'
+                      ? t('dashboard.cardFarming.confirmClearBlacklist.title')
+                      : t('dashboard.cardFarming.confirmClearWhitelist.title')}
+                  </AlertDialog.Heading>
+                </AlertDialog.Header>
+                <AlertDialog.Body>
+                  {confirmClearTarget === 'blacklist'
+                    ? t('dashboard.cardFarming.confirmClearBlacklist.description', {
+                        count: blacklist.length,
+                      })
+                    : t('dashboard.cardFarming.confirmClearWhitelist.description', {
+                        count: whitelist.length,
+                      })}
+                </AlertDialog.Body>
+                <AlertDialog.Footer>
+                  <Button variant='secondary' onPress={() => setConfirmClearTarget(null)}>
+                    {t('common.actions.cancel')}
+                  </Button>
+                  <Button
+                    variant='danger'
+                    onPress={() => {
+                      if (confirmClearTarget === 'blacklist') {
+                        clearBlacklist()
+                      } else {
+                        clearWhitelist()
+                      }
+                      setConfirmClearTarget(null)
+                    }}
+                  >
+                    {t('common.actions.clear')}
+                  </Button>
+                </AlertDialog.Footer>
+              </AlertDialog.Dialog>
+            </AlertDialog.Container>
+          </AlertDialog.Backdrop>
+        </AlertDialog>
+      </PageBody>
     </div>
   )
 }

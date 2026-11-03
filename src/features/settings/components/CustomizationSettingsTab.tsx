@@ -313,9 +313,6 @@ export const CustomizationSettingsTab = ({
   if (isLoading || !settings) {
     return (
       <div className='flex flex-col gap-4'>
-        <Typography type='h3' className='font-bold mb-4'>
-          {t('dashboard.settings.customization.title')}
-        </Typography>
         {Array.from({ length: 5 }, (_, index) => (
           <Skeleton key={index} className='h-10 w-full rounded-lg' />
         ))}
@@ -325,10 +322,6 @@ export const CustomizationSettingsTab = ({
 
   return (
     <div className='flex flex-col gap-4'>
-      <Typography type='h3' className='font-bold mb-4'>
-        {t('dashboard.settings.customization.title')}
-      </Typography>
-
       <SettingsRow
         description={t('dashboard.settings.customization.tooltips.description')}
         title={t('dashboard.settings.customization.tooltips.label')}

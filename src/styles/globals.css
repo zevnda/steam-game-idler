@@ -844,3 +844,27 @@ body {
     animation: none;
   }
 }
+
+/* PageBody.tsx - the short fade-and-rise a routed dashboard page's content plays on navigation.
+   Skipped for reduced motion here, and for forceReducedMotion in the component itself, since
+   moving a whole page's layer is exactly the kind of work the older WebKitGTK builds lag on. */
+@keyframes page-enter {
+  from {
+    translate: 0 8px;
+    opacity: 0;
+  }
+  to {
+    translate: 0 0;
+    opacity: 1;
+  }
+}
+
+.page-enter {
+  animation: page-enter 0.28s ease backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter {
+    animation: none;
+  }
+}

@@ -107,9 +107,6 @@ export const AchievementUnlockerSettingsTab = ({
   if (isLoading || !draft) {
     return (
       <div className='flex flex-col gap-4'>
-        <Typography type='h3' className='font-bold mb-4'>
-          {t('dashboard.sidebar.nav.achievementUnlocker')}
-        </Typography>
         {Array.from({ length: 5 }, (_, index) => (
           <Skeleton key={index} className='h-10 w-full rounded-lg' />
         ))}
@@ -119,10 +116,6 @@ export const AchievementUnlockerSettingsTab = ({
 
   return (
     <div className='flex flex-col gap-4'>
-      <Typography type='h3' className='font-bold mb-4'>
-        {t('dashboard.sidebar.nav.achievementUnlocker')}
-      </Typography>
-
       <SettingsRow
         description={t('dashboard.achievementUnlocker.settings.idle.description')}
         showDivider={false}

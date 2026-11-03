@@ -13,6 +13,7 @@ import { InventoryPageHeader } from './InventoryPageHeader'
 import { PriceOrderModal } from './PriceOrderModal'
 import { Alert, toast } from '@heroui/react'
 import { useRouter } from 'next/router'
+import { PageBody } from '@/shared/components/dashboard/PageBody'
 import { GameGridSkeleton } from '@/shared/components/GameGridSkeleton'
 import { useAutoConnectSteamCookies } from '@/shared/hooks/useAutoConnectSteamCookies'
 import { useSessionStore } from '@/shared/stores/sessionStore'
@@ -464,83 +465,84 @@ export const InventoryManagerPage = () => {
         onSellAll={handleSellAll}
         onSellDupes={handleSellDupes}
       />
+      <PageBody>
+        {canAccessInventory && errorCode && (
+          <div className='px-6 pt-4'>
+            <Alert status='danger'>
+              <Alert.Indicator />
+              <Alert.Content>
+                <Alert.Title>{t('dashboard.inventoryManager.errors.title')}</Alert.Title>
+                <Alert.Description>
+                  {t(errorMessageKey(errorCode), { code: errorCode })}
+                </Alert.Description>
+              </Alert.Content>
+            </Alert>
+          </div>
+        )}
 
-      {canAccessInventory && errorCode && (
-        <div className='px-6 pt-4'>
-          <Alert status='danger'>
-            <Alert.Indicator />
-            <Alert.Content>
-              <Alert.Title>{t('dashboard.inventoryManager.errors.title')}</Alert.Title>
-              <Alert.Description>
-                {t(errorMessageKey(errorCode), { code: errorCode })}
-              </Alert.Description>
-            </Alert.Content>
-          </Alert>
-        </div>
-      )}
-
-      {isInitializing || isChecking || isAutoConnecting || isManualRefreshing ? (
-        // Folds the shared credentials check (and any trusted auto-connect attempt it kicks off -
-        // see useAutoConnectSteamCookies's doc comment) into the same skeleton branch as the
-        // cache-read init - an account with already-valid cookies never flashes the connect panel
-        // first. `isManualRefreshing` (not the broader `isFetching`, which also covers the first
-        // connect above) replaces the grid with the skeleton again on an explicit refresh-button
-        // click - real, visible feedback that the click did something, matching GamesPage's
-        // identical `isManualRefreshing` pattern instead of refreshing silently in place.
-        <GameGridSkeleton
-          gridClassName='grid grid-cols-[repeat(auto-fill,minmax(190px,1fr))] gap-4 p-6'
-          tileClassName='h-64 rounded-xl'
-        />
-      ) : !canAccessInventory ? (
-        // Centered in the remaining content area - matches CardFarmingStartPanel's identical
-        // centering so both cookie-prompt screens look the same.
-        <div className='flex flex-1 items-center justify-center overflow-y-auto'>
-          <InventoryConnectPanel
-            errorCode={errorCode}
-            isConnecting={isFetching}
-            onConnect={connect}
+        {isInitializing || isChecking || isAutoConnecting || isManualRefreshing ? (
+          // Folds the shared credentials check (and any trusted auto-connect attempt it kicks off -
+          // see useAutoConnectSteamCookies's doc comment) into the same skeleton branch as the
+          // cache-read init - an account with already-valid cookies never flashes the connect panel
+          // first. `isManualRefreshing` (not the broader `isFetching`, which also covers the first
+          // connect above) replaces the grid with the skeleton again on an explicit refresh-button
+          // click - real, visible feedback that the click did something, matching GamesPage's
+          // identical `isManualRefreshing` pattern instead of refreshing silently in place.
+          <GameGridSkeleton
+            gridClassName='grid grid-cols-[repeat(auto-fill,minmax(190px,1fr))] gap-4 p-6'
+            tileClassName='h-64 rounded-xl'
           />
-        </div>
-      ) : (
-        <div className='flex min-h-0 flex-1'>
-          <InventoryFilterPanel
-            filterValues={filterValues}
-            isDisabled={items.length === 0}
-            searchQuery={searchQuery}
-            sortStyle={sortStyle}
-            onFilterValuesChange={setFilterValues}
-            onSearchQueryChange={setSearchQuery}
-            onSortStyleChange={style => setSortPreference('inventory', style)}
-          />
-          {/* `overflow-hidden`, not `-auto` - InventoryItemGrid is virtualized (react-window's Grid
-              owns its own scroll container), matching GamesPage's identical wrapper for GamesList. */}
-          <div className='min-h-0 flex-1 overflow-hidden'>
-            <InventoryItemGrid
-              currency={currency}
-              isBusy={isBusy}
-              isFetchingPriceFor={marketHashName => pricePendingIds.has(marketHashName)}
-              isListing={isListing}
-              isLocked={isLocked}
-              isSelected={id => selectedIds.has(id)}
-              items={sortedItems}
-              priceValueFor={id => priceDrafts[id] ?? 0}
-              onListSingle={handleListSingle}
-              onOpenPriceModal={handleOpenPriceModal}
-              onPriceChange={setPriceDraft}
-              onToggleLock={toggleLock}
-              onToggleSelect={toggleSelect}
+        ) : !canAccessInventory ? (
+          // Centered in the remaining content area - matches CardFarmingStartPanel's identical
+          // centering so both cookie-prompt screens look the same.
+          <div className='flex flex-1 items-center justify-center overflow-y-auto'>
+            <InventoryConnectPanel
+              errorCode={errorCode}
+              isConnecting={isFetching}
+              onConnect={connect}
             />
           </div>
-        </div>
-      )}
+        ) : (
+          <div className='flex min-h-0 flex-1'>
+            <InventoryFilterPanel
+              filterValues={filterValues}
+              isDisabled={items.length === 0}
+              searchQuery={searchQuery}
+              sortStyle={sortStyle}
+              onFilterValuesChange={setFilterValues}
+              onSearchQueryChange={setSearchQuery}
+              onSortStyleChange={style => setSortPreference('inventory', style)}
+            />
+            {/* `overflow-hidden`, not `-auto` - InventoryItemGrid is virtualized (react-window's Grid
+              owns its own scroll container), matching GamesPage's identical wrapper for GamesList. */}
+            <div className='min-h-0 flex-1 overflow-hidden'>
+              <InventoryItemGrid
+                currency={currency}
+                isBusy={isBusy}
+                isFetchingPriceFor={marketHashName => pricePendingIds.has(marketHashName)}
+                isListing={isListing}
+                isLocked={isLocked}
+                isSelected={id => selectedIds.has(id)}
+                items={sortedItems}
+                priceValueFor={id => priceDrafts[id] ?? 0}
+                onListSingle={handleListSingle}
+                onOpenPriceModal={handleOpenPriceModal}
+                onPriceChange={setPriceDraft}
+                onToggleLock={toggleLock}
+                onToggleSelect={toggleSelect}
+              />
+            </div>
+          </div>
+        )}
 
-      <PriceOrderModal
-        currency={currency}
-        isLoading={priceModalItem ? pricePendingIds.has(priceModalItem.marketHashName) : false}
-        item={priceModalItem}
-        onOpenChange={open => !open && setPriceModalAssetId(null)}
-        onPickPrice={handlePickPrice}
-      />
+        <PriceOrderModal
+          currency={currency}
+          isLoading={priceModalItem ? pricePendingIds.has(priceModalItem.marketHashName) : false}
+          item={priceModalItem}
+          onOpenChange={open => !open && setPriceModalAssetId(null)}
+          onPickPrice={handlePickPrice}
+        />
+      </PageBody>
     </div>
   )
 }

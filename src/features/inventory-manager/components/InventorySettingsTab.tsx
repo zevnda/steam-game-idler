@@ -8,7 +8,7 @@ import {
   getCurrencyStep,
 } from '../utils/currency'
 import { errorMessageKey } from '../utils/errorMessageKey'
-import { Alert, Button, ListBox, Select, Skeleton, toast, Typography } from '@heroui/react'
+import { Alert, Button, ListBox, Select, Skeleton, toast } from '@heroui/react'
 import { InputField } from '@/shared/components/InputField'
 import { SettingsRow } from '@/shared/components/SettingsRow'
 
@@ -86,9 +86,6 @@ export const InventorySettingsTab = ({
   if (isLoading || !draft) {
     return (
       <div className='flex flex-col gap-4'>
-        <Typography type='h3' className='font-bold mb-4'>
-          {t('dashboard.sidebar.nav.inventoryManager')}
-        </Typography>
         {Array.from({ length: 4 }, (_, index) => (
           <Skeleton key={index} className='h-10 w-full rounded-lg' />
         ))}
@@ -98,10 +95,6 @@ export const InventorySettingsTab = ({
 
   return (
     <div className='flex flex-col gap-4'>
-      <Typography type='h3' className='font-bold mb-4'>
-        {t('dashboard.sidebar.nav.inventoryManager')}
-      </Typography>
-
       <SettingsRow
         description={t('dashboard.inventoryManager.settings.currency.description')}
         title={t('dashboard.inventoryManager.settings.currency.title')}

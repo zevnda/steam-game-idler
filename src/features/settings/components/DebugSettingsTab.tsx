@@ -106,10 +106,6 @@ export const DebugSettingsTab = ({
 
   return (
     <div className='flex min-h-0 flex-1 flex-col gap-4'>
-      <Typography type='h3' className='font-bold mb-4'>
-        {t('dashboard.settings.debug.title')}
-      </Typography>
-
       {systemInfo && appVersion && isPortable !== null && (
         <Typography color='muted' type='body-xs'>
           {t('dashboard.settings.footer.version', { version: appVersion })}

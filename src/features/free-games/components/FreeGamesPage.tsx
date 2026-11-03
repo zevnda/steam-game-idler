@@ -8,6 +8,7 @@ import { FreeGamesGrid } from './FreeGamesGrid'
 import { FreeGamesPageHeader } from './FreeGamesPageHeader'
 import { Alert, Button, EmptyState, Typography } from '@heroui/react'
 import { useRouter } from 'next/router'
+import { PageBody } from '@/shared/components/dashboard/PageBody'
 import { GameGridSkeleton } from '@/shared/components/GameGridSkeleton'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 
@@ -41,43 +42,44 @@ export const FreeGamesPage = () => {
         isRefreshing={isRefreshing}
         onRefresh={refresh}
       />
-
-      {isLoading ? (
-        <GameGridSkeleton />
-      ) : errorCode ? (
-        <div className='flex flex-1 flex-col items-center justify-center gap-4 p-8'>
-          <Alert className='max-w-md' status='danger'>
-            <Alert.Indicator />
-            <Alert.Content>
-              <Alert.Title>{t('dashboard.freeGames.errors.title')}</Alert.Title>
-              <Alert.Description>
-                {t(errorMessageKey(errorCode), { code: errorCode })}
-              </Alert.Description>
-            </Alert.Content>
-          </Alert>
-          <Button variant='secondary' onPress={refresh}>
-            {t('common.actions.tryAgain')}
-          </Button>
-        </div>
-      ) : freeGames.length === 0 ? (
-        <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-          <TbGift fontSize={40} />
-          <Typography type='h3'>{t('dashboard.freeGames.empty.title')}</Typography>
-          <Typography color='muted' type='body-sm'>
-            {t('dashboard.freeGames.empty.description')}
-          </Typography>
-        </EmptyState>
-      ) : (
-        <div className='flex-1 overflow-y-auto'>
-          <FreeGamesGrid
-            errorCodes={errorCodes}
-            games={freeGames}
-            outcomes={outcomes}
-            pendingAppIds={pendingAppIds}
-            onClaim={claim}
-          />
-        </div>
-      )}
+      <PageBody>
+        {isLoading ? (
+          <GameGridSkeleton />
+        ) : errorCode ? (
+          <div className='flex flex-1 flex-col items-center justify-center gap-4 p-8'>
+            <Alert className='max-w-md' status='danger'>
+              <Alert.Indicator />
+              <Alert.Content>
+                <Alert.Title>{t('dashboard.freeGames.errors.title')}</Alert.Title>
+                <Alert.Description>
+                  {t(errorMessageKey(errorCode), { code: errorCode })}
+                </Alert.Description>
+              </Alert.Content>
+            </Alert>
+            <Button variant='secondary' onPress={refresh}>
+              {t('common.actions.tryAgain')}
+            </Button>
+          </div>
+        ) : freeGames.length === 0 ? (
+          <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
+            <TbGift fontSize={40} />
+            <Typography type='h3'>{t('dashboard.freeGames.empty.title')}</Typography>
+            <Typography color='muted' type='body-sm'>
+              {t('dashboard.freeGames.empty.description')}
+            </Typography>
+          </EmptyState>
+        ) : (
+          <div className='flex-1 overflow-y-auto'>
+            <FreeGamesGrid
+              errorCodes={errorCodes}
+              games={freeGames}
+              outcomes={outcomes}
+              pendingAppIds={pendingAppIds}
+              onClaim={claim}
+            />
+          </div>
+        )}
+      </PageBody>
     </div>
   )
 }

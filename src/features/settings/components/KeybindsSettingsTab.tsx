@@ -56,10 +56,6 @@ export const KeybindsSettingsTab = () => {
 
   return (
     <div className='flex min-h-0 flex-1 flex-col gap-5'>
-      <Typography type='h3' className='font-bold mb-4'>
-        {t('dashboard.settings.keybinds.title')}
-      </Typography>
-
       <div className='flex flex-col gap-5'>
         <KeybindSection title={t('dashboard.settings.keybinds.zoom')}>
           <KeybindRow

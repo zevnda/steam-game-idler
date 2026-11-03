@@ -12,6 +12,7 @@ import { useRouter } from 'next/router'
 import { useGamesList } from '@/features/games-list/hooks/useGamesList'
 import { errorMessageKey as gamesErrorMessageKey } from '@/features/games-list/utils/errorMessageKey'
 import { BackToTopButton } from '@/shared/components/BackToTopButton'
+import { PageBody } from '@/shared/components/dashboard/PageBody'
 import { useBackToTop } from '@/shared/hooks/useBackToTop'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 
@@ -72,63 +73,64 @@ export const IdlingPage = () => {
         isStoppingAll={isStoppingAll}
         onStopAll={stopAll}
       />
-
-      {phase === 'loading' && appIds.length > 0 ? (
-        <div className='grid grid-cols-2 gap-4 p-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6'>
-          {Array.from({ length: appIds.length }, (_, index) => (
-            <Skeleton key={index} className='aspect-460/215 rounded-lg' />
-          ))}
-        </div>
-      ) : gamesErrorCode ? (
-        <div className='flex flex-1 flex-col items-center justify-center gap-4 p-8'>
-          <Alert className='max-w-md' status='danger'>
-            <Alert.Indicator />
-            <Alert.Content>
-              <Alert.Title>{t('dashboard.games.errors.title')}</Alert.Title>
-              <Alert.Description>
-                {t(gamesErrorMessageKey(gamesErrorCode), { code: gamesErrorCode })}
-              </Alert.Description>
-            </Alert.Content>
-          </Alert>
-          <Button variant='secondary' onPress={refresh}>
-            {t('common.actions.tryAgain')}
-          </Button>
-        </div>
-      ) : idlingGames.length === 0 ? (
-        <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-          <TbPlayerPlay fontSize={40} />
-          <Typography type='h3'>{t('dashboard.idling.empty.title')}</Typography>
-          <Typography color='muted' type='body-sm'>
-            {t('dashboard.idling.empty.description')}
-          </Typography>
-        </EmptyState>
-      ) : (
-        <div
-          ref={setScrollElement}
-          className='relative flex flex-1 flex-col gap-6 overflow-y-auto p-6'
-        >
-          {groups.map(group => {
-            const groupGameIds = new Set(group.appIds)
-            const groupGames = idlingGames.filter(game => groupGameIds.has(game.appId))
-            // The "other" fallback bucket has no single owner to stop (see groupIdlingGames.ts) -
-            // no per-section stop button for it, only the global "Stop All" above still covers it.
-            const owner = group.owner === 'other' ? undefined : group.owner
-            return (
-              <IdlingSection
-                key={group.owner}
-                title={t(SECTION_TITLE_KEY[group.owner])}
-                games={groupGames}
-                startTimes={startTimes}
-                pendingAppIds={pendingAppIds}
-                onToggle={toggleIdle}
-                onStop={owner ? () => stopSection(owner) : undefined}
-                isStopping={owner ? pendingOwners.has(owner) : false}
-              />
-            )
-          })}
-          <BackToTopButton visible={isVisible} onPress={scrollToTop} />
-        </div>
-      )}
+      <PageBody>
+        {phase === 'loading' && appIds.length > 0 ? (
+          <div className='grid grid-cols-2 gap-4 p-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6'>
+            {Array.from({ length: appIds.length }, (_, index) => (
+              <Skeleton key={index} className='aspect-460/215 rounded-lg' />
+            ))}
+          </div>
+        ) : gamesErrorCode ? (
+          <div className='flex flex-1 flex-col items-center justify-center gap-4 p-8'>
+            <Alert className='max-w-md' status='danger'>
+              <Alert.Indicator />
+              <Alert.Content>
+                <Alert.Title>{t('dashboard.games.errors.title')}</Alert.Title>
+                <Alert.Description>
+                  {t(gamesErrorMessageKey(gamesErrorCode), { code: gamesErrorCode })}
+                </Alert.Description>
+              </Alert.Content>
+            </Alert>
+            <Button variant='secondary' onPress={refresh}>
+              {t('common.actions.tryAgain')}
+            </Button>
+          </div>
+        ) : idlingGames.length === 0 ? (
+          <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
+            <TbPlayerPlay fontSize={40} />
+            <Typography type='h3'>{t('dashboard.idling.empty.title')}</Typography>
+            <Typography color='muted' type='body-sm'>
+              {t('dashboard.idling.empty.description')}
+            </Typography>
+          </EmptyState>
+        ) : (
+          <div
+            ref={setScrollElement}
+            className='relative flex flex-1 flex-col gap-6 overflow-y-auto p-6'
+          >
+            {groups.map(group => {
+              const groupGameIds = new Set(group.appIds)
+              const groupGames = idlingGames.filter(game => groupGameIds.has(game.appId))
+              // The "other" fallback bucket has no single owner to stop (see groupIdlingGames.ts) -
+              // no per-section stop button for it, only the global "Stop All" above still covers it.
+              const owner = group.owner === 'other' ? undefined : group.owner
+              return (
+                <IdlingSection
+                  key={group.owner}
+                  title={t(SECTION_TITLE_KEY[group.owner])}
+                  games={groupGames}
+                  startTimes={startTimes}
+                  pendingAppIds={pendingAppIds}
+                  onToggle={toggleIdle}
+                  onStop={owner ? () => stopSection(owner) : undefined}
+                  isStopping={owner ? pendingOwners.has(owner) : false}
+                />
+              )
+            })}
+            <BackToTopButton visible={isVisible} onPress={scrollToTop} />
+          </div>
+        )}
+      </PageBody>
     </div>
   )
 }

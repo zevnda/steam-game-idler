@@ -27,7 +27,7 @@ import { FreeGamesSettingsTab } from './FreeGamesSettingsTab'
 import { GameSettingsTab } from './game-settings/GameSettingsTab'
 import { GeneralSettingsTab } from './GeneralSettingsTab'
 import { KeybindsSettingsTab } from './KeybindsSettingsTab'
-import { SteamCredentialsTab } from './SteamCredentialsTab'
+import { SteamCredentialsDocsLink, SteamCredentialsTab } from './SteamCredentialsTab'
 import { SubscriptionSettingsTab } from './SubscriptionSettingsTab'
 import {
   cn,
@@ -46,6 +46,7 @@ import { useCardFarmingSettings } from '@/features/card-farming/hooks/useCardFar
 import { useFreeGamesSettings } from '@/features/free-games/hooks/useFreeGamesSettings'
 import { InventorySettingsTab } from '@/features/inventory-manager/components/InventorySettingsTab'
 import { useInventorySettings } from '@/features/inventory-manager/hooks/useInventorySettings'
+import { PageBody } from '@/shared/components/dashboard/PageBody'
 import { ModalDragRegion } from '@/shared/components/ModalDragRegion'
 import { SocialButtons } from '@/shared/components/SocialButtons'
 import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
@@ -99,9 +100,14 @@ const TABS: {
   { key: 'debug', labelKey: 'dashboard.settings.debug.title', icon: TbBug },
 ]
 
-// One `TabPanel` + a `main`-style "Settings >" breadcrumb, shared by every category below instead
-// of each tab component rendering its own breadcrumb - each tab still owns its own `Typography
-// type='h3'` page title (see e.g. GeneralSettingsTab.tsx), this only adds the muted trail above it.
+// One `TabPanel` + a `main`-style "Settings >" breadcrumb and the category's title, shared by every
+// category below. Titles live here rather than in each tab, reusing the category's `TABS` label, so
+// they stay still in every loading/error state while `PageBody` animates the tab's content in. The
+// unselected panels are unmounted, so that plays each time a category is switched to.
+//
+// `scrollbar-gutter` reserves the scrollbar's width whether or not a category overflows, so content
+// doesn't shift sideways between short and long categories, or as a category's content loads in.
+// It's on `fill` panels too, which never scroll, so their title lines up with every other category.
 //
 // `fill` (default false) swaps the usual "column grows to content height, the whole panel scrolls"
 // shape for "column stretches to the modal's own height, a child manages its own internal scroll" -
@@ -110,17 +116,20 @@ const TABS: {
 const SettingsPanel = ({
   id,
   fill = false,
+  titleAction,
   children,
 }: {
   id: SettingsTab
   fill?: boolean
+  titleAction?: ReactNode
   children: ReactNode
 }) => {
   const { t } = useTranslation()
+  const titleKey = TABS.find(tab => tab.key === id)?.labelKey
   return (
     <TabPanel
       className={cn(
-        'min-h-0 flex-1 py-8',
+        'min-h-0 flex-1 py-8 [scrollbar-gutter:stable]',
         fill ? 'flex flex-col overflow-hidden' : 'overflow-y-auto',
       )}
       id={id}
@@ -140,7 +149,13 @@ const SettingsPanel = ({
           {t('dashboard.settings.title')}
           <TbChevronRight fontSize={12} />
         </Typography>
-        {children}
+        <div className='mb-8 flex items-center justify-between gap-4'>
+          <Typography type='h3' className='font-bold'>
+            {titleKey && t(titleKey)}
+          </Typography>
+          {titleAction}
+        </div>
+        <PageBody fill={fill}>{children}</PageBody>
       </div>
     </TabPanel>
   )
@@ -261,8 +276,8 @@ export const SettingsModal = () => {
                   </div>
                 </div>
 
-                {/* Scrollable content column - each category is a `SettingsPanel` (breadcrumb +
-                    its own page title/body), the only child that scrolls within this split. */}
+                {/* Scrollable content column - each category is a `SettingsPanel` (breadcrumb, title
+                    and body), the only child that scrolls within this split. */}
                 <SettingsPanel id='general'>
                   <GeneralSettingsTab
                     actionErrorCode={actionErrorCode}
@@ -307,7 +322,7 @@ export const SettingsModal = () => {
                   />
                 </SettingsPanel>
 
-                <SettingsPanel id='steamCredentials'>
+                <SettingsPanel id='steamCredentials' titleAction={<SteamCredentialsDocsLink />}>
                   <SteamCredentialsTab
                     actionErrorCode={steamCredentials.actionErrorCode}
                     isAcquiring={steamCredentials.isAcquiring}
