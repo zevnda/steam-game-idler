@@ -13,6 +13,7 @@ export type SettingsTab =
   | 'freeGames'
   | 'gameSettings'
   | 'keybinds'
+  | 'help'
   | 'debug'
 
 interface SettingsModalStore {

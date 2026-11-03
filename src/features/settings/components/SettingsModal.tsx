@@ -13,6 +13,7 @@ import {
   TbChevronRight,
   TbCreditCard,
   TbGift,
+  TbHelpCircle,
   TbKey,
   TbKeyboard,
   TbPalette,
@@ -26,6 +27,7 @@ import { DebugSettingsTab } from './DebugSettingsTab'
 import { FreeGamesSettingsTab } from './FreeGamesSettingsTab'
 import { GameSettingsTab } from './game-settings/GameSettingsTab'
 import { GeneralSettingsTab } from './GeneralSettingsTab'
+import { HelpSettingsTab } from './help/HelpSettingsTab'
 import { KeybindsSettingsTab } from './KeybindsSettingsTab'
 import { SteamCredentialsDocsLink, SteamCredentialsTab } from './SteamCredentialsTab'
 import { SubscriptionSettingsTab } from './SubscriptionSettingsTab'
@@ -97,6 +99,7 @@ const TABS: {
     icon: TbKeyboard,
     groupStart: true,
   },
+  { key: 'help', labelKey: 'dashboard.settings.help.title', icon: TbHelpCircle },
   { key: 'debug', labelKey: 'dashboard.settings.debug.title', icon: TbBug },
 ]
 
@@ -408,6 +411,10 @@ export const SettingsModal = () => {
                     needs lifting into this modal's own state. */}
                 <SettingsPanel id='keybinds'>
                   <KeybindsSettingsTab />
+                </SettingsPanel>
+
+                <SettingsPanel id='help'>
+                  <HelpSettingsTab />
                 </SettingsPanel>
 
                 <SettingsPanel fill id='debug'>

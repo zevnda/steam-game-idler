@@ -24,6 +24,7 @@ const DOCS_SLUG_BY_TAB: Record<SettingsTab, string> = {
   freeGames: 'settings/free-games',
   gameSettings: 'settings/game-settings',
   keybinds: '',
+  help: 'faq',
   debug: 'settings/debug',
 }
 

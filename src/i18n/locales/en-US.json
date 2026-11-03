@@ -1142,6 +1142,10 @@
         "toggleSettings": "Toggle settings",
         "toggleSidebar": "Toggle sidebar"
       },
+      "help": {
+        "title": "Help",
+        "troubleshooting": "Troubleshooting"
+      },
       "debug": {
         "title": "Debug",
         "system": {

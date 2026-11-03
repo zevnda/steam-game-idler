@@ -682,26 +682,26 @@ body {
 /* FAQItem's expand/collapse - a pure-CSS grid-rows trick (0fr -> 1fr) rather than `main`'s
    framer-motion `height: 0 -> auto` measurement, so the collapsed panel never needs a JS-measured
    height and the transition stays on the compositor. */
-.pro-faq-panel {
+.faq-panel {
   display: grid;
   grid-template-rows: 0fr;
   transition: grid-template-rows 0.28s ease-in-out;
 }
 
-.pro-faq-panel.is-open {
+.faq-panel.is-open {
   grid-template-rows: 1fr;
 }
 
-.pro-faq-panel > div {
+.faq-panel > div {
   overflow: hidden;
   min-height: 0;
 }
 
-.pro-faq-chevron {
+.faq-chevron {
   transition: transform 0.25s ease;
 }
 
-.pro-faq-chevron.is-open {
+.faq-chevron.is-open {
   transform: rotate(180deg);
 }
 
