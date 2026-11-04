@@ -24,8 +24,12 @@
       "startIdling": "Start Idling",
       "stopIdling": "Stop Idling",
       "manageAchievements": "Manage Achievements",
+      "customOrder": "Custom Order & Unlock Delay",
       "viewOnSteam": "View on Steam",
-      "addTo": "Add To"
+      "copyAppId": "Copy App ID",
+      "appIdCopied": "App ID copied",
+      "cardFarmingBlacklist": "Card Farming Blacklist",
+      "lists": "Lists"
     },
     "minutes": "minutes",
     "zeroUnlimitedHint": "0 = unlimited",

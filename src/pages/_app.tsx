@@ -3,6 +3,7 @@ import { Toast } from '@heroui/react'
 import { useRouter } from 'next/router'
 import Script from 'next/script'
 import { ChangelogModal } from '@/shared/components/ChangelogModal'
+import { ContextMenu } from '@/shared/components/ContextMenu'
 import { DashboardShell } from '@/shared/components/dashboard/DashboardShell'
 import { ErrorBoundary } from '@/shared/components/ErrorBoundary'
 import { FullscreenLoader } from '@/shared/components/FullscreenLoader'
@@ -162,6 +163,8 @@ const AppContent = ({ Component, pageProps }: AppProps) => {
           `toast.*` singleton (imported directly wherever a toast is fired) works from anywhere
           once this is mounted once; no context/provider prop-drilling needed. */}
       <Toast.Provider />
+      {/* The right-click menu useContextMenu() opens - see ContextMenu.tsx */}
+      <ContextMenu />
       <LinuxResizeHandles />
       <Titlebar minimal={bootstrapPhase === 'checking'} />
       <ChangelogModal />

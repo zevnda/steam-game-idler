@@ -1,12 +1,14 @@
 import type { CardFarmingBlacklistEntry } from '../types'
 import { useCallback, useEffect, useState } from 'react'
 import { useSessionStore } from '@/shared/stores/sessionStore'
+import { onGameListChange } from '@/shared/utils/gameListsBus'
 import { invoke } from '@/shared/utils/invoke'
 
-// Mirrors useCardFarmingWhitelist.ts's shape (fetch-on-mount, per-account) minus the toggle - a
-// game only ever enters the blacklist from a "Games With Drops" browse card (`add`) and only ever
-// leaves it from the "Blacklisted" tab (`remove`), so there's no single-button toggle to wrap the
-// way `toggleWhitelisted` wraps add/remove for the whitelist.
+// Mirrors useCardFarmingWhitelist.ts's shape (fetch-on-mount, per-account) minus the toggle - on
+// this page a game enters the blacklist from a "Games With Drops" browse card (`add`) and leaves it
+// from the "Blacklisted" tab (`remove`), so there's no single-button toggle to wrap the way
+// `toggleWhitelisted` wraps add/remove for the whitelist. The game card context menu's Lists
+// submenu can do either from any page; this hears about it through gameListsBus.ts.
 export const useCardFarmingBlacklist = () => {
   const account = useSessionStore(state => state.account)
   const [blacklist, setBlacklist] = useState<CardFarmingBlacklistEntry[]>([])
@@ -43,6 +45,9 @@ export const useCardFarmingBlacklist = () => {
       cancelled = true
     }
   }, [account])
+
+  // The game card context menu can blacklist a game from any page (see gameListsBus.ts)
+  useEffect(() => onGameListChange('cardFarmingBlacklist', setBlacklist), [])
 
   const addToBlacklist = useCallback(
     async (game: CardFarmingBlacklistEntry) => {

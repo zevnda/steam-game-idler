@@ -16,6 +16,7 @@ import { Button, cn } from '@heroui/react'
 import { Unbounded } from 'next/font/google'
 import Image from 'next/image'
 import { Logo } from '@/shared/components/dashboard/Logo'
+import { CDN_BASE_URL } from '@/shared/constants'
 import { useAchievementManagerStore } from '@/shared/stores/achievementManagerStore'
 import { usePlatformStore } from '@/shared/stores/platformStore'
 import { gameCardContextAttrs } from '@/shared/utils/gameCardContext'
@@ -24,7 +25,8 @@ import { revealTitleIfTruncated } from '@/shared/utils/revealTitleIfTruncated'
 
 const AUTO_ADVANCE_MS = 7000
 const DISCORD_SLIDE_KEY = 'discord'
-const DISCORD_SLIDE_ART = '/discord-banner.webp'
+// On the CDN like the app's other artwork, so it can be swapped without a release
+const DISCORD_SLIDE_ART = `${CDN_BASE_URL}/recommended/discord-banner.webp`
 // English-only on purpose: the slide is meant to read as one piece of artwork, and the art's own text
 // is English too. So don't move these to en-US.json or flag them as hardcoded strings.
 const DISCORD_SLIDE_CTA = 'Join our Discord'
