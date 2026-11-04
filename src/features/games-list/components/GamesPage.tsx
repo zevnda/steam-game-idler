@@ -30,6 +30,20 @@ const STEAM_PRIVACY_SETTINGS_URL = 'https://steamcommunity.com/my/edit/settings'
 // local-mode accounts, then a background refresh. Also owns idling's start/stop toggle (see
 // GameCard) - the idling feature's own page is now just a filtered, view-only list of whatever
 // this page's toggles started, mirroring `main`'s split between the two pages.
+// A random rank per game, picked the first time it's needed and kept for the rest of the session.
+// Module-level, so leaving the Games page and coming back (or a background library refresh) keeps
+// the same order, and the Recommended banner doesn't reshuffle under the user. A game added
+// mid-session just gets a rank of its own.
+const sessionRanks = new Map<number, number>()
+const sessionRank = (appId: number) => {
+  let rank = sessionRanks.get(appId)
+  if (rank === undefined) {
+    rank = Math.random()
+    sessionRanks.set(appId, rank)
+  }
+  return rank
+}
+
 export const GamesPage = () => {
   const { t, i18n } = useTranslation()
   const router = useRouter()
@@ -67,8 +81,14 @@ export const GamesPage = () => {
 
   // Independent of `searchQuery`/`filteredGames` - this is a discovery surface, not the searched
   // list itself. Capped so `useRecommendedSlides` has a bounded set of candidates to check.
+  // Shuffled with each game's session rank (see `sessionRank`), so every launch picks a different
+  // set but it stays put for the rest of the session.
   const recommendedGames = useMemo(
-    () => games.filter(game => game.playtimeForeverMinutes === 0).slice(0, 20),
+    () =>
+      games
+        .filter(game => game.playtimeForeverMinutes === 0)
+        .sort((a, b) => sessionRank(a.appId) - sessionRank(b.appId))
+        .slice(0, 20),
     [games],
   )
 
@@ -154,7 +174,9 @@ export const GamesPage = () => {
                   {t('dashboard.games.privacyWarning.description')}
                 </Alert.Description>
               </Alert.Content>
-              <div className='flex shrink-0 gap-2'>
+              {/* Stacked, and stretched to the wider label, so the two read as one column of
+                  options and leave the description more room */}
+              <div className='flex shrink-0 flex-col items-stretch gap-2'>
                 <Button
                   size='sm'
                   variant='secondary'

@@ -61,7 +61,9 @@ export const useRecommendedSlides = (games: OwnedGame[]) => {
 
     const checkCandidates = async () => {
       while (!isCancelled) {
-        const found = games.filter(game => checkedArt.get(game.appId)).length
+        // Keeps going until there are enough games with title art too, not just hero art (see the
+        // slide selection below)
+        const found = games.filter(game => checkedArt.get(game.appId)?.logo).length
         if (found >= MAX_SLIDES) return
 
         const batch = games
@@ -87,16 +89,25 @@ export const useRecommendedSlides = (games: OwnedGame[]) => {
     }
   }, [games])
 
+  // Games with both hero and title art come first. Games with hero art only (their name shows as
+  // text instead) are just a fallback to fill the banner, so they're only added once every candidate
+  // has been checked: adding them earlier would mean swapping them back out as better games turn
+  // up, changing slides under the user. This way the slide list only ever grows.
   return useMemo(() => {
     const slides: RecommendedSlide[] = []
+    const heroOnly: RecommendedSlide[] = []
     for (const game of games) {
       const art = checkedArt.get(game.appId)
-      if (art && slides.length < MAX_SLIDES) slides.push({ game, ...art })
+      if (!art) continue
+      if (art.logo) {
+        if (slides.length < MAX_SLIDES) slides.push({ game, ...art })
+      } else {
+        heroOnly.push({ game, ...art })
+      }
     }
-    return {
-      slides,
-      isChecking: slides.length < MAX_SLIDES && games.some(game => !checkedArt.has(game.appId)),
-    }
+    const isChecking = slides.length < MAX_SLIDES && games.some(game => !checkedArt.has(game.appId))
+    if (!isChecking) slides.push(...heroOnly.slice(0, MAX_SLIDES - slides.length))
+    return { slides, isChecking }
     // `checkCount` is what signals that `checkedArt`, which React can't observe, has changed.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [games, checkCount])
