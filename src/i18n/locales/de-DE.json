@@ -22,8 +22,7 @@
       "startIdling": "Leerlauf starten",
       "stopIdling": "Leerlauf stoppen",
       "manageAchievements": "Errungenschaft verwalten",
-      "viewOnSteam": "Auf Steam anzeigen",
-      "addTo": "Hinzufügen zu"
+      "viewOnSteam": "Auf Steam anzeigen"
     },
     "minutes": "Minuten",
     "zeroUnlimitedHint": "0 = unbegrenzt",
@@ -356,8 +355,7 @@
     "games": {
       "unknownName": "App {{appId}}",
       "carousels": {
-        "recommended": "Empfohlen",
-        "recent": "Zuletzt gespielt"
+        "recommended": "Empfohlen"
       },
       "sort": {
         "playtimeDesc": "Spielzeit (Hoch zu Niedrig)",
@@ -387,10 +385,6 @@
       "sections": {
         "manual": "Manuell im Leerlauf",
         "other": "Sonstiges"
-      },
-      "empty": {
-        "title": "Keine Spiele im Leerlauf",
-        "description": "Starten Sie ein Spiel über die Registerkarte „Spiele“, um es hier anzuzeigen."
       },
       "errors": {
         "startFailed": "Das Spiel konnte nicht im Leerlauf gestartet werden.",

@@ -22,8 +22,7 @@
       "startIdling": "Démarrer le mot idle",
       "stopIdling": "Arrêter le mode idle",
       "manageAchievements": "Gérer les succès",
-      "viewOnSteam": "Voir sur Steam",
-      "addTo": "Ajouter à"
+      "viewOnSteam": "Voir sur Steam"
     },
     "minutes": "minutes",
     "zeroUnlimitedHint": "0 = illimité",
@@ -100,9 +99,7 @@
       "nameDesc": "Nom (Z-A)"
     },
     "noGamesQueued": "Aucun jeu en attente",
-    "completedThisSessionCount": "Cette session est terminée ({{count}})",
-    "gamesQueuedCount_one": "{{count}} jeu en attente",
-    "gamesQueuedCount_other": "{{count}} jeux en attente"
+    "completedThisSessionCount": "Cette session est terminée ({{count}})"
   },
   "update": {
     "downloading": "Téléchargement de la mise à jour..."
@@ -361,8 +358,7 @@
     "games": {
       "unknownName": "Application {{appId}}",
       "carousels": {
-        "recommended": "Recommandés",
-        "recent": "Joués récemment"
+        "recommended": "Recommandés"
       },
       "sort": {
         "playtimeDesc": "Temps de jeu (Décroissant)",
@@ -385,9 +381,7 @@
         "description": "Votre profil Steam ou information de jeu semblent être définies comme privés. Le temps de jeu, les jeux récemment joués et certains jeux peuvent donc être incomplets. Rendez votre profil public ou ajoutez votre propre clé API Steam Web dans les Paramètres pour corriger cela.",
         "changeSettings": "Modifier les paramètres de confidentialité",
         "useOwnKey": "Ajouter ma propre clé API"
-      },
-      "count_one": "{{count}} jeu",
-      "count_other": "{{count}} jeux"
+      }
     },
     "idling": {
       "stopAll": "Tout arrêter",
@@ -395,17 +389,11 @@
         "manual": "Joué en mode idle manuellement",
         "other": "Autre"
       },
-      "empty": {
-        "title": "Aucun jeu idle en cours",
-        "description": "Commencer à idle un jeu depuis l'onglet Jeux pour le voir ici."
-      },
       "errors": {
         "startFailed": "Impossible de commencer à idle ce jeu.",
         "maxPlaytimeCapReached": "Ce jeu a déjà atteint sa limite de temps de jeu.",
         "generic": "Une erreur s'est produite lors de la mise à jour des jeux idle. Veuillez réessayer. ({{code}})"
-      },
-      "count_one": "{{count}} jeu idle en cours",
-      "count_other": "{{count}} jeux idle en cours"
+      }
     },
     "favorites": {
       "confirmClear": {
@@ -420,9 +408,7 @@
         "title": "Impossible de mettre à jour les favoris",
         "cacheIoFailed": "Impossible de lire ou écrire le cache de favoris.",
         "generic": "Une erreur s'est produite lors de la mise à jour des favoris. Veuillez réessayer. ({{code}})"
-      },
-      "count_one": "{{count}} favoris",
-      "count_other": "{{count}} favoris"
+      }
     },
     "freeGames": {
       "actions": {
@@ -455,9 +441,7 @@
       },
       "correction": {
         "granted": "{{name}} a finalement été réclamé avec succès - l'avis précédent était erroné."
-      },
-      "count_one": "{{count}} jeu gratuit disponible",
-      "count_other": "{{count}} jeux gratuits disponibles"
+      }
     },
     "achievements": {
       "tabs": {
@@ -556,11 +540,6 @@
       }
     },
     "cardFarming": {
-      "status": {
-        "idle": "Aucun farm en cours",
-        "farming_one": "{{count}} jeu en farming",
-        "farming_other": "{{count}} jeux en farming"
-      },
       "actions": {
         "stop": "Arrêter de farmer"
       },
@@ -589,13 +568,8 @@
         "title": "Aucun drop de carte restant",
         "description": "Pour tous les jeux possédés, soit toutes les cartes ont déjà été récupérées, soit il n'y en a aucune de disponible pour le moment."
       },
-      "whitelistEmpty": {
-        "title": "Aucun jeu en liste blanche",
-        "description": "Ajouter des jeux depuis l'onglet Jeux avec des Drops pour restreindre le farming à ces jeux uniquement. Laissez le vide pour farmer tous les jeux avec des drops."
-      },
       "blacklistEmpty": {
-        "title": "Aucun jeu blacklisté",
-        "description": "Les jeux blacklistés de l'onglet Jeux avec Drops ne seront jamais farmés et apparaissent ici."
+        "title": "Aucun jeu blacklisté"
       },
       "connect": {
         "automaticDescription": "Se connecte automatiquement à Steam Community pour rechercher des drops."
@@ -652,10 +626,6 @@
       }
     },
     "achievementUnlocker": {
-      "status": {
-        "running_one": "Déblocage de {{count}} jeu",
-        "running_other": "Déblocage de {{count}} jeux"
-      },
       "addAllToQueue": "Tout ajouter dans la file d'attente",
       "confirmAddAllToQueue": {
         "title": "Ajouter les {{count}} jeux dans la file d'attente ?",
@@ -763,7 +733,6 @@
       "badgeLevel": "Badge de niveau {{level}}",
       "noBadge": "Aucun badge fabriqué",
       "connect": {
-        "description": "Chargez votre inventaire Steam Community pour gérer et vendre des éléments.",
         "automaticDescription": "Se connecte automatiquement à Steam Community pour charger votre inventaire."
       },
       "actions": {
@@ -872,9 +841,7 @@
         "listingsFetchFailed": "Impossible de lire vos annonces active du marché.",
         "settingsIoFailed": "Impossible de lire ou écrire les paramètres de votre inventaire.",
         "generic": "Une erreur s'est produite lors de la mise à jour de votre inventaire. Veuillez réessayer. ({{code}})"
-      },
-      "count_one": "{{count}} élément",
-      "count_other": "{{count}} éléments"
+      }
     },
     "settings": {
       "title": "Paramètres",
@@ -970,16 +937,6 @@
         "tooltips": {
           "label": "Désactiver les infobulles",
           "description": "Cacher les infobulles au survol dans toute l'application."
-        },
-        "carousels": {
-          "recommended": {
-            "label": "Afficher les Carrousels recommandés",
-            "description": "Montrer une ligne de jeux non joués en haut de la liste de jeux."
-          },
-          "recent": {
-            "label": "Afficher les Carrousels Joués Récemment",
-            "description": "Montrer une ligne vos jeux joués le plus récemment en haut de la liste de jeux."
-          }
         },
         "background": {
           "label": "Image d'arrière-plan",

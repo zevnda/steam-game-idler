@@ -24,8 +24,7 @@
       "startIdling": "Inizia idle",
       "stopIdling": "Ferma idle",
       "manageAchievements": "Gestisci obiettivi",
-      "viewOnSteam": "Visualizza su Steam",
-      "addTo": "Aggiungi a"
+      "viewOnSteam": "Visualizza su Steam"
     },
     "minutes": "minuti",
     "zeroUnlimitedHint": "0 = illimitato",
@@ -104,9 +103,7 @@
       "nameDesc": "Nome (Z-A)"
     },
     "noGamesQueued": "Nessun gioco in coda",
-    "completedThisSessionCount": "Completati in questa sessione ({{count}})",
-    "gamesQueuedCount_one": "{{count}} gioco in coda",
-    "gamesQueuedCount_other": "{{count}} giochi in coda"
+    "completedThisSessionCount": "Completati in questa sessione ({{count}})"
   },
   "versionPolicy": {
     "outdated": {
@@ -388,8 +385,7 @@
     "games": {
       "unknownName": "App {{appId}}",
       "carousels": {
-        "recommended": "Consigliati",
-        "recent": "Giocati di recente"
+        "recommended": "Consigliati"
       },
       "sort": {
         "playtimeDesc": "Tempo di gioco (decrescente)",
@@ -414,9 +410,7 @@
         "description": "Il tuo profilo Steam o i dettagli dei giochi sembrano impostati su privati, quindi tempo di gioco, giochi recenti e alcuni giochi potrebbero risultare incompleti. Rendi pubblico il profilo oppure aggiungi la tua chiave Steam Web API nelle Impostazioni per risolvere.",
         "changeSettings": "Modifica impostazioni privacy",
         "useOwnKey": "Aggiungi la mia chiave API"
-      },
-      "count_one": "{{count}} gioco",
-      "count_other": "{{count}} giochi"
+      }
     },
     "playingElsewhere": {
       "title": "In pausa mentre giochi",
@@ -429,17 +423,11 @@
         "manual": "Messi in idle manualmente",
         "other": "Altro"
       },
-      "empty": {
-        "title": "Nessun gioco in idle",
-        "description": "Avvia l'idle di un gioco dalla scheda Giochi per vederlo qui."
-      },
       "errors": {
         "startFailed": "Impossibile avviare l'idle di questo gioco.",
         "maxPlaytimeCapReached": "Questo gioco ha già raggiunto il limite massimo di tempo di gioco.",
         "generic": "Qualcosa è andato storto durante l'aggiornamento dell'idle. Riprova. ({{code}})"
-      },
-      "count_one": "{{count}} gioco in idle",
-      "count_other": "{{count}} giochi in idle"
+      }
     },
     "favorites": {
       "confirmClear": {
@@ -454,9 +442,7 @@
         "title": "Impossibile aggiornare i preferiti",
         "cacheIoFailed": "Impossibile leggere o scrivere la cache dei preferiti.",
         "generic": "Qualcosa è andato storto durante l'aggiornamento dei preferiti. Riprova. ({{code}})"
-      },
-      "count_one": "{{count}} preferito",
-      "count_other": "{{count}} preferiti"
+      }
     },
     "freeGames": {
       "actions": {
@@ -489,9 +475,7 @@
       },
       "correction": {
         "granted": "{{name}} è stato effettivamente riscattato con successo: l'avviso di errore precedente era sbagliato."
-      },
-      "count_one": "{{count}} gioco gratuito disponibile",
-      "count_other": "{{count}} giochi gratuiti disponibili"
+      }
     },
     "achievements": {
       "tabs": {
@@ -612,11 +596,6 @@
       "pendingChanges_other": "{{count}} modifiche"
     },
     "cardFarming": {
-      "status": {
-        "idle": "Raccolta non attiva",
-        "farming_one": "Raccolta carte da {{count}} gioco",
-        "farming_other": "Raccolta carte da {{count}} giochi"
-      },
       "actions": {
         "stop": "Ferma raccolta"
       },
@@ -645,13 +624,8 @@
         "title": "Nessuna carta rimanente",
         "description": "Le carte di tutti i giochi posseduti sono già state raccolte oppure non sono disponibili al momento."
       },
-      "whitelistEmpty": {
-        "title": "Nessun gioco in lista bianca",
-        "description": "Aggiungi giochi dalla scheda Giochi con carte per limitare la raccolta a quei giochi. Lascia la lista vuota per raccogliere carte da tutti i giochi che ne hanno ancora disponibili."
-      },
       "blacklistEmpty": {
-        "title": "Nessun gioco in lista nera",
-        "description": "I giochi che aggiungi alla lista nera dalla scheda Giochi con carte non verranno mai usati per la raccolta e appariranno qui."
+        "title": "Nessun gioco in lista nera"
       },
       "connect": {
         "automaticDescription": "Accede automaticamente a Steam Community per controllare le carte."
@@ -708,10 +682,6 @@
       }
     },
     "achievementUnlocker": {
-      "status": {
-        "running_one": "Sblocco di {{count}} gioco",
-        "running_other": "Sblocco di {{count}} giochi"
-      },
       "addAllToQueue": "Aggiungi tutti alla coda",
       "confirmAddAllToQueue": {
         "title": "Aggiungere tutti i {{count}} giochi alla coda?",
@@ -832,7 +802,6 @@
       "badgeLevel": "Livello medaglia {{level}}",
       "noBadge": "Nessuna medaglia creata",
       "connect": {
-        "description": "Carica il tuo inventario di Steam Community per gestire e vendere oggetti.",
         "automaticDescription": "Accede automaticamente a Steam Community per caricare il tuo inventario."
       },
       "actions": {
@@ -941,9 +910,7 @@
         "listingsFetchFailed": "Impossibile leggere le inserzioni di mercato attive.",
         "settingsIoFailed": "Impossibile leggere o scrivere le impostazioni dell'inventario.",
         "generic": "Qualcosa è andato storto durante l'aggiornamento dell'inventario. Riprova. ({{code}})"
-      },
-      "count_one": "{{count}} oggetto",
-      "count_other": "{{count}} oggetti"
+      }
     },
     "settings": {
       "title": "Impostazioni",
@@ -1039,16 +1006,6 @@
         "tooltips": {
           "label": "Disabilita tooltip",
           "description": "Nascondi i tooltip al passaggio del mouse in tutta l'app."
-        },
-        "carousels": {
-          "recommended": {
-            "label": "Mostra carosello Consigliati",
-            "description": "Mostra una riga di giochi mai avviati in cima all'elenco dei giochi."
-          },
-          "recent": {
-            "label": "Mostra carosello Giocati di recente",
-            "description": "Mostra una riga dei giochi giocati più di recente in cima all'elenco dei giochi."
-          }
         },
         "background": {
           "label": "Immagine di sfondo",

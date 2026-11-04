@@ -23,8 +23,7 @@
       "startIdling": "Süre Kasmayı başlat",
       "stopIdling": "Süre Kasmayı durdur",
       "manageAchievements": "Başarımları Yönet",
-      "viewOnSteam": "Steam'de Görüntüle",
-      "addTo": "Ekle"
+      "viewOnSteam": "Steam'de Görüntüle"
     },
     "minutes": "dakika",
     "zeroUnlimitedHint": "0 = sınırsız",
@@ -100,9 +99,7 @@
       "nameDesc": "İsim (Z-A)"
     },
     "noGamesQueued": "Sıraya alınmış oyun yok",
-    "completedThisSessionCount": "Bu oturumda tamamlanan ({{count}})",
-    "gamesQueuedCount_one": "{{count}} oyun sırada",
-    "gamesQueuedCount_other": "{{count}} oyun sırada"
+    "completedThisSessionCount": "Bu oturumda tamamlanan ({{count}})"
   },
   "update": {
     "downloading": "Güncelleme yükleniyor..."
@@ -361,8 +358,7 @@
     "games": {
       "unknownName": "Uygulama {{appId}}",
       "carousels": {
-        "recommended": "Önerilen",
-        "recent": "Son Oynanan"
+        "recommended": "Önerilen"
       },
       "sort": {
         "playtimeDesc": "Oyun Süresi (Yüksek-Düşük)",
@@ -385,19 +381,13 @@
         "description": "Steam profiliniz veya oyun ayrıntılarınız gizli olarak ayarlanmış görünüyor. Bu nedenle oyun süresi, son oynanan oyunlar ve bazı oyun bilgileri eksik olabilir. Bu sorunu düzeltmek için profilinizi herkese açık yapın veya Ayarlar bölümünden kendi Steam Web API anahtarınızı ekleyin.",
         "changeSettings": "Gizlilik ayarlarını değiştir",
         "useOwnKey": "Kendi API anahtarımı ekle"
-      },
-      "count_one": "{{count}} oyun",
-      "count_other": "{{count}} oyun"
+      }
     },
     "idling": {
       "stopAll": "Hepsini durdur",
       "sections": {
         "manual": "Manuel olarak boşta çalışıyor",
         "other": "Diğer"
-      },
-      "empty": {
-        "title": "Boşta çalışan oyun yok",
-        "description": "Oyunlar sekmesinden bir oyunu boşta çalıştırmaya başlayarak burada görebilirsiniz."
       },
       "errors": {
         "startFailed": "Bu oyunu boşta çalıştırma başlatılamadı.",
@@ -533,9 +523,6 @@
       }
     },
     "cardFarming": {
-      "status": {
-        "idle": "Kasma etkin değil"
-      },
       "actions": {
         "stop": "Kasmayı durdur"
       },
@@ -559,8 +546,7 @@
         "description": "Sahip olduğunuz tüm oyunlardaki kartlar ya tamamen kasıldı ya da şu anda düşürülebilecek kart bulunmuyor."
       },
       "blacklistEmpty": {
-        "title": "Kara listede oyun yok",
-        "description": "Oyun Kartları sekmesinden kara listeye eklediğiniz oyunlar hiçbir zaman kart kasılmaz ve burada görünür."
+        "title": "Kara listede oyun yok"
       },
       "connect": {
         "automaticDescription": "Kart düşüşlerini kontrol etmek için Steam Topluluğu'nda otomatik olarak oturum açar."
@@ -700,7 +686,6 @@
       "badgeLevel": "Rozet seviyesi {{level}}",
       "noBadge": "Rozet yapılmadı",
       "connect": {
-        "description": "Öğeleri yönetmek ve satmak için Steam Topluluğu envanterinizi yükleyin.",
         "automaticDescription": "Envanterinizi yüklemek için Steam Topluluğu'na otomatik olarak giriş yapar."
       },
       "settings": {

@@ -22,8 +22,7 @@
       "startIdling": "Iniciar idle",
       "stopIdling": "Parar idle",
       "manageAchievements": "Gerenciar Conquistas",
-      "viewOnSteam": "Ver na Steam",
-      "addTo": "Adicionar a"
+      "viewOnSteam": "Ver na Steam"
     },
     "minutes": "minutos",
     "zeroUnlimitedHint": "0 = ilimitado",
@@ -100,9 +99,7 @@
       "nameDesc": "Nome (Z-A)"
     },
     "noGamesQueued": "Nenhum jogo na fila",
-    "completedThisSessionCount": "Completos nessa sessão ({{count}})",
-    "gamesQueuedCount_one": "{{count}} jogos na fila",
-    "gamesQueuedCount_other": "{{count}} jogo em fila"
+    "completedThisSessionCount": "Completos nessa sessão ({{count}})"
   },
   "update": {
     "downloading": "Baixando a atualização..."
@@ -363,8 +360,7 @@
     "games": {
       "unknownName": "App {{appId}}",
       "carousels": {
-        "recommended": "Recomendados",
-        "recent": "Jogados recentemente"
+        "recommended": "Recomendados"
       },
       "sort": {
         "playtimeDesc": "Tempo de jogo (Maior-Menor)",
@@ -387,9 +383,7 @@
         "description": "Seu perfil do Steam ou os detalhes dos jogos parecem estar definidos como privados, então o tempo de jogo, os jogos jogados recentemente e alguns jogos podem estar incompletos. Torne seu perfil público ou adicione sua própria chave da Steam Web API nas Configurações para resolver isso.",
         "changeSettings": "Alterar suas configurações de privacidade",
         "useOwnKey": "Adicionar minha própria chave de API"
-      },
-      "count_one": "{{count}} jogo",
-      "count_other": "{{count}} jogos"
+      }
     },
     "idling": {
       "stopAll": "Parar Tudo",
@@ -397,17 +391,11 @@
         "manual": "Ocioso manualmente",
         "other": "Outros"
       },
-      "empty": {
-        "title": "Sem jogos ociosos",
-        "description": "Inicie um jogo ocioso na aba Jogos para vê-lo aqui."
-      },
       "errors": {
         "startFailed": "Não foi possível iniciar este jogo.",
         "maxPlaytimeCapReached": "Este jogo já atingiu o limite máximo de tempo de jogo.",
         "generic": "Algo deu errado. Por favor, tente novamente. ({{code}})"
-      },
-      "count_one": "{{count}} jogos na fila",
-      "count_other": "{{count}} jogo em fila"
+      }
     },
     "favorites": {
       "confirmClear": {
@@ -422,9 +410,7 @@
         "title": "Falha ao atualizar os favoritos",
         "cacheIoFailed": "Não foi possível ler ou gravar no cache de favoritos.",
         "generic": "Algo deu errado ao atualizar os favoritos. Por favor, tente novamente ({{code}})"
-      },
-      "count_one": "{{count}} favorito",
-      "count_other": "{{count}} favoritos"
+      }
     },
     "freeGames": {
       "actions": {
@@ -457,9 +443,7 @@
       },
       "correction": {
         "granted": "{{name}} foi resgatado com sucesso — o erro passado era falso."
-      },
-      "count_one": "{{count}} jogo grátis Disponíveis",
-      "count_other": "{{count}} jogos grátis Disponíveis"
+      }
     },
     "achievements": {
       "tabs": {
@@ -558,11 +542,6 @@
       }
     },
     "cardFarming": {
-      "status": {
-        "idle": "Nada farmando",
-        "farming_one": "Farmando {{count}} jogo",
-        "farming_other": "Farmando {{count}} jogos"
-      },
       "actions": {
         "stop": "Parar farm"
       },
@@ -591,13 +570,8 @@
         "title": "Sem drops de cartas restantes",
         "description": "Todos drops de carta de jogos possuídos, tanto totalmente farmados ou não, estão disponíveis agora."
       },
-      "whitelistEmpty": {
-        "title": "Sem jogos permitidos",
-        "description": "Adicione jogos da aba Jogos com Drops para restringir o farm para apenas esses jogos. Deixe vazio para farmar todos os jogos com drops."
-      },
       "blacklistEmpty": {
-        "title": "Sem jogos Não permitidos",
-        "description": "Jogos que você proibiu de aba Jogos com Drops, nunca vão sser farmadas e aparecer aqui."
+        "title": "Sem jogos Não permitidos"
       },
       "connect": {
         "automaticDescription": "Entre com a Comunidade Steam para checar drops automaticamente."
@@ -654,10 +628,6 @@
       }
     },
     "achievementUnlocker": {
-      "status": {
-        "running_one": "Desbloqueando {{count}} jogo",
-        "running_other": "Desbloqueando {{count}} jogos"
-      },
       "addAllToQueue": "Adicionar todos para a fila",
       "confirmAddAllToQueue": {
         "title": "Adicionar todos {{count}} jogos para a fila?",
@@ -765,7 +735,6 @@
       "badgeLevel": "Nível da Insígnia {{level}}",
       "noBadge": "Sem insígnia fabricada",
       "connect": {
-        "description": "Carregue seu inventário da Comunidade Steam para gerenciar e vender itens.",
         "automaticDescription": "Entrar com sua co"
       },
       "actions": {
@@ -874,9 +843,7 @@
         "listingsFetchFailed": "Não foi possível ler seus anúncios ativos no mercado.",
         "settingsIoFailed": "Não foi possível ler ou escrever as configurações do seu inventário.",
         "generic": "Algo deu errado atualizando seu inventário. Por favor, tente novamente. ({{code}})"
-      },
-      "count_one": "{{count}} item",
-      "count_other": "{{count}} itens"
+      }
     },
     "settings": {
       "title": "Configurações",
@@ -972,16 +939,6 @@
         "tooltips": {
           "label": "Desativar dicas",
           "description": "Ocultar dicas de ferramenta ao passar o mouse por todo o aplicativo."
-        },
-        "carousels": {
-          "recommended": {
-            "label": "Mostrar carrossel recomendado",
-            "description": "Exibir uma linha de jogos não jogados ao topo da lista de jogos."
-          },
-          "recent": {
-            "label": "Mostrar carrossel recentemente jogados",
-            "description": "Exibir uma linha de seus jogos mais jogados recentemente no topo da lista de jogos."
-          }
         },
         "background": {
           "label": "Imagem de fundo",

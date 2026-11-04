@@ -22,8 +22,7 @@
       "startIdling": "Iniciar Cultivo",
       "stopIdling": "Detener Cultivo",
       "manageAchievements": "Gestionar Logros",
-      "viewOnSteam": "Ver en Steam",
-      "addTo": "Añadir a"
+      "viewOnSteam": "Ver en Steam"
     },
     "minutes": "minutos",
     "zeroUnlimitedHint": "0 = Sin límite",
@@ -100,9 +99,7 @@
       "nameDesc": "Nombre (Z-A)"
     },
     "noGamesQueued": "No hay juegos en cola",
-    "completedThisSessionCount": "Completados en esta sesión ({{count}})",
-    "gamesQueuedCount_one": "{{count}} juego en cola",
-    "gamesQueuedCount_other": "{{count}} juegos en cola"
+    "completedThisSessionCount": "Completados en esta sesión ({{count}})"
   },
   "update": {
     "downloading": "Descargando actualización..."
@@ -361,8 +358,7 @@
     "games": {
       "unknownName": "App {{appId}}",
       "carousels": {
-        "recommended": "Recomendado",
-        "recent": "Jugado recientemente"
+        "recommended": "Recomendado"
       },
       "sort": {
         "playtimeDesc": "Tiempo Jugado (Más-Menos)",
@@ -385,9 +381,7 @@
         "description": "Tu perfil de Steam o los detalles de tus juegos parecen estar configurados como privados, por lo que el tiempo de juego, los juegos jugados recientemente y algunos juegos pueden estar incompletos. Haz tu perfil público o agrega tu clave de API web de Steam en Configuración para solucionar esto.",
         "changeSettings": "Cambiar ajustes de privacidad",
         "useOwnKey": "Agregar mi propia clave API"
-      },
-      "count_one": "{{count}} Juego",
-      "count_other": "{{count}} Juegos"
+      }
     },
     "idling": {
       "stopAll": "Detener todo",
@@ -395,17 +389,11 @@
         "manual": "Ralentí manual",
         "other": "Otros"
       },
-      "empty": {
-        "title": "No hay juegos inactivos",
-        "description": "Inicia un juego en segundo plano desde la pestaña Juegos para verlo aquí."
-      },
       "errors": {
         "startFailed": "No se ha podido iniciar el farmeo de este juego.",
         "maxPlaytimeCapReached": "Este juego ya ha alcanzado su límite máximo de tiempo de juego.",
         "generic": "Se produjo un error al actualizar el estado inactivo. Inténtalo de nuevo. ({{code}})"
-      },
-      "count_one": "{{count}} cultivando juego",
-      "count_other": "{{count}} cultivando Juegos"
+      }
     },
     "favorites": {
       "confirmClear": {
@@ -420,9 +408,7 @@
         "title": "No se pudieron actualizar los favoritos",
         "cacheIoFailed": "No se pudo leer o escribir el caché de favoritos.",
         "generic": "Se produjo un error al actualizar los favoritos. Inténtalo de nuevo. ({{code}})"
-      },
-      "count_one": "{{count}} Favorito",
-      "count_other": "{{count}} Favoritos"
+      }
     },
     "freeGames": {
       "actions": {
@@ -455,9 +441,7 @@
       },
       "correction": {
         "granted": "{{name}} en realidad, la reclamación fue exitosa; el aviso de fallo anterior era erróneo."
-      },
-      "count_one": "{{count}} juego gratuito disponible",
-      "count_other": "{{count}} juegos gratuitos disponibles"
+      }
     },
     "achievements": {
       "tabs": {
@@ -556,11 +540,6 @@
       }
     },
     "cardFarming": {
-      "status": {
-        "idle": "Nada Cultivando",
-        "farming_one": "Farmeando {{count}} juego",
-        "farming_other": "Farmeando {{count}} juegos"
-      },
       "actions": {
         "stop": "Parar Cultivo"
       },
@@ -589,13 +568,8 @@
         "title": "No te quedan más cromos por obtener",
         "description": "En todos los juegos que poseo, las cartas que se pueden obtener mediante cultivo ya se han conseguido todas o no hay ninguna disponible en este momento."
       },
-      "whitelistEmpty": {
-        "title": "No hay juegos en la lista blanca",
-        "description": "Agrega juegos desde la pestaña \"Juegos con recompensas\" para restringir la obtención de recompensas solo a esos juegos. Déjala vacía para obtener recompensas de todos los juegos."
-      },
       "blacklistEmpty": {
-        "title": "No hay juegos en la lista negra",
-        "description": "Los juegos que añadas a la lista negra desde la pestaña «Juegos con drops» nunca se farmearán y aparecerán aquí."
+        "title": "No hay juegos en la lista negra"
       },
       "connect": {
         "automaticDescription": "Inicia sesión automáticamente en la Comunidad de Steam para comprobar si hay novedades."
@@ -651,10 +625,6 @@
       }
     },
     "achievementUnlocker": {
-      "status": {
-        "running_one": "Desbloqueando {{count}} juego",
-        "running_other": "Desbloqueando {{count}} juego"
-      },
       "addAllToQueue": "Agregar todo a la cola",
       "confirmAddAllToQueue": {
         "title": "¿Añadir todos los {{count}} juegos a la cola?",
@@ -761,7 +731,6 @@
       "badgeLevel": "Nivel de insignia {{level}}",
       "noBadge": "Sin insignia fabricada",
       "connect": {
-        "description": "Carga tu inventario de la Comunidad de Steam para gestionar y vender artículos.",
         "automaticDescription": "Inicia sesión automáticamente en la Comunidad de Steam para cargar tu inventario."
       },
       "actions": {
@@ -870,9 +839,7 @@
         "listingsFetchFailed": "No se pudieron leer sus listados de mercado activos.",
         "settingsIoFailed": "No se pudo leer ni escribir la configuración de su inventario.",
         "generic": "Se produjo un error al actualizar la configuración. Inténtalo de nuevo. ({{code}})"
-      },
-      "count_one": "{{count}} artículo",
-      "count_other": "{{count}} artículos"
+      }
     },
     "settings": {
       "title": "Configuración",
@@ -968,16 +935,6 @@
         "tooltips": {
           "label": "Desactivar sugerencias",
           "description": "Ocultar las sugerencias emergentes en toda la aplicación."
-        },
-        "carousels": {
-          "recommended": {
-            "label": "Mostrar carrusel de recomendaciones",
-            "description": "Muestra una fila de juegos no jugados en la parte superior de la lista de juegos."
-          },
-          "recent": {
-            "label": "Mostrar carrusel de juegos jugados recientemente",
-            "description": "Muestra una fila con tus juegos jugados más recientemente en la parte superior de la lista de juegos."
-          }
         },
         "background": {
           "label": "Imagen de Fondo",
