@@ -121,7 +121,7 @@ export const RecommendedBanner = ({
       {!forceReducedMotion && (
         <div
           aria-hidden
-          className='pointer-events-none absolute inset-0 scale-[1.03] opacity-60 blur-[60px] saturate-150'
+          className='pointer-events-none absolute inset-0 scale-[1.03] opacity-40 blur-[60px] brightness-75 saturate-125'
         >
           {bannerSlides.map((slide, slideIndex) => (
             <Image
