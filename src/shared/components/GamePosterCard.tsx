@@ -40,7 +40,7 @@ interface GamePosterCardProps {
   // Keeps the tall shape whatever the game card style setting, for the fanned previews in empty
   // banners, which are laid out around it.
   forceCover?: boolean
-  // TEMP: playtime and achievement chips, see GameStatChips
+  // Playtime and achievement chips, see GameStatChips
   showStats?: boolean
 }
 

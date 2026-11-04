@@ -9,10 +9,10 @@ interface FullscreenLoaderProps {
 }
 
 // App-launch splash screen - see SplashScreen for the shared shell (animated backdrop + wordmark)
-// this and UpdateLoader both compose. Unlike `main`, this owns its own fade-out/unmount timing internally
-// off a single `visible` prop instead of a global loaderStore that other features (there, useInit
-// and useCheckForUpdates) both raced to mutate. A caller just flips `visible` off once its real
-// work is done; nothing else needs to coordinate.
+// this and UpdateLoader both compose. Unlike `main`, this owns its own fade-out/unmount timing
+// internally off a single `visible` prop instead of a global loaderStore that other features
+// (there, useInit and useCheckForUpdates) both raced to mutate. A caller just flips `visible` off
+// once its real work is done; nothing else needs to coordinate.
 export const FullscreenLoader = ({ visible }: FullscreenLoaderProps) => {
   const [shouldRender, setShouldRender] = useState(visible)
   const [fadeOut, setFadeOut] = useState(!visible)

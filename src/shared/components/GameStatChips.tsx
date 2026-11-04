@@ -64,11 +64,11 @@ export const PlaytimeChip = ({ minutes }: { minutes: number }) => {
   )
 }
 
-// TEMP: trial of Hexer-style stat chips on game cards - playtime top-left, achievements top-right.
-// Looked up from the games list by app ID rather than passed in, so it works for list entries that
-// only carry an ID and a name (favorites, the auto-idle queue). Each chip is hidden when it has
-// nothing to say: no playtime yet, a game without achievements, or achievement counts that haven't
-// loaded (Local Sign-in only gets them with the user's own Steam Web API key).
+// Stat chips on game cards - playtime top-left, achievements top-right. Looked up from the games
+// list by app ID rather than passed in, so it works for list entries that only carry an ID and a
+// name (favorites, the auto-idle queue). Each chip is hidden when it has nothing to say: no
+// playtime yet, a game without achievements, or achievement counts that haven't loaded (Local
+// Sign-in only gets them with the user's own Steam Web API key).
 export const GameStatChips = ({ appId, showPlaytime, isSelected }: GameStatChipsProps) => {
   const game = useGamesListStore(state => state.games.find(g => g.appId === appId))
   if (!game) return null

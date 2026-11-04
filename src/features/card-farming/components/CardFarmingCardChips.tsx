@@ -12,7 +12,7 @@ interface CardFarmingCardChipsProps {
   isSelected?: boolean
 }
 
-// TEMP: playtime and cards remaining on every Card Farming card, like the other pages' stat chips
+// Playtime and cards remaining on every Card Farming card, like the other pages' stat chips
 // (see GameStatChips). Playtime comes from the drops entry when there is one, otherwise from the
 // games list, so the Whitelist and Blacklist tabs show it too.
 export const CardFarmingCardChips = ({ appId, drops, isSelected }: CardFarmingCardChipsProps) => {
