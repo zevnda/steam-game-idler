@@ -30,7 +30,8 @@ export const AchievementUnlockerProgressView = ({
 
   return (
     <div className='relative min-h-full'>
-      <div className='page-content relative z-10 flex flex-col gap-4'>
+      {/* No z-index, so the page's toolbar stays clickable - see CardFarmingProgressView. */}
+      <div className='page-content relative flex flex-col gap-4'>
         {state.scanProgress && (
           <AchievementUnlockerScanProgressCard progress={state.scanProgress} />
         )}

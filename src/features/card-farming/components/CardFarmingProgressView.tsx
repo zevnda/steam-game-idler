@@ -54,7 +54,9 @@ export const CardFarmingProgressView = ({
 
   return (
     <div className='relative min-h-full'>
-      <div className='page-content relative z-10 flex flex-col gap-6'>
+      {/* No z-index: the page's toolbar overlaps the top of this (see `.page-toolbar`), and
+          anything raised to its z-10 would cover its buttons and swallow their clicks. */}
+      <div className='page-content relative flex flex-col gap-6'>
         {state.active.length > 0 && (
           <div className='flex flex-col gap-2'>
             <Typography color='muted' type='body-xs' weight='semibold'>
