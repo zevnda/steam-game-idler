@@ -1,7 +1,9 @@
 ﻿import { useEffect } from 'react'
 import { ThemeAmbient } from './ThemeAmbient'
+import { useActiveThemeStore } from '@/shared/stores/activeThemeStore'
 import { useCustomBackgroundStore } from '@/shared/stores/customBackgroundStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
+import { isSignatureTheme } from '@/shared/theme/ambientShaders'
 import { invoke } from '@/shared/utils/invoke'
 import { hasCasualAccess } from '@/shared/utils/subscriptionAccess'
 
@@ -18,6 +20,7 @@ export const CustomBackground = () => {
   const setDataUrl = useCustomBackgroundStore(state => state.setDataUrl)
   const isSubscribed = useSubscriptionStore(state => state.isSubscribed)
   const subscriptionTier = useSubscriptionStore(state => state.subscriptionTier)
+  const activeTheme = useActiveThemeStore(state => state.preset)
 
   useEffect(() => {
     invoke<string | null>('get_custom_background_data_url')
@@ -30,13 +33,19 @@ export const CustomBackground = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const showImage = isSubscribed !== null && hasCasualAccess(subscriptionTier) && dataUrl
+  // A signature theme's animated backdrop wins over a user-picked image: the two would fight for
+  // the same canvas, and the theme's backdrop is the whole point of picking it. The image is only
+  // hidden, not cleared, so it comes back on switching to a plain theme. Customization settings
+  // disables the image controls to match.
+  const showImage =
+    isSubscribed !== null &&
+    hasCasualAccess(subscriptionTier) &&
+    !isSignatureTheme(activeTheme) &&
+    dataUrl
 
   return (
     <div className='pointer-events-none fixed inset-0 -z-10'>
       <div className='absolute inset-0 bg-background' />
-      {/* A user-picked image takes priority over a signature theme's animated backdrop - the two
-          would fight for the same canvas, and the image is the more deliberate choice. */}
       {!showImage && <ThemeAmbient />}
       {showImage && (
         <>

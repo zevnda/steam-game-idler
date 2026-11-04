@@ -1036,7 +1036,8 @@
           "description": "Use a custom image as the app's background.",
           "choose": "Choose image",
           "saved": "Background updated",
-          "cleared": "Background cleared"
+          "cleared": "Background cleared",
+          "signatureThemeActive": "Background images are disabled while a signature theme is active."
         },
         "theme": {
           "label": "Theme",

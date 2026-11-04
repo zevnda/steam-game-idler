@@ -758,3 +758,7 @@ export const AMBIENT_SHADERS: Partial<Record<ThemePreset, AmbientShader>> = {
   luxe: { source: PRELUDE + LUXE, resolutionScale: 0.5 },
   arcade: { source: PRELUDE + ARCADE, resolutionScale: 0.5 },
 }
+
+// A signature theme is a preset with an animated backdrop. Takes a plain string since the active
+// preset is stored as one, and may be `default`, which isn't a `ThemePreset`.
+export const isSignatureTheme = (preset: string) => Object.hasOwn(AMBIENT_SHADERS, preset)
