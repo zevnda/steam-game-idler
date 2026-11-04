@@ -1,7 +1,8 @@
 // Colour tokens for the 3D app mock, mirroring the real desktop app so the mock reads as SGI at a
 // glance:
 //   surface ladder      src/styles/theme.css ([data-theme='dark']) + src/shared/theme/presets.ts
-//   accent/status       @heroui/styles dark theme defaults
+//   accent              theme.css's default, or the preset's own
+//   status              @heroui/styles dark theme defaults
 // Everything is converted from oklch to plain rgb() up front - canvas 2D `fillStyle` support for
 // oklch() is recent enough (Safari 15.4 / Firefox 113) that a marketing page shouldn't rely on it.
 
@@ -31,9 +32,14 @@ export function oklchToRgb(l: number, c: number, h: number) {
 }
 
 export interface Palette {
+  /** page canvas, sidebar and titlebar */
   background: string
+  /** cards and popovers */
   surface: string
+  /** every small control: buttons, inputs, dropdowns, tab strips, the active sidebar row */
   default: string
+  /** a tab strip's selected segment */
+  segment: string
   separator: string
   border: string
   surfaceTertiary: string
@@ -41,6 +47,8 @@ export interface Palette {
   muted: string
   accent: string
   accentSoft: string
+  /** text/icons on an accent fill */
+  accentFg: string
   success: string
   danger: string
   gold: string
@@ -54,8 +62,6 @@ export interface Palette {
 const STATUS = {
   foreground: '#fcfcfc',
   muted: oklch(0.705, 0.015, 286.067),
-  accent: oklch(0.6204, 0.195, 253.83),
-  accentSoft: oklch(0.6204, 0.195, 253.83, 0.16),
   success: oklch(0.7329, 0.1935, 150.81),
   danger: oklch(0.594, 0.1967, 24.63),
   gold: '#ffc700', // Sidebar.tsx's claimable free-games icon colour
@@ -63,28 +69,69 @@ const STATUS = {
   gamer: oklch(0.55, 0.2, 300),
 }
 
-/** presets.ts's `makeTokens(hue, chroma)` lightness ladder (theme.css's default L values). */
-const LADDER = {
-  background: 0.21,
-  surface: 0.28,
-  default: 0.33,
-  separator: 0.31,
-  border: 0.36,
-  surfaceTertiary: 0.4,
+/** theme.css's default accent - HeroUI's stock blue, toned down for the darker canvas */
+const DEFAULT_ACCENT: [number, number, number] = [0.63, 0.15, 254]
+
+type Rgb = [number, number, number]
+const toCss = ([r, g, b]: Rgb) => `rgb(${r} ${g} ${b})`
+const hexRgb = (hex: string) => [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16)) as Rgb
+/** theme.css's `color-mix(in oklab, base p%, foreground)` - close enough in sRGB at these shades */
+const mixToward = (base: Rgb, p: number) => base.map(v => Math.round(v * p + 252 * (1 - p))) as Rgb
+
+/** The surface ladder, as rgb triplets; `palette()` turns it into the mock's tokens. */
+interface Ladder {
+  background: Rgb
+  surface: Rgb
+  default: Rgb
+  separator: Rgb
+  border: Rgb
+  surfaceTertiary: Rgb
 }
 
-function ladder(hue: number, chroma: number, l = LADDER) {
-  const palette: Palette = {
+function palette(
+  l: Ladder,
+  accent: [number, number, number] = DEFAULT_ACCENT,
+  darkOnAccent = false,
+) {
+  const p: Palette = {
     ...STATUS,
-    background: oklch(l.background, chroma, hue),
-    surface: oklch(l.surface, chroma, hue),
-    default: oklch(l.default, chroma, hue),
-    separator: oklch(l.separator, chroma, hue),
-    border: oklch(l.border, chroma, hue),
-    surfaceTertiary: oklch(l.surfaceTertiary, chroma, hue),
-    backgroundRgb: oklchToRgb(l.background, chroma, hue),
+    background: toCss(l.background),
+    surface: toCss(l.surface),
+    default: toCss(l.default),
+    segment: toCss(mixToward(l.default, 0.88)),
+    separator: toCss(l.separator),
+    border: toCss(l.border),
+    surfaceTertiary: toCss(l.surfaceTertiary),
+    accent: oklch(...accent),
+    accentSoft: oklch(...accent, 0.16),
+    accentFg: darkOnAccent ? '#0b0c0e' : '#fcfcfc',
+    backgroundRgb: l.background,
   }
-  return palette
+  return p
+}
+
+/** theme.css's `[data-theme='dark']` baseline - the default theme */
+const DEFAULT_LADDER: Ladder = {
+  background: hexRgb('#0b0c0e'),
+  surface: hexRgb('#16171b'),
+  default: hexRgb('#212328'),
+  separator: hexRgb('#17181c'),
+  border: hexRgb('#1b1c20'),
+  surfaceTertiary: hexRgb('#2c2e34'),
+}
+
+/** presets.ts's `makeTintedTokens(hue, chroma)`: default's lightness ladder, tinted */
+function tinted(hue: number, chroma: number, canvas = 0.16) {
+  const tint = (offset: number, strength = 1) => oklchToRgb(canvas + offset, chroma * strength, hue)
+  const ladder: Ladder = {
+    background: tint(0, 0.8),
+    surface: tint(0.05, 0.9),
+    default: tint(0.1),
+    separator: tint(0.055, 0.9),
+    border: tint(0.07, 0.9),
+    surfaceTertiary: tint(0.145),
+  }
+  return ladder
 }
 
 export type ThemeId = 'default' | 'blue' | 'red' | 'purple' | 'pink' | 'orange' | 'black'
@@ -94,22 +141,42 @@ export type ThemeId = 'default' | 'blue' | 'red' | 'purple' | 'pink' | 'orange' 
  * flips HeroUI's foreground tokens, which this simplified mock doesn't model.
  */
 export const THEMES: Record<ThemeId, { label: string; swatch: string; palette: Palette }> = {
-  default: { label: 'Default', swatch: oklch(0.36, 0.006, 285.89), palette: ladder(285.89, 0.006) },
-  blue: { label: 'Blue', swatch: oklch(0.5, 0.12, 250), palette: ladder(250, 0.06) },
-  red: { label: 'Red', swatch: oklch(0.5, 0.14, 25), palette: ladder(25, 0.08) },
-  purple: { label: 'Purple', swatch: oklch(0.5, 0.13, 300), palette: ladder(300, 0.07) },
-  pink: { label: 'Pink', swatch: oklch(0.52, 0.13, 340), palette: ladder(340, 0.07) },
-  orange: { label: 'Orange', swatch: oklch(0.55, 0.12, 40), palette: ladder(40, 0.06) },
+  default: {
+    label: 'Default',
+    swatch: oklch(0.36, 0.006, 285.89),
+    palette: palette(DEFAULT_LADDER),
+  },
+  blue: { label: 'Blue', swatch: oklch(0.5, 0.12, 250), palette: palette(tinted(255, 0.032)) },
+  red: {
+    label: 'Red',
+    swatch: oklch(0.5, 0.14, 25),
+    palette: palette(tinted(20, 0.025), [0.67, 0.15, 28]),
+  },
+  purple: {
+    label: 'Purple',
+    swatch: oklch(0.5, 0.13, 300),
+    palette: palette(tinted(305, 0.038), [0.68, 0.135, 305]),
+  },
+  pink: {
+    label: 'Pink',
+    swatch: oklch(0.52, 0.13, 340),
+    palette: palette(tinted(350, 0.028), [0.74, 0.12, 350], true),
+  },
+  orange: {
+    label: 'Orange',
+    swatch: oklch(0.55, 0.12, 40),
+    palette: palette(tinted(55, 0.022), [0.75, 0.13, 60], true),
+  },
   black: {
     label: 'Black',
     swatch: oklch(0.2, 0.003, 285.89),
-    palette: ladder(285.89, 0.003, {
-      background: 0.14,
-      surface: 0.19,
-      default: 0.24,
-      separator: 0.22,
-      border: 0.27,
-      surfaceTertiary: 0.32,
+    palette: palette({
+      background: oklchToRgb(0.08, 0, 0),
+      surface: oklchToRgb(0.15, 0, 0),
+      default: oklchToRgb(0.21, 0, 0),
+      separator: oklchToRgb(0.155, 0, 0),
+      border: oklchToRgb(0.175, 0, 0),
+      surfaceTertiary: oklchToRgb(0.26, 0, 0),
     }),
   },
 }

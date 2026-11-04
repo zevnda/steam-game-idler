@@ -153,7 +153,7 @@ export async function createStage(container: HTMLElement, opts: StageOptions) {
     opts.compact ? 2.2 : opts.lowPower ? 1.2 : 1.6,
   )
   await yieldToMain()
-  const art = await loadGameArt(Math.min(1.8, uiScale + 0.2), yieldToMain)
+  const { capsules: art, posters } = await loadGameArt(Math.min(1.8, uiScale + 0.2), yieldToMain)
   const stats: DemoStats = {
     cardsDropped: 0,
     achievementsUnlocked: 0,
@@ -178,6 +178,7 @@ export async function createStage(container: HTMLElement, opts: StageOptions) {
   const mock = new MockApp(
     opts.fonts,
     art,
+    posters,
     uiScale,
     {
       cardDrop: (at, g) => {
@@ -226,8 +227,8 @@ export async function createStage(container: HTMLElement, opts: StageOptions) {
     },
     opts.compact,
   )
-  // paint the expensive sprites (capsule titles with their shadows) a few at a time, then the
-  // first full frame is just cheap blits
+  // paint the expensive sprites (cover and banner titles with their shadows) a few at a time,
+  // then the first full frame is just cheap blits
   await mock.warm(yieldToMain)
   mock.update(0)
   // Dev-only: regenerates public/landing/sgi-mock-hero*.webp, the hero placeholder (an exact

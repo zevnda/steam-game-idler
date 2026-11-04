@@ -125,7 +125,10 @@ export function measure(ctx: Ctx, fonts: Fonts, str: string, size: number, weigh
 
 const pathCache = new Map<string, Path2D[]>()
 
-/** Draws a Tabler icon centred on (cx, cy) at `size` px. */
+/**
+ * Draws a Tabler icon centred on (cx, cy) at `size` px. `stroke` is in the icon's own 24-unit space
+ * (Tabler's default is 2; the sidebar draws its icons at 1.5).
+ */
 export function icon(
   ctx: Ctx,
   name: IconName,
@@ -133,6 +136,7 @@ export function icon(
   cy: number,
   size: number,
   color: string,
+  stroke = 2,
 ) {
   const data = ICONS[name]
   let paths = pathCache.get(name)
@@ -149,7 +153,7 @@ export function icon(
     for (const p of paths) ctx.fill(p)
   } else {
     ctx.strokeStyle = color
-    ctx.lineWidth = 2
+    ctx.lineWidth = stroke
     ctx.lineCap = 'round'
     ctx.lineJoin = 'round'
     for (const p of paths) ctx.stroke(p)
@@ -163,7 +167,8 @@ export function icon(
 // mock redraws its whole UI whenever something animates, and the capsule titles' shadowBlur alone
 // was most of the cost of each redraw.
 const sprites = new Map<string, HTMLCanvasElement>()
-const MAX_SPRITES = 120
+// Every poster at both card sizes, the banner slides and the inventory art, with room to spare.
+const MAX_SPRITES = 160
 
 /**
  * Draws a cached sprite of size w x h (logical px) at (x, y), rendering it with `paint` on first use.
@@ -264,6 +269,136 @@ function paintCapsule(
   ctx.restore()
 }
 
+/**
+ * Wraps `label` onto at most `maxLines` lines of `maxW`, ellipsising the last one if it still runs
+ * over - CSS's `line-clamp`. Measures with whatever font is already set on `ctx`.
+ */
+export function wrapLines(ctx: Ctx, label: string, maxW: number, maxLines: number) {
+  const lines: string[] = []
+  let cur = ''
+  for (const word of label.split(' ')) {
+    const next = cur ? `${cur} ${word}` : word
+    if (ctx.measureText(next).width > maxW && cur) {
+      lines.push(cur)
+      cur = word
+    } else cur = next
+  }
+  lines.push(cur)
+  if (lines.length <= maxLines) return lines
+  const kept = lines.slice(0, maxLines)
+  let last = `${kept[maxLines - 1]} ${lines.slice(maxLines).join(' ')}`
+  while (last.length > 1 && ctx.measureText(`${last}…`).width > maxW) last = last.slice(0, -1)
+  kept[maxLines - 1] = `${last.trimEnd()}…`
+  return kept
+}
+
+/**
+ * A tall (2:3) cover, like the app's default game card style (GamePosterArt.tsx with style
+ * 'cover'): the game's poster art with its title treated as key art - a logo in the upper middle.
+ * The card's own name label is drawn on top by the caller, as in the real card.
+ */
+export function poster(
+  ctx: Ctx,
+  fonts: Fonts,
+  posters: Map<string, HTMLCanvasElement>,
+  g: Game,
+  x: number,
+  y: number,
+  w: number,
+) {
+  const h = w * 1.5
+  sprite(ctx, `poster:${g.name}`, x, y, w, h, c => paintPoster(c, fonts, posters, g, w, h))
+  return h
+}
+
+function paintPoster(
+  ctx: Ctx,
+  fonts: Fonts,
+  posters: Map<string, HTMLCanvasElement>,
+  g: Game,
+  w: number,
+  h: number,
+) {
+  const img = posters.get(g.name)
+  if (img) ctx.drawImage(img, 0, 0, w, h)
+  const px = Math.round(w * 0.15)
+  const tf = titleFont(g, px, fonts)
+  ctx.font = tf.font
+  ctx.letterSpacing = `${tf.tracking}em`
+  ctx.fillStyle = '#fff'
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.shadowColor = 'rgba(0,0,0,.45)'
+  ctx.shadowBlur = 14
+  ctx.shadowOffsetY = 2
+  const lines = wrapLines(ctx, tf.upper ? g.name.toUpperCase() : g.name, w * 0.84, 3)
+  const lh = px * 1.02
+  const top = h * 0.36 - ((lines.length - 1) * lh) / 2
+  lines.forEach((l, i) => ctx.fillText(l, w / 2, top + i * lh))
+  ctx.letterSpacing = '0px'
+}
+
+/**
+ * The Recommended banner's slide art (RecommendedBanner.tsx): the game's wide art cropped to fill
+ * the banner, darkened from the left and the bottom so the logo and buttons read over it, with the
+ * game's title as its logo.
+ */
+export function bannerArt(
+  ctx: Ctx,
+  fonts: Fonts,
+  art: Map<string, HTMLCanvasElement>,
+  g: Game,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+) {
+  sprite(ctx, `banner:${g.name}`, x, y, w, h, c => paintBanner(c, fonts, art, g, w, h))
+}
+
+function paintBanner(
+  ctx: Ctx,
+  fonts: Fonts,
+  art: Map<string, HTMLCanvasElement>,
+  g: Game,
+  w: number,
+  h: number,
+) {
+  const img = art.get(g.name)
+  if (img) {
+    // object-cover: fill the width, crop the art's height around its middle
+    const ah = (w * 215) / 460
+    ctx.drawImage(img, 0, (h - ah) / 2, w, ah)
+  }
+  const left = ctx.createLinearGradient(0, 0, w, 0)
+  left.addColorStop(0, 'rgba(0,0,0,.85)')
+  left.addColorStop(0.5, 'rgba(0,0,0,.35)')
+  left.addColorStop(1, 'rgba(0,0,0,0)')
+  ctx.fillStyle = left
+  ctx.fillRect(0, 0, w, h)
+  const bottom = ctx.createLinearGradient(0, h, 0, h / 2)
+  bottom.addColorStop(0, 'rgba(0,0,0,.6)')
+  bottom.addColorStop(1, 'rgba(0,0,0,0)')
+  ctx.fillStyle = bottom
+  ctx.fillRect(0, h / 2, w, h / 2)
+  const px = Math.round(Math.min(h * 0.13, w * 0.04))
+  const tf = titleFont(g, px, fonts)
+  ctx.font = tf.font
+  ctx.letterSpacing = `${tf.tracking}em`
+  ctx.fillStyle = '#fff'
+  ctx.textAlign = 'left'
+  ctx.textBaseline = 'middle'
+  ctx.shadowColor = 'rgba(0,0,0,.75)'
+  ctx.shadowBlur = 12
+  ctx.shadowOffsetY = 2
+  const lines = wrapLines(ctx, tf.upper ? g.name.toUpperCase() : g.name, w * 0.42, 2)
+  const lh = px * 1.02
+  const pad = Math.round(Math.min(24, w * 0.045))
+  const mid = h * 0.52 - ((lines.length - 1) * lh) / 2
+  lines.forEach((l, i) => ctx.fillText(l, pad, mid + i * lh))
+  ctx.letterSpacing = '0px'
+}
+
 /** Shared hit-region record - the mock registers these while drawing, then hit-tests UV clicks. */
 export interface Region {
   id: string
@@ -272,6 +407,13 @@ export interface Region {
   w: number
   h: number
   onClick?: () => void
-  /** shows the pointer cursor and drives the hover highlight */
+  /** drives the hover highlight */
   interactive?: boolean
+  /**
+   * shows the pointer cursor - false for a region that only reveals things on hover (a game card,
+   * whose buttons are what's clickable)
+   */
+  cursor?: boolean
+  /** the game card this region belongs to, when its id doesn't say so itself */
+  group?: string
 }
