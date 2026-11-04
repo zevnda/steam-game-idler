@@ -167,7 +167,11 @@ const AppContent = ({ Component, pageProps }: AppProps) => {
       <ContextMenu />
       <LinuxResizeHandles />
       <Titlebar minimal={bootstrapPhase === 'checking'} />
-      <ChangelogModal />
+      {/* Held back until the session check finishes: the post-update changelog flag is set on
+          AppContent's first mount (see useCheckForUpdates), which would otherwise open the modal
+          over FullscreenLoader. `showChangelog` stays set in updateStore, so the modal opens as
+          soon as it mounts. */}
+      {bootstrapPhase !== 'checking' && <ChangelogModal />}
       <GoProModal />
       {showOutdatedPrompt && <VersionPolicyDialog variant='outdated' />}
       {/* Blocks the routed page (dashboard or pre-dashboard) until useSessionBootstrap has
