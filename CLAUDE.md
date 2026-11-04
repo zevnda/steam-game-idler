@@ -277,9 +277,10 @@ window/event/updater/clipboard permission changes.
   `transform: scale()` for any new scaled-UI element instead (see `AdSlot.tsx`'s self-measuring
   `ResizeObserver` + `transform` approach). Separately, **CSS `filter` (e.g. `blur()`) applied
   directly to a `<video>` element has WebKitGTK-specific compositing bugs** (the video silently
-  fails to render at all, no error) — bake the filter into the video asset itself instead (see how
-  `public/loader.webm` is pre-blurred via `ffmpeg`'s `gblur` filter) rather than applying it via
-  CSS at runtime.
+  fails to render at all, no error) — bake the filter into the video asset itself instead (e.g.
+  `ffmpeg`'s `gblur` filter, as the old pre-blurred `loader.webm` was) rather than applying it via
+  CSS at runtime. The splash screen now draws its backdrop live instead (`SplashScene.tsx`) and
+  fakes its depth blur with gradients and box-shadows, never `filter`.
 
 ## Production readiness — this is a live public app
 

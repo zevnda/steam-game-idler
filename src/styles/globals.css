@@ -1052,3 +1052,127 @@ main:has(.page-toolbar) *:not(.games-list-scroller)::-webkit-scrollbar-track {
 .force-reduced-motion .page-banner-float {
   animation: none;
 }
+
+/* SplashScene.tsx - the launch/update splash's animated backdrop and logo mark. Every animation
+   here moves `translate`/`rotate`/`scale`/`opacity` only, so the compositor handles it without
+   repainting; no `filter` anywhere (WebKitGTK). */
+
+/* The streaks fall along their own axis inside a tilted, oversized field, so they cross the window
+   diagonally like the video's and never show an edge. */
+.splash-streaks {
+  inset: -40% -25%;
+  rotate: -28deg;
+}
+
+@keyframes splash-streak-fall {
+  from {
+    translate: 0 -30vh;
+  }
+  to {
+    translate: 0 170vh;
+  }
+}
+
+.splash-streak {
+  animation: splash-streak-fall linear infinite;
+  will-change: translate;
+}
+
+.splash-vignette {
+  background:
+    radial-gradient(ellipse 34% 30% at 50% 50%, rgb(0 0 0 / 0.75), transparent 100%),
+    radial-gradient(ellipse 85% 80% at 50% 50%, transparent 40%, rgb(0 0 0 / 0.85) 100%);
+}
+
+@keyframes splash-glow-breathe {
+  from {
+    opacity: 0.55;
+    scale: 0.94;
+  }
+  to {
+    opacity: 0.95;
+    scale: 1.06;
+  }
+}
+
+.splash-glow {
+  width: 70vmin;
+  height: 70vmin;
+  translate: -50% -50%;
+  background: radial-gradient(
+    circle,
+    rgb(139 107 255 / 0.32),
+    rgb(255 79 180 / 0.14) 40%,
+    transparent 70%
+  );
+  animation: splash-glow-breathe 3.2s ease-in-out infinite alternate;
+}
+
+@keyframes splash-orbit-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+.splash-orbit {
+  animation: splash-orbit-spin 3.6s linear infinite;
+}
+
+/* The mark draws its outline on, then fills in over it and settles into a slow breath. */
+@keyframes splash-logo-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes splash-logo-fill {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes splash-logo-breathe {
+  50% {
+    scale: 1.05;
+  }
+}
+
+.splash-logo-stroke {
+  stroke-dasharray: 1;
+  animation: splash-logo-draw 1.1s cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+
+.splash-logo-fill {
+  animation: splash-logo-fill 0.5s ease 0.9s both;
+}
+
+.splash-logo {
+  animation: splash-logo-breathe 3.2s ease-in-out 1.4s infinite;
+}
+
+/* forceReducedMotion (older WebKitGTK builds, where ambient animation lags) - a performance gate,
+   not an accessibility preference: the OS reduced-motion setting is deliberately not honoured
+   here, as the loader video it replaced never did either, and this is the app's own "still working"
+   screen. Still frame: paused rather than removed, so each streak stays where its negative delay
+   put it (with no animation they would all sit at the field's top edge, off-screen). The mark has
+   its animations dropped instead, which leaves it fully drawn and filled. The orbiting ring keeps
+   turning - it's the only loading indicator left, and a single small rotation is cheap. */
+.splash-scene.force-reduced-motion,
+.splash-scene.force-reduced-motion * {
+  animation-play-state: paused !important;
+}
+
+.splash-scene.force-reduced-motion .splash-orbit {
+  animation-play-state: running !important;
+}
+
+.splash-scene.force-reduced-motion .splash-logo,
+.splash-scene.force-reduced-motion .splash-logo * {
+  animation: none !important;
+}

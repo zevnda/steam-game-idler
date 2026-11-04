@@ -88,7 +88,7 @@ export const Titlebar = ({ minimal = false }: TitlebarProps) => {
       // (SettingsModal, GoProModal, etc, all z-50 too) still stack above it via DOM order like
       // before. Raising it unconditionally made the titlebar render on top of every modal.
       // The opaque bg/border are dropped while `minimal` too, so SplashScreen's full-window
-      // `loader.webm` (itself `fixed inset-0 h-screen w-screen`) shows through the window-controls
+      // backdrop (itself `fixed inset-0 h-screen w-screen`) shows through the window-controls
       // strip instead of being covered by it.
       className={cn(
         'fixed left-0 top-0 h-14 w-screen select-none',

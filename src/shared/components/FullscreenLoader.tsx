@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { cn, Spinner } from '@heroui/react'
+import { cn } from '@heroui/react'
 import { SplashScreen } from '@/shared/components/SplashScreen'
 
 const FADE_MS = 250
@@ -8,8 +8,8 @@ interface FullscreenLoaderProps {
   visible: boolean
 }
 
-// App-launch splash screen - see SplashScreen for the shared shell (video + wordmark) this and
-// UpdateLoader both compose. Unlike `main`, this owns its own fade-out/unmount timing internally
+// App-launch splash screen - see SplashScreen for the shared shell (animated backdrop + wordmark)
+// this and UpdateLoader both compose. Unlike `main`, this owns its own fade-out/unmount timing internally
 // off a single `visible` prop instead of a global loaderStore that other features (there, useInit
 // and useCheckForUpdates) both raced to mutate. A caller just flips `visible` off once its real
 // work is done; nothing else needs to coordinate.
@@ -32,13 +32,12 @@ export const FullscreenLoader = ({ visible }: FullscreenLoaderProps) => {
   if (!shouldRender) return null
 
   return (
+    // No spinner of its own: SplashScene's mark (its orbiting ring) already shows it's loading.
     <SplashScreen
       className={cn('transition-opacity duration-250', {
         'pointer-events-none opacity-0': fadeOut,
         'opacity-100': !fadeOut,
       })}
-    >
-      <Spinner className='text-white' color='current' size='lg' />
-    </SplashScreen>
+    />
   )
 }
