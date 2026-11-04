@@ -24,12 +24,10 @@ namespace SteamUtility.Daemon.Bot
         // whole library in a single request is the most likely thing to come back incomplete.
         private const int PicsBatchSize = 250;
 
-        // Steam sometimes answers app requests with a change number and hash for every app but no
-        // details, for all but a few random ones, while still marking the response complete. It was
-        // seen at 97-99% of a library, turning 773 games into 78, then 5, with the license list
-        // unchanged, and lasting long enough to survive retries and restarts. Requesting fewer apps or
-        // using access tokens made no difference, so it can't be worked around from here. Well above
-        // what a healthy response should have: a library is real apps, which have details.
+        // Backstop for apps still blank after AppInfoHttpFallback: if that's down too, nearly the whole
+        // library comes back without details (seen at 97-99%, turning 773 games into 78, then 5), and
+        // using it would overwrite the cached list. Well above what a healthy response should have: a
+        // library is real apps, which have details.
         private const double MaxBlankAppShare = 0.9;
 
         // Fetches running right now, shared by anyone asking for the same thing. Each one requests
@@ -345,6 +343,7 @@ namespace SteamUtility.Daemon.Bot
             var none = Enumerable.Empty<SteamApps.PICSRequest>();
             var kind = arePackages ? "packages" : "apps";
             int returned = 0, unknown = 0, missingToken = 0, blank = 0, parts = 0, shortBatches = 0;
+            int viaHttp = 0, httpDownloaded = 0, httpFailed = 0;
             foreach (var batch in requests.Chunk(PicsBatchSize))
             {
                 var job = bot.SteamAppsHandler.PICSGetProductInfo(
@@ -359,6 +358,18 @@ namespace SteamUtility.Daemon.Bot
                 }
 
                 results.AddRange(resultSet.Results!);
+
+                if (!arePackages)
+                {
+                    var withoutDetails = resultSet
+                        .Results!.SelectMany(part => part.Apps.Values)
+                        .Where(info => info.KeyValues.Children.Count == 0 && info.SHAHash is { Length: > 0 })
+                        .ToList();
+                    viaHttp += withoutDetails.Count;
+                    var loaded = await AppInfoHttpFallback.LoadAsync(withoutDetails);
+                    httpDownloaded += loaded.Downloaded;
+                    httpFailed += loaded.Failed;
+                }
 
                 // Logged so a short library can be explained from a user's log file.
                 int batchAccountedFor = 0;
@@ -394,7 +405,7 @@ namespace SteamUtility.Daemon.Bot
 
             Log.Info(
                 "OwnershipManager",
-                $"Fetched {kind}: requested={requests.Count} returned={returned} unknown={unknown} missingToken={missingToken} blank={blank} parts={parts} shortBatches={shortBatches}"
+                $"Fetched {kind}: requested={requests.Count} returned={returned} unknown={unknown} missingToken={missingToken} blank={blank} viaHttp={viaHttp} httpDownloaded={httpDownloaded} httpFailed={httpFailed} parts={parts} shortBatches={shortBatches}"
             );
 
             // Failing leaves the last good list in place, where using this would overwrite the cache
@@ -404,7 +415,6 @@ namespace SteamUtility.Daemon.Bot
                 Log.Warn("OwnershipManager", $"Rejecting blank app details: blank={blank} requested={requests.Count}");
                 throw new SteamResponseIncompleteException();
             }
-
 
             return results;
         }

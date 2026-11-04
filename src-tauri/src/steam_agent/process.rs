@@ -105,6 +105,18 @@ impl AgentProcess {
             .kill_on_drop(true);
         #[cfg(windows)]
         command.creation_flags(CREATE_NO_WINDOW);
+        // Where the daemon keeps app details it had to download over HTTP (see
+        // `libs/SteamUtility/Daemon/Bot/AppInfoHttpFallback.cs`) - passed in rather than resolved
+        // daemon-side so it follows `platform::cache_dir`, including a portable install's own
+        // folder. Without it the daemon still works, just re-downloading them every launch.
+        match crate::platform::cache_dir(&app_handle) {
+            Ok(dir) => {
+                command.env("STEAMUTILITY_CACHE_DIR", dir);
+            }
+            Err(error) => {
+                tracing::warn!(%error, "steam agent: no cache dir for app details, using memory only");
+            }
+        }
 
         let mut child = command.spawn()?;
 
