@@ -24,8 +24,7 @@
       "startIdling": "开始挂机",
       "stopIdling": "停止挂机",
       "manageAchievements": "管理成就",
-      "viewOnSteam": "在 Steam 上查看",
-      "addTo": "添加到"
+      "viewOnSteam": "在 Steam 上查看"
     },
     "minutes": "分钟",
     "zeroUnlimitedHint": "0 为 无限制",
@@ -104,8 +103,7 @@
       "nameDesc": "名称（Z-A）"
     },
     "noGamesQueued": "队列中无游戏",
-    "completedThisSessionCount": "本次会话已完成（{{count}}）",
-    "gamesQueuedCount_other": "{{count}} 款游戏已加入队列"
+    "completedThisSessionCount": "本次会话已完成（{{count}}）"
   },
   "versionPolicy": {
     "outdated": {
@@ -386,8 +384,7 @@
     "games": {
       "unknownName": "应用 {{appId}}",
       "carousels": {
-        "recommended": "推荐",
-        "recent": "最近游玩"
+        "recommended": "推荐"
       },
       "sort": {
         "playtimeDesc": "游戏时长（从高到低）",
@@ -412,8 +409,7 @@
         "description": "您的 Steam 个人资料或游戏详情似乎设置为私密，因此导致游戏时长、最近游玩记录及部分游戏显示不完整，请将您的个人资料设为公开，或在「设置」中添加您的 Steam Web API 密钥以解决此问题",
         "changeSettings": "更改隐私设置",
         "useOwnKey": "添加我的 API 密钥"
-      },
-      "count_other": "{{count}} 款游戏"
+      }
     },
     "playingElsewhere": {
       "title": "游玩期间已暂停",
@@ -426,16 +422,11 @@
         "manual": "手动挂机",
         "other": "其他"
       },
-      "empty": {
-        "title": "没有游戏在挂机",
-        "description": "请从「游戏库」标签页启动挂机，即可在此查看"
-      },
       "errors": {
         "startFailed": "无法开始挂机该游戏",
         "maxPlaytimeCapReached": "该游戏已达到最大游戏时长上限",
         "generic": "更新挂机状态时出错，请重试，（{{code}}）"
-      },
-      "count_other": "{{count}} 款游戏正在挂机"
+      }
     },
     "favorites": {
       "confirmClear": {
@@ -450,8 +441,7 @@
         "title": "无法更新收藏",
         "cacheIoFailed": "无法获取收藏缓存",
         "generic": "更新收藏时出错，请重试，（{{code}}）"
-      },
-      "count_other": "{{count}} 款收藏"
+      }
     },
     "freeGames": {
       "actions": {
@@ -484,8 +474,7 @@
       },
       "correction": {
         "granted": "{{name}} 其实已成功领取——之前的通知有误"
-      },
-      "count_other": "{{count}} 款免费游戏可领取"
+      }
     },
     "achievements": {
       "tabs": {
@@ -601,10 +590,6 @@
       "pendingChanges_other": "{{count}} 处更改"
     },
     "cardFarming": {
-      "status": {
-        "idle": "未在挂卡",
-        "farming_other": "正在为 {{count}} 款游戏挂卡"
-      },
       "actions": {
         "stop": "停止挂卡"
       },
@@ -633,13 +618,8 @@
         "title": "没有可掉落的卡牌",
         "description": "所有拥有游戏的卡牌均已挂完，或无可用掉落"
       },
-      "whitelistEmpty": {
-        "title": "暂无白名单游戏",
-        "description": "可从具备掉落权限游戏标签页添加游戏至白名单，限定仅挂机选中游戏，若留白则自动挂机所有拥有掉落资格的游戏。"
-      },
       "blacklistEmpty": {
-        "title": "暂无黑名单游戏",
-        "description": "您在「仍可掉落卡牌的游戏」中拉黑的游戏将永远不会被挂卡，并会显示在此处"
+        "title": "暂无黑名单游戏"
       },
       "connect": {
         "automaticDescription": "自动登录 Steam 社区以检查卡牌掉落"
@@ -678,6 +658,7 @@
           "description": "跳过仍在 Steam 退款期限内的游戏（购买后14天、游戏时间不超过2小时）。"
         },
         "autoFarmCards": {
+          "title": "监控卡牌掉落情况",
           "description": "定期检查已拥有游戏中仍有卡牌掉落的游戏，并自动开始挂卡"
         },
         "skipNoPlaytime": {
@@ -695,9 +676,6 @@
       }
     },
     "achievementUnlocker": {
-      "status": {
-        "running_other": "正在为 {{count}} 款游戏解锁成就"
-      },
       "addAllToQueue": "全部加入队列",
       "confirmAddAllToQueue": {
         "title": "将全部 {{count}} 款游戏加入队列？",
@@ -816,7 +794,6 @@
       "badgeLevel": "徽章等级 {{level}}",
       "noBadge": "未合成徽章",
       "connect": {
-        "description": "加载您的 Steam 社区库存以管理和出售物品",
         "automaticDescription": "自动登录 Steam 社区以加载您的库存"
       },
       "actions": {
@@ -921,8 +898,7 @@
         "listingsFetchFailed": "无法读取您的活跃市场挂牌",
         "settingsIoFailed": "无法获取您的库存设置",
         "generic": "更新您的库存时出错，请重试，（{{code}}）"
-      },
-      "count_other": "{{count}} 件物品"
+      }
     },
     "settings": {
       "title": "设置",
@@ -1018,16 +994,6 @@
         "tooltips": {
           "label": "禁用提示",
           "description": "隐藏应用中的悬停提示"
-        },
-        "carousels": {
-          "recommended": {
-            "label": "显示「推荐」轮播",
-            "description": "在游戏列表顶部显示一排未游玩的游戏"
-          },
-          "recent": {
-            "label": "显示「最近游玩」轮播",
-            "description": "在游戏列表顶部显示您最近游玩的游戏"
-          }
         },
         "background": {
           "label": "背景图片",
