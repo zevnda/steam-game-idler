@@ -22,11 +22,13 @@ import {
 import { SettingsRow } from '@/shared/components/SettingsRow'
 import { TierBadge } from '@/shared/components/TierBadge'
 import { ToggleSwitch } from '@/shared/components/ToggleSwitch'
+import { useActiveThemeStore } from '@/shared/stores/activeThemeStore'
 import { useCustomBackgroundStore } from '@/shared/stores/customBackgroundStore'
 import { useDisableTooltipsStore } from '@/shared/stores/disableTooltipsStore'
 import { useGameCardStyleStore } from '@/shared/stores/gameCardStyleStore'
 import { useProModalStore } from '@/shared/stores/proModalStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
+import { isSignatureTheme } from '@/shared/theme/ambientShaders'
 import { applyFont, FONT_STORAGE_KEY } from '@/shared/theme/applyFont'
 import { applyThemePreset, THEME_STORAGE_KEY } from '@/shared/theme/applyTheme'
 import { FONT_CSS_VARS, FONT_DISPLAY_NAMES, FONT_KEYS } from '@/shared/theme/font'
@@ -118,6 +120,9 @@ export const CustomizationSettingsTab = ({
   const setBackgroundDataUrl = useCustomBackgroundStore(state => state.setDataUrl)
   const [isChoosingBackground, setIsChoosingBackground] = useState(false)
   const [isClearingBackground, setIsClearingBackground] = useState(false)
+  // The rendered theme rather than `settings.theme`, so this follows a theme change straight away
+  // and is false for a saved signature theme the account's tier no longer covers.
+  const isBackgroundOverridden = useActiveThemeStore(state => isSignatureTheme(state.preset))
 
   const reportError = (code: string | null) => {
     if (code) {
@@ -400,7 +405,7 @@ export const CustomizationSettingsTab = ({
         <div className='flex items-center gap-2'>
           {canUseCasualFeatures ? (
             <Button
-              isDisabled={isClearingBackground}
+              isDisabled={isClearingBackground || isBackgroundOverridden}
               isPending={isChoosingBackground}
               size='sm'
               variant='secondary'
@@ -426,9 +431,10 @@ export const CustomizationSettingsTab = ({
           {/* Not gated behind `canUseCasualFeatures` unlike "Choose" above - a background set while
               subscribed must stay clearable after a downgrade (it already stops rendering per
               CustomBackground.tsx's own tier check regardless), or the file would be stuck on disk
-              with no UI path to remove it short of "Reset all settings". */}
+              with no UI path to remove it short of "Reset all settings". Disabling it under a
+              signature theme doesn't undo that: a downgrade drops the active theme to `default`. */}
           <Button
-            isDisabled={isChoosingBackground || !backgroundDataUrl}
+            isDisabled={isChoosingBackground || !backgroundDataUrl || isBackgroundOverridden}
             isPending={isClearingBackground}
             size='sm'
             variant='secondary'
@@ -438,6 +444,16 @@ export const CustomizationSettingsTab = ({
           </Button>
         </div>
       </SettingsRow>
+      {isBackgroundOverridden && (
+        <Alert status='accent'>
+          <Alert.Indicator />
+          <Alert.Content>
+            <Alert.Description>
+              {t('dashboard.settings.customization.background.signatureThemeActive')}
+            </Alert.Description>
+          </Alert.Content>
+        </Alert>
+      )}
       <Separator className='border-t border-border my-2' />
 
       <div className='flex flex-col gap-2'>
