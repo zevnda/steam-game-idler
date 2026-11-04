@@ -13,7 +13,7 @@ export const Key = ({ children }: KeyProps) => (
   <kbd
     className={cn(
       'inline-flex min-w-8 items-center justify-center rounded border border-border',
-      'bg-surface px-2 py-0.5 text-xs font-bold text-foreground uppercase shadow-sm',
+      'bg-surface-secondary px-2 py-0.5 text-xs font-bold text-foreground uppercase shadow-sm',
     )}
   >
     {children}

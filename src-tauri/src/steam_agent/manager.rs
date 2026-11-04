@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::sync::Arc;
+use std::time::Duration;
 
 use base64::Engine;
 use serde::{Deserialize, Serialize};
@@ -80,6 +81,33 @@ pub struct AgentManager {
     /// for the first to finish, then re-hits the no-op check and returns immediately instead of
     /// sending a duplicate logon.
     resume_locks: Mutex<HashMap<String, Arc<Mutex<()>>>>,
+}
+
+// The code `ExceptionMapper.cs` reports when SteamKit2 gives up waiting for a response from Steam.
+const STEAM_REQUEST_TIMEOUT_CODE: &str = "steam_request_timeout";
+const OWNED_APPS_RETRY_DELAYS: [Duration; 2] = [Duration::from_secs(5), Duration::from_secs(15)];
+
+async fn retry_steam_timeouts<T, F, Fut>(delays: &[Duration], mut request: F) -> AppResult<T>
+where
+    F: FnMut() -> Fut,
+    Fut: std::future::Future<Output = AppResult<T>>,
+{
+    let mut remaining_delays = delays.iter();
+    loop {
+        match request().await {
+            Err(AppError::Agent(code)) if code == STEAM_REQUEST_TIMEOUT_CODE => {
+                let Some(delay) = remaining_delays.next() else {
+                    return Err(AppError::Agent(code));
+                };
+                tracing::warn!(
+                    retry_in_secs = delay.as_secs(),
+                    "Steam did not respond in time, retrying"
+                );
+                tokio::time::sleep(*delay).await;
+            }
+            result => return result,
+        }
+    }
 }
 
 impl AgentManager {
@@ -520,7 +548,22 @@ impl AgentManager {
     /// the account's library size (thousands of individual PICS requests for a 5,000-10,000+ game
     /// library), so the standard fixed-cost timeout was firing on large libraries while the daemon
     /// was still legitimately working, not stuck.
+    ///
+    /// Retries when Steam doesn't respond in time, since those stalls usually clear by themselves
+    /// and this is what the Games page waits on behind its loading skeleton.
     pub async fn get_owned_apps(
+        &self,
+        username: &str,
+        games_only: bool,
+        language: &'static str,
+    ) -> AppResult<Vec<crate::games::RawOwnedGame>> {
+        retry_steam_timeouts(&OWNED_APPS_RETRY_DELAYS, || {
+            self.request_owned_apps(username, games_only, language)
+        })
+        .await
+    }
+
+    async fn request_owned_apps(
         &self,
         username: &str,
         games_only: bool,
@@ -817,7 +860,9 @@ impl AgentManager {
             });
         }
 
-        let parsed = self.send_achievement_set_bulk(username, app_id, changes).await?;
+        let parsed = self
+            .send_achievement_set_bulk(username, app_id, changes)
+            .await?;
         Ok(BulkAchievementResult {
             succeeded: parsed.succeeded,
             skipped,
@@ -841,7 +886,8 @@ impl AgentManager {
                 unlock: change.unlock,
             })
             .collect();
-        self.send_achievement_set_bulk(username, app_id, changes).await
+        self.send_achievement_set_bulk(username, app_id, changes)
+            .await
     }
 
     async fn send_achievement_set_bulk(
@@ -960,5 +1006,58 @@ fn ok_or_agent_error_with_result(response: IpcResponse) -> AppResult<serde_json:
                 .error
                 .unwrap_or_else(|| "unknown_error".to_string()),
         ))
+    }
+}
+
+#[cfg(test)]
+mod owned_apps_retry_tests {
+    use std::cell::Cell;
+
+    use super::*;
+
+    fn timeout() -> AppError {
+        AppError::Agent(STEAM_REQUEST_TIMEOUT_CODE.to_string())
+    }
+
+    #[tokio::test]
+    async fn recovers_once_steam_responds_again() {
+        let calls = Cell::new(0);
+        let result = retry_steam_timeouts(&[Duration::ZERO, Duration::ZERO], || {
+            calls.set(calls.get() + 1);
+            let attempt = calls.get();
+            async move {
+                if attempt < 3 {
+                    Err(timeout())
+                } else {
+                    Ok(attempt)
+                }
+            }
+        })
+        .await;
+        assert_eq!(result.unwrap(), 3);
+    }
+
+    #[tokio::test]
+    async fn gives_up_with_the_timeout_once_out_of_retries() {
+        let calls = Cell::new(0);
+        let result: AppResult<()> = retry_steam_timeouts(&[Duration::ZERO], || {
+            calls.set(calls.get() + 1);
+            async { Err(timeout()) }
+        })
+        .await;
+        assert_eq!(calls.get(), 2);
+        assert_eq!(result.unwrap_err().code(), STEAM_REQUEST_TIMEOUT_CODE);
+    }
+
+    #[tokio::test]
+    async fn never_retries_any_other_failure() {
+        let calls = Cell::new(0);
+        let result: AppResult<()> = retry_steam_timeouts(&[Duration::ZERO, Duration::ZERO], || {
+            calls.set(calls.get() + 1);
+            async { Err(AppError::Agent("not_logged_on".to_string())) }
+        })
+        .await;
+        assert_eq!(calls.get(), 1);
+        assert!(result.is_err());
     }
 }

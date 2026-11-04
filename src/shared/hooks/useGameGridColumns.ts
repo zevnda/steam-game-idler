@@ -1,19 +1,21 @@
 import { useEffect, useState } from 'react'
 import { flushSync } from 'react-dom'
+import { useGameCardMetrics } from '@/shared/stores/gameCardStyleStore'
 
 // Shared sizing constants for every OwnedGame/GameWithDrops grid card in this rewrite - kept in one
 // place so VirtualizedGameGrid (idling/favorites/full-library grids) and GamesList's carousel-aware
 // row list (games-list's own page) size their plain (non-carousel) cards identically.
 export const GAME_GRID_GAP = 16
 export const GAME_GRID_PADDING = 24
-// Must match theme.css's `::-webkit-scrollbar { width: 4px }` exactly - see VirtualizedGameGrid's
+// Must match theme.css's `--scrollbar-size` exactly - see VirtualizedGameGrid's
 // original doc comment for why this can't just be react-window's own `getScrollbarSize()`.
-export const GAME_GRID_SCROLLBAR_WIDTH = 4
-export const GAME_CARD_THUMBNAIL_ASPECT = 215 / 460
-export const GAME_CARD_INFO_HEIGHT = 44
-export const GAME_GRID_TARGET_CARD_WIDTH = 220
+export const GAME_GRID_SCROLLBAR_WIDTH = 14
+// A card's height ratio and minimum width come from `useGameCardMetrics` (gameCardStyleStore.ts), and
+// must match `.game-grid`'s minimum column width in globals.css, which lays out the non-virtualized
+// grids and every loading skeleton. Column counts are worked out the same way as CSS `auto-fill` for
+// the same reason, so a grid doesn't change column count when its skeleton swaps for real content.
+// Cover cards' 150 fits 6 columns at the default 1300px window.
 export const GAME_GRID_MIN_COLUMNS = 2
-export const GAME_GRID_MAX_COLUMNS = 8
 
 interface ResponsiveColumnCountOptions {
   min?: number
@@ -32,11 +34,15 @@ export function useResponsiveColumnCount(
   containerRef: React.RefObject<HTMLElement | null>,
   {
     min = GAME_GRID_MIN_COLUMNS,
-    max = GAME_GRID_MAX_COLUMNS,
-    targetCardWidth = GAME_GRID_TARGET_CARD_WIDTH,
+    // Uncapped by default, so an ultrawide monitor gets more columns rather than ever-larger cards,
+    // and because `.game-grid`'s `auto-fill` has no cap either, so one here would make the skeletons
+    // and non-virtualized grids disagree with the virtualized ones on a wide window.
+    max = Number.POSITIVE_INFINITY,
+    targetCardWidth,
   }: ResponsiveColumnCountOptions = {},
 ) {
   const [width, setWidth] = useState(0)
+  const { minCardWidth } = useGameCardMetrics()
 
   useEffect(() => {
     const el = containerRef.current
@@ -49,9 +55,10 @@ export function useResponsiveColumnCount(
   }, [containerRef])
 
   const usableWidth = Math.max(0, width - GAME_GRID_PADDING * 2 - GAME_GRID_SCROLLBAR_WIDTH)
-  const columnCount = usableWidth
-    ? Math.min(max, Math.max(min, Math.round(usableWidth / targetCardWidth)))
-    : min
+  const fittedColumns = targetCardWidth
+    ? Math.round(usableWidth / targetCardWidth)
+    : Math.floor((usableWidth + GAME_GRID_GAP) / (minCardWidth + GAME_GRID_GAP))
+  const columnCount = usableWidth ? Math.min(max, Math.max(min, fittedColumns)) : min
 
   return { width, usableWidth, columnCount }
 }

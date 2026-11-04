@@ -1,24 +1,27 @@
 import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
-import { TbDeviceGamepad2 } from 'react-icons/tb'
+import { TbRefresh } from 'react-icons/tb'
 import { useGamesList } from '../hooks/useGamesList'
 import { errorMessageKey } from '../utils/errorMessageKey'
 import { GamesList } from './GamesList'
-import { GamesPageHeader } from './GamesPageHeader'
-import { Alert, Button, EmptyState, Typography } from '@heroui/react'
+import { NoGamesBanner } from './NoGamesBanner'
+import { Alert, Button, EmptyState, Skeleton, Typography } from '@heroui/react'
 import { useRouter } from 'next/router'
 import { useIdling } from '@/features/idling/hooks/useIdling'
+import { PageBannerArea } from '@/shared/components/dashboard/PageBanner'
+import { PageBody } from '@/shared/components/dashboard/PageBody'
+import { PageTitle, PageToolbar } from '@/shared/components/dashboard/PageToolbar'
 import { GameGridSkeleton } from '@/shared/components/GameGridSkeleton'
+import { GameSortSelect } from '@/shared/components/GameSortSelect'
 import { useOwnedGameSort } from '@/shared/hooks/useOwnedGameSort'
 import { searchGames } from '@/shared/search/fuzzySearch'
-import { useCarouselSettingsStore } from '@/shared/stores/carouselSettingsStore'
 import { useSearchStore } from '@/shared/stores/searchStore'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
 import { useSortPreferencesStore } from '@/shared/stores/sortPreferencesStore'
 import { openExternalLink } from '@/shared/utils/links'
-import { sortOwnedGames } from '@/shared/utils/sortOwnedGames'
+import { OWNED_GAME_SORT_LABEL_KEYS, sortOwnedGames } from '@/shared/utils/sortOwnedGames'
 
 const STEAM_PRIVACY_SETTINGS_URL = 'https://steamcommunity.com/my/edit/settings'
 
@@ -27,6 +30,20 @@ const STEAM_PRIVACY_SETTINGS_URL = 'https://steamcommunity.com/my/edit/settings'
 // local-mode accounts, then a background refresh. Also owns idling's start/stop toggle (see
 // GameCard) - the idling feature's own page is now just a filtered, view-only list of whatever
 // this page's toggles started, mirroring `main`'s split between the two pages.
+// A random rank per game, picked the first time it's needed and kept for the rest of the session.
+// Module-level, so leaving the Games page and coming back (or a background library refresh) keeps
+// the same order, and the Recommended banner doesn't reshuffle under the user. A game added
+// mid-session just gets a rank of its own.
+const sessionRanks = new Map<number, number>()
+const sessionRank = (appId: number) => {
+  let rank = sessionRanks.get(appId)
+  if (rank === undefined) {
+    rank = Math.random()
+    sessionRanks.set(appId, rank)
+  }
+  return rank
+}
+
 export const GamesPage = () => {
   const { t, i18n } = useTranslation()
   const router = useRouter()
@@ -62,22 +79,16 @@ export const GamesPage = () => {
   // component's own trigger, not the store's general `isRefreshing`.
   const showSkeleton = phase === 'loading' || isManualRefreshing
 
-  const showRecommendedCarousel = useCarouselSettingsStore(state => state.showRecommended)
-  const showRecentCarousel = useCarouselSettingsStore(state => state.showRecent)
-  // Independent of `searchQuery`/`filteredGames` - these are a discovery surface, not the searched
-  // list itself (mirrors `main`'s own carousels, which never read its search state either). Capped
-  // at 20/15 respectively so a large library still renders a bounded-length carousel without
-  // needing `VirtualizedGameGrid`'s own virtualization (see `GameCarousel`'s doc comment).
+  // Independent of `searchQuery`/`filteredGames` - this is a discovery surface, not the searched
+  // list itself. Capped so `useRecommendedSlides` has a bounded set of candidates to check.
+  // Shuffled with each game's session rank (see `sessionRank`), so every launch picks a different
+  // set but it stays put for the rest of the session.
   const recommendedGames = useMemo(
-    () => games.filter(game => game.playtimeForeverMinutes === 0).slice(0, 20),
-    [games],
-  )
-  const recentGames = useMemo(
     () =>
       games
-        .filter(game => game.rtimeLastPlayed > 0)
-        .sort((a, b) => b.rtimeLastPlayed - a.rtimeLastPlayed)
-        .slice(0, 15),
+        .filter(game => game.playtimeForeverMinutes === 0)
+        .sort((a, b) => sessionRank(a.appId) - sessionRank(b.appId))
+        .slice(0, 20),
     [games],
   )
 
@@ -95,99 +106,143 @@ export const GamesPage = () => {
     return null
   }
 
+  const errorAlert = errorCode && (
+    <>
+      <Alert className='max-w-md' status='danger'>
+        <Alert.Indicator />
+        <Alert.Content>
+          <Alert.Title>{t('dashboard.games.errors.title')}</Alert.Title>
+          <Alert.Description>
+            {t(errorMessageKey(errorCode), { code: errorCode })}
+          </Alert.Description>
+        </Alert.Content>
+      </Alert>
+      <Button variant='secondary' onPress={refresh}>
+        {t('common.actions.tryAgain')}
+      </Button>
+    </>
+  )
+
+  // `GamesList` draws the toolbar itself while the list is showing, so it can sit under the banner.
+  const isShowingList = !showSkeleton && games.length > 0 && filteredGames.length > 0
+  const renderToolbar = (hasBackground: boolean) => (
+    <PageToolbar
+      hasBackground={hasBackground}
+      start={
+        isShowingList && (
+          <PageTitle count={filteredGames.length} title={t('common.tabs.allGames')} />
+        )
+      }
+    >
+      <GameSortSelect
+        isDisabled={!isShowingList}
+        ariaLabel={t('dashboard.inventoryManager.sort.label')}
+        options={sortStyleOptions.map(style => ({
+          id: style,
+          label: t(OWNED_GAME_SORT_LABEL_KEYS[style]),
+        }))}
+        value={effectiveSortStyle}
+        onChange={style => setSortStyle('games', style)}
+      />
+      <Button
+        isIconOnly
+        aria-label={t('common.actions.refresh')}
+        isPending={isRefreshing}
+        onPress={refresh}
+      >
+        <TbRefresh fontSize={18} />
+      </Button>
+    </PageToolbar>
+  )
   return (
     <div className='flex h-full flex-col'>
-      <GamesPageHeader
-        gameCount={games.length}
-        isRefreshing={isRefreshing}
-        sortStyle={effectiveSortStyle}
-        sortStyleOptions={sortStyleOptions}
-        onRefresh={refresh}
-        onSortStyleChange={style => setSortStyle('games', style)}
-      />
+      <PageBody>
+        {/* A failed refresh with a list already loaded only earns a notice: the games on screen are
+            still correct, and replacing them would make a brief Steam stall look like a lost
+            library. */}
+        {!showSkeleton && errorCode && games.length > 0 && (
+          <div className='px-6 py-4'>{errorAlert}</div>
+        )}
 
-      {!showSkeleton && !errorCode && possiblyPrivate && (
-        <div className='px-6 py-4'>
-          <Alert status='warning'>
-            <Alert.Indicator />
-            <Alert.Content>
-              <Alert.Title>{t('dashboard.games.privacyWarning.title')}</Alert.Title>
-              <Alert.Description>
-                {t('dashboard.games.privacyWarning.description')}
-              </Alert.Description>
-            </Alert.Content>
-            <div className='flex shrink-0 gap-2'>
-              <Button
-                size='sm'
-                variant='secondary'
-                onPress={() => openExternalLink(STEAM_PRIVACY_SETTINGS_URL)}
-              >
-                {t('dashboard.games.privacyWarning.changeSettings')}
-              </Button>
-              <Button
-                size='sm'
-                variant='secondary'
-                onPress={() => useSettingsModalStore.getState().open('general')}
-              >
-                {t('dashboard.games.privacyWarning.useOwnKey')}
-              </Button>
-            </div>
-          </Alert>
-        </div>
-      )}
+        {!showSkeleton && !errorCode && possiblyPrivate && (
+          <div className='px-6 py-4'>
+            <Alert status='warning'>
+              <Alert.Indicator />
+              <Alert.Content>
+                <Alert.Title>{t('dashboard.games.privacyWarning.title')}</Alert.Title>
+                <Alert.Description>
+                  {t('dashboard.games.privacyWarning.description')}
+                </Alert.Description>
+              </Alert.Content>
+              {/* Stacked, and stretched to the wider label, so the two read as one column of
+                  options and leave the description more room */}
+              <div className='flex shrink-0 flex-col items-stretch gap-2'>
+                <Button
+                  size='sm'
+                  variant='secondary'
+                  onPress={() => openExternalLink(STEAM_PRIVACY_SETTINGS_URL)}
+                >
+                  {t('dashboard.games.privacyWarning.changeSettings')}
+                </Button>
+                <Button
+                  size='sm'
+                  variant='secondary'
+                  onPress={() => useSettingsModalStore.getState().open('general')}
+                >
+                  {t('dashboard.games.privacyWarning.useOwnKey')}
+                </Button>
+              </div>
+            </Alert>
+          </div>
+        )}
 
-      {showSkeleton ? (
-        <GameGridSkeleton />
-      ) : errorCode ? (
-        <div className='flex flex-1 flex-col items-center justify-center gap-4 p-8'>
-          <Alert className='max-w-md' status='danger'>
-            <Alert.Indicator />
-            <Alert.Content>
-              <Alert.Title>{t('dashboard.games.errors.title')}</Alert.Title>
-              <Alert.Description>
-                {t(errorMessageKey(errorCode), { code: errorCode })}
-              </Alert.Description>
-            </Alert.Content>
-          </Alert>
-          <Button variant='secondary' onPress={refresh}>
-            {t('common.actions.tryAgain')}
-          </Button>
-        </div>
-      ) : games.length === 0 ? (
-        <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-          <TbDeviceGamepad2 fontSize={40} />
-          <Typography type='h3'>{t('dashboard.games.empty.title')}</Typography>
-          <Typography color='muted' type='body-sm'>
-            {t('dashboard.games.empty.description')}
-          </Typography>
-        </EmptyState>
-      ) : filteredGames.length === 0 ? (
-        <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-          <RiSearchLine fontSize={40} />
-          <Typography type='h3'>{t('common.search.noResultsTitle')}</Typography>
-          <Typography color='muted' type='body-sm'>
-            {t('common.search.noResultsDescription')}
-          </Typography>
-        </EmptyState>
-      ) : (
-        // `overflow-hidden`, not `-auto` - GamesList is now a virtualized list that scrolls
-        // internally (react-window's List owns its own scroll container, and the carousels are
-        // rows within it - see GamesList.tsx), this wrapper just needs to give it a definite
-        // height to fill.
-        <div className='flex-1 overflow-hidden'>
-          <GamesList
-            games={sortedFilteredGames}
-            idlePendingAppIds={idlePendingAppIds}
-            idleStartTimes={idleStartTimes}
-            idlingAppIds={idlingAppIds}
-            recentGames={recentGames}
-            recommendedGames={recommendedGames}
-            showRecentCarousel={showRecentCarousel}
-            showRecommendedCarousel={showRecommendedCarousel}
-            onToggleIdle={toggleIdle}
-          />
-        </div>
-      )}
+        {/* Sized by the same limits as GamesList's banner row, so the banner replaces this without
+            the page moving. On a refresh the games are already known, so a library with nothing to
+            recommend doesn't flash a banner it will never show. */}
+        {showSkeleton && (games.length === 0 || recommendedGames.length > 0) && (
+          <div className='shrink-0 pl-6 pr-[calc(1.5rem+var(--scrollbar-size))] pt-3.5'>
+            <Skeleton className='aspect-1920/620 max-h-105 min-h-85 w-full rounded-2xl' />
+          </div>
+        )}
+
+        {!isShowingList && renderToolbar(!showSkeleton)}
+
+        {showSkeleton ? (
+          <GameGridSkeleton />
+        ) : errorCode && games.length === 0 ? (
+          <div className='flex flex-1 flex-col items-center justify-center gap-4 p-8'>
+            {errorAlert}
+          </div>
+        ) : games.length === 0 ? (
+          <PageBannerArea hasToolbar>
+            <NoGamesBanner isRefreshing={isRefreshing} onRefresh={refresh} />
+          </PageBannerArea>
+        ) : filteredGames.length === 0 ? (
+          <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
+            <RiSearchLine fontSize={40} />
+            <Typography type='h3'>{t('common.search.noResultsTitle')}</Typography>
+            <Typography color='muted' type='body-sm'>
+              {t('common.search.noResultsDescription')}
+            </Typography>
+          </EmptyState>
+        ) : (
+          // `overflow-hidden`, not `-auto` - GamesList is now a virtualized list that scrolls
+          // internally (react-window's List owns its own scroll container, and the carousels are
+          // rows within it - see GamesList.tsx), this wrapper just needs to give it a definite
+          // height to fill.
+          <div className='flex-1 overflow-hidden'>
+            <GamesList
+              games={sortedFilteredGames}
+              idlePendingAppIds={idlePendingAppIds}
+              idleStartTimes={idleStartTimes}
+              idlingAppIds={idlingAppIds}
+              recommendedGames={recommendedGames}
+              toolbar={renderToolbar(false)}
+              onToggleIdle={toggleIdle}
+            />
+          </div>
+        )}
+      </PageBody>
     </div>
   )
 }

@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
-import { TbAward, TbDeviceGamepad2 } from 'react-icons/tb'
+import { TbPlayerPlayFilled, TbPlayerStopFilled, TbPlus, TbSettings } from 'react-icons/tb'
 import { useAchievementUnlockerQueue } from '../hooks/useAchievementUnlockerQueue'
 import { useAchievementUnlockerRun } from '../hooks/useAchievementUnlockerRun'
 import { errorMessageKey as achievementUnlockerErrorMessageKey } from '../utils/errorMessageKey'
 import { AchievementUnlockerBrowseGrid } from './AchievementUnlockerBrowseGrid'
 import { AchievementUnlockerListGrid } from './AchievementUnlockerListGrid'
-import { AchievementUnlockerPageHeader } from './AchievementUnlockerPageHeader'
 import { AchievementUnlockerProgressView } from './AchievementUnlockerProgressView'
+import { AchievementUnlockerQueuePreview } from './AchievementUnlockerQueuePreview'
 import {
   Alert,
   AlertDialog,
@@ -24,8 +24,13 @@ import {
   Typography,
 } from '@heroui/react'
 import { useRouter } from 'next/router'
+import { NoGamesBanner } from '@/features/games-list/components/NoGamesBanner'
 import { useGamesList } from '@/features/games-list/hooks/useGamesList'
 import { errorMessageKey as gamesErrorMessageKey } from '@/features/games-list/utils/errorMessageKey'
+import { EmptyListBanner } from '@/shared/components/dashboard/EmptyListBanner'
+import { PageBannerArea } from '@/shared/components/dashboard/PageBanner'
+import { PageBody } from '@/shared/components/dashboard/PageBody'
+import { CountChip, PageToolbar } from '@/shared/components/dashboard/PageToolbar'
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
 import { ManualAddGameModal } from '@/shared/components/ManualAddGameModal'
 import { useOwnedGameSort } from '@/shared/hooks/useOwnedGameSort'
@@ -34,6 +39,7 @@ import { useAchievementOrderStore } from '@/shared/stores/achievementOrderStore'
 import { useAchievementUnlockerStore } from '@/shared/stores/achievementUnlockerStore'
 import { useSearchStore } from '@/shared/stores/searchStore'
 import { getAccountKey, useSessionStore } from '@/shared/stores/sessionStore'
+import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
 import { useSortPreferencesStore } from '@/shared/stores/sortPreferencesStore'
 import { OWNED_GAME_SORT_LABEL_KEYS, sortOwnedGames } from '@/shared/utils/sortOwnedGames'
 
@@ -52,6 +58,7 @@ type AchievementUnlockerTab = 'browse' | 'queue'
 export const AchievementUnlockerPage = () => {
   const { t, i18n } = useTranslation()
   const router = useRouter()
+  const openSettings = useSettingsModalStore(state => state.open)
   const account = useSessionStore(state => state.account)
   const { phase, games, errorCode: gamesErrorCode, refresh } = useGamesList()
   const {
@@ -159,73 +166,103 @@ export const AchievementUnlockerPage = () => {
     return null
   }
 
+  // The tabs stay on screen in every state so this row never changes shape, just disabled during a
+  // run, when the progress view takes their place.
+  const isShowingTabs = !runState.isRunning && !showFinishedSummary
+  const pageActions = (
+    <>
+      <Button
+        isIconOnly
+        aria-label={t('common.manualAdd.title')}
+        onPress={() => setIsManualAddOpen(true)}
+      >
+        <TbPlus fontSize={18} />
+      </Button>
+      <Button
+        isIconOnly
+        aria-label={t('common.actions.settings')}
+        onPress={() => openSettings('achievementUnlocker')}
+      >
+        <TbSettings fontSize={18} />
+      </Button>
+      {runState.isRunning ? (
+        <Button isPending={isStopping} variant='danger' onPress={handleStop}>
+          <TbPlayerStopFilled fontSize={16} />
+          {t('common.actions.stop')}
+        </Button>
+      ) : (
+        <Button
+          isDisabled={queue.length === 0}
+          isPending={isStarting}
+          variant='primary'
+          onPress={start}
+        >
+          <TbPlayerPlayFilled fontSize={16} />
+          {t('common.actions.start')}
+        </Button>
+      )}
+    </>
+  )
+
   return (
     <div className='flex h-full flex-col'>
-      <AchievementUnlockerPageHeader
-        activeCount={runState.active.length}
-        isRunning={runState.isRunning}
-        isStarting={isStarting}
-        isStopping={isStopping}
-        queueCount={queue.length}
-        onManualAdd={() => setIsManualAddOpen(true)}
-        onStart={start}
-        onStop={handleStop}
-      />
+      <PageBody>
+        {(queueErrorCode || runErrorCode) && (
+          <div className='px-6 pt-4'>
+            <Alert status='danger'>
+              <Alert.Indicator />
+              <Alert.Content>
+                <Alert.Title>{t('dashboard.achievementUnlocker.errors.title')}</Alert.Title>
+                <Alert.Description>
+                  {t(
+                    achievementUnlockerErrorMessageKey((queueErrorCode ?? runErrorCode) as string),
+                    {
+                      code: queueErrorCode ?? runErrorCode,
+                    },
+                  )}
+                </Alert.Description>
+              </Alert.Content>
+            </Alert>
+          </div>
+        )}
 
-      {(queueErrorCode || runErrorCode) && (
-        <div className='px-6 pt-4'>
-          <Alert status='danger'>
-            <Alert.Indicator />
-            <Alert.Content>
-              <Alert.Title>{t('dashboard.achievementUnlocker.errors.title')}</Alert.Title>
-              <Alert.Description>
-                {t(achievementUnlockerErrorMessageKey((queueErrorCode ?? runErrorCode) as string), {
-                  code: queueErrorCode ?? runErrorCode,
-                })}
-              </Alert.Description>
-            </Alert.Content>
-          </Alert>
-        </div>
-      )}
-
-      {runState.isRunning || showFinishedSummary ? (
-        <div className='min-h-0 flex-1 overflow-y-auto'>
-          <AchievementUnlockerProgressView
-            state={runState}
-            onDismissFinished={
-              showFinishedSummary && accountKey ? () => dismissFinished(accountKey) : undefined
-            }
-          />
-        </div>
-      ) : (
         <TabsRoot
+          isDisabled={!isShowingTabs}
           className='flex min-h-0 flex-1 flex-col'
           selectedKey={activeTab}
           onSelectionChange={key => setActiveTab(key as AchievementUnlockerTab)}
         >
-          <div className='mx-6 mt-4 flex flex-wrap items-center justify-between gap-3'>
-            <TabListContainer className='shrink-0'>
-              <TabList>
-                <Tab className='whitespace-nowrap' id='browse'>
-                  {t('common.tabs.allGames')}
-                  <TabIndicator />
-                </Tab>
-                <Tab className='whitespace-nowrap' id='queue'>
-                  {t('common.tabs.queue')}
-                  <TabIndicator />
-                </Tab>
-              </TabList>
-            </TabListContainer>
+          <PageToolbar
+            start={
+              <TabListContainer className='shrink-0'>
+                <TabList>
+                  <Tab className='gap-2 whitespace-nowrap' id='browse'>
+                    {t('common.tabs.allGames')}
+                    {isShowingTabs && phase !== 'loading' && (
+                      <CountChip count={filteredGames.length} />
+                    )}
+                    <TabIndicator />
+                  </Tab>
+                  <Tab className='gap-2 whitespace-nowrap' id='queue'>
+                    {t('common.tabs.queue')}
+                    {isShowingTabs && !queueLoading && <CountChip count={queue.length} />}
+                    <TabIndicator />
+                  </Tab>
+                </TabList>
+              </TabListContainer>
+            }
+          >
             {activeTab === 'browse' && (
               <div className='flex shrink-0 items-center gap-3'>
                 <Button
-                  isDisabled={addableGames.length === 0}
+                  isDisabled={!isShowingTabs || addableGames.length === 0}
                   variant='secondary'
                   onPress={() => setConfirmAddAllOpen(true)}
                 >
                   {t('dashboard.achievementUnlocker.addAllToQueue')}
                 </Button>
                 <GameSortSelect
+                  isDisabled={!isShowingTabs || games.length === 0}
                   ariaLabel={t('dashboard.inventoryManager.sort.label')}
                   options={sortStyleOptions.map(style => ({
                     id: style,
@@ -239,167 +276,180 @@ export const AchievementUnlockerPage = () => {
             {activeTab === 'queue' && queue.length > 0 && (
               <Button
                 className='shrink-0'
+                isDisabled={!isShowingTabs}
                 variant='danger'
                 onPress={() => setConfirmClearOpen(true)}
               >
                 {t('common.actions.clear')}
               </Button>
             )}
-          </div>
+            {pageActions}
+          </PageToolbar>
 
-          <TabPanel className='min-h-0 flex-1 overflow-y-auto p-0' id='browse'>
-            {phase === 'loading' ? (
-              <div className='grid grid-cols-2 gap-4 p-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6'>
-                {Array.from({ length: 12 }, (_, index) => (
-                  <Skeleton key={index} className='aspect-460/215 rounded-lg' />
-                ))}
-              </div>
-            ) : gamesErrorCode ? (
-              <div className='flex flex-1 flex-col items-center justify-center gap-4 p-8'>
-                <Alert className='max-w-md' status='danger'>
-                  <Alert.Indicator />
-                  <Alert.Content>
-                    <Alert.Title>{t('dashboard.games.errors.title')}</Alert.Title>
-                    <Alert.Description>
-                      {t(gamesErrorMessageKey(gamesErrorCode), { code: gamesErrorCode })}
-                    </Alert.Description>
-                  </Alert.Content>
-                </Alert>
-                <Button variant='secondary' onPress={refresh}>
-                  {t('common.actions.tryAgain')}
-                </Button>
-              </div>
-            ) : games.length === 0 ? (
-              <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-                <TbDeviceGamepad2 fontSize={40} />
-                <Typography type='h3'>{t('dashboard.games.empty.title')}</Typography>
-                <Typography color='muted' type='body-sm'>
-                  {t('dashboard.games.empty.description')}
-                </Typography>
-              </EmptyState>
-            ) : filteredGames.length === 0 ? (
-              <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-                <RiSearchLine fontSize={40} />
-                <Typography type='h3'>{t('common.search.noResultsTitle')}</Typography>
-                <Typography color='muted' type='body-sm'>
-                  {t('common.search.noResultsDescription')}
-                </Typography>
-              </EmptyState>
-            ) : (
-              <AchievementUnlockerBrowseGrid
-                games={sortedFilteredGames}
-                pendingAppIds={pendingAppIds}
-                queuedAppIds={queuedAppIds}
-                onToggle={game => toggleQueued(game.appId, game.name ?? String(game.appId))}
+          {runState.isRunning || showFinishedSummary ? (
+            <div className='min-h-0 flex-1 overflow-y-auto'>
+              <AchievementUnlockerProgressView
+                state={runState}
+                onDismissFinished={
+                  showFinishedSummary && accountKey ? () => dismissFinished(accountKey) : undefined
+                }
               />
-            )}
-          </TabPanel>
+            </div>
+          ) : (
+            <>
+              <TabPanel className='min-h-0 flex-1 overflow-y-auto p-0' id='browse'>
+                {phase === 'loading' ? (
+                  <div className='game-grid page-content'>
+                    {Array.from({ length: 12 }, (_, index) => (
+                      <Skeleton key={index} className='aspect-(--game-card-aspect) rounded-xl' />
+                    ))}
+                  </div>
+                ) : gamesErrorCode ? (
+                  <div className='flex flex-1 flex-col items-center justify-center gap-4 p-8'>
+                    <Alert className='max-w-md' status='danger'>
+                      <Alert.Indicator />
+                      <Alert.Content>
+                        <Alert.Title>{t('dashboard.games.errors.title')}</Alert.Title>
+                        <Alert.Description>
+                          {t(gamesErrorMessageKey(gamesErrorCode), { code: gamesErrorCode })}
+                        </Alert.Description>
+                      </Alert.Content>
+                    </Alert>
+                    <Button variant='secondary' onPress={refresh}>
+                      {t('common.actions.tryAgain')}
+                    </Button>
+                  </div>
+                ) : games.length === 0 ? (
+                  <PageBannerArea hasToolbar>
+                    <NoGamesBanner onRefresh={refresh} />
+                  </PageBannerArea>
+                ) : filteredGames.length === 0 ? (
+                  <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
+                    <RiSearchLine fontSize={40} />
+                    <Typography type='h3'>{t('common.search.noResultsTitle')}</Typography>
+                    <Typography color='muted' type='body-sm'>
+                      {t('common.search.noResultsDescription')}
+                    </Typography>
+                  </EmptyState>
+                ) : (
+                  <AchievementUnlockerBrowseGrid
+                    games={sortedFilteredGames}
+                    pendingAppIds={pendingAppIds}
+                    queuedAppIds={queuedAppIds}
+                    onToggle={game => toggleQueued(game.appId, game.name ?? String(game.appId))}
+                  />
+                )}
+              </TabPanel>
 
-          <TabPanel className='min-h-0 flex-1 overflow-y-auto p-0' id='queue'>
-            {queueLoading ? (
-              <div className='grid grid-cols-2 gap-4 p-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6'>
-                {Array.from({ length: 6 }, (_, index) => (
-                  <Skeleton key={index} className='aspect-460/215 rounded-lg' />
-                ))}
-              </div>
-            ) : queue.length === 0 ? (
-              <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-                <TbAward fontSize={40} />
-                <Typography type='h3'>{t('common.noGamesQueued')}</Typography>
-                <Typography color='muted' type='body-sm'>
-                  {t('dashboard.achievementUnlocker.empty.description')}
-                </Typography>
-              </EmptyState>
-            ) : (
-              <AchievementUnlockerListGrid
-                queue={queue}
-                pendingAppIds={pendingAppIds}
-                onEditOrder={game => openOrderEditor(game.appId, game.name)}
-                onRemove={removeFromQueue}
-                onReorder={reorder}
-              />
-            )}
-          </TabPanel>
+              <TabPanel className='min-h-0 flex-1 overflow-y-auto p-0' id='queue'>
+                {queueLoading ? (
+                  <div className='game-grid page-content'>
+                    {Array.from({ length: 6 }, (_, index) => (
+                      <Skeleton key={index} className='aspect-(--game-card-aspect) rounded-xl' />
+                    ))}
+                  </div>
+                ) : queue.length === 0 ? (
+                  <PageBannerArea hasToolbar>
+                    <EmptyListBanner
+                      art={<AchievementUnlockerQueuePreview />}
+                      description={t('dashboard.achievementUnlocker.empty.description')}
+                      title={t('common.noGamesQueued')}
+                      onBrowseGames={() => setActiveTab('browse')}
+                      onManualAdd={() => setIsManualAddOpen(true)}
+                    />
+                  </PageBannerArea>
+                ) : (
+                  <AchievementUnlockerListGrid
+                    queue={queue}
+                    pendingAppIds={pendingAppIds}
+                    onEditOrder={game => openOrderEditor(game.appId, game.name)}
+                    onRemove={removeFromQueue}
+                    onReorder={reorder}
+                  />
+                )}
+              </TabPanel>
+            </>
+          )}
         </TabsRoot>
-      )}
 
-      <AlertDialog isOpen={confirmClearOpen} onOpenChange={setConfirmClearOpen}>
-        <AlertDialog.Backdrop>
-          <AlertDialog.Container>
-            <AlertDialog.Dialog>
-              <AlertDialog.Header>
-                <AlertDialog.Heading>
-                  {t('dashboard.achievementUnlocker.confirmClearQueue.title')}
-                </AlertDialog.Heading>
-              </AlertDialog.Header>
-              <AlertDialog.Body>
-                {t('dashboard.achievementUnlocker.confirmClearQueue.description', {
-                  count: queue.length,
-                })}
-              </AlertDialog.Body>
-              <AlertDialog.Footer>
-                <Button variant='secondary' onPress={() => setConfirmClearOpen(false)}>
-                  {t('common.actions.cancel')}
-                </Button>
-                <Button
-                  variant='danger'
-                  onPress={() => {
-                    reorder([])
-                    setConfirmClearOpen(false)
-                  }}
-                >
-                  {t('common.actions.clear')}
-                </Button>
-              </AlertDialog.Footer>
-            </AlertDialog.Dialog>
-          </AlertDialog.Container>
-        </AlertDialog.Backdrop>
-      </AlertDialog>
+        <AlertDialog isOpen={confirmClearOpen} onOpenChange={setConfirmClearOpen}>
+          <AlertDialog.Backdrop>
+            <AlertDialog.Container>
+              <AlertDialog.Dialog>
+                <AlertDialog.Header>
+                  <AlertDialog.Heading>
+                    {t('dashboard.achievementUnlocker.confirmClearQueue.title')}
+                  </AlertDialog.Heading>
+                </AlertDialog.Header>
+                <AlertDialog.Body>
+                  {t('dashboard.achievementUnlocker.confirmClearQueue.description', {
+                    count: queue.length,
+                  })}
+                </AlertDialog.Body>
+                <AlertDialog.Footer>
+                  <Button variant='secondary' onPress={() => setConfirmClearOpen(false)}>
+                    {t('common.actions.cancel')}
+                  </Button>
+                  <Button
+                    variant='danger'
+                    onPress={() => {
+                      reorder([])
+                      setConfirmClearOpen(false)
+                    }}
+                  >
+                    {t('common.actions.clear')}
+                  </Button>
+                </AlertDialog.Footer>
+              </AlertDialog.Dialog>
+            </AlertDialog.Container>
+          </AlertDialog.Backdrop>
+        </AlertDialog>
 
-      {/* Achievement eligibility isn't known up front (see manager.rs's per-game `scan_game`) - a
+        {/* Achievement eligibility isn't known up front (see manager.rs's per-game `scan_game`) - a
           large "add all" queue means a correspondingly long initial scan pass once a run starts, so
           this warns rather than silently queuing hundreds/thousands of games with no explanation
           for why the run doesn't start unlocking immediately. */}
-      <AlertDialog isOpen={confirmAddAllOpen} onOpenChange={setConfirmAddAllOpen}>
-        <AlertDialog.Backdrop>
-          <AlertDialog.Container>
-            <AlertDialog.Dialog>
-              <AlertDialog.Header>
-                <AlertDialog.Heading>
-                  {t('dashboard.achievementUnlocker.confirmAddAllToQueue.title', {
-                    count: addableGames.length,
-                  })}
-                </AlertDialog.Heading>
-              </AlertDialog.Header>
-              <AlertDialog.Body>
-                {t('dashboard.achievementUnlocker.confirmAddAllToQueue.description')}
-              </AlertDialog.Body>
-              <AlertDialog.Footer>
-                <Button size='sm' variant='secondary' onPress={() => setConfirmAddAllOpen(false)}>
-                  {t('common.actions.cancel')}
-                </Button>
-                <Button
-                  size='sm'
-                  variant='primary'
-                  onPress={() => {
-                    handleAddAllToQueue()
-                    setConfirmAddAllOpen(false)
-                  }}
-                >
-                  {t('dashboard.achievementUnlocker.addAllToQueue')}
-                </Button>
-              </AlertDialog.Footer>
-            </AlertDialog.Dialog>
-          </AlertDialog.Container>
-        </AlertDialog.Backdrop>
-      </AlertDialog>
+        <AlertDialog isOpen={confirmAddAllOpen} onOpenChange={setConfirmAddAllOpen}>
+          <AlertDialog.Backdrop>
+            <AlertDialog.Container>
+              <AlertDialog.Dialog>
+                <AlertDialog.Header>
+                  <AlertDialog.Heading>
+                    {t('dashboard.achievementUnlocker.confirmAddAllToQueue.title', {
+                      count: addableGames.length,
+                    })}
+                  </AlertDialog.Heading>
+                </AlertDialog.Header>
+                <AlertDialog.Body>
+                  {t('dashboard.achievementUnlocker.confirmAddAllToQueue.description')}
+                </AlertDialog.Body>
+                <AlertDialog.Footer>
+                  <Button size='sm' variant='secondary' onPress={() => setConfirmAddAllOpen(false)}>
+                    {t('common.actions.cancel')}
+                  </Button>
+                  <Button
+                    size='sm'
+                    variant='primary'
+                    onPress={() => {
+                      handleAddAllToQueue()
+                      setConfirmAddAllOpen(false)
+                    }}
+                  >
+                    {t('dashboard.achievementUnlocker.addAllToQueue')}
+                  </Button>
+                </AlertDialog.Footer>
+              </AlertDialog.Dialog>
+            </AlertDialog.Container>
+          </AlertDialog.Backdrop>
+        </AlertDialog>
 
-      <ManualAddGameModal
-        existingAppIds={queue.map(game => game.appId)}
-        isOpen={isManualAddOpen}
-        onAdd={addToQueue}
-        onOpenChange={setIsManualAddOpen}
-      />
+        <ManualAddGameModal
+          existingAppIds={queue.map(game => game.appId)}
+          isOpen={isManualAddOpen}
+          onAdd={addToQueue}
+          onOpenChange={setIsManualAddOpen}
+        />
+      </PageBody>
     </div>
   )
 }

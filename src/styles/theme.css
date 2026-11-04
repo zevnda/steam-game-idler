@@ -7,7 +7,7 @@
    `@layer base` (node_modules/@heroui/styles/dist/themes/default/variables.css); this file is
    deliberately left unlayered, so per the CSS cascade-layers spec these declarations always win
    over HeroUI's regardless of import order or selector specificity - no `!important` needed.
-   Anything not re-declared here (accent/success/warning/danger, spacing, radius, etc.) keeps
+   Anything not re-declared here (success/warning/danger, spacing, radius, etc.) keeps
    HeroUI's stock value untouched.
 
    Elevation model - each step is a deliberate, perceptible lightness jump. Before this file
@@ -36,28 +36,46 @@
    not before.
 */
 [data-theme='dark'] {
-  --background: oklch(0.21 0.006 285.89);
+  /* HeroUI's stock accent (chroma 0.195) looks too vivid against a canvas this dark. Dark presets
+     without an accent of their own inherit this too. */
+  --accent: oklch(0.63 0.15 254);
 
-  --surface: oklch(0.28 0.006 285.89);
-  --overlay: oklch(24.521% 0.00755 285.784);
+  --background: #0b0c0e;
 
-  --default: oklch(0.33 0.006 285.89);
-  --surface-secondary: oklch(0.33 0.006 285.89);
+  --surface: #16171b;
+  --overlay: #131418;
 
-  --separator: oklch(0.31 0.006 285.89);
+  /* One shade for every small interactive control (inputs, dropdowns, the search bar, secondary
+     buttons, tab strips, chips, switch tracks), so they read as one family wherever they sit. */
+  --default: #212328;
+  --surface-secondary: #212328;
 
-  --border: oklch(0.36 0.006 285.89);
-  --surface-tertiary: oklch(0.4 0.006 285.89);
+  --separator: #17181c;
 
-  --field-background: var(--surface);
-  --field-hover: var(--surface-secondary);
+  --border: #1b1c20;
+  --surface-tertiary: #2c2e34;
+
+  --field-background: var(--default);
+
+  /* Everything below is derived from the tokens above rather than being a fixed colour, because this
+     block also applies under every dark theme preset, which only overrides the base tokens. A fixed
+     colour here would show up as the default theme's grey on top of, say, a purple theme.
+
+     HeroUI's stock hover mixes (8% for surfaces, 4% for buttons) were tuned for a lighter canvas. On
+     colours this dark, 4% is too slight to see, and a surface's hover could end up brighter than the
+     selected item beside it. */
+  --app-chrome: color-mix(in oklab, var(--background) 98%, var(--foreground));
+  --surface-hover: color-mix(in oklab, var(--surface) 96%, var(--foreground));
+  --default-hover: color-mix(in oklab, var(--default) 90%, var(--foreground));
+  --field-hover: color-mix(in oklab, var(--field-background) 90%, var(--foreground));
+  --segment: color-mix(in oklab, var(--default) 88%, var(--foreground));
 
   /* Scrollbar thumb/track - reuses HeroUI's own token names (`--scrollbar-thumb`/`-track`), but
      driven by `::-webkit-scrollbar` below instead of HeroUI's `scrollbar-color`/`scrollbar-width`
      system (see this file's scrollbar rule for why). Thumb sits at the same lightness as
      --surface-tertiary/--field-border - the "most prominent neutral" tier, since it needs to read
      clearly against every other layer. */
-  --scrollbar-thumb: oklch(0.4 0.006 285.89);
+  --scrollbar-thumb: #2c2e34;
   --scrollbar-track: transparent;
 }
 
@@ -70,6 +88,10 @@
 
 .button--secondary {
   --button-fg: var(--white);
+}
+
+[data-theme='light'] {
+  --app-chrome: color-mix(in oklab, var(--background) 98%, var(--foreground));
 }
 
 /* Inverted for the `white` preset (the only one setting `data-theme='light'` - see `presets.ts`'s
@@ -88,7 +110,16 @@
   --button-fg: var(--black);
 }
 
-/* App-wide scrollbar styling, matching `main`'s width/shape (4px, 6px-rounded thumb) via
+/* HeroUI fades an unselected tab to 70% on hover, which reads as the tab getting less available.
+   Brightening it instead matches every other hover in the app. */
+.tabs__tab:not([data-selected='true']):not([data-disabled='true']):hover,
+.tabs__tab[data-hovered='true']:not([data-selected='true']):not([data-disabled='true']) {
+  opacity: 1;
+  color: var(--foreground);
+}
+
+/* App-wide scrollbar styling (a fully rounded 8px thumb, inset 3px from each edge by a transparent
+   border, so it doesn't sit hard against the side of the window) via
    `::-webkit-scrollbar` pseudo-elements - available since this app only ever runs on WebView2
    (Chromium), so no cross-browser fallback is needed. Deliberately NOT using HeroUI's own
    `scrollbar-color`/`scrollbar-width` system (see node_modules/@heroui/styles/dist/base/base.css)
@@ -97,9 +128,13 @@
    to-close. `::-webkit-scrollbar` only ever renders on elements that actually overflow, and a
    modal backdrop never does, so it doesn't carry the same risk - `main` ran this exact mechanism
    globally in production without issue. */
+:root {
+  --scrollbar-size: 14px;
+}
+
 ::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
 }
 
 ::-webkit-scrollbar-track {
@@ -107,13 +142,11 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb);
-  border-radius: 6px;
+  border: 3px solid transparent;
+  border-radius: var(--scrollbar-size);
+  background: var(--scrollbar-thumb) padding-box;
 }
 
-/* Hides the scrollbar on an element that still needs to scroll (e.g. GameCarousel's horizontal
-   row) - it already has its own chevron buttons for non-pointer users, so a persistent scrollbar
-   is just visual noise `main`'s carousels didn't have either. */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklch, var(--scrollbar-thumb) 75%, var(--foreground)) padding-box;
 }

@@ -21,6 +21,9 @@ import { useSearchStore } from '@/shared/stores/searchStore'
 // (`w-64` brand + 48px toggle) and the right group up to 337px (update/help/notifications/menu +
 // separator + 3 window controls, all `w-12`), so a centered pill must stay under ~230px to clear
 // the right group. Long query/placeholder text truncates inside the pill either way.
+// The main shortcut useGlobalSearchShortcut.ts listens for
+const SEARCH_SHORTCUT = 'Ctrl K'
+
 export const GlobalSearchBar = () => {
   const { t } = useTranslation()
   const scope = useActiveSearchScope()
@@ -37,10 +40,11 @@ export const GlobalSearchBar = () => {
       <div
         className={cn(
           'pointer-events-auto flex h-10 w-56 items-center gap-2 rounded-full lg:w-72',
-          'bg-surface px-1 text-sm text-muted transition-colors hover:bg-surface-hover',
+          'bg-field px-1 text-sm text-muted transition-colors hover:bg-field-hover',
         )}
       >
         <button
+          aria-keyshortcuts='Control+K /'
           className='flex h-full min-w-0 flex-1 items-center gap-2 px-3 text-left cursor-pointer'
           type='button'
           onClick={() => open(scope.id)}
@@ -49,10 +53,16 @@ export const GlobalSearchBar = () => {
           <span className={cn('flex-1 truncate', query && 'text-foreground')}>
             {query || t('common.search.placeholder')}
           </span>
+          {/* Gives way to the clear button once there's a query */}
+          {!query && (
+            <kbd className='-mr-1.5 flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full bg-foreground/10 px-2 font-sans text-xs font-semibold'>
+              {SEARCH_SHORTCUT}
+            </kbd>
+          )}
         </button>
         {query && (
           <button
-            className='mr-1 shrink-0 rounded-full p-1 hover:bg-surface-hover cursor-pointer'
+            className='mr-1 shrink-0 rounded-full p-1 hover:bg-foreground/10 cursor-pointer'
             type='button'
             onClick={() => clearQuery(scope.id)}
           >

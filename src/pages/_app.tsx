@@ -3,6 +3,7 @@ import { Toast } from '@heroui/react'
 import { useRouter } from 'next/router'
 import Script from 'next/script'
 import { ChangelogModal } from '@/shared/components/ChangelogModal'
+import { ContextMenu } from '@/shared/components/ContextMenu'
 import { DashboardShell } from '@/shared/components/dashboard/DashboardShell'
 import { ErrorBoundary } from '@/shared/components/ErrorBoundary'
 import { FullscreenLoader } from '@/shared/components/FullscreenLoader'
@@ -162,9 +163,15 @@ const AppContent = ({ Component, pageProps }: AppProps) => {
           `toast.*` singleton (imported directly wherever a toast is fired) works from anywhere
           once this is mounted once; no context/provider prop-drilling needed. */}
       <Toast.Provider />
+      {/* The right-click menu useContextMenu() opens - see ContextMenu.tsx */}
+      <ContextMenu />
       <LinuxResizeHandles />
       <Titlebar minimal={bootstrapPhase === 'checking'} />
-      <ChangelogModal />
+      {/* Held back until the session check finishes: the post-update changelog flag is set on
+          AppContent's first mount (see useCheckForUpdates), which would otherwise open the modal
+          over FullscreenLoader. `showChangelog` stays set in updateStore, so the modal opens as
+          soon as it mounts. */}
+      {bootstrapPhase !== 'checking' && <ChangelogModal />}
       <GoProModal />
       {showOutdatedPrompt && <VersionPolicyDialog variant='outdated' />}
       {/* Blocks the routed page (dashboard or pre-dashboard) until useSessionBootstrap has

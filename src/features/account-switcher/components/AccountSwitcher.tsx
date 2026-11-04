@@ -111,8 +111,8 @@ const AccountRow = ({
     <div
       className={cn(
         'flex w-full items-center gap-2 rounded-2xl px-2 py-1.5 text-left outline-none transition-colors',
-        'hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-focus cursor-pointer',
-        isActive && 'bg-accent-soft',
+        'focus-visible:ring-2 focus-visible:ring-focus cursor-pointer',
+        isActive ? 'bg-surface-secondary' : 'hover:bg-surface-hover',
         isSwitching && 'pointer-events-none opacity-70',
       )}
       role='button'
@@ -168,7 +168,7 @@ const AccountRow = ({
       ) : (
         <button
           aria-label={`Sign out of ${displayName}`}
-          className='shrink-0 rounded-md p-1.5 text-muted outline-none transition-colors hover:bg-surface hover:text-foreground focus-visible:ring-2 focus-visible:ring-focus cursor-pointer'
+          className='shrink-0 rounded-md p-1.5 text-muted outline-none transition-colors hover:bg-foreground/10 hover:text-foreground focus-visible:ring-2 focus-visible:ring-focus cursor-pointer'
           type='button'
           onClick={event => {
             event.stopPropagation()

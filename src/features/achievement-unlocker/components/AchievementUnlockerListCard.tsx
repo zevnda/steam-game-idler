@@ -1,8 +1,6 @@
 import type { AchievementUnlockerEntry } from '../types'
 import { TbArrowsSort, TbX } from 'react-icons/tb'
-import { Button, Typography } from '@heroui/react'
-import { GameThumbnail } from '@/shared/components/GameThumbnail'
-import { gameCardContextAttrs } from '@/shared/utils/gameCardContext'
+import { GamePosterAction, GamePosterCard } from '@/shared/components/GamePosterCard'
 
 interface AchievementUnlockerListCardProps {
   game: AchievementUnlockerEntry
@@ -11,7 +9,7 @@ interface AchievementUnlockerListCardProps {
   onEditOrder: () => void
 }
 
-// Used in the "Queue" tab - thumbnail + name + an "edit order" button (opens the per-game
+// Used in the "Queue" tab - an "edit order" button (opens the per-game
 // achievement-order overlay) and a remove button. The whole card is draggable to reorder - see
 // SortableAchievementUnlockerListCard, which wraps this, mirroring
 // favorites/SortableFavoriteListCard's shape exactly.
@@ -22,41 +20,24 @@ export const AchievementUnlockerListCard = ({
   onEditOrder,
 }: AchievementUnlockerListCardProps) => {
   return (
-    <div className='group flex flex-col gap-2' {...gameCardContextAttrs(game.appId, game.name)}>
-      <GameThumbnail appId={game.appId} name={game.name} />
-      <div className='flex items-center justify-between gap-2'>
-        <Typography
-          className='min-w-0 transition-colors duration-150 group-hover:text-foreground'
-          color='muted'
-          title={game.name}
-          truncate
-          type='body-sm'
-          weight='semibold'
-        >
-          {game.name}
-        </Typography>
-        <div className='flex shrink-0 items-center gap-1'>
-          <Button
-            isIconOnly
-            aria-label={`Edit unlock order for ${game.name}`}
-            size='sm'
-            variant='ghost'
-            onPress={onEditOrder}
-          >
+    <GamePosterCard
+      showStats
+      actions={
+        <>
+          <GamePosterAction aria-label={`Edit unlock order for ${game.name}`} onPress={onEditOrder}>
             <TbArrowsSort fontSize={16} />
-          </Button>
-          <Button
-            isIconOnly
+          </GamePosterAction>
+          <GamePosterAction
             aria-label={`Remove ${game.name}`}
             isPending={isPending}
-            size='sm'
-            variant='ghost'
             onPress={onRemove}
           >
             <TbX fontSize={16} />
-          </Button>
-        </div>
-      </div>
-    </div>
+          </GamePosterAction>
+        </>
+      }
+      appId={game.appId}
+      name={game.name}
+    />
   )
 }

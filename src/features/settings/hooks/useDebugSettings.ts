@@ -23,7 +23,6 @@ import { fetchGamesList } from '@/features/games-list/hooks/useGamesListSync'
 import { signOutAccount } from '@/shared/hooks/signOutAccount'
 import { useAntiAwayStore } from '@/shared/stores/antiAwayStore'
 import { useAutoUpdateGamesListStore } from '@/shared/stores/autoUpdateGamesListStore'
-import { useCarouselSettingsStore } from '@/shared/stores/carouselSettingsStore'
 import { useCustomBackgroundStore } from '@/shared/stores/customBackgroundStore'
 import { useDisableTooltipsStore } from '@/shared/stores/disableTooltipsStore'
 import { useSessionStore } from '@/shared/stores/sessionStore'
@@ -278,8 +277,6 @@ export function useDebugSettings({
       applyFont(null)
       localStorage.setItem(FONT_STORAGE_KEY, 'inter')
       useDisableTooltipsStore.getState().setDisabled(false)
-      useCarouselSettingsStore.getState().setShowRecommended(true)
-      useCarouselSettingsStore.getState().setShowRecent(true)
       useCustomBackgroundStore.getState().setDataUrl(null)
       useAntiAwayStore.getState().setEnabled(false)
       useAutoUpdateGamesListStore.getState().setEnabled(false)

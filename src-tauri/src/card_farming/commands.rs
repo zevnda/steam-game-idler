@@ -9,23 +9,24 @@ use crate::steam_agent::AgentManager;
 
 use super::{
     blacklist, scraper, session, settings, whitelist, CardFarmingBlacklistEntry,
-    CardFarmingManager, CardFarmingWhitelistEntry, FarmingState, GameWithDrops, SteamCookies,
+    CardFarmingManager, CardFarmingWhitelistEntry, FarmingState, GamesWithDropsResult,
+    SteamCookies,
 };
 use settings::CardFarmingSettings;
 
 /// Every owned game with at least one card drop remaining, for `account`'s Steam Community
-/// session - excludes any game the account has blacklisted (see [`blacklist`]'s doc comment), so a
-/// blacklisted game never reappears in the browse list to begin with. `manual_cookies` lets the
-/// caller skip automatic hidden-webview session acquisition entirely - the casual/free-tier
-/// fallback (see `mod.rs`'s doc comment); omit it to use the automatic path, gated behind
-/// `hasGamerAccess` on the frontend.
+/// session - with any game the account has blacklisted split out into the result's own
+/// `blacklisted` list (see [`blacklist`]'s doc comment), so a blacklisted game never reappears in
+/// the browse list to begin with. `manual_cookies` lets the caller skip automatic hidden-webview
+/// session acquisition entirely - the casual/free-tier fallback (see `mod.rs`'s doc comment);
+/// omit it to use the automatic path, gated behind `hasGamerAccess` on the frontend.
 #[tauri::command]
 pub async fn get_games_with_drops(
     app_handle: AppHandle,
     agent_manager: State<'_, AgentManager>,
     account: GamesAccount,
     manual_cookies: Option<SteamCookies>,
-) -> AppResult<Vec<GameWithDrops>> {
+) -> AppResult<GamesWithDropsResult> {
     let steam_id = resolve_steam_id(&account, &agent_manager).await?;
     let cookies = session::resolve(
         &app_handle,
@@ -40,17 +41,17 @@ pub async fn get_games_with_drops(
         .into_iter()
         .map(|entry| entry.app_id)
         .collect();
-    let games: Vec<GameWithDrops> = scraper::get_games_with_drops(&steam_id, &cookies)
+    let (blacklisted, games): (Vec<_>, Vec<_>) = scraper::get_games_with_drops(&steam_id, &cookies)
         .await?
         .into_iter()
-        .filter(|g| !blacklisted.contains(&g.app_id))
-        .collect();
+        .partition(|g| blacklisted.contains(&g.app_id));
     tracing::info!(
         steam_id,
         count = games.len(),
+        blacklisted = blacklisted.len(),
         "fetched games with card drops remaining"
     );
-    Ok(games)
+    Ok(GamesWithDropsResult { games, blacklisted })
 }
 
 /// Starts a farming cycle for `account` - automatic from here on, see `mod.rs`'s module doc

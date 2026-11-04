@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbRefresh, TbSettings } from 'react-icons/tb'
-import { AlertDialog, Button, Typography } from '@heroui/react'
+import { AlertDialog, Button } from '@heroui/react'
+import { PageTitle, PageToolbar } from '@/shared/components/dashboard/PageToolbar'
 import { TierBadge } from '@/shared/components/TierBadge'
 import { useProModalStore } from '@/shared/stores/proModalStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
@@ -25,6 +26,8 @@ interface InventoryPageHeaderProps {
   // The title/count row itself always renders (see InventoryManagerPage's own doc comment on why -
   // every other page's header mounts unconditionally too).
   hasLoaded: boolean
+  // Whether the inventory itself has anything in it, regardless of search and filters.
+  hasItems: boolean
   isFetching: boolean
   isListing: boolean
   isSellingAll: boolean
@@ -42,7 +45,7 @@ interface InventoryPageHeaderProps {
   onRemoveListings: () => void
 }
 
-// Title/count, bulk actions (list selected / sell all / sell dupes / remove listings), a
+// This page's toolbar: title/count, bulk actions (list selected / sell all / sell dupes / remove listings), a
 // refresh button, and the settings-gear shortcut - mirrors `main`'s PageHeader scope minus
 // pagination (InventoryItemGrid is now virtualized - a single scrolling view, no per-page split),
 // with HeroUI v3's `AlertDialog` replacing `main`'s `CustomModal`-based confirmations (same
@@ -54,6 +57,7 @@ export const InventoryPageHeader = ({
   dupesCount,
   sellDelaySeconds,
   hasLoaded,
+  hasItems,
   isFetching,
   isListing,
   isSellingAll,
@@ -78,84 +82,78 @@ export const InventoryPageHeader = ({
   const closeDialog = () => setOpenDialog(null)
 
   return (
-    <div className='flex shrink-0 flex-col gap-3 px-6 py-2'>
-      <div className='flex items-center justify-between gap-4'>
-        <div className='flex flex-col'>
-          <Typography type='h2' className='font-black'>
-            {t('dashboard.sidebar.nav.inventoryManager')}
-          </Typography>
-          <Typography color='muted' type='body-sm'>
-            {hasLoaded
-              ? t('dashboard.inventoryManager.count', { count: itemCount })
-              : t('dashboard.inventoryManager.connect.description')}
-          </Typography>
-        </div>
+    <>
+      <PageToolbar
+        start={
+          hasLoaded &&
+          hasItems && (
+            <PageTitle count={itemCount} title={t('dashboard.sidebar.nav.inventoryManager')} />
+          )
+        }
+      >
+        {hasLoaded && (
+          <>
+            <Button
+              isDisabled={!hasLoaded || selectedCount === 0 || isBusy}
+              isPending={isListing}
+              variant='secondary'
+              onPress={() => setOpenDialog('listSelected')}
+            >
+              {t('dashboard.inventoryManager.actions.listSelected', { count: selectedCount })}
+            </Button>
 
-        <div className='flex flex-wrap items-center justify-end gap-2'>
-          {hasLoaded && (
-            <>
-              <Button
-                isDisabled={selectedCount === 0 || isBusy}
-                isPending={isListing}
-                variant='secondary'
-                onPress={() => setOpenDialog('listSelected')}
-              >
-                {t('dashboard.inventoryManager.actions.listSelected', { count: selectedCount })}
-              </Button>
+            <Button
+              isDisabled={!hasLoaded || itemCount === 0 || isBusy}
+              isPending={isSellingAll}
+              variant='secondary'
+              onPress={() => setOpenDialog('sellAll')}
+            >
+              {t('dashboard.inventoryManager.actions.sellAll', { count: itemCount })}
+            </Button>
 
-              <Button
-                isDisabled={itemCount === 0 || isBusy}
-                isPending={isSellingAll}
-                variant='secondary'
-                onPress={() => setOpenDialog('sellAll')}
-              >
-                {t('dashboard.inventoryManager.actions.sellAll', { count: itemCount })}
-              </Button>
-
-              {/* `isDisabled` only reflects the real "nothing to sell" reason (itemCount === 0)
+            {/* `isDisabled` only reflects the real "nothing to sell" reason (itemCount === 0)
                       - a gamer-tier gate is styled to look disabled but stays a real, pressable
                       Button whose `onPress` opens the upsell instead. HeroUI's Button maps
                       `isDisabled` to a native `disabled` attribute, which would otherwise swallow
                       the real click a gated upsell needs entirely (confirmed live via CDP), not
                       just block bubbling to a wrapper. */}
-              <Button
-                className={!canSellDupes ? 'opacity-50' : undefined}
-                isDisabled={itemCount === 0 || isBusy}
-                isPending={isSellingDupes}
-                variant='secondary'
-                onPress={() =>
-                  canSellDupes ? setOpenDialog('sellDupes') : openProModalWithTier('gamer')
-                }
-              >
-                {t('dashboard.inventoryManager.actions.sellDupes')}
-                {!canSellDupes && <TierBadge tier='gamer' />}
-              </Button>
+            <Button
+              className={!canSellDupes ? 'opacity-50' : undefined}
+              isDisabled={!hasLoaded || itemCount === 0 || isBusy}
+              isPending={isSellingDupes}
+              variant='secondary'
+              onPress={() =>
+                canSellDupes ? setOpenDialog('sellDupes') : openProModalWithTier('gamer')
+              }
+            >
+              {t('dashboard.inventoryManager.actions.sellDupes')}
+              {!canSellDupes && <TierBadge tier='gamer' />}
+            </Button>
 
-              <Button
-                isDisabled={itemCount === 0 || isBusy}
-                isPending={isRemovingListings}
-                variant='danger'
-                onPress={() => setOpenDialog('removeListings')}
-              >
-                {t('dashboard.inventoryManager.actions.removeListings')}
-              </Button>
-            </>
-          )}
+            <Button
+              isDisabled={!hasLoaded || itemCount === 0 || isBusy}
+              isPending={isRemovingListings}
+              variant='danger'
+              onPress={() => setOpenDialog('removeListings')}
+            >
+              {t('dashboard.inventoryManager.actions.removeListings')}
+            </Button>
 
-          <Button
-            isIconOnly
-            aria-label={t('common.actions.refresh')}
-            isPending={isFetching}
-            onPress={onRefresh}
-          >
-            <TbRefresh fontSize={18} />
-          </Button>
+            <Button
+              isIconOnly
+              aria-label={t('common.actions.refresh')}
+              isPending={isFetching}
+              onPress={onRefresh}
+            >
+              <TbRefresh fontSize={18} />
+            </Button>
+          </>
+        )}
 
-          <Button isIconOnly aria-label={t('common.actions.settings')} onPress={onOpenSettings}>
-            <TbSettings fontSize={18} />
-          </Button>
-        </div>
-      </div>
+        <Button isIconOnly aria-label={t('common.actions.settings')} onPress={onOpenSettings}>
+          <TbSettings fontSize={18} />
+        </Button>
+      </PageToolbar>
 
       <AlertDialog
         isOpen={openDialog === 'listSelected'}
@@ -299,6 +297,6 @@ export const InventoryPageHeader = ({
           </AlertDialog.Container>
         </AlertDialog.Backdrop>
       </AlertDialog>
-    </div>
+    </>
   )
 }

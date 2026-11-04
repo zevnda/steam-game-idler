@@ -41,10 +41,6 @@ export const SubscriptionSettingsTab = () => {
 
   return (
     <div className='flex flex-col gap-4'>
-      <Typography type='h3' className='font-bold mb-4'>
-        {t('dashboard.settings.subscription.title')}
-      </Typography>
-
       <SettingsRow
         description={t('dashboard.settings.subscription.status.description')}
         title={t('dashboard.settings.subscription.status.title')}

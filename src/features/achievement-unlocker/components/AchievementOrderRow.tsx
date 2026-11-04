@@ -127,7 +127,7 @@ export const AchievementOrderRow = ({
         ) : (
           <Checkbox isSelected={!isSkipped} onChange={() => onToggleSkip?.(achievement.id)}>
             <Checkbox.Content>
-              <Checkbox.Control className='bg-surface-tertiary hover:bg-surface-hover text-foreground'>
+              <Checkbox.Control className='bg-field hover:bg-field-hover text-foreground'>
                 <Checkbox.Indicator />
               </Checkbox.Control>
             </Checkbox.Content>
@@ -158,7 +158,7 @@ export const AchievementOrderRow = ({
           </Typography>
           {isDlc && <DlcBadge />}
           {isSkipped && (
-            <span className='shrink-0 rounded-full bg-surface-tertiary px-1.5 py-0.5 text-[10px] font-semibold text-muted'>
+            <span className='shrink-0 rounded-full bg-surface-secondary px-1.5 py-0.5 text-[10px] font-semibold text-muted'>
               {t('dashboard.achievementUnlocker.order.skipped')}
             </span>
           )}

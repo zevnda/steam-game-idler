@@ -76,7 +76,7 @@ export const AchievementListItem = ({
         'focus-visible:ring-2 focus-visible:ring-accent',
         isSelected
           ? 'border-accent bg-accent/10'
-          : 'border-border bg-surface hover:border-surface-tertiary hover:bg-surface-secondary/50',
+          : 'border-border bg-surface hover:border-surface-tertiary hover:bg-surface-hover',
         isSelectable ? 'cursor-pointer' : 'cursor-default',
       )}
       role='checkbox'

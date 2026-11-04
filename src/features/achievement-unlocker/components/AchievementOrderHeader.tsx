@@ -15,7 +15,7 @@ interface AchievementOrderHeaderProps {
 }
 
 // Static/fixed header for the achievement-order overlay - mirrors AchievementManagerHeader.tsx's
-// header/body split (bg-overlay, border-b, shrink-0, close-then-title on the left) so the reset and
+// header/body split (bg-background, border-b, shrink-0, close-then-title on the left) so the reset and
 // import controls stay reachable while the virtualized achievement list scrolls beneath them,
 // instead of scrolling away with it like the previous inline row did. The delay-before-first-unlock
 // input lives in AchievementOrderListHeader.tsx instead, above the list, so it lines up with each
@@ -39,7 +39,7 @@ export const AchievementOrderHeader = ({
     // (see AchievementOrderOverlay.tsx), which paints over Titlebar just like
     // AchievementManagerHeader.tsx's does; see that file's doc comment for the full explanation.
     <div
-      className='bg-overlay relative z-10 flex shrink-0 flex-col gap-3 border-b border-border px-6 py-3'
+      className='bg-background relative z-10 flex shrink-0 flex-col gap-3 border-b border-border px-6 py-3'
       data-tauri-drag-region
     >
       <div className='flex items-center justify-between gap-4' data-tauri-drag-region>

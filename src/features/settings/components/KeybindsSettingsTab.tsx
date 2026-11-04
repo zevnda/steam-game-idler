@@ -29,7 +29,7 @@ const KeybindRow = ({ label, keys, altKeys }: KeybindRowProps) => (
   <div
     className={cn(
       'flex items-center justify-between gap-4 px-4 py-3',
-      'odd:bg-field/40 transition-colors hover:bg-field-hover',
+      'odd:bg-surface/50 transition-colors hover:bg-surface-hover',
     )}
   >
     <Typography type='body-sm'>{label}</Typography>
@@ -56,10 +56,6 @@ export const KeybindsSettingsTab = () => {
 
   return (
     <div className='flex min-h-0 flex-1 flex-col gap-5'>
-      <Typography type='h3' className='font-bold mb-4'>
-        {t('dashboard.settings.keybinds.title')}
-      </Typography>
-
       <div className='flex flex-col gap-5'>
         <KeybindSection title={t('dashboard.settings.keybinds.zoom')}>
           <KeybindRow
@@ -78,7 +74,11 @@ export const KeybindsSettingsTab = () => {
         <KeybindSection title={t('dashboard.settings.keybinds.navigation')}>
           <KeybindRow keys={['Ctrl', ']']} label={t('dashboard.settings.keybinds.nextPage')} />
           <KeybindRow keys={['Ctrl', '[']} label={t('dashboard.settings.keybinds.prevPage')} />
-          <KeybindRow keys={['/']} label={t('dashboard.settings.keybinds.openSearch')} />
+          <KeybindRow
+            altKeys={['/']}
+            keys={['Ctrl', 'K']}
+            label={t('dashboard.settings.keybinds.openSearch')}
+          />
           <KeybindRow
             keys={['Ctrl', ',']}
             label={t('dashboard.settings.keybinds.toggleSettings')}

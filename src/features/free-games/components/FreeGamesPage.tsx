@@ -1,15 +1,19 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbGift } from 'react-icons/tb'
+import { TbRefresh, TbSettings } from 'react-icons/tb'
 import { useClaimFreeGame } from '../hooks/useClaimFreeGame'
 import { useFreeGames } from '../hooks/useFreeGames'
 import { errorMessageKey } from '../utils/errorMessageKey'
+import { FreeGamesEmptyBanner } from './FreeGamesEmptyBanner'
 import { FreeGamesGrid } from './FreeGamesGrid'
-import { FreeGamesPageHeader } from './FreeGamesPageHeader'
-import { Alert, Button, EmptyState, Typography } from '@heroui/react'
+import { Alert, Button } from '@heroui/react'
 import { useRouter } from 'next/router'
+import { PageBannerArea } from '@/shared/components/dashboard/PageBanner'
+import { PageBody } from '@/shared/components/dashboard/PageBody'
+import { PageTitle, PageToolbar } from '@/shared/components/dashboard/PageToolbar'
 import { GameGridSkeleton } from '@/shared/components/GameGridSkeleton'
 import { useSessionStore } from '@/shared/stores/sessionStore'
+import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
 
 // Claimable free games - discovery (get_free_games) is a public, mode-agnostic scrape with no
 // account concept, already filtered here against this account's owned games (useFreeGames reuses
@@ -20,6 +24,7 @@ import { useSessionStore } from '@/shared/stores/sessionStore'
 export const FreeGamesPage = () => {
   const { t } = useTranslation()
   const router = useRouter()
+  const openSettings = useSettingsModalStore(state => state.open)
   const account = useSessionStore(state => state.account)
   const { freeGames, isLoading, isRefreshing, errorCode, refresh } = useFreeGames()
   const { pendingAppIds, outcomes, errorCodes, claim } = useClaimFreeGame()
@@ -34,50 +39,71 @@ export const FreeGamesPage = () => {
     return null
   }
 
+  // The banner carries its own refresh and settings buttons, so there's no toolbar above it.
+  const isEmpty = !isLoading && !errorCode && freeGames.length === 0
+
   return (
     <div className='flex h-full flex-col'>
-      <FreeGamesPageHeader
-        gameCount={freeGames.length}
-        isRefreshing={isRefreshing}
-        onRefresh={refresh}
-      />
+      <PageBody>
+        {!isEmpty && (
+          <PageToolbar
+            start={
+              freeGames.length > 0 && (
+                <PageTitle count={freeGames.length} title={t('dashboard.sidebar.nav.freeGames')} />
+              )
+            }
+          >
+            <Button
+              isIconOnly
+              aria-label={t('common.actions.refresh')}
+              isPending={isRefreshing}
+              onPress={refresh}
+            >
+              <TbRefresh fontSize={18} />
+            </Button>
+            <Button
+              isIconOnly
+              aria-label={t('common.actions.settings')}
+              onPress={() => openSettings('freeGames')}
+            >
+              <TbSettings fontSize={18} />
+            </Button>
+          </PageToolbar>
+        )}
 
-      {isLoading ? (
-        <GameGridSkeleton />
-      ) : errorCode ? (
-        <div className='flex flex-1 flex-col items-center justify-center gap-4 p-8'>
-          <Alert className='max-w-md' status='danger'>
-            <Alert.Indicator />
-            <Alert.Content>
-              <Alert.Title>{t('dashboard.freeGames.errors.title')}</Alert.Title>
-              <Alert.Description>
-                {t(errorMessageKey(errorCode), { code: errorCode })}
-              </Alert.Description>
-            </Alert.Content>
-          </Alert>
-          <Button variant='secondary' onPress={refresh}>
-            {t('common.actions.tryAgain')}
-          </Button>
-        </div>
-      ) : freeGames.length === 0 ? (
-        <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-          <TbGift fontSize={40} />
-          <Typography type='h3'>{t('dashboard.freeGames.empty.title')}</Typography>
-          <Typography color='muted' type='body-sm'>
-            {t('dashboard.freeGames.empty.description')}
-          </Typography>
-        </EmptyState>
-      ) : (
-        <div className='flex-1 overflow-y-auto'>
-          <FreeGamesGrid
-            errorCodes={errorCodes}
-            games={freeGames}
-            outcomes={outcomes}
-            pendingAppIds={pendingAppIds}
-            onClaim={claim}
-          />
-        </div>
-      )}
+        {isLoading ? (
+          <GameGridSkeleton />
+        ) : errorCode ? (
+          <div className='flex flex-1 flex-col items-center justify-center gap-4 p-8'>
+            <Alert className='max-w-md' status='danger'>
+              <Alert.Indicator />
+              <Alert.Content>
+                <Alert.Title>{t('dashboard.freeGames.errors.title')}</Alert.Title>
+                <Alert.Description>
+                  {t(errorMessageKey(errorCode), { code: errorCode })}
+                </Alert.Description>
+              </Alert.Content>
+            </Alert>
+            <Button variant='secondary' onPress={refresh}>
+              {t('common.actions.tryAgain')}
+            </Button>
+          </div>
+        ) : isEmpty ? (
+          <PageBannerArea>
+            <FreeGamesEmptyBanner isRefreshing={isRefreshing} onRefresh={refresh} />
+          </PageBannerArea>
+        ) : (
+          <div className='flex-1 overflow-y-auto'>
+            <FreeGamesGrid
+              errorCodes={errorCodes}
+              games={freeGames}
+              outcomes={outcomes}
+              pendingAppIds={pendingAppIds}
+              onClaim={claim}
+            />
+          </div>
+        )}
+      </PageBody>
     </div>
   )
 }

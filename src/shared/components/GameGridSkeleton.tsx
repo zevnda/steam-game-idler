@@ -9,9 +9,8 @@ interface GameGridSkeletonProps {
   gridClassName?: string
 }
 
-const DEFAULT_GRID_CLASSNAME =
-  'grid grid-cols-2 gap-4 p-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6'
-const DEFAULT_TILE_CLASSNAME = 'aspect-460/215 rounded-lg'
+const DEFAULT_GRID_CLASSNAME = 'game-grid page-content'
+const DEFAULT_TILE_CLASSNAME = 'aspect-(--game-card-aspect) rounded-xl'
 
 // Shared loading placeholder for every game/item grid in the app (games list, free games,
 // card farming's browse/queue tabs, inventory manager) - was five copies of the same
@@ -30,7 +29,7 @@ export const GameGridSkeleton = ({
   tileClassName = DEFAULT_TILE_CLASSNAME,
   gridClassName = DEFAULT_GRID_CLASSNAME,
 }: GameGridSkeletonProps) => (
-  <div className='max-h-screen min-h-0 flex-1 overflow-hidden'>
+  <div className='max-h-screen min-h-0 flex-1 overflow-hidden [scrollbar-gutter:stable]'>
     <div className={gridClassName}>
       {Array.from({ length: count }, (_, index) => (
         <Skeleton key={index} className={tileClassName} />

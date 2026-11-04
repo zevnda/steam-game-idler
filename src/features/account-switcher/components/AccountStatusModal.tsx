@@ -22,7 +22,7 @@ export const AccountStatusModal = ({
 }: AccountStatusModalProps) => (
   <Modal isOpen={isOpen} onOpenChange={open => !open && onClose()}>
     <Modal.Backdrop>
-      <ModalDragRegion placement='backdrop' />
+      <ModalDragRegion />
       <Modal.Container size='md'>
         <Modal.Dialog>
           <Modal.Header>

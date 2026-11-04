@@ -52,7 +52,7 @@ export const StatisticRow = ({ stat, value, isEdited, onChange }: StatisticRowPr
           {stat.incrementOnly && (
             <AppTooltip.Root>
               <AppTooltip.Trigger>
-                <span className='inline-flex shrink-0 items-center gap-1 rounded-full bg-surface-tertiary px-1.5 py-0.5 text-[10px] font-semibold whitespace-nowrap text-muted'>
+                <span className='inline-flex shrink-0 items-center gap-1 rounded-full bg-surface-secondary px-1.5 py-0.5 text-[10px] font-semibold whitespace-nowrap text-muted'>
                   <TbTrendingUp fontSize={11} />
                   {t('dashboard.achievements.incrementOnly')}
                 </span>
@@ -84,7 +84,7 @@ export const StatisticRow = ({ stat, value, isEdited, onChange }: StatisticRowPr
             value={value}
             onChange={onChange}
           >
-            <NumberField.Group className='bg-surface-secondary hover:bg-surface-hover text-foreground'>
+            <NumberField.Group className='bg-field hover:bg-field-hover text-foreground'>
               <NumberField.DecrementButton />
               <NumberField.Input />
               <NumberField.IncrementButton />

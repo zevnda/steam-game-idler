@@ -1,7 +1,7 @@
 import type { FreeGamesSettings } from '@/features/free-games/types'
 import { useTranslation } from 'react-i18next'
 import { freeGamesErrorMessageKey } from '../utils/errorMessageKey'
-import { Alert, Button, Skeleton, toast, Typography } from '@heroui/react'
+import { Alert, Button, Skeleton, toast } from '@heroui/react'
 import { SettingsRow } from '@/shared/components/SettingsRow'
 import { TierBadge } from '@/shared/components/TierBadge'
 import { ToggleSwitch } from '@/shared/components/ToggleSwitch'
@@ -118,10 +118,6 @@ export const FreeGamesSettingsTab = ({
 
   return (
     <div className='flex flex-col gap-5'>
-      <Typography type='h3' className='font-bold mb-4'>
-        {t('dashboard.sidebar.nav.freeGames')}
-      </Typography>
-
       <SettingsRow
         description={t('dashboard.settings.freeGames.notifications.description')}
         title={t('dashboard.settings.freeGames.notifications.label')}

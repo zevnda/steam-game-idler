@@ -132,35 +132,82 @@ function artSVG(g: Game) {
     <rect width="460" height="215" fill="url(#g)"/>${MOTIFS[g.motif](seed)}</svg>`
 }
 
+// Where each motif's subject sits across the 460-wide art, so the tall crop below keeps it in frame
+// (the synth sun, the lantern, the orbiting planet) instead of a blank stretch of gradient.
+const MOTIF_FOCUS: Record<keyof typeof MOTIFS, number> = {
+  stars: 330,
+  synth: 330,
+  peaks: 240,
+  blocks: 230,
+  waves: 230,
+  isles: 120,
+  circuit: 300,
+  rings: 360,
+  embers: 230,
+  orbits: 340,
+  bubbles: 330,
+  slash: 340,
+  stripes: 230,
+  lantern: 350,
+  hills: 160,
+}
+
 /**
- * Rasterises every game's capsule art (460x215 at `scale`). Resolves once all are decoded; any
- * single failure falls back to a flat gradient so one bad decode can't blank the whole mock.
+ * The same art as a tall 2:3 cover (200x300) for the app's default cover-style game cards: the
+ * motif scaled up to the cover's full height and cropped around its subject, over a top-to-bottom
+ * version of the game's gradient.
+ */
+function posterSVG(g: Game) {
+  const seed = g.name.length * 7 + g.name.charCodeAt(0)
+  const s = 300 / 215
+  const tx = 100 - MOTIF_FOCUS[g.motif] * s
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 300" width="200" height="300">
+    <defs><linearGradient id="g" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="${g.c[0]}"/><stop offset="1" stop-color="${g.c[1]}"/></linearGradient></defs>
+    <rect width="200" height="300" fill="url(#g)"/><g transform="translate(${tx.toFixed(1)} 0) scale(${s.toFixed(4)})">${MOTIFS[g.motif](seed)}</g></svg>`
+}
+
+async function rasterise(svg: string, g: Game, w: number, h: number) {
+  const cv = document.createElement('canvas')
+  cv.width = w
+  cv.height = h
+  const ctx = cv.getContext('2d')!
+  try {
+    const img = new Image()
+    img.decoding = 'async'
+    img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
+    await img.decode()
+    ctx.drawImage(img, 0, 0, w, h)
+  } catch {
+    const grad = ctx.createLinearGradient(0, 0, w, h)
+    grad.addColorStop(0, g.c[0])
+    grad.addColorStop(1, g.c[1])
+    ctx.fillStyle = grad
+    ctx.fillRect(0, 0, w, h)
+  }
+  return cv
+}
+
+/**
+ * Rasterises every game's wide capsule art (460x215 at `scale`) and its tall cover (200x300 at
+ * `scale`). Resolves once all are decoded; any single failure falls back to a flat gradient so one
+ * bad decode can't blank the whole mock. Kept as two maps because the trading-card effects iterate
+ * `capsules` as the list of games.
  */
 export async function loadGameArt(scale: number, yieldToMain?: () => Promise<void>) {
-  const out = new Map<string, HTMLCanvasElement>()
-  // one game per task, so decoding + rasterising 16 SVGs never blocks as a single long task
+  const capsules = new Map<string, HTMLCanvasElement>()
+  const posters = new Map<string, HTMLCanvasElement>()
+  // one image per task, so decoding + rasterising 32 SVGs never blocks as a single long task
   for (const g of GAMES) {
-    await (async () => {
-      const cv = document.createElement('canvas')
-      cv.width = Math.round(460 * scale)
-      cv.height = Math.round(215 * scale)
-      const ctx = cv.getContext('2d')!
-      try {
-        const img = new Image()
-        img.decoding = 'async'
-        img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(artSVG(g))}`
-        await img.decode()
-        ctx.drawImage(img, 0, 0, cv.width, cv.height)
-      } catch {
-        const grad = ctx.createLinearGradient(0, 0, cv.width, cv.height)
-        grad.addColorStop(0, g.c[0])
-        grad.addColorStop(1, g.c[1])
-        ctx.fillStyle = grad
-        ctx.fillRect(0, 0, cv.width, cv.height)
-      }
-      out.set(g.name, cv)
-    })()
+    capsules.set(
+      g.name,
+      await rasterise(artSVG(g), g, Math.round(460 * scale), Math.round(215 * scale)),
+    )
+    await yieldToMain?.()
+    posters.set(
+      g.name,
+      await rasterise(posterSVG(g), g, Math.round(200 * scale), Math.round(300 * scale)),
+    )
     await yieldToMain?.()
   }
-  return out
+  return { capsules, posters }
 }

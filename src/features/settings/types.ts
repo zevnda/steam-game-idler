@@ -16,8 +16,6 @@ export interface Settings {
   font: string
   customBackground: string | null
   disableTooltips: boolean
-  showRecommendedCarousel: boolean
-  showRecentCarousel: boolean
 }
 
 // Mirrors src-tauri/src/debug/commands.rs::SystemInfo.

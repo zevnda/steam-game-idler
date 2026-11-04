@@ -5,13 +5,13 @@
 // AppError code today and are deliberately left out).
 const ERROR_DOCS_HREFS: Record<string, string> = {
   steam_community_session_expired:
-    'https://steamgameidler.com/docs/faq#error-messages:~:text=Card%20farming%20credentials%20need%20to%20be%20updated%20in%20%E2%80%9Csettings%20%3E%20general%22',
+    'https://steamgameidler.com/docs/faq#error-messages:~:text=Your%20Steam%20Community%20session%20has%20expired',
   steam_community_session_failed:
-    'https://steamgameidler.com/docs/faq#error-messages:~:text=Incorrect%20card%20farming%20credentials',
+    'https://steamgameidler.com/docs/faq#error-messages:~:text=Couldn%27t%20sign%20in%20to%20Steam%20Community',
   market_price_rate_limited:
-    'https://steamgameidler.com/docs/faq#:~:text=Rate%20limited%20when%20fetching%20card%20prices',
+    'https://steamgameidler.com/docs/faq#error-messages:~:text=Steam%20is%20rate%2Dlimiting%20price%20lookups',
   family_view_restricted:
-    'https://steamgameidler.com/docs/steam-credentials#:~:text=This%20will%20not%20work%20if%20you%20have%20Family%20View%20enabled',
+    'https://steamgameidler.com/docs/faq#error-messages:~:text=Family%20View%20is%20enabled%20on%20your%20Steam%20account',
 }
 
 export const errorDocsHref = (code: string) => ERROR_DOCS_HREFS[code]

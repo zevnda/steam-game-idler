@@ -2,8 +2,7 @@ import type { SteamCookiesLike } from '@/shared/stores/steamCookiesStore'
 import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbExternalLink } from 'react-icons/tb'
-import AuthCard from './AuthCard'
+import { TbExternalLink, TbSettings } from 'react-icons/tb'
 import { EMPTY_MANUAL_COOKIES_FORM_VALUE, ManualCookiesForm } from './ManualCookiesForm'
 import {
   Button,
@@ -16,6 +15,7 @@ import {
   toast,
   Typography,
 } from '@heroui/react'
+import { PageBanner, PageBannerArea } from '@/shared/components/dashboard/PageBanner'
 import { TierBadge } from '@/shared/components/TierBadge'
 import { useSavedSteamCookies } from '@/shared/hooks/useSavedSteamCookies'
 import { useProModalStore } from '@/shared/stores/proModalStore'
@@ -42,7 +42,11 @@ interface SteamCookiesConnectPanelProps<T extends SteamCookiesLike> {
   // both, since that caller (SteamCredentialsTab) already renders its own heading row above this
   // component, including its own "Learn more" docs link (see `showLearnMoreLink`'s doc comment
   // for why that tab renders its own instead of reusing this component's title row).
-  title?: ReactNode
+  title?: string
+  // The standalone variant's banner illustration, a preview of the feature this unlocks
+  art?: ReactNode
+  // The standalone variant's settings button, since its page hides the toolbar while it shows
+  onOpenSettings?: () => void
   // 'standalone' (default): centered, max-width card with its own title/description - a full
   // pre-dashboard-style connect prompt (CardFarmingStartPanel/InventoryConnectPanel). 'embedded':
   // no AuthCard/centering wrapper, just the error slot/tabs/form/buttons at the host's own width -
@@ -108,6 +112,8 @@ export function SteamCookiesConnectPanel<T extends SteamCookiesLike>({
   savedCredentialsNote,
   isSubmitting,
   errorSlot,
+  art,
+  onOpenSettings,
   showClear = false,
   showLearnMoreLink = false,
   showSuccessToast = false,
@@ -242,6 +248,8 @@ export function SteamCookiesConnectPanel<T extends SteamCookiesLike>({
     </>
   )
 
+  const isStandalone = variant !== 'embedded'
+
   const content = (
     <div className='flex flex-col gap-4'>
       {errorSlot}
@@ -281,10 +289,20 @@ export function SteamCookiesConnectPanel<T extends SteamCookiesLike>({
         </TabPanel>
       </TabsRoot>
 
-      <div className='flex items-center gap-3'>
+      <div className='flex flex-wrap items-center gap-2'>
+        <Button
+          // The banner's white call to action, like every other banner's main button
+          className={isStandalone ? 'bg-white text-black hover:bg-white/85' : undefined}
+          size={isStandalone ? 'md' : 'sm'}
+          isDisabled={!canSubmit || isClearing}
+          isPending={isSubmitting}
+          onPress={handleSubmit}
+        >
+          {submitLabel}
+        </Button>
         {showClear && savedCookies && (
           <Button
-            size='sm'
+            size={isStandalone ? 'md' : 'sm'}
             isDisabled={isSubmitting}
             isPending={isClearing}
             variant='secondary'
@@ -293,14 +311,22 @@ export function SteamCookiesConnectPanel<T extends SteamCookiesLike>({
             {t('common.actions.clear')}
           </Button>
         )}
-        <Button
-          size='sm'
-          isDisabled={!canSubmit || isClearing}
-          isPending={isSubmitting}
-          onPress={handleSubmit}
-        >
-          {submitLabel}
-        </Button>
+        {isStandalone && onOpenSettings && (
+          <Button variant='secondary' onPress={onOpenSettings}>
+            <TbSettings fontSize={18} />
+            {t('common.actions.settings')}
+          </Button>
+        )}
+        {isStandalone && showLearnMoreLink && (
+          <Button
+            className='ml-auto inline-flex items-center gap-1'
+            variant='ghost'
+            onPress={() => openExternalLink(STEAM_CREDENTIALS_DOCS_URL)}
+          >
+            {t('common.learnMore')}
+            <TbExternalLink fontSize={16} />
+          </Button>
+        )}
       </div>
     </div>
   )
@@ -309,28 +335,18 @@ export function SteamCookiesConnectPanel<T extends SteamCookiesLike>({
     return content
   }
 
+  // One banner holding the whole prompt, like the app's other "nothing here yet" pages: what's needed
+  // and the form on the left, a preview of the feature it unlocks on the right. Card Farming and the
+  // Inventory Manager both render this, so the two prompts look the same.
   return (
-    <div className='w-full max-w-lg p-8'>
-      <AuthCard
-        className='w-full'
-        title={title}
-        titleAction={
-          showLearnMoreLink ? (
-            <Button
-              className='inline-flex shrink-0 items-center gap-1 text-sm duration-150 cursor-pointer'
-              size='sm'
-              type='button'
-              variant='secondary'
-              onClick={() => openExternalLink(STEAM_CREDENTIALS_DOCS_URL)}
-            >
-              {t('common.learnMore')}
-              <TbExternalLink fontSize={14} />
-            </Button>
-          ) : undefined
-        }
+    <PageBannerArea>
+      <PageBanner
+        art={art}
+        description={t('dashboard.settings.steamCredentials.description')}
+        title={title ?? ''}
       >
         {content}
-      </AuthCard>
-    </div>
+      </PageBanner>
+    </PageBannerArea>
   )
 }

@@ -114,10 +114,6 @@ export const GameSettingsTab = () => {
 
   return (
     <div className='flex min-h-0 flex-1 flex-col gap-5'>
-      <Typography type='h3' className='font-bold mb-4'>
-        {t('dashboard.settings.gameSettings.title')}
-      </Typography>
-
       {/* Row layout (fixed w-72 game list + flex-1 fields, each independently scrollable) only
           holds up once the modal's content column has enough width for both at once - at this
           tab's nav-sidebar-plus-max-w-4xl content width, that's roughly the `lg` breakpoint and

@@ -24,8 +24,12 @@
       "startIdling": "Start Idling",
       "stopIdling": "Stop Idling",
       "manageAchievements": "Manage Achievements",
+      "customOrder": "Custom Order & Unlock Delay",
       "viewOnSteam": "View on Steam",
-      "addTo": "Add To"
+      "copyAppId": "Copy App ID",
+      "appIdCopied": "App ID copied",
+      "cardFarmingBlacklist": "Card Farming Blacklist",
+      "lists": "Lists"
     },
     "minutes": "minutes",
     "zeroUnlimitedHint": "0 = unlimited",
@@ -104,8 +108,6 @@
       "nameDesc": "Name (Z-A)"
     },
     "noGamesQueued": "No games queued",
-    "gamesQueuedCount_one": "{{count}} game queued",
-    "gamesQueuedCount_other": "{{count}} games queued",
     "completedThisSessionCount": "Completed this session ({{count}})"
   },
   "versionPolicy": {
@@ -386,12 +388,9 @@
       }
     },
     "games": {
-      "count_one": "{{count}} game",
-      "count_other": "{{count}} games",
       "unknownName": "App {{appId}}",
       "carousels": {
-        "recommended": "Recommended",
-        "recent": "Recently Played"
+        "recommended": "Recommended"
       },
       "sort": {
         "playtimeDesc": "Playtime (High to Low)",
@@ -424,16 +423,16 @@
       "descriptionWithGame": "This account is playing {{game}} in another Steam session, so idling and automation are paused. Everything resumes automatically about a minute after that session stops playing."
     },
     "idling": {
-      "count_one": "{{count}} game idling",
-      "count_other": "{{count}} games idling",
       "stopAll": "Stop all",
       "sections": {
         "manual": "Manually idled",
         "other": "Other"
       },
       "empty": {
-        "title": "No games idling",
-        "description": "Start idling a game from the Games tab to see it here."
+        "title": "Nothing's idling right now.",
+        "description": "Go to the Games page, hover over a game and press the play button. It'll show up here while it idles.",
+        "browseGames": "Browse your games",
+        "setUpAutoIdle": "Set up Automatic Idler"
       },
       "errors": {
         "startFailed": "Couldn't start idling this game.",
@@ -442,8 +441,6 @@
       }
     },
     "favorites": {
-      "count_one": "{{count}} favorite",
-      "count_other": "{{count}} favorites",
       "confirmClear": {
         "title": "Clear all favorites?",
         "description": "This will remove all {{count}} games from your favorites list."
@@ -459,8 +456,6 @@
       }
     },
     "freeGames": {
-      "count_one": "{{count}} free game available",
-      "count_other": "{{count}} free games available",
       "actions": {
         "claim": "Claim",
         "claimed": "Claimed"
@@ -612,11 +607,6 @@
       }
     },
     "cardFarming": {
-      "status": {
-        "idle": "Not farming",
-        "farming_one": "Farming {{count}} game",
-        "farming_other": "Farming {{count}} games"
-      },
       "actions": {
         "stop": "Stop farming"
       },
@@ -646,12 +636,12 @@
         "description": "Every owned game's card drops are either fully farmed or none are available right now."
       },
       "whitelistEmpty": {
-        "title": "No games whitelisted",
-        "description": "Add games from the Games With Drops tab to restrict farming to just those games. Leave it empty to farm all game with drops."
+        "title": "No whitelisted games",
+        "description": "Add games from the Games With Drops tab to farm only those games. Leave it empty to farm all games with drops."
       },
       "blacklistEmpty": {
         "title": "No blacklisted games",
-        "description": "Games you blacklist from the Games With Drops tab will never be farmed and appear here."
+        "description": "Add games from the Games With Drops tab to never farm those games. Leave it empty to farm all games with drops."
       },
       "connect": {
         "automaticDescription": "Signs in to Steam Community automatically to check for drops."
@@ -709,10 +699,6 @@
       }
     },
     "achievementUnlocker": {
-      "status": {
-        "running_one": "Unlocking {{count}} game",
-        "running_other": "Unlocking {{count}} games"
-      },
       "addAllToQueue": "Add all to queue",
       "confirmAddAllToQueue": {
         "title": "Add all {{count}} games to the queue?",
@@ -828,14 +814,11 @@
       }
     },
     "inventoryManager": {
-      "count_one": "{{count}} item",
-      "count_other": "{{count}} items",
       "fetchPrice": "Fetch price",
       "fetchingPrice": "Fetching price…",
       "badgeLevel": "Badge level {{level}}",
       "noBadge": "No badge crafted",
       "connect": {
-        "description": "Load your Steam Community inventory to manage and sell items.",
         "automaticDescription": "Signs in to Steam Community automatically to load your inventory."
       },
       "actions": {
@@ -885,7 +868,8 @@
       },
       "empty": {
         "title": "No items found",
-        "description": "No marketable items match the current search and filters."
+        "description": "No marketable items match the current search and filters.",
+        "noItemsDescription": "You don't have any items that can be sold on the Steam Market yet. Trading cards you farm will show up here."
       },
       "priceData": {
         "sellOrders": "Sell orders",
@@ -1041,15 +1025,11 @@
           "label": "Disable tooltips",
           "description": "Hide hover tooltips throughout the app."
         },
-        "carousels": {
-          "recommended": {
-            "label": "Show Recommended carousel",
-            "description": "Show a row of unplayed games at the top of the games list."
-          },
-          "recent": {
-            "label": "Show Recently Played carousel",
-            "description": "Show a row of your most recently played games at the top of the games list."
-          }
+        "gameCardStyle": {
+          "label": "Game card style",
+          "description": "Choose the shape of the game cards in your game lists.",
+          "cover": "Cover art",
+          "banner": "Banner art"
         },
         "background": {
           "label": "Background image",
@@ -1171,6 +1151,10 @@
         "openSearch": "Open search",
         "toggleSettings": "Toggle settings",
         "toggleSidebar": "Toggle sidebar"
+      },
+      "help": {
+        "title": "Help",
+        "troubleshooting": "Troubleshooting"
       },
       "debug": {
         "title": "Debug",

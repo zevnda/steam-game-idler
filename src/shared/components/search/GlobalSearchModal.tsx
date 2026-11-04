@@ -110,7 +110,7 @@ export const GlobalSearchModal = () => {
   return (
     <Modal isOpen={activeScope !== null} onOpenChange={open => !open && close()}>
       <Modal.Backdrop>
-        <ModalDragRegion placement='backdrop' />
+        <ModalDragRegion />
         <Modal.Container placement='top' size='md'>
           <Modal.Dialog className='mt-6' style={{ padding: 0 }}>
             <Modal.Header className='border-b border-border p-2'>

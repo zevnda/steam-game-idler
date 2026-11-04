@@ -5,14 +5,10 @@ import { useEffect, useRef } from 'react'
 import { Grid, useGridCallbackRef } from 'react-window'
 import { BackToTopButton } from './BackToTopButton'
 import { useBackToTop } from '@/shared/hooks/useBackToTop'
-import {
-  GAME_GRID_GAP as GAP,
-  GAME_CARD_INFO_HEIGHT as INFO_HEIGHT,
-  GAME_CARD_THUMBNAIL_ASPECT as THUMBNAIL_ASPECT,
-  useResponsiveColumnCount,
-} from '@/shared/hooks/useGameGridColumns'
+import { GAME_GRID_GAP as GAP, useResponsiveColumnCount } from '@/shared/hooks/useGameGridColumns'
+import { useGameCardMetrics } from '@/shared/stores/gameCardStyleStore'
 
-// Vertical padding is a plain `py-6` on react-window's own scrollable root (Grid, not a wrapper -
+// Vertical padding is plain `page-toolbar-offset pb-6`, matching `.page-content`, on react-window's own scrollable root (Grid, not a wrapper -
 // so the scrollbar itself stays flush against the true edge). That works because react-window
 // never sets a cell's `top` - only `transform: translateY(...)` - so each cell falls back to its
 // *static* position (i.e. its normal-flow position, which honors padding-top) before the
@@ -107,7 +103,8 @@ export const VirtualizedGameGrid = ({ games, renderCard }: VirtualizedGameGridPr
   // This is the same `(usableWidth - GAP * (columnCount - 1)) / columnCount` shape GamesList.tsx's
   // flex-row cards already use correctly.
   const cardWidth = (usableWidth - GAP * (realColumnCount - 1)) / realColumnCount
-  const cardHeight = Math.round(cardWidth * THUMBNAIL_ASPECT) + INFO_HEIGHT
+  const { heightRatio } = useGameCardMetrics()
+  const cardHeight = Math.round(cardWidth * heightRatio)
   const rowCount = Math.ceil(games.length / realColumnCount)
 
   return (
@@ -115,12 +112,12 @@ export const VirtualizedGameGrid = ({ games, renderCard }: VirtualizedGameGridPr
     // so react-window's own scrollbar sits flush against this container's true edge. `relative`
     // only affects positioning context (not layout), so it's safe alongside that - it's what lets
     // BackToTopButton below anchor to this grid's own viewport instead of the whole app window.
-    <div ref={containerRef} className='relative h-full w-full'>
+    <div ref={containerRef} className='virtual-grid-host relative h-full w-full'>
       {width > 0 && (
         <Grid
           cellComponent={Cell}
           cellProps={{ games, realColumnCount, cardWidth, cardHeight, renderCard }}
-          className='py-6'
+          className='page-toolbar-offset pb-6'
           columnCount={realColumnCount + 2}
           gridRef={setGridApi}
           // Every real column's slot is `cardWidth` plus a trailing GAP to the next card - except
@@ -134,7 +131,7 @@ export const VirtualizedGameGrid = ({ games, renderCard }: VirtualizedGameGridPr
           }}
           rowCount={rowCount}
           // Mirrors columnWidth above for the vertical axis: the last row's slot is `cardHeight`
-          // alone so it sits flush against the bottom `py-6` padding instead of leaving a dead GAP
+          // alone so it sits flush against the bottom `pb-6` padding instead of leaving a dead GAP
           // beneath it.
           rowHeight={index => (index === rowCount - 1 ? cardHeight : cardHeight + GAP)}
           style={{ height: '100%', width: '100%' }}

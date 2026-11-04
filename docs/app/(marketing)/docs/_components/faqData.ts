@@ -5,8 +5,7 @@ export const faqData = [
     markdown:
       '**Why are some games not showing up in my games list in SGI?**\n' +
       '> There are several reasons why a game may not appear in your SGI games list:\n' +
-      '> * You need to click the "Refresh" button in "Your Games" to update the list\n' +
-      "> * Family shared games currently don't appear in SGI's games list, and can't be added to Card Farming, Achievement Unlocker, Auto-Idle, or Favorites\n" +
+      '> * You need to click the refresh button in the toolbar on the "Games" page to update the list\n' +
       '> * Free-to-play games only appear in your library after you\'ve launched them at least once, which grants you a license. Simply clicking "Add to library" on the store page doesn\'t grant you a license\n' +
       '> * Some demos and playtests (unvetted apps) may not show up correctly in SGI, or be able to be idled\n' +
       '> * The game may be [marked as private](https://help.steampowered.com/en/faqs/view/1150-C06F-4D62-4966) on your Steam profile\n' +
@@ -116,12 +115,20 @@ export const faqData = [
       '**How long does it take for cards to drop?**\n' +
       '> Card drop timers can be different for every game. The developer sets these timers and they can vary anywhere from 10 minutes to 2 hours between drops.',
   },
+  {
+    question: 'Why does Card Farming need Steam Credentials?',
+    markdown:
+      '**Why does Card Farming need Steam Credentials?**\n' +
+      '> SGI requires [Steam Credentials](/docs/steam-credentials) for the account you plan to farm cards or manage inventory on, to check card drops and access the Steam marketplace. If you used [Steam Sign-in](/docs/get-started/how-to-sign-in#steam-sign-in) on a Gamer tier account this is handled automatically — otherwise, read the [Steam Credentials](/docs/steam-credentials) page for how to add them.',
+  },
   { section: 'Idling games' },
   {
     question: 'Can I idle family shared games?',
     markdown:
       '**Can I idle family shared games?**\n' +
-      "> Not currently. SGI only shows and manages games you own a direct license for — family shared games don't appear in your games list and can't be idled, farmed for cards, or have achievements managed.",
+      '> Yes. Games shared with you through Steam Families appear in your games list alongside your own, so you can idle them, add them to Favorites and Auto-Idle, and manage their achievements.\n' +
+      '>\n' +
+      "> Only one person can play a shared copy at a time, so a shared game can't be idled while someone else in your family is playing it. Shared games also don't drop trading cards, because cards only drop for the account that owns the game.",
   },
   {
     question: 'Why am I unable to idle some games?',
@@ -207,7 +214,7 @@ export const faqData = [
     question: 'Can I unlock achievements for family shared games?',
     markdown:
       '**Can I unlock achievements for family shared games?**\n' +
-      "> Not currently. Family shared games don't appear in SGI's games list, so they can't be added to the Achievement Unlocker or Achievement Manager.",
+      "> Yes. Family shared games appear in your games list, so you can open them in the Achievement Manager or add them to the Achievement Unlocker. The achievements you unlock are added to your own profile, not the owner's.",
   },
   {
     question: 'Is there a way to unlock achievements in a specific order?',
@@ -219,17 +226,17 @@ export const faqData = [
   },
   { section: 'Error messages' },
   {
-    question: 'Steam is not running',
+    question: "Steam isn't running. Please start Steam and try again.",
     markdown:
-      '**Steam is not running**\n' +
+      "**Steam isn't running. Please start Steam and try again.**\n" +
       '> This only affects accounts using [Local Sign-in](/docs/get-started/how-to-sign-in#local-sign-in) — this method requires the Steam client to be running, and you must be signed in to the same account you are currently signed in to SGI with.\n' +
       '>\n' +
       "> If you'd rather not depend on the Steam client at all, switch to [Steam Sign-in](/docs/get-started/how-to-sign-in#steam-sign-in) instead.",
   },
   {
-    question: 'No Steam users found',
+    question: "Couldn't find a local Steam installation.",
     markdown:
-      '**No Steam users found**\n' +
+      "**Couldn't find a local Steam installation.**\n" +
       '> This error only appears when using [Local Sign-in](/docs/get-started/how-to-sign-in#local-sign-in):\n' +
       '> * The Steam client needs to be installed\n' +
       '> * You need to be signed in to at least one Steam account in the Steam client\n' +
@@ -245,53 +252,37 @@ export const faqData = [
       '> Alternatively, use [Steam Sign-in](/docs/get-started/how-to-sign-in#steam-sign-in) to skip this requirement entirely.',
   },
   {
-    question: 'There are no games in your queue',
+    question: "Couldn't sign in to Steam Community. Check your cookies and try again.",
     markdown:
-      '**There are no games in your queue**\n' +
-      '> The queue you are trying to start a feature for is empty. You can add games to your queue by following these steps for [Achievement Unlocker](/docs/features/achievement-unlocker), [Card Farming](/docs/features/card-farming), or [Auto-Idle](/docs/features/auto-idle) — or enable that feature\'s "Farm/idle all games" setting instead.',
-  },
-  {
-    question: 'Account mismatch between Steam and SGI',
-    markdown:
-      '**Account mismatch between Steam and SGI**\n' +
-      '> This error can be thrown for a few reasons. The most common one is:\n' +
-      '>\n' +
-      '> * If using [Local Sign-in](/docs/get-started/how-to-sign-in#local-sign-in), you are logged in to the Steam client with a different account than you are using in SGI. This method requires you to be logged in to the same account in both the Steam client and SGI\n' +
-      '>\n' +
-      '> If you confirm that you are logged in to the same account in both SGI and the Steam client and the error message persists, please report the issue on the [GitHub Issues page](https://github.com/zevnda/steam-game-idler/issues).',
-  },
-  {
-    question: 'Incorrect Steam Credentials',
-    markdown:
-      '**Incorrect Steam Credentials**\n' +
+      "**Couldn't sign in to Steam Community. Check your cookies and try again.**\n" +
       '> * You have entered the incorrect cookies. Follow the steps found in the [Steam Credentials](/docs/steam-credentials) section\n' +
       "> * Steam accounts with [Family View](https://store.steampowered.com/parental/) _(parental restrictions)_ enabled will also have a `steamParental` cookie that needs to be saved in SGI's settings\n" +
       '> * If you are using the [Automated Method](/docs/steam-credentials#automated-method), you must disable [Family View](https://store.steampowered.com/parental/) to use this method\n' +
       "> * In some cases, Steam accounts might have a `steamMachineAuth` cookie that needs to be saved in SGI's settings",
   },
   {
-    question: 'Missing Steam Credentials',
+    question: 'Your Steam Community session has expired. Please reconnect to continue.',
     markdown:
-      '**Missing Steam Credentials**\n' +
-      '> SGI requires [Steam Credentials](/docs/steam-credentials) for the account you plan to farm cards or manage inventory on, to check card drops and access the Steam marketplace. If you used [Steam Sign-in](/docs/get-started/how-to-sign-in#steam-sign-in) on a Gamer tier account this is handled automatically — otherwise, read the [Steam Credentials](/docs/steam-credentials) page for how to add them.',
-  },
-  {
-    question: 'Steam Credentials need to be updated',
-    markdown:
-      '**Steam Credentials need to be updated**\n' +
+      '**Your Steam Community session has expired. Please reconnect to continue.**\n' +
       '> From time to time the cookies you supply to SGI will expire for several reasons and they will need to be updated. Follow the [Steam Credentials](/docs/steam-credentials) steps to get updated cookies.',
   },
   {
-    question: 'Please wait X seconds before fetching more card prices',
+    question: 'Family View is enabled on your Steam account. Disable Family View and try again.',
     markdown:
-      '**Please wait X seconds before fetching more card prices**\n' +
-      '> SGI uses an undocumented Steam API endpoint with strict rate limits to fetch card prices. To avoid being rate limited by Steam, SGI enforces a 5 second cooldown when manually fetching prices. This ensures that users have a smooth experience when fetching card prices without running into rate limit issues.',
+      '**Family View is enabled on your Steam account. Disable Family View and try again.**\n' +
+      "> Automatically getting your [Steam Credentials](/docs/steam-credentials) doesn't work while [Family View](https://store.steampowered.com/parental/) _(parental restrictions)_ is enabled. Either disable Family View, or add your cookies by hand in [Settings → Steam Credentials](/docs/steam-credentials), including the `steamParental` cookie.",
   },
   {
-    question: 'Rate limited when fetching card prices',
+    question: 'Please wait X seconds before fetching more item prices',
     markdown:
-      '**Rate limited when fetching card prices**\n' +
-      '> SGI uses an undocumented Steam API endpoint with strict rate limits to fetch card prices. If you encounter this message, it means that the rate limit has been exceeded while listing cards on the Steam market.\n' +
+      '**Please wait X seconds before fetching more item prices**\n' +
+      '> SGI uses an undocumented Steam API endpoint with strict rate limits to fetch item prices. To avoid being rate limited by Steam, SGI enforces a 5 second cooldown when manually fetching prices. This ensures that users have a smooth experience when fetching item prices without running into rate limit issues.',
+  },
+  {
+    question: 'Steam is rate-limiting price lookups right now. Please try again in a moment.',
+    markdown:
+      '**Steam is rate-limiting price lookups right now. Please try again in a moment.**\n' +
+      '> SGI uses an undocumented Steam API endpoint with strict rate limits to fetch item prices. If you encounter this message, it means that the rate limit has been exceeded while listing cards on the Steam market.\n' +
       '>\n' +
       '> Rate limit times can vary, so you may need to wait a few minutes to an hour before trying again.\n' +
       '>\n' +

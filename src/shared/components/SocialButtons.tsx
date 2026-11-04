@@ -4,10 +4,9 @@ import { FaDiscord, FaGithub } from 'react-icons/fa6'
 import { TbBookFilled } from 'react-icons/tb'
 import { AppTooltip } from '@/shared/components/AppTooltip'
 import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
-import { openExternalLink } from '@/shared/utils/links'
+import { DISCORD_URL, openExternalLink } from '@/shared/utils/links'
 
 const GITHUB_URL = 'https://github.com/zevnda/steam-game-idler'
-const DISCORD_URL = 'https://discord.com/invite/5kY2ZbVnZ8'
 
 // Maps each settings tab to its docs slug, mirroring `docs/app/(marketing)/docs/_content/settings/`'s
 // file layout - `steamCredentials` is the one exception, living at the content tree's top level
@@ -24,6 +23,7 @@ const DOCS_SLUG_BY_TAB: Record<SettingsTab, string> = {
   freeGames: 'settings/free-games',
   gameSettings: 'settings/game-settings',
   keybinds: '',
+  help: 'settings/help',
   debug: 'settings/debug',
 }
 

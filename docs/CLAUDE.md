@@ -10,6 +10,10 @@ A **Next.js 16 + Fumadocs** static site deployed to Vercel. It serves two purpos
 
 This package is fully independent of the root Tauri app. Changes here have no effect on the desktop app.
 
+**These docs must stay in sync with the desktop app.** A change to the app's UI or behaviour
+updates the matching pages here in the same PR. See the root `CLAUDE.md`'s "Docs and in-app Help
+stay in sync with the app" section for exactly what to check.
+
 ## Commands
 
 Run from the **repo root** using root aliases:
@@ -118,7 +122,7 @@ features/
   favorites.mdx
   auto-idle.mdx
 settings/            general, customization, card-farming, achievement-unlocker,
-                     inventory-manager, free-games, game-settings, keybinds, subscription, debug
+                     inventory-manager, free-games, game-settings, keybinds, help, subscription, debug
 faq.mdx
 troubleshooting.mdx
 steam-credentials.mdx  # Steam Community cookies for Card Farming/Inventory Manager only —

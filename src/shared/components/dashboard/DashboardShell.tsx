@@ -25,7 +25,6 @@ import { useAchievementUnlockerConcurrencyGuard } from '@/shared/hooks/useAchiev
 import { useAgentReauthWatcher } from '@/shared/hooks/useAgentReauthWatcher'
 import { useAntiAwayStatus } from '@/shared/hooks/useAntiAwayStatus'
 import { useAutoUpdateGamesListStatus } from '@/shared/hooks/useAutoUpdateGamesListStatus'
-import { useCarouselSettingsSync } from '@/shared/hooks/useCarouselSettingsSync'
 import { useCheckSubscription } from '@/shared/hooks/useCheckSubscription'
 import { useDashboardShortcuts } from '@/shared/hooks/useDashboardShortcuts'
 import { useDisableTooltipsSync } from '@/shared/hooks/useDisableTooltipsSync'
@@ -71,7 +70,6 @@ export const DashboardShell = ({ children }: DashboardShellProps) => {
   useFreeGamesWatcher()
   useFreeGameClaimCorrections()
   useDisableTooltipsSync()
-  useCarouselSettingsSync()
   useSteamMonitor()
   useSteamCookiesSync()
   useSortPreferencesSync()
@@ -80,12 +78,12 @@ export const DashboardShell = ({ children }: DashboardShellProps) => {
     <div className='flex h-screen w-screen'>
       <CustomBackground />
       <Sidebar />
-      {/* pt-10 mirrors Sidebar's own top spacer - keeps routed page content out from under the
-          global Titlebar's drag region. No `bg-background` here (unlike Sidebar, which stays
+      {/* pt-14 matches the global Titlebar's height exactly, so page content starts right beneath
+          it and the frosted PageToolbar sits flush against it. No `bg-background` here (unlike Sidebar, which stays
           solid regardless of a custom background) - `CustomBackground` is the sole owner of this
           area's canvas, whether that's a plain solid layer or a Casual-tier image, see its own
           doc comment. */}
-      <main className='min-w-0 flex-1 overflow-y-auto pt-16'>{children}</main>
+      <main className='min-w-0 flex-1 overflow-y-auto pt-14'>{children}</main>
 
       <SettingsModal />
       <AddAccountModal />

@@ -62,6 +62,9 @@ export async function fetchGamesList(
     updateEntry(key, {
       games: fresh.games,
       possiblyPrivate: fresh.possiblyPrivate,
+      // Not only cleared when a fetch starts: fetches can overlap, and an earlier one failing after
+      // this one started would otherwise leave its error screen covering the list this just loaded.
+      errorCode: null,
       phase: 'ready',
       lastFetchedAt: Date.now(),
       isRefreshing: false,
@@ -73,7 +76,7 @@ export async function fetchGamesList(
 }
 
 // Refreshes `account`'s entry in the background without ever touching `isRefreshing`/`phase` -
-// unlike `fetchGamesList` above, this must not flash `GamesPageHeader`'s refresh-button spinner
+// unlike `fetchGamesList` above, this must not flash the Games toolbar's refresh-button spinner
 // (driven by `isRefreshing`) or the page skeleton (driven by `phase`, see `GamesPage.tsx`) on every
 // tick. Used exclusively by `useAutoUpdateGamesListStatus`'s interval - errors are logged, not
 // surfaced to `errorCode`, since a silent background poll failing shouldn't replace whatever load/

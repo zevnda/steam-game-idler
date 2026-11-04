@@ -324,10 +324,6 @@ export const GeneralSettingsTab = ({
 
   return (
     <div className='flex flex-col gap-5'>
-      <Typography type='h3' className='font-bold mb-4'>
-        {t('dashboard.settings.general.title')}
-      </Typography>
-
       {activeAccount && (
         <div className='flex flex-wrap items-end gap-4 mb-8'>
           <Avatar size='lg'>

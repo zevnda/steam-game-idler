@@ -79,7 +79,7 @@ export const PriceOrderModal = ({
   return (
     <Modal isOpen={item !== null} onOpenChange={onOpenChange}>
       <Modal.Backdrop>
-        <ModalDragRegion placement='backdrop' />
+        <ModalDragRegion />
         <Modal.Container size='lg'>
           <Modal.Dialog>
             <Modal.Header>

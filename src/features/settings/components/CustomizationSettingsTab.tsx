@@ -22,9 +22,9 @@ import {
 import { SettingsRow } from '@/shared/components/SettingsRow'
 import { TierBadge } from '@/shared/components/TierBadge'
 import { ToggleSwitch } from '@/shared/components/ToggleSwitch'
-import { useCarouselSettingsStore } from '@/shared/stores/carouselSettingsStore'
 import { useCustomBackgroundStore } from '@/shared/stores/customBackgroundStore'
 import { useDisableTooltipsStore } from '@/shared/stores/disableTooltipsStore'
+import { useGameCardStyleStore } from '@/shared/stores/gameCardStyleStore'
 import { useProModalStore } from '@/shared/stores/proModalStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { applyFont, FONT_STORAGE_KEY } from '@/shared/theme/applyFont'
@@ -47,8 +47,6 @@ interface CustomizationSettingsTabProps {
   onRefresh: () => void
   onSaveTheme: (theme: string) => Promise<boolean>
   onSaveDisableTooltips: (enabled: boolean) => Promise<boolean>
-  onSaveShowRecommendedCarousel: (enabled: boolean) => Promise<boolean>
-  onSaveShowRecentCarousel: (enabled: boolean) => Promise<boolean>
   onSaveCustomBackground: (path: string) => Promise<boolean>
   onClearCustomBackground: () => Promise<boolean>
   onSaveFont: (font: string) => Promise<boolean>
@@ -103,8 +101,6 @@ export const CustomizationSettingsTab = ({
   onRefresh,
   onSaveTheme,
   onSaveDisableTooltips,
-  onSaveShowRecommendedCarousel,
-  onSaveShowRecentCarousel,
   onSaveCustomBackground,
   onClearCustomBackground,
   onSaveFont,
@@ -115,11 +111,9 @@ export const CustomizationSettingsTab = ({
   const openProModalWithTier = useProModalStore(state => state.openWithTier)
 
   const disableTooltips = useDisableTooltipsStore(state => state.disabled)
+  const gameCardStyle = useGameCardStyleStore(state => state.style)
+  const setGameCardStyle = useGameCardStyleStore(state => state.setStyle)
   const setDisableTooltips = useDisableTooltipsStore(state => state.setDisabled)
-  const showRecommended = useCarouselSettingsStore(state => state.showRecommended)
-  const setShowRecommended = useCarouselSettingsStore(state => state.setShowRecommended)
-  const showRecent = useCarouselSettingsStore(state => state.showRecent)
-  const setShowRecent = useCarouselSettingsStore(state => state.setShowRecent)
   const backgroundDataUrl = useCustomBackgroundStore(state => state.dataUrl)
   const setBackgroundDataUrl = useCustomBackgroundStore(state => state.setDataUrl)
   const [isChoosingBackground, setIsChoosingBackground] = useState(false)
@@ -135,24 +129,6 @@ export const CustomizationSettingsTab = ({
     const ok = await onSaveDisableTooltips(next)
     if (ok) {
       setDisableTooltips(next)
-    } else {
-      reportError(actionErrorCode)
-    }
-  }
-
-  const handleToggleRecommended = async (next: boolean) => {
-    const ok = await onSaveShowRecommendedCarousel(next)
-    if (ok) {
-      setShowRecommended(next)
-    } else {
-      reportError(actionErrorCode)
-    }
-  }
-
-  const handleToggleRecent = async (next: boolean) => {
-    const ok = await onSaveShowRecentCarousel(next)
-    if (ok) {
-      setShowRecent(next)
     } else {
       reportError(actionErrorCode)
     }
@@ -266,9 +242,9 @@ export const CustomizationSettingsTab = ({
               className='relative h-8 w-8 overflow-hidden rounded-full border border-border'
               style={{ background: swatchBackground ?? tokens.background }}
             >
-              {/* Accent pip - signature presets also recolor HeroUI's accent, which the
-                  background circle alone wouldn't show. */}
-              {tokens.accent && (
+              {/* Accent pip, signature presets only: it pairs with their backdrop art, while a
+                  plain color preset's swatch is just its color. */}
+              {swatchBackground && tokens.accent && (
                 <span
                   className='absolute right-0.5 bottom-0.5 h-2.5 w-2.5 rounded-full ring-1 ring-black/40'
                   style={{ background: tokens.accent }}
@@ -313,9 +289,6 @@ export const CustomizationSettingsTab = ({
   if (isLoading || !settings) {
     return (
       <div className='flex flex-col gap-4'>
-        <Typography type='h3' className='font-bold mb-4'>
-          {t('dashboard.settings.customization.title')}
-        </Typography>
         {Array.from({ length: 5 }, (_, index) => (
           <Skeleton key={index} className='h-10 w-full rounded-lg' />
         ))}
@@ -325,10 +298,6 @@ export const CustomizationSettingsTab = ({
 
   return (
     <div className='flex flex-col gap-4'>
-      <Typography type='h3' className='font-bold mb-4'>
-        {t('dashboard.settings.customization.title')}
-      </Typography>
-
       <SettingsRow
         description={t('dashboard.settings.customization.tooltips.description')}
         title={t('dashboard.settings.customization.tooltips.label')}
@@ -336,18 +305,41 @@ export const CustomizationSettingsTab = ({
         <ToggleSwitch isSelected={disableTooltips} onChange={handleToggleTooltips} />
       </SettingsRow>
 
+      {/* Saved per device rather than in settings.json - see gameCardStyleStore.ts */}
       <SettingsRow
-        description={t('dashboard.settings.customization.carousels.recommended.description')}
-        title={t('dashboard.settings.customization.carousels.recommended.label')}
+        description={t('dashboard.settings.customization.gameCardStyle.description')}
+        showDivider={true}
+        title={t('dashboard.settings.customization.gameCardStyle.label')}
       >
-        <ToggleSwitch isSelected={showRecommended} onChange={handleToggleRecommended} />
-      </SettingsRow>
-
-      <SettingsRow
-        description={t('dashboard.settings.customization.carousels.recent.description')}
-        title={t('dashboard.settings.customization.carousels.recent.label')}
-      >
-        <ToggleSwitch isSelected={showRecent} onChange={handleToggleRecent} />
+        <Select.Root
+          aria-label={t('dashboard.settings.customization.gameCardStyle.label')}
+          className='w-48'
+          selectedKey={gameCardStyle}
+          onSelectionChange={key => setGameCardStyle(key === 'banner' ? 'banner' : 'cover')}
+        >
+          <Select.Trigger>
+            <Select.Value />
+            <Select.Indicator />
+          </Select.Trigger>
+          <Select.Popover>
+            <ListBox>
+              <ListBox.Item
+                id='cover'
+                textValue={t('dashboard.settings.customization.gameCardStyle.cover')}
+              >
+                {t('dashboard.settings.customization.gameCardStyle.cover')}
+                <ListBox.ItemIndicator />
+              </ListBox.Item>
+              <ListBox.Item
+                id='banner'
+                textValue={t('dashboard.settings.customization.gameCardStyle.banner')}
+              >
+                {t('dashboard.settings.customization.gameCardStyle.banner')}
+                <ListBox.ItemIndicator />
+              </ListBox.Item>
+            </ListBox>
+          </Select.Popover>
+        </Select.Root>
       </SettingsRow>
 
       <SettingsRow

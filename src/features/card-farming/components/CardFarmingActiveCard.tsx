@@ -1,8 +1,7 @@
 import type { FarmingPhase, FarmingProgress } from '../types'
 import { useTranslation } from 'react-i18next'
-import { ProgressBar, Typography } from '@heroui/react'
-import { GameThumbnail } from '@/shared/components/GameThumbnail'
-import { gameCardContextAttrs } from '@/shared/utils/gameCardContext'
+import { ProgressBar } from '@heroui/react'
+import { GamePosterCard } from '@/shared/components/GamePosterCard'
 
 interface CardFarmingActiveCardProps {
   game: FarmingProgress
@@ -36,47 +35,47 @@ export const CardFarmingActiveCard = ({
   const showBuildingPlaytime = phase === 'bulkIdle' && hoursUntilFarmable !== undefined
 
   return (
-    <div
-      className='flex flex-col gap-3 rounded-2xl border border-border bg-surface/80 p-4 backdrop-blur-sm'
-      {...gameCardContextAttrs(appId, name)}
-    >
-      <GameThumbnail appId={appId} name={name} />
-      <Typography title={name} truncate type='body-sm' weight='semibold'>
-        {name}
-      </Typography>
-      {showBuildingPlaytime ? (
-        <ProgressBar
-          aria-label={`Playtime progress for ${name}`}
-          maxValue={hoursUntilFarmable}
-          minValue={0}
-          value={Math.min(playtimeHours, hoursUntilFarmable)}
-        >
-          <ProgressBar.Track>
-            <ProgressBar.Fill />
-          </ProgressBar.Track>
-        </ProgressBar>
-      ) : (
-        initialRemaining > 0 && (
-          <ProgressBar
-            aria-label={`Card farming progress for ${name}`}
-            maxValue={initialRemaining}
-            minValue={0}
-            value={initialRemaining - remaining}
-          >
-            <ProgressBar.Track>
-              <ProgressBar.Fill />
-            </ProgressBar.Track>
-          </ProgressBar>
-        )
-      )}
-      <Typography className='text-accent' type='body-xs' weight='semibold'>
-        {showBuildingPlaytime
-          ? t('dashboard.cardFarming.progress.accumulatingPlaytime', {
-              hours: playtimeHours.toFixed(1),
-              threshold: hoursUntilFarmable,
-            })
-          : t('dashboard.cardFarming.progress.dropsRemaining', { count: remaining })}
-      </Typography>
-    </div>
+    <GamePosterCard
+      appId={appId}
+      isAlwaysRevealed
+      meta={
+        <div className='flex flex-col gap-1.5'>
+          {showBuildingPlaytime ? (
+            <ProgressBar
+              aria-label={`Playtime progress for ${name}`}
+              maxValue={hoursUntilFarmable}
+              minValue={0}
+              value={Math.min(playtimeHours, hoursUntilFarmable)}
+            >
+              <ProgressBar.Track>
+                <ProgressBar.Fill />
+              </ProgressBar.Track>
+            </ProgressBar>
+          ) : (
+            initialRemaining > 0 && (
+              <ProgressBar
+                aria-label={`Card farming progress for ${name}`}
+                maxValue={initialRemaining}
+                minValue={0}
+                value={initialRemaining - remaining}
+              >
+                <ProgressBar.Track>
+                  <ProgressBar.Fill />
+                </ProgressBar.Track>
+              </ProgressBar>
+            )
+          )}
+          <span>
+            {showBuildingPlaytime
+              ? t('dashboard.cardFarming.progress.accumulatingPlaytime', {
+                  hours: playtimeHours.toFixed(1),
+                  threshold: hoursUntilFarmable,
+                })
+              : t('dashboard.cardFarming.progress.dropsRemaining', { count: remaining })}
+          </span>
+        </div>
+      }
+      name={name}
+    />
   )
 }

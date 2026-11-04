@@ -95,7 +95,7 @@ export const InputField = ({
       onBlur={commit}
       onChange={handleChange}
     >
-      <NumberField.Group className='flex bg-surface-hover'>
+      <NumberField.Group className='flex bg-field hover:bg-field-hover'>
         <NumberField.Input className='flex-1' />
         <div className='flex h-full flex-col border-l border-field-placeholder/15'>
           <NumberField.IncrementButton className='flex h-1/2 w-6 items-center justify-center rounded-none border-0 pt-0.5 text-sm'>

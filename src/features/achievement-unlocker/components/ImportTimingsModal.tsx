@@ -36,7 +36,7 @@ export const ImportTimingsModal = ({
   return (
     <Modal isOpen={isOpen} onOpenChange={open => !open && handleClose()}>
       <Modal.Backdrop>
-        <ModalDragRegion placement='backdrop' />
+        <ModalDragRegion />
         <Modal.Container>
           <Modal.Dialog>
             <Modal.Header>

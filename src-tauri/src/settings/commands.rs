@@ -146,23 +146,3 @@ pub fn set_disable_tooltips(app_handle: AppHandle, enabled: bool) -> AppResult<S
         .map_err(AppError::SettingsIo)
         .map(build_response)
 }
-
-#[tauri::command]
-pub fn set_show_recommended_carousel(
-    app_handle: AppHandle,
-    enabled: bool,
-) -> AppResult<SettingsResponse> {
-    super::set_show_recommended_carousel(&app_handle, enabled)
-        .map_err(AppError::SettingsIo)
-        .map(build_response)
-}
-
-#[tauri::command]
-pub fn set_show_recent_carousel(
-    app_handle: AppHandle,
-    enabled: bool,
-) -> AppResult<SettingsResponse> {
-    super::set_show_recent_carousel(&app_handle, enabled)
-        .map_err(AppError::SettingsIo)
-        .map(build_response)
-}

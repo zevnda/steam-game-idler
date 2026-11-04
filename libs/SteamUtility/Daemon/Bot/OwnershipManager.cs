@@ -14,6 +14,32 @@ namespace SteamUtility.Daemon.Bot
     // Steam client needed. Correctly reflects Family Sharing / borrowed games.
     public sealed class OwnershipManager
     {
+        // SteamKit2 cancels a job after 10 seconds without a response by default. A normal fetch of
+        // around 800 games already takes about 8 seconds in total, so a slow or throttling Steam
+        // pushed these full-library requests past that limit and failed them outright. Each part of
+        // a multi-part response extends the deadline, so this only limits silence between parts.
+        private static readonly TimeSpan PicsJobTimeout = TimeSpan.FromSeconds(30);
+
+        // Steam splits a large PICS response into parts and can stall partway through one, so a
+        // whole library in a single request is the most likely thing to come back incomplete.
+        private const int PicsBatchSize = 250;
+
+        // Backstop for apps still blank after AppInfoHttpFallback: if that's down too, nearly the whole
+        // library comes back without details (seen at 97-99%, turning 773 games into 78, then 5), and
+        // using it would overwrite the cached list. Well above what a healthy response should have: a
+        // library is real apps, which have details.
+        private const double MaxBlankAppShare = 0.9;
+
+        // Fetches running right now, shared by anyone asking for the same thing. Each one requests
+        // the account's entire license and app list from Steam, and repeated triggers (reloading the
+        // window, an account switch landing during a refresh) used to stack up as separate full
+        // requests that all then competed for the same slow responses.
+        private readonly object _inFlightLock = new();
+        private readonly Dictionary<
+            (bool GamesOnly, string Language),
+            Task<IReadOnlyList<OwnedGame>>
+        > _inFlightFetches = new();
+
         // Payment methods that were never an actual money transaction through Steam's checkout -
         // Steam's refund policy has nothing to refund for these regardless of how recently the
         // license was granted, so they're excluded entirely from "recently purchased" tracking
@@ -61,7 +87,49 @@ namespace SteamUtility.Daemon.Bot
             "Game",
         };
 
-        public async Task<IReadOnlyList<OwnedGame>> GetOwnedGamesAsync(
+        public Task<IReadOnlyList<OwnedGame>> GetOwnedGamesAsync(
+            SteamBot bot,
+            bool gamesOnly,
+            string language
+        )
+        {
+            var key = (gamesOnly, language);
+            lock (_inFlightLock)
+            {
+                if (_inFlightFetches.TryGetValue(key, out var inFlight))
+                {
+                    return inFlight;
+                }
+
+                var fetch = RunFetchAsync(bot, gamesOnly, language);
+                _inFlightFetches[key] = fetch;
+                return fetch;
+            }
+        }
+
+        private async Task<IReadOnlyList<OwnedGame>> RunFetchAsync(
+            SteamBot bot,
+            bool gamesOnly,
+            string language
+        )
+        {
+            // Hands control back straight away, so GetOwnedGamesAsync has registered this fetch and
+            // released its lock before the removal below can possibly run.
+            await Task.Yield();
+            try
+            {
+                return await FetchOwnedGamesAsync(bot, gamesOnly, language);
+            }
+            finally
+            {
+                lock (_inFlightLock)
+                {
+                    _inFlightFetches.Remove((gamesOnly, language));
+                }
+            }
+        }
+
+        private async Task<IReadOnlyList<OwnedGame>> FetchOwnedGamesAsync(
             SteamBot bot,
             bool gamesOnly,
             string language
@@ -90,6 +158,10 @@ namespace SteamUtility.Daemon.Bot
             // WaitForLicenseListAsync doc comment.
             await bot.WaitForLicenseListAsync(TimeSpan.FromSeconds(10));
             var resolution = await ResolveOwnedAppIdsAsync(bot);
+            Log.Info(
+                "OwnershipManager",
+                $"Resolved ownership: licenses={bot.OwnedLicenses.Count} apps={resolution.AppIds.Count} gamesOnly={gamesOnly}"
+            );
 
             var appIds = resolution.AppIds;
 
@@ -100,14 +172,11 @@ namespace SteamUtility.Daemon.Bot
                     .Select(appId => new SteamApps.PICSRequest(appId))
                     .ToList();
 
-                var appResultSet = await bot.SteamAppsHandler.PICSGetProductInfo(
-                    apps: appRequests,
-                    packages: Enumerable.Empty<SteamApps.PICSRequest>()
-                );
+                var appResults = await GetProductInfoAsync(bot, appRequests, arePackages: false);
 
                 var playtimes = await GetPlaytimesAsync(bot);
 
-                foreach (var result in appResultSet.Results!)
+                foreach (var result in appResults)
                 {
                     foreach (var (appId, info) in result.Apps)
                     {
@@ -135,6 +204,11 @@ namespace SteamUtility.Daemon.Bot
                         });
                     }
                 }
+
+                Log.Info(
+                    "OwnershipManager",
+                    $"Built library: games={games.Count} steamOwnedCount={playtimes.Count} gamesOnly={gamesOnly}"
+                );
             }
 
             return games;
@@ -254,6 +328,97 @@ namespace SteamUtility.Daemon.Bot
             return result;
         }
 
+        // Throws if any batch is marked incomplete. SteamKit2 doesn't treat that as a failure: once at
+        // least one part of a response has arrived, a timeout returns whatever it has with Complete
+        // false. Using that as if it were everything silently turned a stalled response into a
+        // library of a handful of games, which then overwrote the cached list. Failing here leaves
+        // the last good list in place, and lets the caller retry.
+        private static async Task<List<SteamApps.PICSProductInfoCallback>> GetProductInfoAsync(
+            SteamBot bot,
+            List<SteamApps.PICSRequest> requests,
+            bool arePackages
+        )
+        {
+            var results = new List<SteamApps.PICSProductInfoCallback>();
+            var none = Enumerable.Empty<SteamApps.PICSRequest>();
+            var kind = arePackages ? "packages" : "apps";
+            int returned = 0, unknown = 0, missingToken = 0, blank = 0, parts = 0, shortBatches = 0;
+            int viaHttp = 0, httpDownloaded = 0, httpFailed = 0;
+            foreach (var batch in requests.Chunk(PicsBatchSize))
+            {
+                var job = bot.SteamAppsHandler.PICSGetProductInfo(
+                    apps: arePackages ? none : batch,
+                    packages: arePackages ? batch : none
+                );
+                job.Timeout = PicsJobTimeout;
+                var resultSet = await job;
+                if (!resultSet.Complete)
+                {
+                    throw new SteamResponseIncompleteException();
+                }
+
+                results.AddRange(resultSet.Results!);
+
+                if (!arePackages)
+                {
+                    var withoutDetails = resultSet
+                        .Results!.SelectMany(part => part.Apps.Values)
+                        .Where(info => info.KeyValues.Children.Count == 0 && info.SHAHash is { Length: > 0 })
+                        .ToList();
+                    viaHttp += withoutDetails.Count;
+                    var loaded = await AppInfoHttpFallback.LoadAsync(withoutDetails);
+                    httpDownloaded += loaded.Downloaded;
+                    httpFailed += loaded.Failed;
+                }
+
+                // Logged so a short library can be explained from a user's log file.
+                int batchAccountedFor = 0;
+                foreach (var part in resultSet.Results!)
+                {
+                    parts++;
+                    var items = arePackages ? part.Packages : part.Apps;
+                    var unknownIds = arePackages ? part.UnknownPackages : part.UnknownApps;
+                    batchAccountedFor += items.Count + unknownIds.Count;
+                    returned += items.Count;
+                    unknown += unknownIds.Count;
+                    foreach (var info in items.Values)
+                    {
+                        if (info.MissingToken)
+                        {
+                            missingToken++;
+                        }
+                        var hasDetails = arePackages
+                            ? info.KeyValues["appids"].Children.Count > 0
+                            : info.KeyValues["common"].Children.Count > 0;
+                        if (!hasDetails)
+                        {
+                            blank++;
+                        }
+                    }
+                }
+
+                if (batchAccountedFor < batch.Length)
+                {
+                    shortBatches++;
+                }
+            }
+
+            Log.Info(
+                "OwnershipManager",
+                $"Fetched {kind}: requested={requests.Count} returned={returned} unknown={unknown} missingToken={missingToken} blank={blank} viaHttp={viaHttp} httpDownloaded={httpDownloaded} httpFailed={httpFailed} parts={parts} shortBatches={shortBatches}"
+            );
+
+            // Failing leaves the last good list in place, where using this would overwrite the cache
+            // with a library of a handful of games. Apps only: a package legitimately can have no apps.
+            if (!arePackages && blank > requests.Count * MaxBlankAppShare)
+            {
+                Log.Warn("OwnershipManager", $"Rejecting blank app details: blank={blank} requested={requests.Count}");
+                throw new SteamResponseIncompleteException();
+            }
+
+            return results;
+        }
+
         private static async Task<OwnedAppResolution> ResolveOwnedAppIdsAsync(SteamBot bot)
         {
             var ownedAppIds = new HashSet<uint>();
@@ -276,12 +441,9 @@ namespace SteamUtility.Daemon.Bot
             // whichever one we see first.
             var licensesByPackageId = bot.OwnedLicenses.ToLookup(license => license.PackageID);
 
-            var packageResultSet = await bot.SteamAppsHandler.PICSGetProductInfo(
-                apps: Enumerable.Empty<SteamApps.PICSRequest>(),
-                packages: packageRequests
-            );
+            var packageResults = await GetProductInfoAsync(bot, packageRequests, arePackages: true);
 
-            foreach (var result in packageResultSet.Results!)
+            foreach (var result in packageResults)
             {
                 foreach (var (packageId, package) in result.Packages)
                 {

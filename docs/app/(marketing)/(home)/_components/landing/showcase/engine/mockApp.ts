@@ -3,8 +3,9 @@
 // It's an immediate-mode canvas UI: every redraw paints the whole 1440x900 window (titlebar,
 // sidebar, the active page) and re-registers hit regions as it goes; the stage maps a raycast's UV
 // to these logical pixels and calls `pointer()`/`click()`. Layout and wording mirror the real app
-// (sidebar = src/shared/components/dashboard/Sidebar.tsx, strings from src/i18n/locales/en-US.json)
-// in a simplified "product demo" style - bigger type, fewer controls.
+// (sidebar = src/shared/components/dashboard/Sidebar.tsx + SidebarItem.tsx, each page's controls =
+// its PageToolbar, game cards = GamePosterCard.tsx, strings from src/i18n/locales/en-US.json) in a
+// simplified "product demo" style - slightly bigger type, fewer controls.
 //
 // Each automation page runs a small live simulation (drops, unlocks, idle timers). Real Steam card
 // drops and the unlocker's delays take minutes, so every sim here runs far faster than the real
@@ -18,15 +19,28 @@ import type { Game } from './games'
 import type { IconName } from './icons'
 import type { Palette, ThemeId } from './palette'
 import type { PageId } from './types'
-import { capsule, fillRR, icon, measure, rr, sprite, strokeRR, text } from './draw'
+import {
+  bannerArt,
+  capsule,
+  fillRR,
+  icon,
+  measure,
+  poster,
+  rr,
+  sprite,
+  strokeRR,
+  text,
+  wrapLines,
+} from './draw'
 import { game, GAMES } from './games'
 import { THEMES } from './palette'
 
 /**
  * The mock's window geometry. `wide` is the desktop app as people see it (1440x900, full sidebar).
  * `compact` is the same app in a narrow portrait window (560x960): the sidebar collapsed to its
- * icon rail - what the real app's sidebar toggle does - with grids reflowed to two or three
- * columns. Phones and portrait tablets get compact, so the UI is drawn about twice as large
+ * icon rail - what the real app's sidebar toggle does - with grids reflowed to three columns and
+ * each page's toolbar wrapping its controls onto a second row, as the real one does when it runs
+ * out of width. Phones and portrait tablets get compact, so the UI is drawn about twice as large
  * relative to their screen and shown whole instead of a cropped, unreadable desktop window.
  */
 export interface MockLayout {
@@ -49,19 +63,10 @@ export function mockLayout(compact: boolean) {
   const H = compact ? 960 : 900
   const TB = compact ? 52 : 56
   const SB = compact ? 64 : 256
-  const pad = compact ? 18 : 30
-  const X0 = SB + pad
-  const L: MockLayout = {
-    compact,
-    W,
-    H,
-    TB,
-    SB,
-    X0,
-    Y0: TB + (compact ? 18 : 22),
-    CW: W - SB - pad * 2,
-    XR: W - pad,
-  }
+  const X0 = SB + (compact ? 18 : 24)
+  // the wide window keeps the real app's scrollbar gutter on the right
+  const XR = W - (compact ? 18 : 38)
+  const L: MockLayout = { compact, W, H, TB, SB, X0, Y0: TB + 14, CW: XR - X0, XR }
   return L
 }
 
@@ -123,33 +128,62 @@ interface InvItem {
   listedT: number
 }
 
-const NAV: [string, [PageId, string, IconName][]][] = [
+// Sidebar.tsx's headerless groups (games / automation / misc), separated only by a gap.
+const NAV: [PageId, string, IconName][][] = [
   [
-    'Games',
-    [
-      ['games', 'Games', 'games'],
-      ['idling', 'Idling', 'idling'],
-      ['favorites', 'Favorites', 'favorites'],
-      ['freeGames', 'Free Games', 'freeGames'],
-    ],
+    ['games', 'Games', 'games'],
+    ['idling', 'Idling', 'idling'],
+    ['favorites', 'Favorites', 'favorites'],
+    ['freeGames', 'Free Games', 'freeGames'],
   ],
   [
-    'Automation',
-    [
-      ['cardFarming', 'Card Farming', 'cardFarming'],
-      ['achievementUnlocker', 'Achievement Unlocker', 'achievementUnlocker'],
-      ['autoIdle', 'Automatic Idler', 'autoIdle'],
-    ],
+    ['cardFarming', 'Card Farming', 'cardFarming'],
+    ['achievementUnlocker', 'Achievement Unlocker', 'achievementUnlocker'],
+    ['autoIdle', 'Automatic Idler', 'autoIdle'],
   ],
-  ['Misc', [['inventory', 'Inventory Manager', 'inventory']]],
+  [['inventory', 'Inventory Manager', 'inventory']],
 ]
 
-const REC = ['Starfall Tactics', 'Neon Drift', 'Hollow Keep']
-const ALL = GAMES.map(g => g.name).filter(n => !REC.includes(n))
-const FAVORITES = ['Neon Drift', 'Skyward Isles', 'Tiny Tavern']
+/** Pages whose toolbar shows the titlebar's game search (the real app hides it elsewhere). */
+const SEARCH_PAGES: PageId[] = [
+  'games',
+  'favorites',
+  'cardFarming',
+  'achievementUnlocker',
+  'autoIdle',
+]
+
+/**
+ * Library stats per game: [playtime minutes, achievements unlocked, achievements total] - what the
+ * cards' corner chips show (GameStatChips.tsx). Recommended games are the unplayed ones, as in the
+ * real banner.
+ */
+const STATS: Record<string, [number, number, number]> = {
+  'Starfall Tactics': [0, 0, 52],
+  'Neon Drift': [0, 0, 40],
+  'Hollow Keep': [11760, 12, 30],
+  'Pixel Harvest': [9240, 10, 30],
+  'Iron Tide': [7860, 44, 44],
+  'Skyward Isles': [0, 0, 25],
+  'Crimson Circuit': [4560, 0, 18],
+  'Deep Signal': [3480, 15, 60],
+  'Frostbound': [2580, 3, 22],
+  'Ember & Ash': [1860, 9, 35],
+  'Orbit Runners': [1320, 12, 12],
+  'Tiny Tavern': [1020, 5, 28],
+  'Voidline': [540, 0, 15],
+  'Glitch Garden': [372, 2, 20],
+  'Last Lantern': [0, 0, 10],
+  'Mossy Kingdom': [41, 1, 16],
+}
+const LIBRARY_SIZE = 128
+
+const REC = ['Starfall Tactics', 'Neon Drift', 'Skyward Isles', 'Last Lantern']
+/** the Games page's grid, sorted like its default "Playtime (High to Low)" */
+const BY_PLAYTIME = [...GAMES].map(g => g.name).sort((a, b) => STATS[b][0] - STATS[a][0])
 const AUTO_IDLE = ['Iron Tide', 'Mossy Kingdom', 'Voidline']
 const FARM_POOL = [
-  'Starfall Tactics',
+  'Hollow Keep',
   'Skyward Isles',
   'Crimson Circuit',
   'Orbit Runners',
@@ -158,6 +192,7 @@ const FARM_POOL = [
   'Deep Signal',
   'Mossy Kingdom',
 ]
+const FARM_DROPS = [4, 3, 5, 3, 2, 6, 3, 4]
 const UNL_GAMES = ['Starfall Tactics', 'Hollow Keep', 'Skyward Isles', 'Glitch Garden']
 const UNL_NAMES = [
   'First Contact',
@@ -183,24 +218,31 @@ const MGR_ACHS: [string, string, string, boolean][] = [
   ['Perfectionist', 'Earn every other achievement', '1.8%', false],
 ]
 const INV: [string, string, InvItem['kind'], string, string][] = [
-  ['Vanguard', 'Starfall Tactics Trading Card', 'card', 'Starfall Tactics', '$0.09'],
-  ['Neon Skyline', 'Neon Drift Profile Background', 'bg', 'Neon Drift', '$0.14'],
-  [':driftgrin:', 'Neon Drift Emoticon', 'emote', 'Neon Drift', '$0.06'],
-  ['Harvest Moon', 'Pixel Harvest Trading Card', 'card', 'Pixel Harvest', '$0.11'],
-  ['The Keep', 'Hollow Keep Trading Card', 'card', 'Hollow Keep', '$0.08'],
-  ['Circuit Board', 'Crimson Circuit Profile Background', 'bg', 'Crimson Circuit', '$0.21'],
-  ['Lantern Light', 'Last Lantern Trading Card', 'card', 'Last Lantern', '$0.07'],
-  ['Skyward Isles', 'Skyward Isles Trading Card', 'card', 'Skyward Isles', '$0.10'],
-  [':embercat:', 'Ember & Ash Emoticon', 'emote', 'Ember & Ash', '$0.05'],
-  ['Orbit', 'Orbit Runners Trading Card', 'card', 'Orbit Runners', '$0.12'],
-  ['Deep Blue', 'Deep Signal Profile Background', 'bg', 'Deep Signal', '$0.18'],
-  ['Frost Giant', 'Frostbound Trading Card', 'card', 'Frostbound', '$0.09'],
-  ['Night Market', 'Tiny Tavern Profile Background', 'bg', 'Tiny Tavern', '$0.16'],
-  ['Pathfinder', 'Iron Tide Trading Card', 'card', 'Iron Tide', '$0.08'],
-  [':voidcat:', 'Voidline Emoticon', 'emote', 'Voidline', '$0.04'],
-  ['Bloom', 'Glitch Garden Trading Card', 'card', 'Glitch Garden', '$0.13'],
-  ['Old Growth', 'Mossy Kingdom Trading Card', 'card', 'Mossy Kingdom', '$0.07'],
-  ['Wildfire', 'Ember & Ash Profile Background', 'bg', 'Ember & Ash', '$0.19'],
+  ['Vanguard', 'Starfall Tactics', 'card', 'Starfall Tactics', '0.09'],
+  ['Neon Skyline', 'Neon Drift', 'bg', 'Neon Drift', '0.14'],
+  [':driftgrin:', 'Neon Drift', 'emote', 'Neon Drift', '0.06'],
+  ['Harvest Moon', 'Pixel Harvest', 'card', 'Pixel Harvest', '0.11'],
+  ['The Keep', 'Hollow Keep', 'card', 'Hollow Keep', '0.08'],
+  ['Circuit Board', 'Crimson Circuit', 'bg', 'Crimson Circuit', '0.21'],
+  ['Lantern Light', 'Last Lantern', 'card', 'Last Lantern', '0.07'],
+  ['Skyward Isles', 'Skyward Isles', 'card', 'Skyward Isles', '0.10'],
+  [':embercat:', 'Ember & Ash', 'emote', 'Ember & Ash', '0.05'],
+  ['Orbit', 'Orbit Runners', 'card', 'Orbit Runners', '0.12'],
+  ['Deep Blue', 'Deep Signal', 'bg', 'Deep Signal', '0.18'],
+  ['Frost Giant', 'Frostbound', 'card', 'Frostbound', '0.09'],
+]
+const INV_TOTAL = 36
+// InventoryFilters' list; the first (Trading cards) is the one switched on
+const INV_FILTERS: [string, IconName][] = [
+  ['Trading cards', 'cards'],
+  ['Foil', 'sparkles'],
+  ['Backgrounds', 'photo'],
+  ['Emoticons', 'smile'],
+  ['Booster packs', 'package'],
+  ['On sale', 'tag'],
+  ['Duplicates', 'copy'],
+  ['Has badge', 'achievementUnlocker'],
+  ['Locked', 'lock'],
 ]
 const ACCOUNTS: [string, string, string][] = [
   ['Idler', 'Signed in with Steam', '#5b8cff,#b35bff'],
@@ -229,6 +271,9 @@ function unionRect(a: Rect, b: Rect) {
  */
 const AUTO_DEMO = false
 
+/** How long each Recommended slide stays up before the banner moves on (seconds). */
+const SLIDE_SECONDS = 7
+
 const ease = {
   out: (p: number) => 1 - (1 - p) ** 3,
   out5: (p: number) => 1 - (1 - p) ** 5,
@@ -239,8 +284,26 @@ const clamp01 = (v: number) => Math.min(1, Math.max(0, v))
 const prog = (now: number, t0: number, dur: number) => clamp01((now - t0) / dur)
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t
 const randIn = (a: number, b: number) => a + Math.random() * (b - a)
-const hms = (s: number) =>
-  [s / 3600, (s % 3600) / 60, s % 60].map(v => String(Math.floor(v)).padStart(2, '0')).join(':')
+const pad2 = (v: number) => String(Math.floor(v)).padStart(2, '0')
+/** an idle timer: mm:ss for the first hour, then hh:mm:ss */
+const elapsed = (s: number) =>
+  s < 3600
+    ? `${pad2(s / 60)}:${pad2(s % 60)}`
+    : `${pad2(s / 3600)}:${pad2((s % 3600) / 60)}:${pad2(s % 60)}`
+/** GameStatChips.tsx's playtime: minutes, then hours (one decimal under ten) */
+const playtimeLabel = (m: number) =>
+  m < 60
+    ? `${m}m`
+    : m < 600
+      ? `${(m / 60).toFixed(1)}h`
+      : `${Math.round(m / 60).toLocaleString('en-US')}h`
+
+/** `rgb(r g b)` -> the same colour at `alpha` (the palette's colours are all plain rgb()) */
+const withAlpha = (rgb: string, alpha: number) => rgb.replace(')', ` / ${alpha.toFixed(3)})`)
+
+/** id prefix of a game card's hover region; its buttons append `|<action>` */
+const cardOf = (id: string | null) =>
+  id?.startsWith('gc|') ? id.split('|').slice(0, 3).join('|') : null
 
 export class MockApp {
   readonly canvas: HTMLCanvasElement
@@ -249,6 +312,10 @@ export class MockApp {
   private regions: Region[] = []
   private collect = true
   private hover: string | null = null
+  /** the game card under the pointer, its previous one, and when that changed - for the lift */
+  private hoverCard: string | null = null
+  private prevHoverCard: string | null = null
+  private hoverCardT = -10
   /** a full redraw + full texture upload is needed (state changed somewhere unknown) */
   private dirty = true
   /**
@@ -264,15 +331,23 @@ export class MockApp {
   private pageT = -10
   private navFromY = 0
   private navToY = 0
+  /** where the current page's content starts under its toolbar, set while drawing it */
+  private contentTop = 0
 
   private user = 0
   private acctOpen = false
   private acctT = 0
   private toastMsg: { text: string; icon: IconName; color: string; t: number } | null = null
-  private bumpT = -10
+
+  // Recommended banner: the slide on screen, the one it crossfades from, and when it changed
+  private slide = 0
+  private prevSlide = 0
+  private slideT = -10
 
   // sims ----------------------------------------------------------------------------------------
   private idle = new Map<string, { owner: Owner; start: number }>()
+  private favorites = new Set(['Neon Drift', 'Skyward Isles', 'Tiny Tavern'])
+  private favTab = 0
   private farm = {
     running: false,
     startT: 0,
@@ -307,6 +382,7 @@ export class MockApp {
   constructor(
     private fonts: Fonts,
     private art: Map<string, HTMLCanvasElement>,
+    private posters: Map<string, HTMLCanvasElement>,
     private scale: number,
     private events: MockEvents,
     compact = false,
@@ -327,26 +403,28 @@ export class MockApp {
     const d = new Date()
     this.unl.clockMin = d.getHours() * 60 + d.getMinutes()
     this.navFromY = this.navToY = this.navY('games')
+    this.contentTop = this.L.Y0 + 62
   }
 
   // public API -----------------------------------------------------------------------------------
 
   /**
-   * Paints the opening page's sprites (every capsule at the sizes the Games page uses) a few per
-   * task, so the first full frame is cheap blits instead of one long blocking draw.
+   * Paints the opening page's sprites (every cover at the size the Games page uses, and the
+   * banner's slides) a few per task, so the first full frame is cheap blits instead of one long
+   * blocking draw.
    */
   async warm(yieldToMain: () => Promise<void>) {
     this.ctx.setTransform(this.scale, 0, 0, this.scale, 0, 0)
-    const recW = this.L.compact ? (this.L.CW - 14) / 2 : 360
-    const allW = this.L.compact ? recW : 208
-    const jobs: [string, number][] = [
-      ...REC.map(n => [n, recW] as [string, number]),
-      ...ALL.map(n => [n, allW] as [string, number]),
-    ]
-    for (let i = 0; i < jobs.length; i++) {
+    const w = this.grid().w
+    const b = this.bannerRect()
+    for (let i = 0; i < BY_PLAYTIME.length; i++) {
       // drawn off-canvas: only the sprite cache side effect matters
-      capsule(this.ctx, this.fonts, this.art, game(jobs[i][0]), -2000, -2000, jobs[i][1])
+      poster(this.ctx, this.fonts, this.posters, game(BY_PLAYTIME[i]), -2000, -2000, w)
       if (i % 3 === 2) await yieldToMain()
+    }
+    for (const n of REC) {
+      bannerArt(this.ctx, this.fonts, this.art, game(n), -4000, -4000, b[2], b[3])
+      await yieldToMain()
     }
   }
 
@@ -369,6 +447,7 @@ export class MockApp {
     this.navToY = this.navY(page === 'achievementManager' ? 'games' : page)
     this.acctOpen = false
     this.hover = null
+    this.hoverCard = null
     this.anim(0.4)
     this.onEnterPage(page, byUser)
     this.events.navigate(page, byUser)
@@ -381,8 +460,16 @@ export class MockApp {
     if (id !== this.hover) {
       this.hover = id
       this.dirty = true
+      // a card's own buttons keep it hovered: by id, or by `group` for one with a fixed id (Claim)
+      const card = r?.group ?? cardOf(id)
+      if (card !== this.hoverCard) {
+        this.prevHoverCard = this.hoverCard
+        this.hoverCard = card
+        this.hoverCardT = this.now
+        this.anim(0.2)
+      }
     }
-    return id !== null
+    return id !== null && r?.cursor !== false
   }
 
   click(x: number, y: number): boolean {
@@ -423,6 +510,7 @@ export class MockApp {
     this.runDemo(now)
     this.stepFarm(now)
     this.stepUnlocker(now)
+    this.stepBanner(now)
     const sec = Math.floor(now)
     const ticking =
       this.idle.size > 0 && ['games', 'idling', 'favorites', 'autoIdle'].includes(this.page)
@@ -476,8 +564,22 @@ export class MockApp {
     return r ? [r.x, r.y, r.w, r.h] : null
   }
 
-  private region(id: string, x: number, y: number, w: number, h: number, onClick?: () => void) {
-    if (this.collect) this.regions.push({ id, x, y, w, h, onClick, interactive: Boolean(onClick) })
+  private region(
+    id: string,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    onClick?: () => void,
+    group?: string,
+  ) {
+    if (this.collect)
+      this.regions.push({ id, x, y, w, h, onClick, interactive: Boolean(onClick), group })
+  }
+
+  /** A region that only reveals things on hover (no pointer cursor of its own). */
+  private hoverRegion(id: string, x: number, y: number, w: number, h: number) {
+    if (this.collect) this.regions.push({ id, x, y, w, h, interactive: true, cursor: false })
   }
 
   private hovered(id: string) {
@@ -548,7 +650,9 @@ export class MockApp {
       this.schedule(page, 3.9, () => this.listSelected())
     }
     if (page === 'idling' && first && ![...this.idle.values()].some(v => v.owner === 'manual')) {
-      REC.forEach((g, k) => this.schedule(page, 1.2 + k * 0.5, () => this.toggleIdle(g)))
+      REC.slice(0, 3).forEach((g, k) =>
+        this.schedule(page, 1.2 + k * 0.5, () => this.toggleIdle(g)),
+      )
     }
   }
 
@@ -559,6 +663,29 @@ export class MockApp {
     else this.idle.set(name, { owner: 'manual', start: this.now })
     this.anim(0.4)
     this.emitStats()
+  }
+
+  private toggleFavorite(name: string) {
+    if (this.favorites.has(name)) this.favorites.delete(name)
+    else this.favorites.add(name)
+    this.anim(0.3)
+  }
+
+  private stepBanner(now: number) {
+    if (this.page !== 'games' || now - this.slideT < SLIDE_SECONDS) return
+    // the banner only cycles while it's on screen; leaving the page pauses it where it was
+    if (this.slideT < 0) {
+      this.slideT = now
+      return
+    }
+    this.goSlide(this.slide + 1)
+  }
+
+  private goSlide(i: number) {
+    this.prevSlide = this.slide
+    this.slide = (i + REC.length) % REC.length
+    this.slideT = this.now
+    this.anim(0.6, this.bannerRect())
   }
 
   private startFarm() {
@@ -585,7 +712,7 @@ export class MockApp {
   }
 
   private newSlot(g: string, i: number): FarmSlot {
-    const total = [4, 3, 5, 3, 2, 6, 3, 4][(FARM_POOL.indexOf(g) + i) % 8]
+    const total = FARM_DROPS[(FARM_POOL.indexOf(g) + i) % 8]
     return { game: g, total, left: total, next: this.now + randIn(1.5, 4), dropT: -10, doneT: -1 }
   }
 
@@ -613,7 +740,7 @@ export class MockApp {
       s.next = now + randIn(2.2, 5.6)
       f.dropped += 1
       if (s.left === 0) s.doneT = now
-      // only this slot's card changes (bar, count, the capsule's little kick)
+      // only this slot's card changes (bar, count, the cover's little kick)
       if (this.page === 'cardFarming') this.anim(0.6, this.farmCardRect(i))
       const g = game(s.game)
       // Only launch a physical card while the farming page is on screen. Farming keeps running in
@@ -668,7 +795,7 @@ export class MockApp {
     }
     // the current-game card + the feed; nothing else on screen changes
     if (this.page === 'achievementUnlocker')
-      this.anim(0.7, [this.L.X0, this.L.Y0 + 90, this.L.CW, this.L.H - this.L.Y0 - 90])
+      this.anim(0.7, [this.L.X0, this.contentTop, this.L.CW, this.L.H - this.contentTop])
     this.events.achievement(
       this.page === 'achievementUnlocker'
         ? this.unlFeedPoint()
@@ -762,45 +889,59 @@ export class MockApp {
 
   private navY(page: PageId) {
     const { compact, TB } = this.L
-    // wide: section headers + labelled rows; compact: just the icon rail, sections split by a gap
-    let y = TB + (compact ? 14 : 30)
-    for (const [, items] of NAV) {
-      if (!compact) y += 20
+    // headerless groups, split by a gap; the rail's rows are taller than they are wide
+    let y = TB + (compact ? 12 : 8)
+    for (const items of NAV) {
       for (const [id] of items) {
         if (id === page) return y
-        y += compact ? 46 : 43
+        y += compact ? 46 : 40
       }
-      y += compact ? 14 : 18
+      y += compact ? 14 : 12
     }
-    return TB + 50
+    return TB + 8
   }
 
   private navCentre(page: PageId): [number, number] {
-    return this.L.compact ? [32, this.navY(page) + 21] : [60, this.navY(page) + 20]
+    return this.L.compact ? [32, this.navY(page) + 21] : [30, this.navY(page) + 18]
   }
 
-  /** card farming's running slots: four in a row (wide) or a 2x2 grid (compact) */
-  private farmCardBox(i: number) {
-    const { X0, Y0, CW, compact } = this.L
-    if (compact) {
-      const w = (CW - 14) / 2
-      const capH = ((w - 28) * 215) / 460
-      const h = 14 + capH + 98
-      return { x: X0 + (i % 2) * (w + 14), y: Y0 + 154 + Math.floor(i / 2) * (h + 14), w, h }
+  /** The game grid every page shares: six cover cards across (three compact). */
+  private grid() {
+    const { compact, CW, X0 } = this.L
+    const cols = compact ? 3 : 6
+    const gap = compact ? 12 : 16
+    const w = (CW - gap * (cols - 1)) / cols
+    const h = w * 1.5
+    return {
+      cols,
+      w,
+      h,
+      gap,
+      x: (i: number) => X0 + (i % cols) * (w + gap),
+      y: (top: number, i: number) => top + Math.floor(i / cols) * (h + gap + 1),
     }
-    const w = (CW - 3 * 16) / 4
-    return { x: X0 + i * (w + 16), y: Y0 + 118, w, h: 230 }
+  }
+
+  private bannerRect(): Rect {
+    const { X0, Y0, CW, compact } = this.L
+    return [X0, Y0, CW, compact ? 214 : 362]
+  }
+
+  /** card farming's running slots: the first cells of the game grid, under "Farming (n)" */
+  private farmCardBox(i: number) {
+    const G = this.grid()
+    const top = this.contentTop + 28
+    return { x: G.x(i), y: G.y(top, i), w: G.w, h: G.h }
   }
 
   private farmCardRect(i: number): Rect {
     const b = this.farmCardBox(i)
-    return [b.x - 4, b.y - 18, b.w + 8, b.h + 30]
+    return [b.x - 18, b.y - 18, b.w + 36, b.h + 36]
   }
 
   private farmCardCentre(i: number): [number, number] {
     const b = this.farmCardBox(i)
-    const pad = this.L.compact ? 14 : 16
-    return [b.x + b.w / 2, b.y + pad + ((b.w - pad * 2) * 215) / 460 / 2]
+    return [b.x + b.w / 2, b.y + b.h * 0.36]
   }
 
   private mgrRowY(i: number) {
@@ -810,12 +951,6 @@ export class MockApp {
   /** centre x of an achievement row's icon */
   private mgrIconX() {
     return this.L.compact ? this.L.X0 + 72 : this.L.X0 + 92
-  }
-
-  private invPriceCentre(i: number): [number, number] {
-    const G = this.invGrid()
-    const row = Math.floor(i / G.cols)
-    return [G.x(i % G.cols) + G.w / 2, G.top + row * G.rowH + G.cardH - 25]
   }
 
   // drawing ----------------------------------------------------------------------------------------
@@ -840,13 +975,16 @@ export class MockApp {
     const p = prog(this.now, this.pageT, 0.32)
     if (p < 1 && this.prevPage !== this.page) {
       this.collect = false
+      const top = this.contentTop
       ctx.globalAlpha = 1 - ease.out(p)
       this.drawPage(this.prevPage)
+      this.contentTop = top
       this.collect = true
     }
     ctx.globalAlpha = ease.out(p)
     ctx.save()
-    ctx.translate(0, (1 - ease.out5(p)) * 14)
+    // PageBody.tsx's brief fade-and-rise on navigation
+    ctx.translate(0, (1 - ease.out5(p)) * 8)
     this.drawPage(this.page)
     ctx.restore()
     ctx.globalAlpha = 1
@@ -874,7 +1012,7 @@ export class MockApp {
       case 'cardFarming':
         return this.farm.running ? this.drawFarmRun() : this.drawFarmIdle()
       case 'achievementUnlocker':
-        return this.drawUnlocker()
+        return this.unl.running ? this.drawUnlockerRun() : this.drawUnlockerIdle()
       case 'autoIdle':
         return this.drawAutoIdle()
       case 'inventory':
@@ -884,105 +1022,63 @@ export class MockApp {
     }
   }
 
+  private windowButtons(right: number, bw: number) {
+    const { ctx, pal } = this
+    const { TB } = this.L
+    ;(['min', 'max', 'close'] as const).forEach((k, i) => {
+      const x = right + i * bw
+      const id = `win-${k}`
+      if (this.hovered(id)) {
+        ctx.fillStyle = k === 'close' ? '#e81123' : pal.default
+        ctx.fillRect(x, 0, bw, TB - 1)
+      }
+      icon(
+        ctx,
+        k === 'min' ? 'winMin' : k === 'max' ? 'winMax' : 'winClose',
+        x + bw / 2,
+        TB / 2,
+        this.L.compact ? 15 : 16,
+        pal.foreground,
+      )
+      this.region(id, x, 0, bw, TB, () => this.events.windowButton(k))
+    })
+  }
+
   private drawTitlebar() {
     if (this.L.compact) return this.drawTitlebarCompact()
     const { ctx, pal, fonts } = this
+    const { W, TB } = this.L
     ctx.fillStyle = pal.background
-    ctx.fillRect(0, 0, this.L.W, this.L.TB)
+    ctx.fillRect(0, 0, W, TB)
     ctx.fillStyle = pal.border
-    ctx.fillRect(0, this.L.TB - 1, this.L.W, 1)
-    drawLogo(ctx, 18, 17, 22, pal.foreground)
-    text(ctx, fonts, 'Steam Game Idler', 52, 28, {
+    ctx.fillRect(0, TB - 1, W, 1)
+    drawLogo(ctx, 16, 17, 22, pal.foreground)
+    text(ctx, fonts, 'Steam Game Idler', 48, 28, {
       size: 15,
       weight: 600,
       color: pal.foreground,
       family: fonts.display,
     })
-    icon(ctx, 'sidebar', this.L.SB + 25, 28, 19, pal.foreground)
-    // search pill
-    const sw = 380
-    const sx = this.L.SB + 50 + (this.L.W - this.L.SB - 50 - 201 - sw) / 2
-    fillRR(ctx, sx, 8, sw, 40, 20, pal.surface)
-    icon(ctx, 'search', sx + 26, 28, 17, pal.muted)
-    text(ctx, fonts, 'Search', sx + 44, 28, { size: 15, color: pal.muted })
-    const right = this.L.W - 150
-    icon(ctx, 'bell', right - 75, 28, 19, pal.foreground)
-    icon(ctx, 'menu', right - 25, 28, 19, pal.foreground)
-    ctx.fillStyle = pal.border
-    ctx.fillRect(right, 0, 1, this.L.TB)
-    ;(['min', 'max', 'close'] as const).forEach((k, i) => {
-      const x = right + 1 + i * 50
-      const id = `win-${k}`
-      if (this.hovered(id)) {
-        ctx.fillStyle = k === 'close' ? '#e81123' : pal.surface
-        ctx.fillRect(x, 0, 50, this.L.TB - 1)
-      }
-      icon(
-        ctx,
-        k === 'min' ? 'winMin' : k === 'max' ? 'winMax' : 'winClose',
-        x + 25,
-        28,
-        16,
-        pal.foreground,
-      )
-      this.region(id, x, 0, 50, this.L.TB, () => this.events.windowButton(k))
-    })
-  }
-
-  private drawSidebar() {
-    if (this.L.compact) return this.drawSidebarRail()
-    const { ctx, pal, fonts } = this
-    ctx.fillStyle = pal.background
-    ctx.fillRect(0, this.L.TB, this.L.SB, this.L.H - this.L.TB)
-    ctx.fillStyle = pal.border
-    ctx.fillRect(this.L.SB - 1, this.L.TB, 1, this.L.H - this.L.TB)
-    // the active highlight glides between items instead of jumping
-    const hy = lerp(this.navFromY, this.navToY, ease.io(prog(this.now, this.pageT, 0.32)))
-    fillRR(ctx, 8, hy, 239, 41, 9, pal.surface)
-    const active = this.page === 'achievementManager' ? 'games' : this.page
-    const running: Partial<Record<PageId, boolean>> = {
-      cardFarming: this.farm.running,
-      achievementUnlocker: this.unl.running,
-      idling: [...this.idle.values()].some(v => v.owner === 'manual'),
+    if (SEARCH_PAGES.includes(this.page)) {
+      // the search pill, with its Ctrl+K hint
+      const sw = 288
+      const sx = 576
+      fillRR(ctx, sx, 8, sw, 40, 20, pal.default)
+      icon(ctx, 'search', sx + 24, 28, 17, pal.muted)
+      text(ctx, fonts, 'Search', sx + 40, 28, { size: 15, color: pal.muted })
+      fillRR(ctx, sx + sw - 58, 17, 48, 22, 7, pal.surfaceTertiary)
+      text(ctx, fonts, 'Ctrl K', sx + sw - 34, 28, {
+        size: 12,
+        weight: 600,
+        color: pal.muted,
+        align: 'center',
+      })
     }
-    let y = this.L.TB + 30
-    for (const [header, items] of NAV) {
-      ctx.letterSpacing = '0.06em'
-      text(ctx, fonts, header.toUpperCase(), 20, y + 7, { size: 12, weight: 600, color: pal.muted })
-      ctx.letterSpacing = '0px'
-      y += 20
-      for (const [id, label, ic] of items) {
-        const nid = `nav-${id}`
-        if (this.hovered(nid) && id !== active)
-          fillRR(ctx, 8, y, 239, 41, 9, 'rgba(255,255,255,0.04)')
-        // Sidebar.tsx tints running automation in accent; claimable free games show gold
-        const color = running[id] ? pal.accent : pal.foreground
-        const iconColor = id === 'freeGames' && this.free.claimedT < 0 ? pal.gold : color
-        icon(ctx, ic, 32, y + 20, 20, iconColor)
-        text(ctx, fonts, label, 54, y + 21, { size: 16, weight: 500, color })
-        this.region(nid, 8, y, 239, 41, () => this.navigate(id, true))
-        y += 43
-      }
-      y += 18
-    }
-    // footer: plan + account row
-    const fy = this.L.H - 104
-    ctx.fillStyle = pal.border
-    ctx.fillRect(0, fy, this.L.SB - 1, 1)
-    text(ctx, fonts, 'Plan', 20, fy + 24, { size: 13, weight: 600, color: pal.muted })
-    tierBadge(ctx, fonts, pal, 'FREE', 'free', this.L.SB - 20, fy + 24, 'right')
-    const uy = fy + 44
-    if (this.hovered('acct') || this.acctOpen) fillRR(ctx, 8, uy, 239, 50, 9, pal.surface)
-    const [name, , grad] = ACCOUNTS[this.user]
-    avatar(ctx, 20, uy + 8, 34, grad)
-    text(ctx, fonts, name, 66, uy + 26, { size: 16, weight: 500, color: pal.foreground })
-    icon(ctx, 'chevronDown', 196, uy + 25, 18, pal.muted)
-    icon(ctx, 'settings', 226, uy + 25, 18, pal.muted)
-    this.region('acct', 8, uy, 239, 50, () => {
-      this.acctOpen = !this.acctOpen
-      this.acctT = this.now
-      this.anim(0.3)
-    })
+    // live support, notifications, menu
+    icon(ctx, 'headset', W - 265, 28, 19, pal.foreground)
+    icon(ctx, 'bell', W - 217, 28, 19, pal.foreground)
+    icon(ctx, 'menu', W - 169, 28, 19, pal.foreground)
+    this.windowButtons(W - 144, 48)
   }
 
   /** Compact titlebar: wordmark, then search + notifications as icons, and the window buttons. */
@@ -1003,30 +1099,79 @@ export class MockApp {
     const right = W - 132
     icon(ctx, 'search', right - 66, TB / 2, 18, pal.foreground)
     icon(ctx, 'bell', right - 28, TB / 2, 18, pal.foreground)
+    this.windowButtons(right, 44)
+  }
+
+  /** Which nav items show a running dot (SidebarItem's RunningDot) and the gold free-games icon. */
+  private navState() {
+    const running: Partial<Record<PageId, boolean>> = {
+      cardFarming: this.farm.running,
+      achievementUnlocker: this.unl.running,
+      idling: [...this.idle.values()].some(v => v.owner === 'manual'),
+    }
+    return { running, gold: this.free.claimedT < 0 }
+  }
+
+  /** The window-edge marker beside the active row; it glides between rows with the highlight. */
+  private activeMarker(y: number, h: number) {
+    fillRR(this.ctx, 0, y + h / 2 - 8, 3, 16, 1.5, this.pal.accent)
+  }
+
+  private drawSidebar() {
+    if (this.L.compact) return this.drawSidebarRail()
+    const { ctx, pal, fonts } = this
+    const { TB, SB, H } = this.L
+    ctx.fillStyle = pal.background
+    ctx.fillRect(0, TB, SB, H - TB)
     ctx.fillStyle = pal.border
-    ctx.fillRect(right, 0, 1, TB)
-    ;(['min', 'max', 'close'] as const).forEach((k, i) => {
-      const x = right + 1 + i * 44
-      const id = `win-${k}`
-      if (this.hovered(id)) {
-        ctx.fillStyle = k === 'close' ? '#e81123' : pal.surface
-        ctx.fillRect(x, 0, 44, TB - 1)
+    ctx.fillRect(SB - 1, TB, 1, H - TB)
+    // the collapse handle on the sidebar's edge
+    fillRR(ctx, SB - 3, H / 2 - 12, 4, 24, 2, pal.surfaceTertiary)
+    // the active highlight glides between items instead of jumping
+    const hy = lerp(this.navFromY, this.navToY, ease.io(prog(this.now, this.pageT, 0.32)))
+    fillRR(ctx, 8, hy, SB - 17, 36, 8, pal.default)
+    this.activeMarker(hy, 36)
+    const active = this.page === 'achievementManager' ? 'games' : this.page
+    const { running, gold } = this.navState()
+    for (const items of NAV) {
+      for (const [id, label, ic] of items) {
+        const y = this.navY(id)
+        const nid = `nav-${id}`
+        const on = id === active
+        const hov = this.hovered(nid) && !on
+        if (hov) fillRR(ctx, 8, y, SB - 17, 36, 8, 'rgba(255,255,255,0.04)')
+        const color = on || hov ? pal.foreground : pal.muted
+        const iconColor = id === 'freeGames' && gold ? pal.gold : on ? pal.accent : color
+        icon(ctx, ic, 29, y + 18, 19, iconColor, 1.5)
+        text(ctx, fonts, label, 50, y + 18, { size: 15, weight: 600, color })
+        if (running[id]) {
+          ctx.beginPath()
+          ctx.arc(SB - 32, y + 18, 3.5, 0, Math.PI * 2)
+          ctx.fillStyle = pal.accent
+          ctx.fill()
+        }
+        this.region(nid, 8, y, SB - 17, 36, () => this.navigate(id, true))
       }
-      icon(
-        ctx,
-        k === 'min' ? 'winMin' : k === 'max' ? 'winMax' : 'winClose',
-        x + 22,
-        TB / 2,
-        15,
-        pal.foreground,
-      )
-      this.region(id, x, 0, 44, TB, () => this.events.windowButton(k))
+    }
+    // footer: the account switcher row and settings
+    const uy = H - 56
+    if (this.hovered('acct') || this.acctOpen) fillRR(ctx, 8, uy, SB - 64, 48, 9, pal.default)
+    const [name, , grad] = ACCOUNTS[this.user]
+    avatar(ctx, 20, uy + 8, 32, grad)
+    text(ctx, fonts, name, 64, uy + 24, { size: 15, weight: 600, color: pal.foreground })
+    icon(ctx, 'chevronDown', 184, uy + 24, 17, pal.foreground)
+    icon(ctx, 'settings', 228, uy + 24, 18, pal.foreground)
+    this.region('acct', 8, uy, SB - 64, 48, () => {
+      this.acctOpen = !this.acctOpen
+      this.acctT = this.now
+      this.anim(0.3)
     })
   }
 
   /**
-   * Compact sidebar: the real app's collapsed icon rail. Same items, order and running/claimable
-   * tints as the full sidebar, with the account switcher reduced to its avatar at the bottom.
+   * Compact sidebar: the real app's collapsed icon rail. Same items, order, marker and gold
+   * free-games icon as the full sidebar; a running feature's icon turns accent instead of showing a
+   * dot, and the account switcher is reduced to its avatar at the bottom.
    */
   private drawSidebarRail() {
     const { ctx, pal } = this
@@ -1036,36 +1181,31 @@ export class MockApp {
     ctx.fillStyle = pal.border
     ctx.fillRect(SB - 1, TB, 1, H - TB)
     const hy = lerp(this.navFromY, this.navToY, ease.io(prog(this.now, this.pageT, 0.32)))
-    fillRR(ctx, 8, hy, SB - 16, 42, 10, pal.surface)
+    fillRR(ctx, 8, hy, SB - 16, 42, 10, pal.default)
+    this.activeMarker(hy, 42)
     const active = this.page === 'achievementManager' ? 'games' : this.page
-    const running: Partial<Record<PageId, boolean>> = {
-      cardFarming: this.farm.running,
-      achievementUnlocker: this.unl.running,
-      idling: [...this.idle.values()].some(v => v.owner === 'manual'),
-    }
-    for (const [, items] of NAV) {
+    const { running, gold } = this.navState()
+    for (const items of NAV) {
       for (const [id, , ic] of items) {
         const y = this.navY(id)
         const nid = `nav-${id}`
-        if (this.hovered(nid) && id !== active)
-          fillRR(ctx, 8, y, SB - 16, 42, 10, 'rgba(255,255,255,0.04)')
-        const color = running[id] ? pal.accent : pal.foreground
-        icon(
-          ctx,
-          ic,
-          SB / 2,
-          y + 21,
-          21,
-          id === 'freeGames' && this.free.claimedT < 0 ? pal.gold : color,
-        )
+        const on = id === active
+        if (this.hovered(nid) && !on) fillRR(ctx, 8, y, SB - 16, 42, 10, 'rgba(255,255,255,0.04)')
+        const color =
+          id === 'freeGames' && gold
+            ? pal.gold
+            : on || running[id]
+              ? pal.accent
+              : this.hovered(nid)
+                ? pal.foreground
+                : pal.muted
+        icon(ctx, ic, SB / 2, y + 21, 21, color, 1.5)
         this.region(nid, 8, y, SB - 16, 42, () => this.navigate(id, true))
       }
     }
     // account: just the avatar (opens the same switcher popover)
     const uy = H - 58
-    ctx.fillStyle = pal.border
-    ctx.fillRect(0, uy - 8, SB - 1, 1)
-    if (this.hovered('acct') || this.acctOpen) fillRR(ctx, 8, uy, SB - 16, 46, 10, pal.surface)
+    if (this.hovered('acct') || this.acctOpen) fillRR(ctx, 8, uy, SB - 16, 46, 10, pal.default)
     avatar(ctx, SB / 2 - 15, uy + 8, 30, ACCOUNTS[this.user][2])
     this.region('acct', 8, uy, SB - 16, 46, () => {
       this.acctOpen = !this.acctOpen
@@ -1081,7 +1221,7 @@ export class MockApp {
     const w = 300
     const h = 8 + ACCOUNTS.length * 60 + 56
     const x = 12
-    const y = this.L.H - (this.L.compact ? 66 : 104) - h - 8 + (1 - p) * 12
+    const y = this.L.H - (this.L.compact ? 66 : 62) - h - 4 + (1 - p) * 12
     ctx.save()
     ctx.globalAlpha = p
     ctx.shadowColor = 'rgba(0,0,0,.55)'
@@ -1155,152 +1295,239 @@ export class MockApp {
 
   // --- shared page pieces
 
-  /** Draws the page's title block and actions; returns the y where the page's content starts. */
-  private pageHead(title: string, sub: string, actions: Action[]) {
-    const { ctx, pal, fonts } = this
-    const { X0, Y0, CW, XR, compact } = this.L
-    if (!compact) {
-      text(ctx, fonts, title, X0, Y0 + 24, { size: 38, weight: 900, color: pal.foreground })
-      if (sub) text(ctx, fonts, sub, X0, Y0 + 62, { size: 16, color: pal.muted })
-      this.actions(actions, XR, Y0)
-      return Y0 + 88
-    }
-    // compact: title + sub, then the actions on their own row (they don't fit beside the title)
-    text(ctx, fonts, title, X0, Y0 + 16, { size: 28, weight: 900, color: pal.foreground, maxW: CW })
-    if (sub) text(ctx, fonts, sub, X0, Y0 + 44, { size: 14, color: pal.muted })
-    if (!actions.length) return Y0 + 68
-    this.actionsLeft(actions, X0, Y0 + 66)
-    return Y0 + 128
+  /** Small rounded count beside a title or tab (PageToolbar.tsx's CountChip); returns its width. */
+  private countChip(n: number, x: number, cy: number, bg = this.pal.default) {
+    const { ctx, fonts, pal } = this
+    const label = n.toLocaleString('en-US')
+    const w = Math.max(22, measure(ctx, fonts, label, 12, 600) + 14)
+    fillRR(ctx, x, cy - 11, w, 22, 11, bg)
+    text(ctx, fonts, label, x + w / 2, cy + 1, {
+      size: 12,
+      weight: 600,
+      color: pal.muted,
+      align: 'center',
+      tabular: true,
+    })
+    return w
   }
 
-  /** Lays actions out left to right from `left` (the compact header's own row). */
-  private actionsLeft(list: Action[], left: number, top: number) {
-    let x = left
-    for (const a of list) {
-      if (a.kind === 'icon') {
-        this.iconBtn(a.id, x, top, a.icon, a.onClick)
-        x += 44 + 10
-      } else {
-        const w = this.btnWidth(a)
-        this.btn(a, x, top, w)
-        x += w + 10
-      }
-    }
+  /** A section or page title with its count chip (PageToolbar.tsx's PageTitle). */
+  private titleWithCount(title: string, count: number, x: number, cy: number, size = 18) {
+    const tw = text(this.ctx, this.fonts, title, x, cy, {
+      size,
+      weight: 700,
+      color: this.pal.foreground,
+    })
+    return tw + 10 + this.countChip(count, x + tw + 10, cy)
   }
 
-  private actions(list: Action[], right: number, top: number) {
-    let x = right
-    for (let i = list.length - 1; i >= 0; i--) {
-      const a = list[i]
-      if (a.kind === 'icon') {
-        x -= 44
-        this.iconBtn(a.id, x, top, a.icon, a.onClick)
-      } else {
-        const w = this.btnWidth(a)
-        x -= w
-        this.btn(a, x, top, w)
-      }
-      x -= 10
-    }
-  }
-
-  private btnWidth(a: BtnAction) {
+  private tabsWidth(s: TabsStart) {
     const { ctx, fonts } = this
-    let w = 40 + measure(ctx, fonts, a.label, 17, 600)
-    if (a.icon) w += 27
-    if (a.tier) w += 72
+    return (
+      8 +
+      s.tabs.reduce((sum, [label, count]) => {
+        const lw = measure(ctx, fonts, label, 15, 700)
+        const cw = Math.max(22, measure(ctx, fonts, count.toLocaleString('en-US'), 12, 600) + 14)
+        return sum + lw + cw + 38
+      }, 0)
+    )
+  }
+
+  /** The tab strip (one rounded track, the selected segment raised). */
+  private drawTabs(s: TabsStart, x: number, cy: number) {
+    const { ctx, pal, fonts } = this
+    const h = 42
+    const w = this.tabsWidth(s)
+    ctx.save()
+    if (s.dim) ctx.globalAlpha *= 0.5
+    fillRR(ctx, x, cy - h / 2, w, h, h / 2, pal.default)
+    let cx = x + 4
+    s.tabs.forEach(([label, count], i) => {
+      const on = i === s.active
+      const lw = measure(ctx, fonts, label, 15, 700)
+      const cw = Math.max(22, measure(ctx, fonts, count.toLocaleString('en-US'), 12, 600) + 14)
+      const sw = lw + cw + 38
+      const id = `${s.id}-tab-${i}`
+      if (on) fillRR(ctx, cx, cy - h / 2 + 4, sw, h - 8, (h - 8) / 2, pal.segment)
+      else if (this.hovered(id))
+        fillRR(ctx, cx, cy - h / 2 + 4, sw, h - 8, (h - 8) / 2, 'rgba(255,255,255,.04)')
+      text(ctx, fonts, label, cx + 16, cy + 1, {
+        size: 15,
+        weight: on ? 700 : 600,
+        color: on ? pal.foreground : pal.muted,
+      })
+      this.countChip(count, cx + 16 + lw + 8, cy, on ? pal.default : 'rgba(255,255,255,.06)')
+      if (s.onTab && !s.dim) this.region(id, cx, cy - h / 2, sw, h, () => s.onTab!(i))
+      cx += sw
+    })
+    ctx.restore()
+    return w
+  }
+
+  private startWidth(s: Start) {
+    if (s.kind === 'tabs') return this.tabsWidth(s)
+    const tw = measure(this.ctx, this.fonts, s.title, 18, 700)
+    return tw + 10 + Math.max(22, measure(this.ctx, this.fonts, String(s.count), 12, 600) + 14)
+  }
+
+  /**
+   * The one bar of controls above each page's content (PageToolbar.tsx): tabs or a title with its
+   * count on the left, controls on the right. In the narrow window the controls wrap onto their own
+   * row when they don't fit beside the tabs, as the real bar's `flex-wrap` does. Returns where the
+   * page's content starts.
+   */
+  private toolbar(start: Start | null, actions: Action[]) {
+    const { X0, Y0, XR, compact } = this.L
+    const shown = actions.filter(a => !(compact && a.wideOnly))
+    const cy = Y0 + 20
+    const aw = this.actionsWidth(shown)
+    const sw = start ? this.startWidth(start) : 0
+    const twoRows = compact && start !== null && sw + 12 + aw > this.L.CW
+    if (start?.kind === 'tabs') this.drawTabs(start, X0, cy)
+    else if (start) this.titleWithCount(start.title, start.count, X0, cy)
+    this.actions(shown, XR, twoRows ? cy + 50 : cy)
+    this.contentTop = twoRows ? Y0 + 112 : Y0 + 62
+    return this.contentTop
+  }
+
+  private actionsWidth(list: Action[]) {
+    return list.reduce((sum, a, i) => sum + this.actionWidth(a) + (i ? 8 : 0), 0)
+  }
+
+  private actionWidth(a: Action) {
+    const { ctx, fonts } = this
+    const h = this.L.compact ? 34 : 36
+    if (a.kind === 'icon') return h
+    if (a.kind === 'sort') {
+      // compact: just the icon, the label won't fit beside the tabs
+      if (this.L.compact) return h
+      return Math.round(Math.min(a.maxW ?? 999, measure(ctx, fonts, a.label, 15, 600)) + 84)
+    }
+    let w = 32 + measure(ctx, fonts, a.label, 15, 600)
+    if (a.icon) w += 24
+    if (a.tier) w += 64
     return Math.round(w)
   }
 
-  private btn(a: BtnAction, x: number, y: number, w = this.btnWidth(a), h = 44) {
+  /** Lays actions out right to left from `right`, centred on `cy`. */
+  private actions(list: Action[], right: number, cy: number) {
+    let x = right
+    for (let i = list.length - 1; i >= 0; i--) {
+      const a = list[i]
+      const w = this.actionWidth(a)
+      x -= w
+      this.action(a, x, cy, w)
+      x -= 8
+    }
+  }
+
+  private action(a: Action, x: number, cy: number, w: number) {
+    const h = this.L.compact ? 34 : 36
+    if (a.kind === 'icon') return this.iconBtn(a.id, x, cy - h / 2, a.icon, a.onClick, h, a.dim)
+    if (a.kind === 'sort') return this.sortBtn(a, x, cy, w, h)
+    this.btn(a, x, cy - h / 2, w, h)
+  }
+
+  private sortBtn(a: SortAction, x: number, cy: number, w: number, h: number) {
+    const { ctx, pal, fonts } = this
+    ctx.save()
+    if (a.dim) ctx.globalAlpha *= 0.5
+    fillRR(ctx, x, cy - h / 2, w, h, h / 2, this.hovered(a.id) ? pal.segment : pal.default)
+    if (this.L.compact) {
+      icon(ctx, 'sort', x + w / 2, cy, 17, pal.foreground)
+    } else {
+      icon(ctx, 'sort', x + 22, cy, 17, pal.foreground)
+      text(ctx, fonts, a.label, x + 38, cy + 1, {
+        size: 15,
+        weight: 600,
+        color: pal.foreground,
+        maxW: w - 80,
+      })
+      icon(ctx, 'chevronDown', x + w - 22, cy, 16, pal.muted)
+    }
+    ctx.restore()
+    this.region(a.id, x, cy - h / 2, w, h, a.dim ? undefined : () => {})
+  }
+
+  /** `group`: the game card this button belongs to, so hovering it keeps the card hovered */
+  private btn(a: BtnAction, x: number, y: number, w = this.actionWidth(a), h = 36, group?: string) {
     const { ctx, pal, fonts } = this
     const hov = this.hovered(a.id)
     const primary = a.variant === 'primary'
     const danger = a.variant === 'danger'
-    ctx.save()
-    if (a.dim) ctx.globalAlpha *= 0.5
-    const bg = primary
-      ? hov
-        ? '#e6e6e6'
-        : '#ffffff'
-      : danger
-        ? pal.danger
-        : hov
-          ? pal.default
-          : pal.surface
+    // a disabled control goes flat grey rather than vanishing, as the real toolbar's do
+    const bg = a.dim
+      ? pal.default
+      : primary
+        ? hov
+          ? '#e6e6e6'
+          : '#ffffff'
+        : danger
+          ? hov
+            ? 'rgb(214 64 69)'
+            : pal.danger
+          : hov
+            ? pal.segment
+            : pal.default
     fillRR(ctx, x, y, w, h, h / 2, bg)
-    const fg = a.color ?? (primary ? '#000000' : '#fcfcfc')
-    let cx = x + 20
-    const fs = h < 40 ? 15 : 17
+    const fg = a.dim ? pal.muted : (a.color ?? (primary ? '#000000' : '#fcfcfc'))
+    let cx = x + 16
     if (a.icon) {
-      icon(ctx, a.icon, cx + 9, y + h / 2, h < 40 ? 16 : 19, fg)
-      cx += 27
+      icon(ctx, a.icon, cx + 8, y + h / 2, 16, fg)
+      cx += 24
     }
-    const tw = text(ctx, fonts, a.label, cx, y + h / 2 + 1, { size: fs, weight: 600, color: fg })
+    const tw = text(ctx, fonts, a.label, cx, y + h / 2 + 1, { size: 15, weight: 600, color: fg })
     if (a.tier)
       tierBadge(ctx, fonts, pal, a.tier.toUpperCase(), a.tier, cx + tw + 10, y + h / 2, 'left')
-    ctx.restore()
-    this.region(a.id, x, y, w, h, a.dim ? undefined : a.onClick)
+    this.region(a.id, x, y, w, h, a.dim ? undefined : a.onClick, group)
     return w
   }
 
-  private iconBtn(id: string, x: number, y: number, ic: IconName, onClick?: () => void) {
+  /** A round white icon button - the toolbar's refresh/add/settings controls. */
+  private iconBtn(
+    id: string,
+    x: number,
+    y: number,
+    ic: IconName,
+    onClick?: () => void,
+    size = 36,
+    dim = false,
+  ) {
     const { ctx } = this
+    ctx.save()
+    if (dim) ctx.globalAlpha *= 0.5
     ctx.beginPath()
-    ctx.arc(x + 22, y + 22, 22, 0, Math.PI * 2)
-    ctx.fillStyle = this.hovered(id) ? '#e6e6e6' : '#ffffff'
+    ctx.arc(x + size / 2, y + size / 2, size / 2, 0, Math.PI * 2)
+    ctx.fillStyle = this.hovered(id) && !dim ? '#e6e6e6' : '#ffffff'
     ctx.fill()
-    icon(ctx, ic, x + 22, y + 22, 20, '#000')
-    this.region(id, x, y, 44, 44, onClick)
+    icon(ctx, ic, x + size / 2, y + size / 2, size * 0.5, '#000')
+    ctx.restore()
+    this.region(id, x, y, size, size, dim ? undefined : (onClick ?? (() => {})))
   }
 
+  /** A muted section label (a group's title, "Farming (4)", "Up next"). */
   private label(str: string, x: number, y: number) {
     text(this.ctx, this.fonts, str, x, y + 8, { size: 13, weight: 600, color: this.pal.muted })
   }
 
-  private secTitle(str: string, y: number) {
-    text(this.ctx, this.fonts, str, this.L.X0, y + 13, {
-      size: 21,
-      weight: 700,
-      color: this.pal.foreground,
-    })
-  }
-
-  private tabs(labels: string[], x: number, y: number) {
-    const { ctx, pal, fonts } = this
-    const widths = labels.map(l => measure(ctx, fonts, l, 16) + 36)
-    const w = widths.reduce((a, b) => a + b, 0) + 8 + (labels.length - 1) * 2
-    fillRR(ctx, x, y, w, 44, 22, pal.surface)
-    let cx = x + 4
-    labels.forEach((l, i) => {
-      if (i === 0) fillRR(ctx, cx, y + 4, widths[i], 36, 18, pal.default)
-      text(ctx, fonts, l, cx + widths[i] / 2, y + 23, {
-        size: 16,
-        color: i === 0 ? pal.foreground : pal.muted,
-        align: 'center',
-      })
-      cx += widths[i] + 2
-    })
-  }
-
-  private checkbox(id: string, x: number, y: number, on: boolean, onClick: () => void) {
+  private checkbox(id: string, x: number, y: number, on: boolean, onClick: () => void, size = 22) {
     const { ctx, pal } = this
     fillRR(
       ctx,
       x,
       y,
-      22,
-      22,
+      size,
+      size,
       6,
-      on ? pal.accent : this.hovered(id) ? pal.border : pal.surfaceTertiary,
+      on ? pal.accent : this.hovered(id) ? pal.surfaceTertiary : pal.default,
     )
-    if (on) icon(ctx, 'check', x + 11, y + 11, 15, '#fff')
-    this.region(id, x - 8, y - 8, 38, 38, onClick)
+    if (on) icon(ctx, 'check', x + size / 2, y + size / 2, size * 0.68, pal.accentFg)
+    this.region(id, x - 8, y - 8, size + 16, size + 16, onClick)
   }
 
-  private bar(x: number, y: number, w: number, frac: number) {
-    fillRR(this.ctx, x, y, w, 8, 4, this.pal.default)
-    if (frac > 0) fillRR(this.ctx, x, y, Math.max(8, w * clamp01(frac)), 8, 4, this.pal.accent)
+  private bar(x: number, y: number, w: number, frac: number, h = 8, track = this.pal.default) {
+    fillRR(this.ctx, x, y, w, h, h / 2, track)
+    if (frac > 0) fillRR(this.ctx, x, y, Math.max(h, w * clamp01(frac)), h, h / 2, this.pal.accent)
   }
 
   private card(x: number, y: number, w: number, h: number, r = 18, highlight = false) {
@@ -1317,104 +1544,326 @@ export class MockApp {
     )
   }
 
-  private timerPill(cx: number, cy: number, secs: number, scale = 1) {
+  /** A dark pill in a card's corner (GameStatChips.tsx's GameChip); returns its width. */
+  private chip(
+    x: number,
+    y: number,
+    corner: 'left' | 'right',
+    ic: IconName,
+    label: string,
+    color = '#ffffff',
+  ) {
     const { ctx, fonts } = this
-    const w = 112 * scale
-    const h = 32 * scale
-    fillRR(ctx, cx - w / 2, cy - h / 2, w, h, h / 2, 'rgba(0,0,0,.72)')
-    text(ctx, fonts, hms(Math.max(0, secs)), cx, cy + 1, {
-      size: 16 * scale,
-      weight: 600,
-      color: '#fff',
-      align: 'center',
-      tabular: true,
+    ctx.font = `700 12px ${fonts.sans}`
+    const w = Math.round(measure(ctx, fonts, label, 12, 700) + 30)
+    const cx = corner === 'left' ? x : x - w
+    fillRR(ctx, cx, y, w, 21, 10.5, 'rgba(0,0,0,.62)')
+    icon(ctx, ic, cx + 12, y + 10.5, 12, color)
+    text(ctx, fonts, label, cx + 21, y + 11, {
+      size: 12,
+      weight: 700,
+      color,
+      tabular: /\d/.test(label),
     })
+    return w
   }
 
-  /** GameCard.tsx: capsule + muted name + play/stop and trophy ghost buttons. */
-  private gameCard(name: string, x: number, y: number, w: number) {
+  /**
+   * GamePosterCard.tsx: the game's cover filling the card, its name over a dark gradient at the
+   * bottom, chips in the top corners and the page's own buttons opening below the name on hover
+   * (lifting the card, with an accent ring and glow). Returns the card's height.
+   */
+  private gameCard(name: string, x: number, y: number, w: number, o: CardOpts = {}) {
     const { ctx, pal, fonts } = this
     const g = game(name)
+    const h = w * 1.5
+    const id = `gc|${o.key ?? this.page}|${name}`
     const idling = this.idle.get(name)
-    const id = `gc-${name}`
-    const h = capsule(ctx, fonts, this.art, g, x, y, w)
-    if (this.hovered(`${id}-play`) || this.hovered(`${id}-trophy`)) {
-      fillRR(ctx, x, y, w, h, 10, 'rgba(255,255,255,0.05)')
+    // hover progress: rising on the card under the pointer, falling on the one it just left
+    const hp = this.collect
+      ? this.hoverCard === id
+        ? ease.out(prog(this.now, this.hoverCardT, 0.15))
+        : this.prevHoverCard === id
+          ? 1 - ease.out(prog(this.now, this.hoverCardT, 0.15))
+          : 0
+      : 0
+    const reveal = o.revealed ? 1 : hp
+    const lift = (o.kick ?? 0) + 4 * hp
+    const cy = y - lift
+    ctx.save()
+    if (o.dim) ctx.globalAlpha *= 0.5
+    if (hp > 0) {
+      ctx.save()
+      ctx.shadowColor = withAlpha(pal.accent, 0.6 * hp)
+      ctx.shadowBlur = 18
+      fillRR(ctx, x, cy, w, h, 12, pal.surface)
+      ctx.restore()
     }
-    if (idling) this.timerPill(x + w / 2, y + h / 2, this.now - idling.start, w < 260 ? 0.85 : 1)
-    const ry = y + h + 9 + 15
-    text(ctx, fonts, name, x, ry, { size: 15, weight: 600, color: pal.muted, maxW: w - 74 })
-    const bx = x + w - 62
-    for (const [k, ic] of [
-      ['play', idling ? 'stop' : 'play'],
-      ['trophy', 'trophy'],
-    ] as const) {
-      const bid = `${id}-${k}`
-      const xx = k === 'play' ? bx : bx + 32
-      if (this.hovered(bid)) fillRR(ctx, xx, ry - 15, 30, 30, 8, pal.default)
-      icon(ctx, ic, xx + 15, ry, 17, k === 'play' && idling ? pal.accent : pal.foreground)
-      this.region(bid, xx, ry - 15, 30, 30, () => {
-        if (k === 'play') this.toggleIdle(name)
-        else {
-          this.mgr.game = name
-          this.resetMgr()
-          this.navigate('achievementManager', true)
+    ctx.save()
+    rr(ctx, x, cy, w, h, 12)
+    ctx.clip()
+    poster(ctx, fonts, this.posters, g, x, cy, w)
+    // always there so the name reads, rising on hover to sit behind the buttons too
+    const gh = h * (o.meta || o.revealed ? 0.75 : lerp(0.4, 0.75, hp))
+    const grad = ctx.createLinearGradient(0, cy + h, 0, cy + h - gh)
+    grad.addColorStop(0, 'rgba(0,0,0,.95)')
+    grad.addColorStop(0.5, 'rgba(0,0,0,.65)')
+    grad.addColorStop(1, 'rgba(0,0,0,0)')
+    ctx.fillStyle = grad
+    ctx.fillRect(x, cy + h - gh, w, gh)
+
+    // top corners: an idle timer or the playtime on the left, achievements (or drops) on the right
+    const [mins, unlocked, total] = STATS[name] ?? [0, 0, 0]
+    const inset = 7
+    let leftW = 0
+    if (idling) {
+      leftW = this.chip(x + inset, cy + inset, 'left', 'play', elapsed(this.now - idling.start))
+    } else if (o.chips !== 'none' && mins > 0) {
+      leftW = this.chip(x + inset, cy + inset, 'left', 'clock', playtimeLabel(mins))
+    }
+    // a narrow card can't fit an hours-long timer beside the right chip, so that chip steps aside
+    // rather than the two overlapping
+    const fits = (label: string) =>
+      leftW + measure(ctx, fonts, label, 12, 700) + 30 + inset * 3 <= w
+    if (o.selected) {
+      ctx.beginPath()
+      ctx.arc(x + w - 19, cy + 19, 12, 0, Math.PI * 2)
+      ctx.fillStyle = pal.accent
+      ctx.fill()
+      icon(ctx, 'check', x + w - 19, cy + 19, 15, pal.accentFg)
+    } else if (o.drops !== undefined) {
+      if (fits(String(o.drops)))
+        this.chip(x + w - inset, cy + inset, 'right', 'cards', String(o.drops))
+    } else if (o.chips !== 'none' && total > 0 && fits(`${unlocked}/${total}`)) {
+      const done = unlocked >= total
+      this.chip(
+        x + w - inset,
+        cy + inset,
+        'right',
+        'trophy',
+        `${unlocked}/${total}`,
+        done ? pal.gold : '#ffffff',
+      )
+    }
+
+    // bottom block, built upwards: the buttons (revealed on hover), the status line, the name
+    const pad = 10
+    let by = cy + h - pad
+    const acts = o.actions ?? []
+    const actH = acts.length ? 38 : 0
+    by -= actH * reveal
+    const metaH = o.meta ? (this.L.compact ? 34 : 36) : 0
+    by -= metaH
+    ctx.font = `600 15px ${fonts.sans}`
+    const lines = wrapLines(ctx, name, w - pad * 2, 3)
+    const lh = 19
+    const nameTop = by - lines.length * lh
+    ctx.save()
+    ctx.shadowColor = 'rgba(0,0,0,.9)'
+    ctx.shadowBlur = 4
+    lines.forEach((l, i) =>
+      text(ctx, fonts, l, x + pad, nameTop + i * lh + lh / 2, {
+        size: 15,
+        weight: 600,
+        color: '#fff',
+      }),
+    )
+    ctx.restore()
+    if (o.meta) o.meta(x + pad, by + 4, w - pad * 2)
+    // the card's own hover region goes in before its buttons', so they win hit tests
+    const regionAt = this.regions.length
+    if (acts.length && reveal > 0.02) {
+      ctx.save()
+      ctx.beginPath()
+      ctx.rect(x, by + metaH, w, actH * reveal + pad)
+      ctx.clip()
+      ctx.globalAlpha *= reveal
+      let ax = x + pad
+      const ay = by + metaH + 6
+      for (const a of acts) {
+        const aid = `${id}|${a.id}`
+        if (a.label) {
+          // a full-width text button (free games' Claim)
+          this.btn(
+            {
+              kind: 'btn',
+              id: a.domId ?? aid,
+              label: a.label,
+              variant: a.variant ?? 'primary',
+              onClick: a.onClick,
+              color: a.color,
+              dim: a.disabled,
+            },
+            ax,
+            ay,
+            w - pad * 2,
+            32,
+            id,
+          )
+          continue
         }
-      })
+        ctx.beginPath()
+        ctx.arc(ax + 16, ay + 16, 16, 0, Math.PI * 2)
+        ctx.fillStyle = this.hovered(aid) ? '#d9d9d9' : '#ffffff'
+        ctx.fill()
+        icon(ctx, a.icon!, ax + 16, ay + 16, 15, '#000')
+        if (reveal > 0.5) this.region(aid, ax, ay, 32, 32, a.onClick)
+        ax += 36
+      }
+      ctx.restore()
     }
-    return h + 9 + 30
+    ctx.restore()
+    // the card's ring: accent when selected or hovered, otherwise a faint edge
+    const ring = o.selected ? pal.accent : hp > 0.5 ? pal.accent : 'rgba(255,255,255,.1)'
+    strokeRR(ctx, x, cy, w, h, 12, ring, o.selected ? 2 : 1)
+    ctx.restore()
+    if (this.collect)
+      this.regions.splice(regionAt, 0, {
+        id,
+        x,
+        y: y - 4,
+        w,
+        h: h + 4,
+        interactive: true,
+        cursor: false,
+      })
+    return h
+  }
+
+  /** The play/stop and achievements buttons most game cards open on hover. */
+  private playActions(name: string): CardAction[] {
+    return [
+      {
+        id: 'play',
+        icon: this.idle.has(name) ? 'stop' : 'play',
+        onClick: () => this.toggleIdle(name),
+      },
+      { id: 'trophy', icon: 'trophy', onClick: () => this.openManager(name) },
+    ]
+  }
+
+  private openManager(name: string) {
+    this.mgr.game = name
+    this.resetMgr()
+    this.navigate('achievementManager', true)
+  }
+
+  /** Lays `names` out on the game grid from `top`. */
+  private cardGrid(names: string[], top: number, opts: (name: string) => CardOpts = () => ({})) {
+    const G = this.grid()
+    names.forEach((n, i) => {
+      const y = G.y(top, i)
+      if (y > this.L.H) return
+      this.gameCard(n, G.x(i), y, G.w, opts(n))
+    })
   }
 
   // --- pages
   // Every page has its wide layout (the desktop window) and, under `this.L.compact`, a reflowed
-  // narrow one: two-column grids, actions on their own row under the title, stacked panels.
+  // narrow one: three-column grids and a toolbar that wraps its controls onto a second row.
 
-  /** Columns of `n` equal cells across the content width with `gap`, as [x, width] per column. */
-  private grid(n: number, gap: number) {
-    const w = (this.L.CW - gap * (n - 1)) / n
-    return { w, x: (col: number) => this.L.X0 + col * (w + gap) }
+  /** RecommendedBanner.tsx: one game's art at a time, crossfading, with its own controls. */
+  private drawBanner() {
+    const { ctx, pal, fonts } = this
+    const { compact } = this.L
+    const [bx, by, bw, bh] = this.bannerRect()
+    const cur = REC[this.slide]
+    ctx.save()
+    rr(ctx, bx, by, bw, bh, 16)
+    ctx.clip()
+    fillRR(ctx, bx, by, bw, bh, 16, pal.surface)
+    const fade = ease.out(prog(this.now, this.slideT, 0.6))
+    if (fade < 1) bannerArt(ctx, fonts, this.art, game(REC[this.prevSlide]), bx, by, bw, bh)
+    // multiplied, not set: the whole page may itself be fading out mid-navigation
+    ctx.globalAlpha *= fade
+    bannerArt(ctx, fonts, this.art, game(cur), bx, by, bw, bh)
+    ctx.restore()
+    strokeRR(ctx, bx, by, bw, bh, 16, 'rgba(255,255,255,.1)')
+    const pad = compact ? 18 : 24
+    ctx.save()
+    ctx.shadowColor = 'rgba(0,0,0,.6)'
+    ctx.shadowBlur = 8
+    text(ctx, fonts, 'Recommended', bx + pad, by + pad + (compact ? 14 : 19), {
+      size: compact ? 22 : 30,
+      weight: 800,
+      color: '#fff',
+    })
+    ctx.restore()
+    // Start Idling + manage achievements, bottom-left
+    const h = compact ? 34 : 36
+    const ry = by + bh - pad - h
+    const idling = this.idle.has(cur)
+    const startW = this.btn(
+      {
+        kind: 'btn',
+        id: 'rec-idle',
+        label: idling ? 'Stop Idling' : 'Start Idling',
+        icon: idling ? 'stop' : 'play',
+        variant: 'primary',
+        onClick: () => this.toggleIdle(cur),
+      },
+      bx + pad,
+      ry,
+      undefined,
+      h,
+    )
+    this.glassBtn('rec-trophy', bx + pad + startW + 8, ry, h, 'trophy', () => this.openManager(cur))
+    // pager, bottom-right: prev, dots, next
+    const dotsW = REC.length * 6 + (REC.length - 1) * 6 + 18
+    const nx = bx + bw - pad - h
+    this.glassBtn('rec-next', nx, ry, h, 'chevronRight', () => this.goSlide(this.slide + 1))
+    const dx = nx - 6 - dotsW
+    let cx = dx + 4
+    REC.forEach((_, i) => {
+      const on = i === this.slide
+      fillRR(ctx, cx, ry + h / 2 - 3, on ? 24 : 6, 6, 3, on ? '#ffffff' : 'rgba(255,255,255,.4)')
+      cx += (on ? 24 : 6) + 6
+    })
+    this.glassBtn('rec-prev', dx - 6 - h, ry, h, 'chevronLeft', () => this.goSlide(this.slide - 1))
+  }
+
+  /** The banner's see-through round buttons. */
+  private glassBtn(
+    id: string,
+    x: number,
+    y: number,
+    size: number,
+    ic: IconName,
+    onClick: () => void,
+  ) {
+    const { ctx } = this
+    ctx.beginPath()
+    ctx.arc(x + size / 2, y + size / 2, size / 2, 0, Math.PI * 2)
+    ctx.fillStyle = this.hovered(id) ? 'rgba(255,255,255,.28)' : 'rgba(255,255,255,.16)'
+    ctx.fill()
+    icon(ctx, ic, x + size / 2, y + size / 2, size * 0.44, '#fff')
+    this.region(id, x, y, size, size, onClick)
   }
 
   private drawGames() {
-    const { X0 } = this.L
-    const top = this.pageHead('Games', '128 games', [
-      {
-        kind: 'btn',
-        id: 'games-sort',
-        label: 'Playtime (High to Low)',
-        icon: 'sort',
-        variant: 'secondary',
-      },
-      { kind: 'icon', id: 'games-refresh', icon: 'refresh' },
-    ])
-    let y = top + 4
-    this.secTitle('Recommended', y)
-    y += 38
-    if (this.L.compact) {
-      const g = this.grid(2, 14)
-      REC.slice(0, 2).forEach((n, i) => this.gameCard(n, g.x(i), y, g.w))
-      y += (g.w * 215) / 460 + 39 + 22
-      this.secTitle('All Games', y)
-      y += 38
-      ALL.forEach((n, i) =>
-        this.gameCard(n, g.x(i % 2), y + Math.floor(i / 2) * ((g.w * 215) / 460 + 53), g.w),
-      )
-      return
-    }
-    REC.forEach((n, i) => this.gameCard(n, X0 + i * 382, y, 360))
-    y += 168 + 39 + 24
-    this.secTitle('All Games', y)
-    y += 38
-    ALL.forEach((n, i) => this.gameCard(n, X0 + (i % 5) * 229, y + Math.floor(i / 5) * 158, 208))
+    const { X0, XR, compact } = this.L
+    this.drawBanner()
+    const [, by, , bh] = this.bannerRect()
+    const cy = by + bh + 34
+    this.titleWithCount('All Games', LIBRARY_SIZE, X0, cy)
+    this.actions(
+      [
+        { kind: 'sort', id: 'games-sort', label: 'Playtime (High to Low)' },
+        { kind: 'icon', id: 'games-refresh', icon: 'refresh' },
+      ],
+      XR,
+      cy,
+    )
+    this.contentTop = cy + (compact ? 30 : 34)
+    this.cardGrid(BY_PLAYTIME, this.contentTop, n => ({ actions: this.playActions(n) }))
   }
 
   private drawIdling() {
     const { ctx, pal, fonts } = this
     const { X0, CW, XR, H, compact } = this.L
     const n = this.idle.size
-    const top = this.pageHead(
-      'Idling',
-      `${n} ${n === 1 ? 'game' : 'games'} idling`,
+    const top = this.toolbar(
+      { kind: 'title', title: 'Idling', count: n },
       n
         ? [
             {
@@ -1422,7 +1871,7 @@ export class MockApp {
               id: 'idle-stopall',
               label: 'Stop all',
               icon: 'stop',
-              variant: 'secondary',
+              variant: 'danger',
               onClick: () => {
                 this.stopFarm()
                 this.stopUnlocker()
@@ -1435,22 +1884,58 @@ export class MockApp {
         : [],
     )
     if (!n) {
-      const cy = compact ? 380 : 400
-      icon(ctx, 'idling', X0 + CW / 2, cy, 44, pal.muted)
-      text(ctx, fonts, 'No games idling', X0 + CW / 2, cy + 60, {
-        size: 22,
+      // IdlingEmptyBanner: what idling is, and the two ways to start some
+      const w = Math.min(CW, 620)
+      const bx = X0 + (CW - w) / 2
+      const by = compact ? 260 : 250
+      const bh = compact ? 300 : 270
+      this.card(bx, by, w, bh, 20)
+      icon(ctx, 'idling', bx + w / 2, by + 62, 40, pal.accent)
+      text(ctx, fonts, "Nothing's idling right now.", bx + w / 2, by + 118, {
+        size: compact ? 20 : 22,
         weight: 700,
         color: pal.foreground,
         align: 'center',
       })
-      text(
+      ctx.font = `500 15px ${fonts.sans}`
+      const desc = wrapLines(
         ctx,
-        fonts,
-        'Start idling a game from the Games tab to see it here.',
-        X0 + CW / 2,
-        cy + 94,
-        { size: compact ? 14 : 16, color: pal.muted, align: 'center', maxW: CW },
+        "Go to the Games page, hover over a game and press the play button. It'll show up here while it idles.",
+        w - 60,
+        3,
       )
+      desc.forEach((l, i) =>
+        text(ctx, fonts, l, bx + w / 2, by + 152 + i * 21, {
+          size: 15,
+          color: pal.muted,
+          align: 'center',
+        }),
+      )
+      const browse: BtnAction = {
+        kind: 'btn',
+        id: 'idle-browse',
+        label: 'Browse your games',
+        variant: 'primary',
+        onClick: () => this.navigate('games', true),
+      }
+      const auto: BtnAction = {
+        kind: 'btn',
+        id: 'idle-auto',
+        label: 'Set up Automatic Idler',
+        variant: 'secondary',
+        onClick: () => this.navigate('autoIdle', true),
+      }
+      const bw1 = this.actionWidth(browse)
+      const bw2 = this.actionWidth(auto)
+      const rowY = by + bh - 60
+      if (compact) {
+        this.btn(browse, bx + (w - bw1) / 2, rowY - 44)
+        this.btn(auto, bx + (w - bw2) / 2, rowY)
+      } else {
+        const sx = bx + (w - bw1 - bw2 - 10) / 2
+        this.btn(browse, sx, rowY)
+        this.btn(auto, sx + bw1 + 10, rowY)
+      }
       return
     }
     // grouped by owning feature, in groupIdlingGames.ts's precedence order
@@ -1460,40 +1945,27 @@ export class MockApp {
       ['auto', 'Automatic Idler', () => this.stopOwner('auto')],
       ['manual', 'Manually idled', () => this.stopOwner('manual')],
     ]
-    let y = top + 8
-    const cols = compact ? 2 : 4
-    const g = this.grid(cols, compact ? 14 : 20)
-    const capH = (g.w * 215) / 460
+    const G = this.grid()
+    let y = top
     for (const [owner, title, stop] of groups) {
       const games = [...this.idle.entries()].filter(([, v]) => v.owner === owner)
       if (!games.length) continue
       if (y > H) break
-      this.label(`${title} (${games.length})`, X0, y)
-      const sid = `idle-stop-${owner}`
-      const sw = 74
-      if (this.hovered(sid)) fillRR(ctx, XR - sw, y - 6, sw, 30, 15, pal.surface)
-      icon(ctx, 'stop', XR - sw + 20, y + 9, 14, pal.foreground)
-      text(ctx, fonts, 'Stop', XR - sw + 32, y + 9, {
-        size: 14,
-        weight: 600,
-        color: pal.foreground,
-      })
-      this.region(sid, XR - sw, y - 6, sw, 30, stop)
-      y += 30
-      const shown = games.slice(0, compact ? 4 : 4)
-      shown.forEach(([name, v], i) => {
-        const x = g.x(i % cols)
-        const yy = y + Math.floor(i / cols) * (capH + 54)
-        const h = capsule(ctx, fonts, this.art, game(name), x, yy, g.w)
-        this.timerPill(x + g.w / 2, yy + h / 2, this.now - v.start, g.w < 260 ? 0.85 : 1)
-        text(ctx, fonts, name, x, yy + h + 22, {
-          size: 15,
-          weight: 600,
-          color: pal.muted,
-          maxW: g.w,
-        })
-      })
-      y += Math.ceil(shown.length / cols) * (capH + 54)
+      this.titleWithCount(title, games.length, X0, y + 8, 15)
+      const stopBtn: BtnAction = {
+        kind: 'btn',
+        id: `idle-stop-${owner}`,
+        label: 'Stop',
+        icon: 'stop',
+        variant: 'danger',
+        onClick: stop,
+      }
+      const sw = this.actionWidth(stopBtn) - 6
+      this.btn(stopBtn, XR - sw, y - 7, sw, 30)
+      y += 36
+      const names = games.map(([name]) => name)
+      this.cardGrid(names, y, name => ({ actions: this.playActions(name), key: `idle-${owner}` }))
+      y += Math.ceil(names.length / G.cols) * (G.h + G.gap + 1) + 14
     }
   }
 
@@ -1503,47 +1975,66 @@ export class MockApp {
     this.emitStats()
   }
 
-  /** Favorites / Automatic Idler: a row of game cards (two per row when compact). */
-  private cardRow(
-    names: string[],
-    top: number,
-    decorate?: (x: number, y: number, w: number) => void,
-  ) {
-    if (this.L.compact) {
-      const g = this.grid(2, 14)
-      names.forEach((n, i) => {
-        const x = g.x(i % 2)
-        const y = top + Math.floor(i / 2) * ((g.w * 215) / 460 + 53)
-        this.gameCard(n, x, y, g.w)
-        decorate?.(x, y, g.w)
-      })
-      return
-    }
-    names.forEach((n, i) => {
-      const x = this.L.X0 + i * 382
-      this.gameCard(n, x, top, 360)
-      decorate?.(x, top, 360)
-    })
-  }
-
   private drawFavorites() {
-    const top = this.pageHead('Favorites', `${FAVORITES.length} favorites`, [])
-    this.cardRow(FAVORITES, top + 8, (x, y, w) =>
-      icon(this.ctx, 'heartFilled', x + w - 22, y + 22, 20, '#ff4f6d'),
+    const favs = BY_PLAYTIME.filter(n => this.favorites.has(n))
+    const top = this.toolbar(
+      {
+        kind: 'tabs',
+        id: 'fav',
+        tabs: [
+          ['All Games', LIBRARY_SIZE],
+          ['Favorites', favs.length],
+        ],
+        active: this.favTab,
+        onTab: i => {
+          this.favTab = i
+          this.anim(0.3)
+        },
+      },
+      [
+        { kind: 'sort', id: 'fav-sort', label: 'Playtime (High to Low)' },
+        { kind: 'icon', id: 'fav-add', icon: 'plus' },
+      ],
     )
+    // All Games marks the favorites it already holds; the Favorites tab lists just them
+    const names = this.favTab === 0 ? BY_PLAYTIME : favs
+    this.cardGrid(names, top, n => ({
+      selected: this.favorites.has(n),
+      key: `fav-${this.favTab}`,
+      actions: [
+        { id: 'play', icon: this.idle.has(n) ? 'stop' : 'play', onClick: () => this.toggleIdle(n) },
+        {
+          id: 'fav',
+          icon: this.favorites.has(n) ? 'heartFilled' : 'favorites',
+          onClick: () => this.toggleFavorite(n),
+        },
+      ],
+    }))
   }
 
   private drawAutoIdle() {
-    const top = this.pageHead('Automatic Idler', `${AUTO_IDLE.length} games`, [
-      { kind: 'icon', id: 'auto-add', icon: 'plus' },
-    ])
-    this.cardRow(AUTO_IDLE, top + 8)
+    const top = this.toolbar(
+      {
+        kind: 'tabs',
+        id: 'auto',
+        tabs: [
+          ['All Games', LIBRARY_SIZE],
+          ['Queue', AUTO_IDLE.length],
+        ],
+        active: 1,
+      },
+      [
+        { kind: 'sort', id: 'auto-sort', label: 'Playtime (High to Low)' },
+        { kind: 'icon', id: 'auto-add', icon: 'plus' },
+      ],
+    )
+    this.cardGrid(AUTO_IDLE, top, n => ({ actions: this.playActions(n) }))
   }
 
   /** Where the free game's Claim button sits (its centre), for the confetti burst. */
   private freeClaimAt(): [number, number] {
-    const { X0, Y0, CW, compact } = this.L
-    return compact ? [X0 + CW - 75, Y0 + 390] : [X0 + 540 - 60, Y0 + 96 + 296]
+    const r = this.regionRect('free-claim')
+    return r ? [r[0] + r[2] / 2, r[1] + r[3] / 2] : [this.L.X0 + 90, this.contentTop + 230]
   }
 
   private drawFree() {
@@ -1551,57 +2042,49 @@ export class MockApp {
     const { X0, CW, compact } = this.L
     const name = FREE_GAMES[this.free.idx % FREE_GAMES.length]
     const claimed = this.free.claimedT >= 0
-    const top = this.pageHead('Free Games', '1 free game available', [
+    const top = this.toolbar({ kind: 'title', title: 'Free Games', count: 1 }, [
       { kind: 'icon', id: 'free-refresh', icon: 'refresh', onClick: () => this.nextFreeGame() },
       { kind: 'icon', id: 'free-settings', icon: 'settings' },
     ])
-    const x = X0
-    const y = top + 8
-    // the game card: full content width when compact
-    const cardW = compact ? CW : 560
-    const capW = cardW - 40
-    const capH = (capW * 215) / 460
-    const cardH = capH + 92
-    this.card(x, y, cardW, cardH)
-    capsule(ctx, fonts, this.art, game(name), x + 20, y + 20, capW)
-    const rowY = y + capH + 58
-    text(ctx, fonts, name, x + 20, rowY, {
-      size: compact ? 19 : 22,
-      weight: 700,
-      color: pal.foreground,
-      maxW: cardW - 180,
-    })
+    const G = this.grid()
+    // FreeGameCard: always open, its one action a full-width Claim (Claimed once granted)
     const pop = claimed ? ease.back(prog(this.now, this.free.claimedT, 0.35)) : 1
-    const a: BtnAction = claimed
-      ? {
-          kind: 'btn',
-          id: 'free-claim',
-          label: 'Claimed',
-          icon: 'check',
-          variant: 'secondary',
-          color: pal.success,
-        }
-      : {
-          kind: 'btn',
-          id: 'free-claim',
-          label: 'Claim',
-          icon: 'giftFilled',
-          variant: 'primary',
-          onClick: () => this.claimFree(),
-        }
-    const w = this.btnWidth(a)
     ctx.save()
-    const bx = x + cardW - 20 - w
-    ctx.translate(bx + w / 2, rowY)
-    ctx.scale(0.85 + 0.15 * pop, 0.85 + 0.15 * pop)
-    ctx.translate(-(bx + w / 2), -rowY)
-    this.btn(a, bx, rowY - 22, w)
+    const cx = X0 + G.w / 2
+    const cy = top + G.h - 26
+    ctx.translate(cx, cy)
+    ctx.scale(0.94 + 0.06 * pop, 0.94 + 0.06 * pop)
+    ctx.translate(-cx, -cy)
+    this.gameCard(name, X0, top, G.w, {
+      revealed: true,
+      chips: 'none',
+      selected: claimed,
+      key: 'free',
+      actions: [
+        claimed
+          ? {
+              id: 'claim',
+              label: 'Claimed',
+              variant: 'secondary',
+              color: pal.success,
+              domId: 'free-claim',
+              disabled: true,
+            }
+          : {
+              id: 'claim',
+              label: 'Claim',
+              variant: 'primary',
+              domId: 'free-claim',
+              onClick: () => this.claimFree(),
+            },
+      ],
+    })
     ctx.restore()
-    // illustrative: the notification the app pops when a game goes free - beside the game card
-    // when wide, under it when compact
-    const nx = compact ? X0 : x + 590
-    const ny = compact ? y + cardH + 20 : y
-    const nw = compact ? CW : CW - 590
+    // illustrative: the notification the app pops when a game goes free - beside the card when
+    // wide, under it when compact
+    const nx = compact ? X0 : X0 + G.w + 24
+    const ny = compact ? top + G.h + 20 : top
+    const nw = compact ? CW : Math.min(460, CW - G.w - 24)
     this.card(nx, ny, nw, 150)
     icon(ctx, 'bell', nx + 40, ny + 44, 24, pal.gold)
     text(ctx, fonts, 'Free Games Available!', nx + 70, ny + 45, {
@@ -1636,10 +2119,25 @@ export class MockApp {
     this.anim(0.4)
   }
 
+  /** Card farming's tabs, shared by both states; locked while a run is in progress. */
+  private farmTabs(dim: boolean): TabsStart {
+    return {
+      kind: 'tabs',
+      id: 'farm',
+      tabs: [
+        ['Games With Drops', FARM_POOL.length],
+        ['Whitelisted', 0],
+        ['Blacklisted', 0],
+      ],
+      active: 0,
+      dim,
+    }
+  }
+
   private drawFarmIdle() {
-    const { ctx, pal, fonts } = this
-    const { X0, compact } = this.L
-    const top = this.pageHead('Card Farming', 'Not farming', [
+    const top = this.toolbar(this.farmTabs(false), [
+      { kind: 'sort', id: 'farm-sort', label: 'Drops Remaining (High to Low)', maxW: 160 },
+      { kind: 'icon', id: 'farm-settings', icon: 'settings' },
       {
         kind: 'btn',
         id: 'farm-start',
@@ -1648,26 +2146,8 @@ export class MockApp {
         variant: 'primary',
         onClick: () => this.startFarm(),
       },
-      { kind: 'icon', id: 'farm-settings', icon: 'settings' },
     ])
-    this.tabs(['Games With Drops', 'Whitelisted', 'Blacklisted'], X0, top + 4)
-    const cols = compact ? 2 : 4
-    const g = this.grid(cols, compact ? 14 : 20)
-    const rowH = compact ? (g.w * 215) / 460 + 50 : 190
-    FARM_POOL.forEach((n, i) => {
-      const x = g.x(i % cols)
-      const y = top + 72 + Math.floor(i / cols) * rowH
-      const h = capsule(ctx, fonts, this.art, game(n), x, y, g.w)
-      const drops = [4, 3, 5, 3, 2, 6, 3, 4][i]
-      fillRR(ctx, x + g.w - 86, y + 10, 76, 26, 13, 'rgba(0,0,0,.72)')
-      text(ctx, fonts, `${drops} drops`, x + g.w - 48, y + 24, {
-        size: 13,
-        weight: 700,
-        color: '#fff',
-        align: 'center',
-      })
-      text(ctx, fonts, n, x, y + h + 22, { size: 15, weight: 600, color: pal.muted, maxW: g.w })
-    })
+    this.cardGrid(FARM_POOL, top, n => ({ drops: FARM_DROPS[FARM_POOL.indexOf(n)] }))
   }
 
   private drawFarmRun() {
@@ -1675,52 +2155,70 @@ export class MockApp {
     const { X0, CW, XR, compact } = this.L
     const f = this.farm
     const n = f.slots.length
-    const top = this.pageHead('Card Farming', `Farming ${n} games`, [
+    const top = this.toolbar(this.farmTabs(true), [
+      {
+        kind: 'sort',
+        id: 'farm-sort',
+        label: 'Drops Remaining (High to Low)',
+        maxW: 160,
+        dim: true,
+      },
+      { kind: 'icon', id: 'farm-settings', icon: 'settings' },
       {
         kind: 'btn',
         id: 'farm-stop',
         label: 'Stop farming',
         icon: 'stop',
-        variant: 'secondary',
+        variant: 'danger',
         onClick: () => this.stopFarm(),
       },
-      { kind: 'icon', id: 'farm-settings', icon: 'settings' },
     ])
-    this.label(`Farming (${n})`, X0, top + 4)
-    const pad = compact ? 14 : 16
+    this.label(`Farming (${n})`, X0, top)
     f.slots.forEach((s, i) => {
       const b = this.farmCardBox(i)
-      this.card(b.x, b.y, b.w, b.h, 18)
-      const g = game(s.game)
-      // a drop gives the capsule a little kick
+      // a drop gives the cover a little kick
       const kick = Math.sin(prog(this.now, s.dropT, 0.4) * Math.PI) * 6
-      const capH = capsule(ctx, fonts, this.art, g, b.x + pad, b.y + pad - kick, b.w - pad * 2)
-      const ty = b.y + pad + capH
-      text(ctx, fonts, s.game, b.x + pad, ty + 24, {
-        size: compact ? 15 : 16,
-        weight: 600,
-        color: pal.foreground,
-        maxW: b.w - pad * 2,
-      })
-      const shown = s.total - s.left - 1 + ease.out(prog(this.now, s.dropT, 0.45))
-      this.bar(b.x + pad, ty + 46, b.w - pad * 2, (s.left === s.total ? 0 : shown) / s.total)
       const done = s.doneT >= 0
-      text(
-        ctx,
-        fonts,
-        done ? 'Nothing left to farm' : `${s.left} ${s.left === 1 ? 'drop' : 'drops'} remaining`,
-        b.x + pad,
-        ty + 76,
-        { size: compact ? 13 : 14, weight: 600, color: done ? pal.success : pal.accent },
-      )
+      const shown = s.total - s.left - 1 + ease.out(prog(this.now, s.dropT, 0.45))
+      this.gameCard(s.game, b.x, b.y, b.w, {
+        revealed: true,
+        kick,
+        key: 'farm-run',
+        // CardFarmingActiveCard: the run's progress and what's left, always on show
+        meta: (mx, my, mw) => {
+          this.bar(
+            mx,
+            my,
+            mw,
+            (s.left === s.total ? 0 : shown) / s.total,
+            6,
+            'rgba(255,255,255,.22)',
+          )
+          text(
+            ctx,
+            fonts,
+            done
+              ? 'Nothing left to farm'
+              : `${s.left} ${s.left === 1 ? 'drop' : 'drops'} remaining`,
+            mx,
+            my + 22,
+            {
+              size: compact ? 12 : 13,
+              weight: 600,
+              color: done ? pal.success : 'rgba(255,255,255,.85)',
+              maxW: mw,
+            },
+          )
+        },
+      })
     })
     const last = this.farmCardBox(n - 1)
-    const qy = last.y + last.h + 26
+    const qy = last.y + last.h + 22
     this.label(`Up next (${f.queue.length})`, X0, qy)
     this.card(X0, qy + 26, CW, 12 + f.queue.length * 52, 16)
     f.queue.forEach((q, i) => {
       const ry = qy + 38 + i * 52
-      strokeRR(ctx, X0 + 12, ry, CW - 24, 44, 10, pal.border)
+      fillRR(ctx, X0 + 12, ry, CW - 24, 44, 10, pal.default)
       text(ctx, fonts, q, X0 + 28, ry + 23, { size: 15, weight: 600, color: pal.foreground })
       icon(ctx, 'autoIdle', XR - 158, ry + 22, 15, pal.muted)
       text(ctx, fonts, 'Waiting its turn', XR - 144, ry + 23, {
@@ -1731,14 +2229,66 @@ export class MockApp {
     })
   }
 
+  /** The unlocker's tabs + controls, shared by both states (locked while it runs). */
+  private unlToolbar() {
+    const running = this.unl.running
+    return this.toolbar(
+      {
+        kind: 'tabs',
+        id: 'unl',
+        tabs: [
+          ['All Games', LIBRARY_SIZE],
+          ['Queue', UNL_GAMES.length],
+        ],
+        active: 1,
+        dim: running,
+      },
+      [
+        {
+          kind: 'btn',
+          id: 'unl-addall',
+          label: 'Add all to queue',
+          variant: 'secondary',
+          dim: running,
+          wideOnly: true,
+        },
+        { kind: 'sort', id: 'unl-sort', label: 'Playtime (High to Low)', dim: running },
+        { kind: 'icon', id: 'unl-add', icon: 'plus', dim: running },
+        { kind: 'icon', id: 'unl-settings', icon: 'settings' },
+        running
+          ? {
+              kind: 'btn',
+              id: 'unl-toggle',
+              label: 'Stop',
+              icon: 'stop',
+              variant: 'danger',
+              onClick: () => this.stopUnlocker(),
+            }
+          : {
+              kind: 'btn',
+              id: 'unl-toggle',
+              label: 'Start',
+              icon: 'play',
+              variant: 'primary',
+              onClick: () => this.startUnlocker(),
+            },
+      ],
+    )
+  }
+
+  private drawUnlockerIdle() {
+    const top = this.unlToolbar()
+    this.cardGrid(UNL_GAMES, top, n => ({ actions: this.playActions(n) }))
+  }
+
   /**
-   * The unlocker's three blocks: the current-game card, "Up next" and the "Recently unlocked" feed
-   * - side by side when wide, stacked when compact.
+   * The unlocker's running view: the current-game card, "Up next" and the "Recently unlocked"
+   * feed - side by side when wide, stacked when compact.
    */
   private unlLayout() {
-    const { X0, Y0, CW, H, compact } = this.L
+    const { X0, CW, H, compact } = this.L
+    const top = this.contentTop
     if (compact) {
-      const top = Y0 + 128
       const up = { x: X0, y: top + 320, w: CW }
       const feedY = up.y + 168
       return {
@@ -1747,11 +2297,10 @@ export class MockApp {
         feed: { x: X0, y: feedY, w: CW, h: Math.max(140, H - feedY - 46) },
       }
     }
-    const y = Y0 + 96
     return {
-      cur: { x: X0, y, w: 540, h: 600 },
-      up: { x: X0 + 560, y, w: CW - 560 },
-      feed: { x: X0 + 560, y: y + 170, w: CW - 560, h: 404 },
+      cur: { x: X0, y: top, w: 540, h: H - top - 24 },
+      up: { x: X0 + 560, y: top, w: CW - 560 },
+      feed: { x: X0 + 560, y: top + 170, w: CW - 560, h: H - top - 24 - 196 },
     }
   }
 
@@ -1761,38 +2310,18 @@ export class MockApp {
     return [f.x + f.w / 2, f.y + 26 + 12 + 29]
   }
 
-  private drawUnlocker() {
+  private drawUnlockerRun() {
     const { ctx, pal, fonts } = this
     const { compact } = this.L
     const u = this.unl
     const cur = UNL_GAMES[u.gameIdx]
-    this.pageHead('Achievement Unlocker', u.running ? 'Unlocking 1 game' : '', [
-      u.running
-        ? {
-            kind: 'btn',
-            id: 'unl-toggle',
-            label: 'Stop',
-            icon: 'stop',
-            variant: 'secondary',
-            onClick: () => this.stopUnlocker(),
-          }
-        : {
-            kind: 'btn',
-            id: 'unl-toggle',
-            label: 'Start',
-            icon: 'play',
-            variant: 'primary',
-            onClick: () => this.startUnlocker(),
-          },
-      { kind: 'icon', id: 'unl-add', icon: 'plus' },
-      { kind: 'icon', id: 'unl-settings', icon: 'settings' },
-    ])
+    this.unlToolbar()
     const L = this.unlLayout()
     const c = L.cur
     const cx = c.x + c.w / 2
     this.card(c.x, c.y, c.w, c.h)
     const capW = compact ? 300 : 420
-    const capY = compact ? c.y + 22 : c.y + 90
+    const capY = compact ? c.y + 22 : c.y + 80
     const capH = capsule(ctx, fonts, this.art, game(cur), cx - capW / 2, capY, capW)
     const ty = capY + capH
     text(ctx, fonts, 'Current game', cx, ty + (compact ? 26 : 24), {
@@ -1815,9 +2344,7 @@ export class MockApp {
     text(
       ctx,
       fonts,
-      u.running || u.done
-        ? `${left} ${left === 1 ? 'achievement' : 'achievements'} remaining`
-        : 'Starting…',
+      u.done ? `${left} ${left === 1 ? 'achievement' : 'achievements'} remaining` : 'Starting…',
       cx,
       ty + (compact ? 112 : 134),
       { size: compact ? 15 : 16, weight: 600, color: pal.accent, align: 'center' },
@@ -1827,7 +2354,7 @@ export class MockApp {
     this.card(rx, uy + 26, rw, 116, 16)
     ;[1, 2].forEach((k, i) => {
       const ry = uy + 38 + i * 52
-      strokeRR(ctx, rx + 12, ry, rw - 24, 44, 10, pal.border)
+      fillRR(ctx, rx + 12, ry, rw - 24, 44, 10, pal.default)
       text(ctx, fonts, UNL_GAMES[(u.gameIdx + k) % UNL_GAMES.length], rx + 28, ry + 23, {
         size: 15,
         weight: 600,
@@ -1851,7 +2378,7 @@ export class MockApp {
       const slide = i === 0 ? 0 : i - 1 + ease.out5(prog(this.now, u.feed[0].t, 0.45))
       const ry = fd.y + 38 + slide * 66
       ctx.save()
-      ctx.globalAlpha = i === 0 ? enter : 1
+      if (i === 0) ctx.globalAlpha *= enter
       const s = i === 0 ? 0.9 + 0.1 * ease.back(prog(this.now, row.t, 0.45)) : 1
       ctx.translate(fd.x + fd.w / 2, ry + 28)
       ctx.scale(s, s)
@@ -1916,14 +2443,33 @@ export class MockApp {
       },
     ]
     // compact: the actions get their own row under the game header
-    if (compact) this.actionsLeft(actions, X0, Y0 + 92)
-    else this.actions(actions, XR, Y0 + 22)
-    this.tabs(['Achievements', 'Statistics'], X0, Y0 + (compact ? 150 : 116))
+    if (compact) {
+      let x = X0
+      for (const a of actions) {
+        const w = this.actionWidth(a)
+        this.action(a, x, Y0 + 110, w)
+        x += w + 8
+      }
+    } else this.actions(actions, XR, Y0 + 40)
+    this.drawTabs(
+      {
+        kind: 'tabs',
+        id: 'mgr',
+        tabs: [
+          ['Achievements', 30],
+          ['Statistics', 4],
+        ],
+        active: 0,
+      },
+      X0,
+      Y0 + (compact ? 170 : 152),
+    )
     const rowH = compact ? 72 : 78
     m.achs.forEach((a, i) => {
       const y = this.mgrRowY(i)
       const flip = prog(this.now, a.flipT, 0.45)
       const pop = a.flipT > this.now - 1 ? 1 + 0.18 * Math.sin(flip * Math.PI) : 1
+      fillRR(ctx, X0, y, CW, rowH, 14, pal.surface)
       strokeRR(ctx, X0, y, CW, rowH, 14, a.selected ? pal.accent : pal.border, a.selected ? 2 : 1)
       this.checkbox(`mgr-cb-${i}`, X0 + (compact ? 14 : 20), y + rowH / 2 - 11, a.selected, () =>
         this.toggleSelect(i),
@@ -1954,7 +2500,7 @@ export class MockApp {
             variant: 'primary',
             onClick: () => this.flipAch(i, 0),
           }
-      const bw = this.btnWidth(b) - 10
+      const bw = this.actionWidth(b)
       const bx = XR - (compact ? 14 : 20) - bw
       const tx = this.mgrIconX() + iconSize / 2 + 14
       text(ctx, fonts, a.name, tx, y + rowH / 2 - 10, {
@@ -1976,28 +2522,93 @@ export class MockApp {
           color: pal.muted,
           align: 'right',
         })
-      this.btn(b, bx, y + rowH / 2 - 18, bw, 36)
+      this.btn(b, bx, y + rowH / 2 - 17, bw, 34)
     })
   }
 
-  /** Inventory grid: 6 columns wide, 3 compact. */
+  /** Inventory grid: four item cards beside the filter panel wide, two compact. */
   private invGrid() {
-    const { compact, Y0 } = this.L
-    const g = this.grid(compact ? 3 : 6, compact ? 12 : 14)
+    const { compact, X0, XR } = this.L
+    const left = compact ? X0 : X0 + 224
+    const cols = compact ? 2 : 4
+    const gap = compact ? 12 : 16
+    const w = (XR - left - gap * (cols - 1)) / cols
     return {
-      ...g,
-      cols: compact ? 3 : 6,
-      top: compact ? Y0 + 128 : Y0 + 88,
-      cardH: compact ? 206 : 232,
-      rowH: compact ? 218 : 246,
+      cols,
+      w,
+      x: (col: number) => left + col * (w + gap),
+      top: this.contentTop - 8,
+      cardH: 264,
+      rowH: 280,
     }
+  }
+
+  private invPriceCentre(i: number): [number, number] {
+    const G = this.invGrid()
+    const row = Math.floor(i / G.cols)
+    return [G.x(i % G.cols) + G.w / 2, G.top + row * G.rowH + 214]
+  }
+
+  /** InventoryManagerPage's left column: search, sort and the item-type filters. */
+  private drawInvFilters(top: number) {
+    const { ctx, pal, fonts } = this
+    const { X0, H } = this.L
+    const w = 183
+    fillRR(ctx, X0, top + 4, w, 36, 18, pal.default)
+    icon(ctx, 'search', X0 + 20, top + 22, 16, pal.muted)
+    text(ctx, fonts, 'Search', X0 + 38, top + 23, { size: 15, color: pal.muted })
+    ctx.letterSpacing = '0.04em'
+    text(ctx, fonts, 'SORT BY', X0 + 4, top + 66, { size: 12, weight: 600, color: pal.muted })
+    ctx.letterSpacing = '0px'
+    fillRR(ctx, X0, top + 82, w, 36, 18, pal.default)
+    icon(ctx, 'sort', X0 + 20, top + 100, 16, pal.foreground)
+    text(ctx, fonts, 'Name (A-Z)', X0 + 38, top + 101, {
+      size: 15,
+      weight: 600,
+      color: pal.foreground,
+    })
+    icon(ctx, 'chevronDown', X0 + w - 20, top + 100, 15, pal.muted)
+    ctx.fillStyle = pal.border
+    ctx.fillRect(X0, top + 138, w, 1)
+    ctx.letterSpacing = '0.04em'
+    text(ctx, fonts, 'FILTER', X0 + 4, top + 160, { size: 12, weight: 600, color: pal.muted })
+    ctx.letterSpacing = '0px'
+    INV_FILTERS.forEach(([label, ic], i) => {
+      const y = top + 192 + i * 40
+      if (y > H - 20) return
+      const on = i === 0
+      icon(ctx, ic, X0 + 18, y, 16, on ? pal.foreground : pal.muted, 1.5)
+      text(ctx, fonts, label, X0 + 36, y + 1, {
+        size: 15,
+        weight: on ? 700 : 500,
+        color: on ? pal.foreground : pal.muted,
+      })
+      if (on) icon(ctx, 'check', X0 + w - 18, y, 15, pal.foreground)
+    })
+    ctx.fillStyle = pal.border
+    ctx.fillRect(X0 + 200, top - 8, 1, H - top + 8)
   }
 
   private drawInventory() {
     const { ctx, pal, fonts } = this
     const { compact } = this.L
     const sel = this.inv.items.filter(i => i.selected).length
-    this.pageHead('Inventory Manager', '36 items', [
+    const top = this.toolbar({ kind: 'title', title: 'Inventory Manager', count: INV_TOTAL }, [
+      {
+        kind: 'btn',
+        id: 'inv-list',
+        label: `List selected (${sel})`,
+        variant: 'primary',
+        dim: !sel,
+        onClick: () => this.listSelected(),
+      },
+      {
+        kind: 'btn',
+        id: 'inv-sellall',
+        label: `Sell all (${INV_TOTAL})`,
+        variant: 'secondary',
+        wideOnly: true,
+      },
       {
         kind: 'btn',
         id: 'inv-dupes',
@@ -2008,11 +2619,10 @@ export class MockApp {
       },
       {
         kind: 'btn',
-        id: 'inv-list',
-        label: sel ? `List selected (${sel})` : 'List selected',
-        variant: 'primary',
-        dim: !sel,
-        onClick: () => this.listSelected(),
+        id: 'inv-remove',
+        label: 'Remove listings',
+        variant: 'danger',
+        wideOnly: true,
       },
       {
         kind: 'icon',
@@ -2023,13 +2633,15 @@ export class MockApp {
           this.anim(0.3)
         },
       },
+      { kind: 'icon', id: 'inv-settings', icon: 'settings', wideOnly: true },
     ])
+    if (!compact) this.drawInvFilters(top)
     const G = this.invGrid()
     const w = G.w
-    const artY = compact ? 82 : 96
     this.inv.items.forEach((it, i) => {
       const x = G.x(i % G.cols)
       const y = G.top + Math.floor(i / G.cols) * G.rowH
+      if (y > this.L.H) return
       const listed = it.listedT >= 0 && this.now >= it.listedT
       fillRR(ctx, x, y, w, G.cardH, 14, pal.surface)
       strokeRR(
@@ -2042,56 +2654,88 @@ export class MockApp {
         it.selected ? pal.accent : pal.border,
         it.selected ? 2 : 1,
       )
-      this.checkbox(`inv-cb-${i}`, x + 12, y + 12, it.selected, () => this.toggleInv(i))
-      if (!listed) this.region(`inv-${i}`, x, y + 40, w, G.cardH - 40, () => this.toggleInv(i))
-      icon(ctx, 'lock', x + w - 22, y + 23, 16, pal.muted)
-      // drop-shadowed item art, cached as a sprite (160x140 box centred on the art's centre);
-      // drawn a little smaller in the narrower compact cards
+      this.checkbox(`inv-cb-${i}`, x + 12, y + 12, it.selected, () => this.toggleInv(i), 18)
+      if (!listed) this.region(`inv-${i}`, x, y + 40, w, 130, () => this.toggleInv(i))
+      icon(ctx, 'lockOpen', x + w - 46, y + 21, 15, pal.muted)
+      icon(ctx, 'x', x + w - 20, y + 21, 16, pal.foreground)
+      // drop-shadowed item art, cached as a sprite (160x140 box centred on the art's centre)
       ctx.save()
-      ctx.translate(x + w / 2, y + artY)
-      if (compact) ctx.scale(0.82, 0.82)
+      ctx.translate(x + w / 2, y + 82)
+      ctx.scale(0.86, 0.86)
       sprite(ctx, `inv:${it.kind}:${it.game}`, -80, -70, 160, 140, c =>
         invArt(c, this.art, it.kind, game(it.game), 80, 70),
       )
       ctx.restore()
-      const ny = y + G.cardH - (compact ? 64 : 70)
-      text(ctx, fonts, it.name, x + 12, ny, {
-        size: compact ? 14 : 15,
+      text(ctx, fonts, it.name, x + w / 2, y + 155, {
+        size: 15,
         weight: 700,
         color: pal.foreground,
+        align: 'center',
         maxW: w - 24,
       })
-      text(ctx, fonts, it.type, x + 12, ny + 20, {
-        size: compact ? 11 : 12,
+      text(ctx, fonts, it.type, x + w / 2, y + 177, {
+        size: 13,
         color: pal.muted,
+        align: 'center',
         maxW: w - 24,
       })
+      // price field with its stepper, and the sell button beside it
+      const fx = x + 20
+      const fw = w - 40 - 44
+      fillRR(ctx, fx, y + 196, fw, 36, 10, pal.default)
+      text(ctx, fonts, it.price, fx + 14, y + 215, {
+        size: 15,
+        weight: 600,
+        color: listed ? pal.success : pal.foreground,
+        tabular: true,
+      })
+      icon(ctx, 'chevronDown', fx + fw - 16, y + 221, 12, pal.muted)
+      ctx.save()
+      ctx.translate(fx + fw - 16, y + 209)
+      ctx.scale(1, -1)
+      icon(ctx, 'chevronDown', 0, 0, 12, pal.muted)
+      ctx.restore()
+      ctx.beginPath()
+      ctx.arc(x + w - 38, y + 214, 18, 0, Math.PI * 2)
+      ctx.fillStyle = pal.default
+      ctx.fill()
+      icon(ctx, 'cube', x + w - 38, y + 214, 16, pal.muted)
       if (listed) {
         const s = 0.8 + 0.2 * ease.back(prog(this.now, it.listedT, 0.35))
         ctx.save()
-        ctx.translate(x + 12, ny + 45)
+        ctx.translate(x + w / 2, y + 248)
         ctx.scale(s, s)
-        icon(ctx, 'check', 8, 0, 16, pal.success)
-        text(ctx, fonts, `Listed ${it.price}`, 22, 1, {
-          size: compact ? 14 : 15,
-          weight: 700,
-          color: pal.success,
-          maxW: w - 40,
-        })
+        icon(ctx, 'check', -30, 0, 15, pal.success)
+        text(ctx, fonts, 'Listed', -18, 1, { size: 14, weight: 700, color: pal.success })
         ctx.restore()
-      } else
-        text(ctx, fonts, it.price, x + 12, ny + 46, {
-          size: compact ? 14 : 15,
-          weight: 700,
-          color: pal.foreground,
+      } else {
+        text(ctx, fonts, 'Fetch price', x + w / 2 - 8, y + 248, {
+          size: 13,
+          color: pal.muted,
+          align: 'center',
         })
+        icon(ctx, 'arrowRight', x + w / 2 + 38, y + 248, 13, pal.muted)
+      }
     })
   }
 }
 
 // ---------------------------------------------------------------------------------- static pieces
 
-type Action = BtnAction | IconAction
+/** The left side of a page's toolbar: a title with a count, or a tab strip. */
+type Start = { kind: 'title'; title: string; count: number } | TabsStart
+interface TabsStart {
+  kind: 'tabs'
+  id: string
+  /** label + count chip per tab */
+  tabs: [string, number][]
+  active: number
+  onTab?: (i: number) => void
+  /** locked (e.g. while a run is in progress) */
+  dim?: boolean
+}
+
+type Action = BtnAction | IconAction | SortAction
 interface BtnAction {
   kind: 'btn'
   id: string
@@ -2101,13 +2745,57 @@ interface BtnAction {
   tier?: 'casual' | 'gamer'
   dim?: boolean
   color?: string
+  /** dropped from the narrow window's toolbar, which can't fit every control */
+  wideOnly?: boolean
   onClick?: () => void
 }
 interface IconAction {
   kind: 'icon'
   id: string
   icon: IconName
+  dim?: boolean
+  wideOnly?: boolean
   onClick?: () => void
+}
+/** a sort dropdown (icon only in the narrow window) */
+interface SortAction {
+  kind: 'sort'
+  id: string
+  label: string
+  /** label width cap, ellipsised past it */
+  maxW?: number
+  dim?: boolean
+  wideOnly?: boolean
+}
+
+/** A button a game card opens on hover: a round icon button, or a full-width labelled one. */
+interface CardAction {
+  id: string
+  icon?: IconName
+  label?: string
+  variant?: BtnAction['variant']
+  color?: string
+  disabled?: boolean
+  /** a fixed region id (for the beacon/confetti), instead of the card-scoped one */
+  domId?: string
+  onClick?: () => void
+}
+
+interface CardOpts {
+  actions?: CardAction[]
+  /** buttons and status always on show (GamePosterCard's isAlwaysRevealed) */
+  revealed?: boolean
+  selected?: boolean
+  dim?: boolean
+  /** drops remaining, shown in the top-right chip instead of achievements */
+  drops?: number
+  chips?: 'stats' | 'none'
+  /** a status block above the buttons (draws at x, y within width w) */
+  meta?: (x: number, y: number, w: number) => void
+  /** px the card is nudged up by (a card drop's kick) */
+  kick?: number
+  /** keeps hover state apart when one game appears in two places on a page */
+  key?: string
 }
 
 function tierBadge(

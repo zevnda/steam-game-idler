@@ -2,7 +2,8 @@ import { useEffect } from 'react'
 import { useActiveSearchScope } from '@/shared/search/scopes'
 import { useSearchStore } from '@/shared/stores/searchStore'
 
-// Single-purpose `/`-opens-search shortcut - kept separate from `useDashboardShortcuts` (which now
+// Single-purpose opens-search shortcut: Ctrl+K to match the app's other Ctrl shortcuts, with `/` kept
+// for anyone already used to it. Kept separate from `useDashboardShortcuts` (which now
 // covers tab-cycling/settings-toggle/sidebar-collapse) since it has its own search-scope guard
 // `main`'s bundled `useKeyboardShortcuts.ts` handled with a hardcoded page-name check instead; no
 // need to fold the two together just because both are global keydown listeners. Mounted once in
@@ -13,7 +14,11 @@ export const useGlobalSearchShortcut = () => {
 
   useEffect(() => {
     const handleKeydown = (e: KeyboardEvent) => {
-      if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) return
+      if (e.altKey) return
+      const isCtrl = e.ctrlKey || e.metaKey
+      const isCtrlK = isCtrl && !e.shiftKey && e.key.toLowerCase() === 'k'
+      const isSlash = !isCtrl && e.key === '/'
+      if (!isCtrlK && !isSlash) return
       if (!scope) return
 
       const target = e.target as HTMLElement

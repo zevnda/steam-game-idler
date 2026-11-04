@@ -8,13 +8,10 @@ import { SortableAchievementUnlockerListCard } from './SortableAchievementUnlock
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, SortableContext } from '@dnd-kit/sortable'
 import { BackToTopButton } from '@/shared/components/BackToTopButton'
+import { GameCardDragContext } from '@/shared/components/GamePosterCard'
 import { useBackToTop } from '@/shared/hooks/useBackToTop'
-import {
-  GAME_GRID_GAP as GAP,
-  GAME_CARD_INFO_HEIGHT as INFO_HEIGHT,
-  GAME_CARD_THUMBNAIL_ASPECT as THUMBNAIL_ASPECT,
-  useResponsiveColumnCount,
-} from '@/shared/hooks/useGameGridColumns'
+import { GAME_GRID_GAP as GAP, useResponsiveColumnCount } from '@/shared/hooks/useGameGridColumns'
+import { useGameCardMetrics } from '@/shared/stores/gameCardStyleStore'
 
 // See VirtualizedGameGrid.tsx's top comment for why horizontal padding is a spacer column instead
 // of CSS padding on the Grid itself.
@@ -119,7 +116,8 @@ export const AchievementUnlockerListGrid = ({
   // *between* them, not N gaps (a trailing gap for every column, including the last, which has
   // nothing to gap against).
   const cardWidth = (usableWidth - GAP * (realColumnCount - 1)) / realColumnCount
-  const cardHeight = Math.round(cardWidth * THUMBNAIL_ASPECT) + INFO_HEIGHT
+  const { heightRatio } = useGameCardMetrics()
+  const cardHeight = Math.round(cardWidth * heightRatio)
   const rowCount = Math.ceil(queue.length / realColumnCount)
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -137,55 +135,57 @@ export const AchievementUnlockerListGrid = ({
   }
 
   return (
-    <DndContext sensors={sensors} onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
-      <SortableContext items={queue.map(item => item.appId)}>
-        {/* No horizontal padding here (or on Grid) - see VirtualizedGameGrid.tsx's top comment.
+    <GameCardDragContext.Provider value={activeId !== null}>
+      <DndContext sensors={sensors} onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
+        <SortableContext items={queue.map(item => item.appId)}>
+          {/* No horizontal padding here (or on Grid) - see VirtualizedGameGrid.tsx's top comment.
             `relative` only affects positioning context - anchors BackToTopButton below to this
             grid's own viewport. */}
-        <div ref={containerRef} className='relative h-full w-full'>
-          {width > 0 && (
-            <Grid
-              cellComponent={Cell}
-              cellProps={{
-                queue,
-                realColumnCount,
-                cardWidth,
-                cardHeight,
-                activeId,
-                pendingAppIds,
-                onRemove,
-                onEditOrder,
-              }}
-              className='py-6'
-              columnCount={realColumnCount + 2}
-              gridRef={setGridApi}
-              // Every real column's slot is `cardWidth` plus a trailing GAP to the next card -
-              // except the last real column, which has no next card to gap against - see
-              // VirtualizedGameGrid.tsx's matching comment for why.
-              columnWidth={index => {
-                if (index === 0 || index === realColumnCount + 1) return PADDING
-                if (index === realColumnCount) return cardWidth
-                return cardWidth + GAP
-              }}
-              rowCount={rowCount}
-              // The last row gets `cardHeight` alone (no trailing GAP) - see
-              // VirtualizedGameGrid.tsx's matching comment for why.
-              rowHeight={index => (index === rowCount - 1 ? cardHeight : cardHeight + GAP)}
-              style={{ height: '100%', width: '100%' }}
+          <div ref={containerRef} className='virtual-grid-host relative h-full w-full'>
+            {width > 0 && (
+              <Grid
+                cellComponent={Cell}
+                cellProps={{
+                  queue,
+                  realColumnCount,
+                  cardWidth,
+                  cardHeight,
+                  activeId,
+                  pendingAppIds,
+                  onRemove,
+                  onEditOrder,
+                }}
+                className='page-toolbar-offset pb-6'
+                columnCount={realColumnCount + 2}
+                gridRef={setGridApi}
+                // Every real column's slot is `cardWidth` plus a trailing GAP to the next card -
+                // except the last real column, which has no next card to gap against - see
+                // VirtualizedGameGrid.tsx's matching comment for why.
+                columnWidth={index => {
+                  if (index === 0 || index === realColumnCount + 1) return PADDING
+                  if (index === realColumnCount) return cardWidth
+                  return cardWidth + GAP
+                }}
+                rowCount={rowCount}
+                // The last row gets `cardHeight` alone (no trailing GAP) - see
+                // VirtualizedGameGrid.tsx's matching comment for why.
+                rowHeight={index => (index === rowCount - 1 ? cardHeight : cardHeight + GAP)}
+                style={{ height: '100%', width: '100%' }}
+              />
+            )}
+            <BackToTopButton visible={isVisible} onPress={scrollToTop} />
+          </div>
+        </SortableContext>
+        <DragOverlay dropAnimation={null}>
+          {activeItem ? (
+            <AchievementUnlockerListCard
+              game={activeItem}
+              onEditOrder={() => {}}
+              onRemove={() => {}}
             />
-          )}
-          <BackToTopButton visible={isVisible} onPress={scrollToTop} />
-        </div>
-      </SortableContext>
-      <DragOverlay dropAnimation={null}>
-        {activeItem ? (
-          <AchievementUnlockerListCard
-            game={activeItem}
-            onEditOrder={() => {}}
-            onRemove={() => {}}
-          />
-        ) : null}
-      </DragOverlay>
-    </DndContext>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
+    </GameCardDragContext.Provider>
   )
 }

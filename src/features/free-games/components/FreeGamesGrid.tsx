@@ -17,7 +17,7 @@ export const FreeGamesGrid = ({
   onClaim,
 }: FreeGamesGridProps) => {
   return (
-    <div className='grid grid-cols-2 gap-4 p-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6'>
+    <div className='game-grid page-content'>
       {games.map(game => (
         <FreeGameCard
           key={game.appId}

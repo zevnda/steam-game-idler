@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbExternalLink } from 'react-icons/tb'
 import { errorMessageKey } from '../utils/errorMessageKey'
-import { Alert, Button, Modal, Separator, Skeleton, toast, Typography } from '@heroui/react'
+import { Alert, Button, Modal, Separator, Skeleton, toast } from '@heroui/react'
 import { InputField } from '@/shared/components/InputField'
 import { ModalDragRegion } from '@/shared/components/ModalDragRegion'
 import { SettingsRow } from '@/shared/components/SettingsRow'
@@ -128,9 +128,6 @@ export const CardFarmingSettingsTab = ({
   if (isLoading || !draft) {
     return (
       <div className='flex flex-col gap-4'>
-        <Typography type='h3' className='font-bold mb-4'>
-          {t('dashboard.sidebar.nav.cardFarming')}
-        </Typography>
         {Array.from({ length: 6 }, (_, index) => (
           <Skeleton key={index} className='h-10 w-full rounded-lg' />
         ))}
@@ -140,10 +137,6 @@ export const CardFarmingSettingsTab = ({
 
   return (
     <div className='flex flex-col gap-4'>
-      <Typography type='h3' className='font-bold mb-4'>
-        {t('dashboard.sidebar.nav.cardFarming')}
-      </Typography>
-
       <SettingsRow
         description={
           <>
@@ -284,7 +277,7 @@ export const CardFarmingSettingsTab = ({
         }}
       >
         <Modal.Backdrop>
-          <ModalDragRegion placement='backdrop' />
+          <ModalDragRegion />
           <Modal.Container size='sm'>
             <Modal.Dialog>
               <Modal.Header>

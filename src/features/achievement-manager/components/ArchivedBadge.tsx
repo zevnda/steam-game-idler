@@ -6,7 +6,7 @@ export const ArchivedBadge = () => {
   const { t } = useTranslation()
 
   return (
-    <span className='shrink-0 rounded-full bg-surface-tertiary px-1.5 py-0.5 text-[10px] font-semibold whitespace-nowrap text-muted'>
+    <span className='shrink-0 rounded-full bg-surface-secondary px-1.5 py-0.5 text-[10px] font-semibold whitespace-nowrap text-muted'>
       {t('dashboard.achievements.archived.badge')}
     </span>
   )

@@ -34,6 +34,27 @@ function buildIndex<T extends Searchable>(games: T[]) {
   })
 }
 
+// Help's FAQ search. Fuse rather than a plain substring check for the same reason as the games
+// search: a typo or a differently worded phrase still finds the answer. Stricter than the games search because answers are long, and
+// `ignoreLocation` gives a loose pattern a lot of text to match something unrelated in. A match in
+// the question counts for more than one in the answer.
+export function searchFaq<T extends { question: string; answer: string }>(
+  items: T[],
+  query: string,
+) {
+  return new Fuse(items, {
+    keys: [
+      { name: 'question', weight: 0.7 },
+      { name: 'answer', weight: 0.3 },
+    ],
+    threshold: 0.25,
+    ignoreLocation: true,
+    minMatchCharLength: 2,
+  })
+    .search(query.trim())
+    .map(result => result.item)
+}
+
 export function searchGames<T extends Searchable>(games: T[], query: string) {
   const trimmed = query.trim()
   if (!trimmed) return games

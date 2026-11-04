@@ -54,13 +54,15 @@ export const CardFarmingProgressView = ({
 
   return (
     <div className='relative min-h-full'>
-      <div className='relative z-10 flex flex-col gap-6 p-6'>
+      {/* No z-index: the page's toolbar overlaps the top of this (see `.page-toolbar`), and
+          anything raised to its z-10 would cover its buttons and swallow their clicks. */}
+      <div className='page-content relative flex flex-col gap-6'>
         {state.active.length > 0 && (
           <div className='flex flex-col gap-2'>
             <Typography color='muted' type='body-xs' weight='semibold'>
               {t(activeTitleKey, { count: state.active.length })}
             </Typography>
-            <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+            <div className='game-grid'>
               {state.active.map(game => (
                 <CardFarmingActiveCard
                   key={game.appId}

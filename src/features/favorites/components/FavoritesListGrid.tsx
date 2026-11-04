@@ -5,6 +5,7 @@ import { FavoriteListCard } from './FavoriteListCard'
 import { SortableFavoriteListCard } from './SortableFavoriteListCard'
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, SortableContext } from '@dnd-kit/sortable'
+import { GameCardDragContext } from '@/shared/components/GamePosterCard'
 
 interface FavoritesListGridProps {
   favorites: FavoriteEntry[]
@@ -42,23 +43,25 @@ export const FavoritesListGrid = ({
   }
 
   return (
-    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <SortableContext items={favorites.map(item => item.appId)}>
-        <div className='grid grid-cols-2 gap-4 p-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6'>
-          {favorites.map(favorite => (
-            <SortableFavoriteListCard
-              key={favorite.appId}
-              favorite={favorite}
-              isDragging={activeId === favorite.appId}
-              isPending={pendingAppIds.has(favorite.appId)}
-              onRemove={() => onRemove(favorite.appId)}
-            />
-          ))}
-        </div>
-      </SortableContext>
-      <DragOverlay dropAnimation={null}>
-        {activeItem ? <FavoriteListCard favorite={activeItem} onRemove={() => {}} /> : null}
-      </DragOverlay>
-    </DndContext>
+    <GameCardDragContext.Provider value={activeId !== null}>
+      <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+        <SortableContext items={favorites.map(item => item.appId)}>
+          <div className='game-grid page-content'>
+            {favorites.map(favorite => (
+              <SortableFavoriteListCard
+                key={favorite.appId}
+                favorite={favorite}
+                isDragging={activeId === favorite.appId}
+                isPending={pendingAppIds.has(favorite.appId)}
+                onRemove={() => onRemove(favorite.appId)}
+              />
+            ))}
+          </div>
+        </SortableContext>
+        <DragOverlay dropAnimation={null}>
+          {activeItem ? <FavoriteListCard favorite={activeItem} onRemove={() => {}} /> : null}
+        </DragOverlay>
+      </DndContext>
+    </GameCardDragContext.Provider>
   )
 }

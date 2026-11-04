@@ -13,6 +13,12 @@ export interface GameWithDrops {
   playtimeHours: number
 }
 
+// Mirrors `card_farming::GamesWithDropsResult`. `blacklisted` only labels the Blacklist tab's cards.
+export interface GamesWithDropsResult {
+  games: GameWithDrops[]
+  blacklisted: GameWithDrops[]
+}
+
 // Mirrors `card_farming::CardFarmingWhitelistEntry` - one entry in the account's card-farming
 // whitelist (see `card_farming::whitelist`'s doc comment). When non-empty, `start_farming` only
 // ever farms games with drops remaining that are also on this list - it has no ordering of its own,

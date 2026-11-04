@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
-import { TbDeviceGamepad2, TbHeart } from 'react-icons/tb'
+import { TbPlus } from 'react-icons/tb'
 import { useFavorites } from '../hooks/useFavorites'
 import { errorMessageKey as favoritesErrorMessageKey } from '../utils/errorMessageKey'
 import { FavoritesBrowseGrid } from './FavoritesBrowseGrid'
 import { FavoritesListGrid } from './FavoritesListGrid'
-import { FavoritesPageHeader } from './FavoritesPageHeader'
+import { FavoritesPreview } from './FavoritesPreview'
 import {
   Alert,
   AlertDialog,
@@ -22,8 +22,13 @@ import {
   Typography,
 } from '@heroui/react'
 import { useRouter } from 'next/router'
+import { NoGamesBanner } from '@/features/games-list/components/NoGamesBanner'
 import { useGamesList } from '@/features/games-list/hooks/useGamesList'
 import { errorMessageKey as gamesErrorMessageKey } from '@/features/games-list/utils/errorMessageKey'
+import { EmptyListBanner } from '@/shared/components/dashboard/EmptyListBanner'
+import { PageBannerArea } from '@/shared/components/dashboard/PageBanner'
+import { PageBody } from '@/shared/components/dashboard/PageBody'
+import { CountChip, PageToolbar } from '@/shared/components/dashboard/PageToolbar'
 import { GameListTabPanel } from '@/shared/components/GameListTabPanel'
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
 import { ManualAddGameModal } from '@/shared/components/ManualAddGameModal'
@@ -99,174 +104,190 @@ export const FavoritesPage = () => {
     return null
   }
 
+  const manualAddButton = (
+    <Button
+      isIconOnly
+      aria-label={t('common.manualAdd.title')}
+      onPress={() => setIsManualAddOpen(true)}
+    >
+      <TbPlus fontSize={18} />
+    </Button>
+  )
+
   return (
     <div className='flex h-full flex-col'>
-      <FavoritesPageHeader
-        favoriteCount={favorites.length}
-        onManualAdd={() => setIsManualAddOpen(true)}
-      />
+      <PageBody>
+        {favoritesErrorCode && (
+          <div className='px-6 pt-4'>
+            <Alert status='danger'>
+              <Alert.Indicator />
+              <Alert.Content>
+                <Alert.Title>{t('dashboard.favorites.errors.title')}</Alert.Title>
+                <Alert.Description>
+                  {t(favoritesErrorMessageKey(favoritesErrorCode), { code: favoritesErrorCode })}
+                </Alert.Description>
+              </Alert.Content>
+            </Alert>
+          </div>
+        )}
 
-      {favoritesErrorCode && (
-        <div className='px-6 pt-4'>
-          <Alert status='danger'>
-            <Alert.Indicator />
-            <Alert.Content>
-              <Alert.Title>{t('dashboard.favorites.errors.title')}</Alert.Title>
-              <Alert.Description>
-                {t(favoritesErrorMessageKey(favoritesErrorCode), { code: favoritesErrorCode })}
-              </Alert.Description>
-            </Alert.Content>
-          </Alert>
-        </div>
-      )}
-
-      <TabsRoot
-        className='flex min-h-0 flex-1 flex-col'
-        selectedKey={activeTab}
-        onSelectionChange={key => setActiveTab(key as FavoritesTab)}
-      >
-        <div className='mx-6 mt-4 flex flex-wrap items-center justify-between gap-3'>
-          <TabListContainer className='shrink-0'>
-            <TabList>
-              <Tab className='whitespace-nowrap' id='browse'>
-                {t('common.tabs.allGames')}
-                <TabIndicator />
-              </Tab>
-              <Tab className='whitespace-nowrap' id='list'>
-                {t('dashboard.sidebar.nav.favorites')}
-                <TabIndicator />
-              </Tab>
-            </TabList>
-          </TabListContainer>
-          {activeTab === 'browse' && (
-            <GameSortSelect
-              ariaLabel={t('dashboard.inventoryManager.sort.label')}
-              options={sortStyleOptions.map(style => ({
-                id: style,
-                label: t(OWNED_GAME_SORT_LABEL_KEYS[style]),
-              }))}
-              value={effectiveSortStyle}
-              onChange={style => setSortStyle('favorites', style)}
-            />
-          )}
-          {activeTab === 'list' && favorites.length > 0 && (
-            <Button className='shrink-0' variant='danger' onPress={() => setConfirmClearOpen(true)}>
-              {t('common.actions.clear')}
-            </Button>
-          )}
-        </div>
-
-        <TabPanel className='min-h-0 flex-1 overflow-y-auto p-0' id='browse'>
-          {phase === 'loading' ? (
-            <div className='grid grid-cols-2 gap-4 p-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6'>
-              {Array.from({ length: 12 }, (_, index) => (
-                <Skeleton key={index} className='aspect-460/215 rounded-lg' />
-              ))}
-            </div>
-          ) : gamesErrorCode ? (
-            <div className='flex flex-1 flex-col items-center justify-center gap-4 p-8'>
-              <Alert className='max-w-md' status='danger'>
-                <Alert.Indicator />
-                <Alert.Content>
-                  <Alert.Title>{t('dashboard.games.errors.title')}</Alert.Title>
-                  <Alert.Description>
-                    {t(gamesErrorMessageKey(gamesErrorCode), { code: gamesErrorCode })}
-                  </Alert.Description>
-                </Alert.Content>
-              </Alert>
-              <Button variant='secondary' onPress={refresh}>
-                {t('common.actions.tryAgain')}
+        <TabsRoot
+          className='flex min-h-0 flex-1 flex-col'
+          selectedKey={activeTab}
+          onSelectionChange={key => setActiveTab(key as FavoritesTab)}
+        >
+          <PageToolbar
+            start={
+              <TabListContainer className='shrink-0'>
+                <TabList>
+                  <Tab className='gap-2 whitespace-nowrap' id='browse'>
+                    {t('common.tabs.allGames')}
+                    {phase !== 'loading' && <CountChip count={filteredGames.length} />}
+                    <TabIndicator />
+                  </Tab>
+                  <Tab className='gap-2 whitespace-nowrap' id='list'>
+                    {t('dashboard.sidebar.nav.favorites')}
+                    {!favoritesLoading && <CountChip count={favorites.length} />}
+                    <TabIndicator />
+                  </Tab>
+                </TabList>
+              </TabListContainer>
+            }
+          >
+            {activeTab === 'browse' && (
+              <GameSortSelect
+                isDisabled={games.length === 0}
+                ariaLabel={t('dashboard.inventoryManager.sort.label')}
+                options={sortStyleOptions.map(style => ({
+                  id: style,
+                  label: t(OWNED_GAME_SORT_LABEL_KEYS[style]),
+                }))}
+                value={effectiveSortStyle}
+                onChange={style => setSortStyle('favorites', style)}
+              />
+            )}
+            {activeTab === 'list' && favorites.length > 0 && (
+              <Button
+                className='shrink-0'
+                variant='danger'
+                onPress={() => setConfirmClearOpen(true)}
+              >
+                {t('common.actions.clear')}
               </Button>
-            </div>
-          ) : games.length === 0 ? (
-            <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-              <TbDeviceGamepad2 fontSize={40} />
-              <Typography type='h3'>{t('dashboard.games.empty.title')}</Typography>
-              <Typography color='muted' type='body-sm'>
-                {t('dashboard.games.empty.description')}
-              </Typography>
-            </EmptyState>
-          ) : filteredGames.length === 0 ? (
-            <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-              <RiSearchLine fontSize={40} />
-              <Typography type='h3'>{t('common.search.noResultsTitle')}</Typography>
-              <Typography color='muted' type='body-sm'>
-                {t('common.search.noResultsDescription')}
-              </Typography>
-            </EmptyState>
-          ) : (
-            <FavoritesBrowseGrid
-              favoritedAppIds={favoritedAppIds}
-              games={sortedFilteredGames}
-              pendingAppIds={pendingAppIds}
-              onToggle={game => toggleFavorite(game.appId, game.name ?? String(game.appId))}
-            />
-          )}
-        </TabPanel>
+            )}
+            {manualAddButton}
+          </PageToolbar>
 
-        <GameListTabPanel id='list'>
-          {favoritesLoading ? (
-            <div className='grid grid-cols-2 gap-4 p-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6'>
-              {Array.from({ length: 6 }, (_, index) => (
-                <Skeleton key={index} className='aspect-460/215 rounded-lg' />
-              ))}
-            </div>
-          ) : favorites.length === 0 ? (
-            <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
-              <TbHeart fontSize={40} />
-              <Typography type='h3'>{t('dashboard.favorites.empty.title')}</Typography>
-              <Typography color='muted' type='body-sm'>
-                {t('dashboard.favorites.empty.description')}
-              </Typography>
-            </EmptyState>
-          ) : (
-            <FavoritesListGrid
-              favorites={favorites}
-              pendingAppIds={pendingAppIds}
-              onRemove={removeFavorite}
-              onReorder={reorder}
-            />
-          )}
-        </GameListTabPanel>
-      </TabsRoot>
-
-      <AlertDialog isOpen={confirmClearOpen} onOpenChange={setConfirmClearOpen}>
-        <AlertDialog.Backdrop>
-          <AlertDialog.Container>
-            <AlertDialog.Dialog>
-              <AlertDialog.Header>
-                <AlertDialog.Heading>
-                  {t('dashboard.favorites.confirmClear.title')}
-                </AlertDialog.Heading>
-              </AlertDialog.Header>
-              <AlertDialog.Body>
-                {t('dashboard.favorites.confirmClear.description', { count: favorites.length })}
-              </AlertDialog.Body>
-              <AlertDialog.Footer>
-                <Button variant='secondary' onPress={() => setConfirmClearOpen(false)}>
-                  {t('common.actions.cancel')}
+          <TabPanel className='min-h-0 flex-1 overflow-y-auto p-0' id='browse'>
+            {phase === 'loading' ? (
+              <div className='game-grid page-content'>
+                {Array.from({ length: 12 }, (_, index) => (
+                  <Skeleton key={index} className='aspect-(--game-card-aspect) rounded-xl' />
+                ))}
+              </div>
+            ) : gamesErrorCode ? (
+              <div className='flex flex-1 flex-col items-center justify-center gap-4 p-8'>
+                <Alert className='max-w-md' status='danger'>
+                  <Alert.Indicator />
+                  <Alert.Content>
+                    <Alert.Title>{t('dashboard.games.errors.title')}</Alert.Title>
+                    <Alert.Description>
+                      {t(gamesErrorMessageKey(gamesErrorCode), { code: gamesErrorCode })}
+                    </Alert.Description>
+                  </Alert.Content>
+                </Alert>
+                <Button variant='secondary' onPress={refresh}>
+                  {t('common.actions.tryAgain')}
                 </Button>
-                <Button
-                  variant='danger'
-                  onPress={() => {
-                    reorder([])
-                    setConfirmClearOpen(false)
-                  }}
-                >
-                  {t('common.actions.clear')}
-                </Button>
-              </AlertDialog.Footer>
-            </AlertDialog.Dialog>
-          </AlertDialog.Container>
-        </AlertDialog.Backdrop>
-      </AlertDialog>
+              </div>
+            ) : games.length === 0 ? (
+              <PageBannerArea hasToolbar>
+                <NoGamesBanner onRefresh={refresh} />
+              </PageBannerArea>
+            ) : filteredGames.length === 0 ? (
+              <EmptyState className='flex flex-1 flex-col items-center justify-center gap-2 p-8 text-center'>
+                <RiSearchLine fontSize={40} />
+                <Typography type='h3'>{t('common.search.noResultsTitle')}</Typography>
+                <Typography color='muted' type='body-sm'>
+                  {t('common.search.noResultsDescription')}
+                </Typography>
+              </EmptyState>
+            ) : (
+              <FavoritesBrowseGrid
+                favoritedAppIds={favoritedAppIds}
+                games={sortedFilteredGames}
+                pendingAppIds={pendingAppIds}
+                onToggle={game => toggleFavorite(game.appId, game.name ?? String(game.appId))}
+              />
+            )}
+          </TabPanel>
 
-      <ManualAddGameModal
-        existingAppIds={favorites.map(f => f.appId)}
-        isOpen={isManualAddOpen}
-        onAdd={addFavorite}
-        onOpenChange={setIsManualAddOpen}
-      />
+          <GameListTabPanel id='list'>
+            {favoritesLoading ? (
+              <div className='game-grid page-content'>
+                {Array.from({ length: 6 }, (_, index) => (
+                  <Skeleton key={index} className='aspect-(--game-card-aspect) rounded-xl' />
+                ))}
+              </div>
+            ) : favorites.length === 0 ? (
+              <PageBannerArea hasToolbar>
+                <EmptyListBanner
+                  art={<FavoritesPreview />}
+                  description={t('dashboard.favorites.empty.description')}
+                  title={t('dashboard.favorites.empty.title')}
+                  onBrowseGames={() => setActiveTab('browse')}
+                  onManualAdd={() => setIsManualAddOpen(true)}
+                />
+              </PageBannerArea>
+            ) : (
+              <FavoritesListGrid
+                favorites={favorites}
+                pendingAppIds={pendingAppIds}
+                onRemove={removeFavorite}
+                onReorder={reorder}
+              />
+            )}
+          </GameListTabPanel>
+        </TabsRoot>
+
+        <AlertDialog isOpen={confirmClearOpen} onOpenChange={setConfirmClearOpen}>
+          <AlertDialog.Backdrop>
+            <AlertDialog.Container>
+              <AlertDialog.Dialog>
+                <AlertDialog.Header>
+                  <AlertDialog.Heading>
+                    {t('dashboard.favorites.confirmClear.title')}
+                  </AlertDialog.Heading>
+                </AlertDialog.Header>
+                <AlertDialog.Body>
+                  {t('dashboard.favorites.confirmClear.description', { count: favorites.length })}
+                </AlertDialog.Body>
+                <AlertDialog.Footer>
+                  <Button variant='secondary' onPress={() => setConfirmClearOpen(false)}>
+                    {t('common.actions.cancel')}
+                  </Button>
+                  <Button
+                    variant='danger'
+                    onPress={() => {
+                      reorder([])
+                      setConfirmClearOpen(false)
+                    }}
+                  >
+                    {t('common.actions.clear')}
+                  </Button>
+                </AlertDialog.Footer>
+              </AlertDialog.Dialog>
+            </AlertDialog.Container>
+          </AlertDialog.Backdrop>
+        </AlertDialog>
+
+        <ManualAddGameModal
+          existingAppIds={favorites.map(f => f.appId)}
+          isOpen={isManualAddOpen}
+          onAdd={addFavorite}
+          onOpenChange={setIsManualAddOpen}
+        />
+      </PageBody>
     </div>
   )
 }
