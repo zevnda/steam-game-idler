@@ -38,23 +38,6 @@ function menuPosition(event: MouseEvent) {
   return { x: rect.left, y: rect.bottom }
 }
 
-// While a menu is open, react-aria covers the page with an invisible layer (so a click outside closes
-// the menu), and a right-click lands on that instead of what's under it. Like a native menu, a
-// right-click elsewhere should open a new menu for whatever is actually there, so look through the
-// layer.
-function resolveTarget(event: MouseEvent) {
-  if (!useContextMenuStore.getState().menu) return event.target
-  return (
-    document
-      .elementsFromPoint(event.clientX, event.clientY)
-      .find(
-        element =>
-          element.getAttribute('data-testid') !== 'underlay' &&
-          !element.closest(`[${CONTEXT_MENU_ATTR}]`),
-      ) ?? event.target
-  )
-}
-
 export function useContextMenu() {
   const { t } = useTranslation()
   const [isDev, setIsDev] = useState(false)
@@ -98,7 +81,7 @@ export function useContextMenu() {
       const { x, y } = menuPosition(event)
       const openMenu = useContextMenuStore.getState().open
 
-      const gameCardTarget = findGameCardTarget(resolveTarget(event))
+      const gameCardTarget = findGameCardTarget(event.target)
       const account = useSessionStore.getState().account
       if (gameCardTarget && account) {
         try {

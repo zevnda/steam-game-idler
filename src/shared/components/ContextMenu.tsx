@@ -58,6 +58,13 @@ const renderEntries = (entries: ContextMenuEntry[]) =>
 // room, and shifts to stay inside the window. Native menus also close the moment the window loses
 // focus, is resized or scrolls underneath them, which a dropdown doesn't do on its own, so those
 // are handled here.
+//
+// The popover is non-modal. A modal one covers the window with an invisible layer that catches
+// clicks outside it, so right-clicking another game card while a menu was open (or still fading
+// out) hit that layer instead, and opened the plain Copy/Paste menu. Without the layer, closing on
+// a press outside is handled here too: a left press closes the menu and is swallowed, as a native
+// menu does, so it doesn't also press whatever is under it. A right press passes through, so
+// useContextMenu.ts opens a new menu for what was clicked.
 export const ContextMenu = () => {
   const { t } = useTranslation()
   const menu = useContextMenuStore(state => state.menu)
@@ -65,14 +72,38 @@ export const ContextMenu = () => {
 
   useEffect(() => {
     if (!menu) return
+    const isInMenu = (target: EventTarget | null) =>
+      target instanceof Element && target.closest(`[${CONTEXT_MENU_ATTR}]`) !== null
     const onWheel = (event: WheelEvent) => {
-      if (event.target instanceof Element && event.target.closest(`[${CONTEXT_MENU_ATTR}]`)) return
-      close()
+      if (!isInMenu(event.target)) close()
     }
+    const swallow = (event: Event) => {
+      event.preventDefault()
+      event.stopPropagation()
+    }
+    const onPointerDown = (event: PointerEvent) => {
+      if (isInMenu(event.target)) return
+      close()
+      if (event.button !== 0) return
+      swallow(event)
+      // The rest of this press, so the element under it never sees a click
+      const swallowClick = (click: Event) => {
+        swallow(click)
+        window.removeEventListener('click', swallowClick, true)
+      }
+      window.addEventListener('mousedown', swallow, { capture: true, once: true })
+      window.addEventListener('mouseup', swallow, { capture: true, once: true })
+      window.addEventListener('click', swallowClick, true)
+      // A press that never becomes a click (dragged off, for example) mustn't leave the listener
+      // eating the next real one
+      setTimeout(() => window.removeEventListener('click', swallowClick, true), 500)
+    }
+    window.addEventListener('pointerdown', onPointerDown, true)
     window.addEventListener('blur', close)
     window.addEventListener('resize', close)
     window.addEventListener('wheel', onWheel, { capture: true, passive: true })
     return () => {
+      window.removeEventListener('pointerdown', onPointerDown, true)
       window.removeEventListener('blur', close)
       window.removeEventListener('resize', close)
       window.removeEventListener('wheel', onWheel, { capture: true })
@@ -102,7 +133,12 @@ export const ContextMenu = () => {
       >
         <span />
       </Dropdown.Trigger>
-      <Dropdown.Popover offset={2} placement={placement} {...{ [CONTEXT_MENU_ATTR]: '' }}>
+      <Dropdown.Popover
+        isNonModal
+        offset={2}
+        placement={placement}
+        {...{ [CONTEXT_MENU_ATTR]: '' }}
+      >
         <Dropdown.Menu aria-label={t('common.menu')}>{renderEntries(menu.entries)}</Dropdown.Menu>
       </Dropdown.Popover>
     </Dropdown.Root>
