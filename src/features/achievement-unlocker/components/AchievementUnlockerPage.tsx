@@ -7,12 +7,17 @@ import { useAchievementUnlockerRun } from '../hooks/useAchievementUnlockerRun'
 import { errorMessageKey as achievementUnlockerErrorMessageKey } from '../utils/errorMessageKey'
 import { AchievementUnlockerBrowseGrid } from './AchievementUnlockerBrowseGrid'
 import { AchievementUnlockerListGrid } from './AchievementUnlockerListGrid'
-import { AchievementUnlockerProgressView } from './AchievementUnlockerProgressView'
 import { AchievementUnlockerQueuePreview } from './AchievementUnlockerQueuePreview'
+import {
+  AchievementUnlockerDetails,
+  AchievementUnlockerOverview,
+} from './AchievementUnlockerRunView'
+import { AchievementUnlockerScanProgressCard } from './AchievementUnlockerScanProgressCard'
 import {
   Alert,
   AlertDialog,
   Button,
+  cn,
   EmptyState,
   Skeleton,
   Tab,
@@ -33,6 +38,7 @@ import { PageBody } from '@/shared/components/dashboard/PageBody'
 import { CountChip, PageToolbar } from '@/shared/components/dashboard/PageToolbar'
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
 import { ManualAddGameModal } from '@/shared/components/ManualAddGameModal'
+import { RunScreen } from '@/shared/components/running/RunScreen'
 import { useOwnedGameSort } from '@/shared/hooks/useOwnedGameSort'
 import { searchGames } from '@/shared/search/fuzzySearch'
 import { useAchievementOrderStore } from '@/shared/stores/achievementOrderStore'
@@ -227,9 +233,34 @@ export const AchievementUnlockerPage = () => {
           </div>
         )}
 
+        {/* While running (or showing a finished session's summary) the running screen takes the
+            page over, with its own toolbar and Overview/Details tabs. The page's tabs stay
+            mounted but hidden underneath, so their tab state keeps its tab list registered. */}
+        {!isShowingTabs && (
+          <RunScreen
+            actions={pageActions}
+            banner={
+              runState.scanProgress && (
+                <AchievementUnlockerScanProgressCard progress={runState.scanProgress} />
+              )
+            }
+            feature='achievementUnlocker'
+            isRunning={runState.isRunning}
+            overview={<AchievementUnlockerOverview state={runState} />}
+            startedAtMs={runState.startedAtMs}
+            details={<AchievementUnlockerDetails state={runState} />}
+            onDismissFinished={
+              showFinishedSummary && accountKey ? () => dismissFinished(accountKey) : undefined
+            }
+          />
+        )}
+
         <TabsRoot
           isDisabled={!isShowingTabs}
-          className='tabs-transition-area flex min-h-0 flex-1 flex-col'
+          className={cn(
+            'tabs-transition-area flex min-h-0 flex-1 flex-col',
+            !isShowingTabs && 'hidden',
+          )}
           selectedKey={activeTab}
           onSelectionChange={key =>
             switchViewWithTransition('tabs', () => setActiveTab(key as AchievementUnlockerTab))
@@ -289,16 +320,7 @@ export const AchievementUnlockerPage = () => {
             {pageActions}
           </PageToolbar>
 
-          {runState.isRunning || showFinishedSummary ? (
-            <div className='min-h-0 flex-1 overflow-y-auto'>
-              <AchievementUnlockerProgressView
-                state={runState}
-                onDismissFinished={
-                  showFinishedSummary && accountKey ? () => dismissFinished(accountKey) : undefined
-                }
-              />
-            </div>
-          ) : (
+          {!isShowingTabs ? null : (
             <>
               <TabPanel className='min-h-0 flex-1 overflow-y-auto p-0' id='browse'>
                 {phase === 'loading' ? (

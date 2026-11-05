@@ -19,7 +19,7 @@ import {
   CardFarmingPresenceNotice,
   useCardFarmingPresenceNotice,
 } from './CardFarmingPresenceNotice'
-import { CardFarmingProgressView } from './CardFarmingProgressView'
+import { CardFarmingDetails, CardFarmingOverview } from './CardFarmingRunView'
 import { CardFarmingStartPanel } from './CardFarmingStartPanel'
 import { CardFarmingWhitelistGrid } from './CardFarmingWhitelistGrid'
 import {
@@ -42,6 +42,7 @@ import { CountChip, PageToolbar } from '@/shared/components/dashboard/PageToolba
 import { GameGridSkeleton } from '@/shared/components/GameGridSkeleton'
 import { GameListTabPanel } from '@/shared/components/GameListTabPanel'
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
+import { RunScreen } from '@/shared/components/running/RunScreen'
 import { useAutoConnectSteamCookies } from '@/shared/hooks/useAutoConnectSteamCookies'
 import { searchGames } from '@/shared/search/fuzzySearch'
 import { useCardFarmingStore } from '@/shared/stores/cardFarmingStore'
@@ -323,12 +324,31 @@ export const CardFarmingPage = () => {
 
         {/* The connect panel renders outside this TabsRoot (see below): its own Automatic/Manual
             tabs, nested in here, were picked up as this page's tabs and drawn in the toolbar. */}
+        {/* While farming (or showing a finished session's summary) the running screen takes the
+            page over, with its own toolbar and Overview/Details tabs. The page's tabs stay
+            mounted but hidden underneath, for the same reason as during the credentials prompt
+            below: their tab state needs the tab list to stay registered. */}
+        {isShowingProgress && (
+          <RunScreen
+            actions={pageActions}
+            feature='cardFarming'
+            isRunning={state.isFarming}
+            overview={<CardFarmingOverview hoursUntilFarmable={hoursUntilFarmable} state={state} />}
+            startedAtMs={state.startedAtMs}
+            details={<CardFarmingDetails hoursUntilFarmable={hoursUntilFarmable} state={state} />}
+            onDismissFinished={
+              showFinishedSummary && accountKey ? () => dismissFinished(accountKey) : undefined
+            }
+          />
+        )}
+
         <TabsRoot
           isDisabled={!isShowingTabs}
           className={cn(
             'tabs-transition-area',
             'flex flex-col',
             !isShowingConnectPanel && 'min-h-0 flex-1',
+            isShowingProgress && 'hidden',
           )}
           selectedKey={activeTab}
           onSelectionChange={key =>
@@ -400,17 +420,7 @@ export const CardFarmingPage = () => {
             </PageToolbar>
           </div>
 
-          {isShowingProgress ? (
-            <div className='min-h-0 flex-1 overflow-y-auto'>
-              <CardFarmingProgressView
-                hoursUntilFarmable={hoursUntilFarmable}
-                state={state}
-                onDismissFinished={
-                  showFinishedSummary && accountKey ? () => dismissFinished(accountKey) : undefined
-                }
-              />
-            </div>
-          ) : isChecking || isAutoConnecting ? (
+          {isShowingProgress ? null : isChecking || isAutoConnecting ? (
             // Neutral loading state for the (usually brief) window before the shared credentials
             // check - and any trusted auto-connect attempt it kicks off - has settled, so an account
             // with already-valid cookies never flashes the connect panel first (see
