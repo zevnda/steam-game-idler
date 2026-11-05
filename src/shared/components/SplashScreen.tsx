@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { cn } from '@heroui/react'
 import { Unbounded } from 'next/font/google'
-import { SplashBackdrop, SplashMark } from '@/shared/components/SplashScene'
+import { SplashBackdrop, SplashGlow, SplashMark } from '@/shared/components/SplashScene'
 
 const unbounded = Unbounded({
   subsets: ['latin'],
@@ -28,9 +28,10 @@ export const SplashScreen = ({ children, className }: SplashScreenProps) => {
     <div className={cn('fixed inset-0 z-9998 h-screen w-screen bg-black', className)}>
       <SplashBackdrop />
       <div className='absolute inset-0 z-10 flex flex-col items-center justify-center space-y-10'>
-        <div className='flex flex-col items-center gap-6'>
+        <div className='relative flex flex-col items-center gap-6'>
+          <SplashGlow />
           <SplashMark />
-          <p className={`${unbounded.className} text-4xl font-black uppercase text-white`}>
+          <p className={`${unbounded.className} relative text-4xl font-black uppercase text-white`}>
             Steam Game Idler
           </p>
         </div>
