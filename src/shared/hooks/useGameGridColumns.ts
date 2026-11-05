@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import { flushSync } from 'react-dom'
 import { useGameCardMetrics } from '@/shared/stores/gameCardStyleStore'
 
@@ -42,13 +42,31 @@ export function useResponsiveColumnCount(
   }: ResponsiveColumnCountOptions = {},
 ) {
   const [width, setWidth] = useState(0)
+  // Not used for the column math - handed to react-window's Grid as `defaultHeight` (with `width`
+  // as `defaultWidth`), see below.
+  const [height, setHeight] = useState(0)
   const { minCardWidth } = useGameCardMetrics()
 
-  useEffect(() => {
+  // A layout effect, measured once up front, so the very first paint already has the real column
+  // count. Waiting for ResizeObserver's first callback drew one frame at `min` columns (the grid at
+  // about half its width), then snapped to the real layout - a visible flicker on every navigation
+  // between two pages that both show a game grid.
+  //
+  // The height is measured alongside so callers can pass both to react-window's Grid as
+  // `defaultWidth`/`defaultHeight`. The Grid measures its own viewport only after its first paint
+  // and, until then, draws just the cells it assumes are visible: one frame with a few columns of
+  // cards and the rest of the grid empty.
+  useLayoutEffect(() => {
     const el = containerRef.current
     if (!el) return
+    const rect = el.getBoundingClientRect()
+    setWidth(rect.width)
+    setHeight(rect.height)
     const observer = new ResizeObserver(([entry]) => {
-      flushSync(() => setWidth(entry.contentRect.width))
+      flushSync(() => {
+        setWidth(entry.contentRect.width)
+        setHeight(entry.contentRect.height)
+      })
     })
     observer.observe(el)
     return () => observer.disconnect()
@@ -60,5 +78,5 @@ export function useResponsiveColumnCount(
     : Math.floor((usableWidth + GAME_GRID_GAP) / (minCardWidth + GAME_GRID_GAP))
   const columnCount = usableWidth ? Math.min(max, Math.max(min, fittedColumns)) : min
 
-  return { width, usableWidth, columnCount }
+  return { width, height, usableWidth, columnCount }
 }

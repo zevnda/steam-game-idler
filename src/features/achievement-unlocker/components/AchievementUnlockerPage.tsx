@@ -41,6 +41,7 @@ import { useSearchStore } from '@/shared/stores/searchStore'
 import { getAccountKey, useSessionStore } from '@/shared/stores/sessionStore'
 import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
 import { useSortPreferencesStore } from '@/shared/stores/sortPreferencesStore'
+import { switchViewWithTransition } from '@/shared/utils/pageTransition'
 import { OWNED_GAME_SORT_LABEL_KEYS, sortOwnedGames } from '@/shared/utils/sortOwnedGames'
 
 type AchievementUnlockerTab = 'browse' | 'queue'
@@ -228,9 +229,11 @@ export const AchievementUnlockerPage = () => {
 
         <TabsRoot
           isDisabled={!isShowingTabs}
-          className='flex min-h-0 flex-1 flex-col'
+          className='tabs-transition-area flex min-h-0 flex-1 flex-col'
           selectedKey={activeTab}
-          onSelectionChange={key => setActiveTab(key as AchievementUnlockerTab)}
+          onSelectionChange={key =>
+            switchViewWithTransition('tabs', () => setActiveTab(key as AchievementUnlockerTab))
+          }
         >
           <PageToolbar
             start={
@@ -354,7 +357,9 @@ export const AchievementUnlockerPage = () => {
                       art={<AchievementUnlockerQueuePreview />}
                       description={t('dashboard.achievementUnlocker.empty.description')}
                       title={t('common.noGamesQueued')}
-                      onBrowseGames={() => setActiveTab('browse')}
+                      onBrowseGames={() =>
+                        switchViewWithTransition('tabs', () => setActiveTab('browse'))
+                      }
                       onManualAdd={() => setIsManualAddOpen(true)}
                     />
                   </PageBannerArea>

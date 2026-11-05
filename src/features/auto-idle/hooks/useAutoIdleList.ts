@@ -1,6 +1,7 @@
 ﻿import type { IdleSetResult } from '@/features/idling/types'
 import type { AutoIdleEntry } from '../types'
 import { useCallback, useEffect, useState } from 'react'
+import { readCachedList, useCachedListState } from '@/shared/hooks/useCachedListState'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 import { onGameListChange } from '@/shared/utils/gameListsBus'
 import { invoke } from '@/shared/utils/invoke'
@@ -13,8 +14,11 @@ import { invoke } from '@/shared/utils/invoke'
 // `useAutoIdleStartup`, mounted in `DashboardShell` instead of here).
 export const useAutoIdleList = () => {
   const account = useSessionStore(state => state.account)
-  const [games, setGames] = useState<AutoIdleEntry[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [games, setGames] = useCachedListState<AutoIdleEntry>('autoIdleList', account)
+  // Only "loading" when there's no earlier copy to show - see useCachedListState.ts
+  const [isLoading, setIsLoading] = useState(
+    () => readCachedList('autoIdleList', account) === undefined,
+  )
   const [errorCode, setErrorCode] = useState<string | null>(null)
   const [pendingAppIds, setPendingAppIds] = useState<Set<number>>(new Set())
   const [isStarting, setIsStarting] = useState(false)
@@ -27,7 +31,10 @@ export const useAutoIdleList = () => {
     }
 
     let cancelled = false
-    setIsLoading(true)
+    // Show this account's last-known list straight away (if any) while the fetch refreshes it
+    const cached = readCachedList<AutoIdleEntry>('autoIdleList', account)
+    setGames(cached ?? [])
+    setIsLoading(cached === undefined)
     setErrorCode(null)
 
     invoke<AutoIdleEntry[]>('get_auto_idle_list', { account })
@@ -47,12 +54,12 @@ export const useAutoIdleList = () => {
     return () => {
       cancelled = true
     }
-  }, [account])
+  }, [account, setGames])
 
   // The game-card context menu (useContextMenu.ts) can add to this list from outside this page's
   // own UI, bypassing addGame below - subscribe so this instance's list stays correct without
   // needing a remount. See gameListsBus.ts's own doc comment.
-  useEffect(() => onGameListChange('autoIdleList', setGames), [])
+  useEffect(() => onGameListChange('autoIdleList', setGames), [setGames])
 
   const addGame = useCallback(
     async (game: AutoIdleEntry) => {
@@ -64,7 +71,7 @@ export const useAutoIdleList = () => {
         setErrorCode(String(error))
       }
     },
-    [account],
+    [account, setGames],
   )
 
   const removeGame = useCallback(
@@ -84,7 +91,7 @@ export const useAutoIdleList = () => {
         })
       }
     },
-    [account],
+    [account, setGames],
   )
 
   const reorder = useCallback(
@@ -100,7 +107,7 @@ export const useAutoIdleList = () => {
         setErrorCode(String(error))
       }
     },
-    [account],
+    [account, setGames],
   )
 
   const setEnabled = useCallback(
@@ -122,7 +129,7 @@ export const useAutoIdleList = () => {
         })
       }
     },
-    [account],
+    [account, setGames],
   )
 
   // Convenience wrapper for the "All Games" tab's single toggle button - add/remove queue

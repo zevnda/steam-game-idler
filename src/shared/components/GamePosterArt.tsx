@@ -17,7 +17,15 @@ interface GamePosterArtProps {
 
 const CDN_BASE = 'https://cdn.cloudflare.steamstatic.com/steam/apps'
 
-// Fades in once loaded, and is remounted per URL (see `key` below) so that state starts fresh.
+// Every art URL that has finished loading this session. A card remounts whenever its page does, and
+// `onLoad` fires a frame or two after mount even for an image the browser already has, so without
+// this every card on the new page started invisible and faded in again - the whole grid blinking
+// out and back on each navigation between two pages showing the same games. Art already seen
+// starts visible; only a genuinely new image fades in.
+const loadedArtSrcs = new Set<string>()
+
+// Fades in once loaded (unless already loaded earlier, see above), and is remounted per URL (see
+// `key` below) so that state starts fresh.
 const ArtImage = ({
   src,
   name,
@@ -29,7 +37,7 @@ const ArtImage = ({
   className: string
   onError?: () => void
 }) => {
-  const [isLoaded, setIsLoaded] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(() => loadedArtSrcs.has(src))
   return (
     <Image
       fill
@@ -37,7 +45,10 @@ const ArtImage = ({
       className={cn(className, 'transition-opacity duration-150', !isLoaded && 'opacity-0')}
       src={src}
       onError={onError}
-      onLoad={() => setIsLoaded(true)}
+      onLoad={() => {
+        loadedArtSrcs.add(src)
+        setIsLoaded(true)
+      }}
     />
   )
 }

@@ -117,6 +117,7 @@ export const InventoryItemGrid = ({ items, ...callbacks }: InventoryItemGridProp
   useEffect(() => setScrollElement(gridApi?.element ?? null), [gridApi, setScrollElement])
   const {
     width,
+    height,
     usableWidth,
     columnCount: realColumnCount,
   } = useResponsiveColumnCount(containerRef, { max: 10, targetCardWidth: CARD_TARGET_WIDTH })
@@ -178,6 +179,9 @@ export const InventoryItemGrid = ({ items, ...callbacks }: InventoryItemGridProp
         width > 0 && (
           <Grid
             cellComponent={Cell}
+            // Its first frame's size - see useResponsiveColumnCount
+            defaultHeight={height}
+            defaultWidth={width}
             cellProps={{ items, realColumnCount, rowCount, cardWidth, callbacks }}
             className='page-toolbar-offset pb-6'
             columnCount={realColumnCount + 2}

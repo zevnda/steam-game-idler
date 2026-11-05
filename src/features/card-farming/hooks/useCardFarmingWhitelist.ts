@@ -1,5 +1,6 @@
 import type { CardFarmingWhitelistEntry } from '../types'
 import { useCallback, useEffect, useState } from 'react'
+import { readCachedList, useCachedListState } from '@/shared/hooks/useCachedListState'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 import { onGameListChange } from '@/shared/utils/gameListsBus'
 import { invoke } from '@/shared/utils/invoke'
@@ -12,8 +13,14 @@ import { invoke } from '@/shared/utils/invoke'
 // `state.completed`); the user only ever adds/removes here.
 export const useCardFarmingWhitelist = () => {
   const account = useSessionStore(state => state.account)
-  const [whitelist, setWhitelist] = useState<CardFarmingWhitelistEntry[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [whitelist, setWhitelist] = useCachedListState<CardFarmingWhitelistEntry>(
+    'cardFarmingWhitelist',
+    account,
+  )
+  // Only "loading" when there's no earlier copy to show - see useCachedListState.ts
+  const [isLoading, setIsLoading] = useState(
+    () => readCachedList('cardFarmingWhitelist', account) === undefined,
+  )
   const [errorCode, setErrorCode] = useState<string | null>(null)
   const [pendingAppIds, setPendingAppIds] = useState<Set<number>>(new Set())
 
@@ -25,7 +32,10 @@ export const useCardFarmingWhitelist = () => {
     }
 
     let cancelled = false
-    setIsLoading(true)
+    // Show this account's last-known list straight away (if any) while the fetch refreshes it
+    const cached = readCachedList<CardFarmingWhitelistEntry>('cardFarmingWhitelist', account)
+    setWhitelist(cached ?? [])
+    setIsLoading(cached === undefined)
     setErrorCode(null)
 
     invoke<CardFarmingWhitelistEntry[]>('get_card_farming_whitelist', { account })
@@ -45,12 +55,12 @@ export const useCardFarmingWhitelist = () => {
     return () => {
       cancelled = true
     }
-  }, [account])
+  }, [account, setWhitelist])
 
   // The game-card context menu (useContextMenu.ts) can add to this whitelist from outside this
   // page's own UI, bypassing addToWhitelist below - subscribe so this instance's list stays
   // correct without needing a remount. See gameListsBus.ts's own doc comment.
-  useEffect(() => onGameListChange('cardFarmingWhitelist', setWhitelist), [])
+  useEffect(() => onGameListChange('cardFarmingWhitelist', setWhitelist), [setWhitelist])
 
   // The running cycle prunes this list automatically as entries become ineligible (see
   // `card_farming::manager::resolve_candidates`'s doc comment), but `FarmingState`'s change event
@@ -68,7 +78,7 @@ export const useCardFarmingWhitelist = () => {
       console.error('Error in (get_card_farming_whitelist):', error)
       setErrorCode(String(error))
     }
-  }, [account])
+  }, [account, setWhitelist])
 
   const addToWhitelist = useCallback(
     async (game: CardFarmingWhitelistEntry) => {
@@ -85,7 +95,7 @@ export const useCardFarmingWhitelist = () => {
         setErrorCode(String(error))
       }
     },
-    [account],
+    [account, setWhitelist],
   )
 
   const removeFromWhitelist = useCallback(
@@ -110,7 +120,7 @@ export const useCardFarmingWhitelist = () => {
         })
       }
     },
-    [account],
+    [account, setWhitelist],
   )
 
   const clearWhitelist = useCallback(async () => {
@@ -123,7 +133,7 @@ export const useCardFarmingWhitelist = () => {
       console.error('Error in (clear_card_farming_whitelist):', error)
       setErrorCode(String(error))
     }
-  }, [account])
+  }, [account, setWhitelist])
 
   // Convenience wrapper for the "Games With Drops" tab's single toggle button - tracks per-game
   // pending state so a card disables itself while its own request is in flight.

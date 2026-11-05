@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 import { PageBanner, PageBannerPreview } from '@/shared/components/dashboard/PageBanner'
 import { GamePosterAction, GamePosterCard } from '@/shared/components/GamePosterCard'
 import { IdleTimer } from '@/shared/components/IdleTimer'
+import { navigateWithPageTransition } from '@/shared/utils/pageTransition'
 import { PREVIEW_GAMES } from '@/shared/utils/previewGameArt'
 
 const MINUTE_MS = 60 * 1000
@@ -71,12 +72,15 @@ export const IdlingEmptyBanner = () => {
         <>
           <Button
             className='bg-white text-black hover:bg-white/85'
-            onPress={() => router.push('/dashboard')}
+            onPress={() => navigateWithPageTransition(router, '/dashboard')}
           >
             <TbDeviceGamepad2 fontSize={18} />
             {t('dashboard.idling.empty.browseGames')}
           </Button>
-          <Button variant='secondary' onPress={() => router.push('/dashboard/auto-idle')}>
+          <Button
+            variant='secondary'
+            onPress={() => navigateWithPageTransition(router, '/dashboard/auto-idle')}
+          >
             {t('dashboard.idling.empty.setUpAutoIdle')}
           </Button>
         </>

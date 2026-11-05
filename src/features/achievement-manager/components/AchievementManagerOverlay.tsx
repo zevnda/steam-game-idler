@@ -16,6 +16,7 @@ import { StatisticsView } from './StatisticsView'
 import { Alert, AlertDialog, Button, cn, Modal, Skeleton } from '@heroui/react'
 import { useAchievementManagerStore } from '@/shared/stores/achievementManagerStore'
 import { usePlatformStore } from '@/shared/stores/platformStore'
+import { switchViewWithTransition } from '@/shared/utils/pageTransition'
 
 const ALL_ACHIEVEMENTS: AchievementManagerView = { kind: 'achievements', setKey: null }
 
@@ -113,11 +114,13 @@ export const AchievementManagerOverlay = () => {
                 onLockAll={() => setConfirmBulk('lock')}
                 onRefresh={refresh}
                 onUnlockAll={() => setConfirmBulk('unlock')}
-                onViewChange={setView}
+                onViewChange={next =>
+                  switchViewWithTransition('achievement-manager', () => setView(next))
+                }
               />
             )}
 
-            <main className='flex min-h-0 min-w-0 flex-1 flex-col bg-background'>
+            <main className='achievement-manager-transition-area flex min-h-0 min-w-0 flex-1 flex-col bg-background'>
               {/* Shown for *every* load, refreshes included (not just the first, when there's no
                   data yet) - so pressing refresh visibly does something until the new data lands.
                   The pane remounts afterwards, so search/filter/selection start fresh, same as a

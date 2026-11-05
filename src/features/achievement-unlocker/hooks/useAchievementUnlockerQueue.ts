@@ -1,5 +1,6 @@
 ﻿import type { AchievementUnlockerEntry } from '../types'
 import { useCallback, useEffect, useState } from 'react'
+import { readCachedList, useCachedListState } from '@/shared/hooks/useCachedListState'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 import { onGameListChange } from '@/shared/utils/gameListsBus'
 import { invoke } from '@/shared/utils/invoke'
@@ -10,8 +11,14 @@ import { invoke } from '@/shared/utils/invoke'
 // changes from a click inside this feature's own UI, it doesn't drift externally.
 export const useAchievementUnlockerQueue = () => {
   const account = useSessionStore(state => state.account)
-  const [queue, setQueue] = useState<AchievementUnlockerEntry[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [queue, setQueue] = useCachedListState<AchievementUnlockerEntry>(
+    'achievementUnlockerQueue',
+    account,
+  )
+  // Only "loading" when there's no earlier copy to show - see useCachedListState.ts
+  const [isLoading, setIsLoading] = useState(
+    () => readCachedList('achievementUnlockerQueue', account) === undefined,
+  )
   const [errorCode, setErrorCode] = useState<string | null>(null)
   const [pendingAppIds, setPendingAppIds] = useState<Set<number>>(new Set())
 
@@ -23,7 +30,10 @@ export const useAchievementUnlockerQueue = () => {
     }
 
     let cancelled = false
-    setIsLoading(true)
+    // Show this account's last-known list straight away (if any) while the fetch refreshes it
+    const cached = readCachedList<AchievementUnlockerEntry>('achievementUnlockerQueue', account)
+    setQueue(cached ?? [])
+    setIsLoading(cached === undefined)
     setErrorCode(null)
 
     invoke<AchievementUnlockerEntry[]>('get_achievement_unlocker_queue', { account })
@@ -43,12 +53,12 @@ export const useAchievementUnlockerQueue = () => {
     return () => {
       cancelled = true
     }
-  }, [account])
+  }, [account, setQueue])
 
   // The game-card context menu (useContextMenu.ts) can add to this queue from outside this page's
   // own UI, bypassing addToQueue below - subscribe so this instance's list stays correct without
   // needing a remount. See gameListsBus.ts's own doc comment.
-  useEffect(() => onGameListChange('achievementUnlockerQueue', setQueue), [])
+  useEffect(() => onGameListChange('achievementUnlockerQueue', setQueue), [setQueue])
 
   // A run auto-dequeues (`cache::remove`) each game as it finishes, but that mutation isn't part
   // of `AchievementUnlockerState`/its change event (see that type's doc comment) - so this local
@@ -65,7 +75,7 @@ export const useAchievementUnlockerQueue = () => {
       console.error('Error in (get_achievement_unlocker_queue):', error)
       setErrorCode(String(error))
     }
-  }, [account])
+  }, [account, setQueue])
 
   const addToQueue = useCallback(
     async (game: AchievementUnlockerEntry) => {
@@ -82,7 +92,7 @@ export const useAchievementUnlockerQueue = () => {
         setErrorCode(String(error))
       }
     },
-    [account],
+    [account, setQueue],
   )
 
   const removeFromQueue = useCallback(
@@ -107,7 +117,7 @@ export const useAchievementUnlockerQueue = () => {
         })
       }
     },
-    [account],
+    [account, setQueue],
   )
 
   const reorder = useCallback(
@@ -126,7 +136,7 @@ export const useAchievementUnlockerQueue = () => {
         setErrorCode(String(error))
       }
     },
-    [account],
+    [account, setQueue],
   )
 
   // Convenience wrapper for the "All Games" tab's single toggle button - tracks per-game pending
