@@ -45,18 +45,51 @@ pub fn steam_client() -> reqwest::Result<Client> {
     Client::builder().default_headers(headers).build()
 }
 
-/// Builds the `Cookie` header value Steam Community expects - mirrors `main`'s exact construction,
-/// including `steamparental` only ever appearing alongside `sma` (`main` never had a standalone
-/// `steamparental` value of its own).
+/// Builds the `Cookie` header value Steam Community expects.
+///
+/// Deliberately never sends a `steamparental` cookie. The pre-rewrite app sent the `sma` value
+/// under that name too (one shared "steamParental/steamMachineAuth" field), so pasting a Family
+/// View unlock cookie there got past Steam's PIN gate. That path was dropped on purpose: a
+/// Gamer-tier agent-mode account can't paste cookies at all, so the one fix that works for every
+/// mode and tier is "disable Family View" (`AppError::FamilyViewRestricted`'s message). Don't
+/// reintroduce it without a way to supply it for every account type.
 pub fn cookie_header(steam_id: &str, cookies: &SteamCookies) -> String {
     match &cookies.sma {
         Some(sma) => format!(
-            "sessionid={}; steamLoginSecure={}; steamparental={}; steamMachineAuth{}={}",
-            cookies.sid, cookies.sls, sma, steam_id, sma
+            "sessionid={}; steamLoginSecure={}; steamMachineAuth{}={}",
+            cookies.sid, cookies.sls, steam_id, sma
         ),
         None => format!(
             "sessionid={}; steamLoginSecure={}",
             cookies.sid, cookies.sls
         ),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn cookies(sma: Option<&str>) -> SteamCookies {
+        SteamCookies {
+            sid: "sid".to_string(),
+            sls: "sls".to_string(),
+            sma: sma.map(str::to_string),
+        }
+    }
+
+    #[test]
+    fn sends_machine_auth_under_its_own_name_only() {
+        assert_eq!(
+            cookie_header("765", &cookies(Some("sma"))),
+            "sessionid=sid; steamLoginSecure=sls; steamMachineAuth765=sma"
+        );
+    }
+
+    /// See `cookie_header`'s doc comment for why Family View unlocking was dropped on purpose.
+    #[test]
+    fn never_sends_a_steamparental_cookie() {
+        assert!(!cookie_header("765", &cookies(Some("sma"))).contains("steamparental"));
+        assert!(!cookie_header("765", &cookies(None)).contains("steamparental"));
     }
 }

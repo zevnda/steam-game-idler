@@ -46,7 +46,9 @@ pub async fn set_steam_credentials(
 /// The Settings modal's manual-entry tab counterpart to [`set_steam_credentials`] - validates
 /// `cookies` against Steam Community first ([`session::validate`]) and only persists them if
 /// they actually authenticate, so a mistyped or already-stale paste is never written to the
-/// credential store. Deliberately does NOT clear
+/// credential store. Also refuses cookies Family View blocks
+/// ([`session::ensure_not_family_view_blocked`]), matching what Card Farming/Inventory Manager's
+/// own connect panels already reject, so all three save points agree. Deliberately does NOT clear
 /// any existing saved credentials on failure, unlike `session::ensure_valid`'s same-looking
 /// `LoggedOut` branch - that one exists to self-heal a cookie set already in active use, this one
 /// is validating a *candidate* before it's ever saved, so a failed replacement attempt must leave
@@ -66,6 +68,9 @@ pub async fn validate_and_save_steam_credentials(
     };
     match session::validate(&steam_id, &cookies).await? {
         SessionStatus::Valid { user } => {
+            // A Family View account's cookies are signed in but unusable for Card Farming and
+            // Inventory Manager, so they aren't saved (see the fn's own doc comment).
+            session::ensure_not_family_view_blocked(&steam_id, &cookies).await?;
             credentials::set(&steam_id, &cookies)?;
             tracing::info!(
                 steam_id,
@@ -108,6 +113,7 @@ pub async fn acquire_and_save_steam_credentials(
 ) -> AppResult<SteamCookies> {
     let steam_id = resolve_steam_id(&account, &agent_manager).await?;
     let cookies = session::resolve(&app_handle, &agent_manager, &account, &steam_id, None).await?;
+    session::ensure_not_family_view_blocked(&steam_id, &cookies).await?;
     credentials::set(&steam_id, &cookies)?;
     tracing::info!(
         steam_id,

@@ -281,7 +281,7 @@ This page covers common issues and their solutions when using Steam Game Idler.
 
     - Go to **Settings → Steam Credentials** and re-authenticate (see the [Steam Credentials](/docs/steam-credentials) guide)
     - If you're on a **Gamer** tier account using **Steam Sign-in**, this normally happens automatically. Check that your subscription is still active
-    - If you use **Family View** or have a **Steam Guard Mobile Authenticator**, make sure you complete the full login (these accounts often need the additional `steamMachineAuth` cookie)
+    - If you have a **Steam Guard Mobile Authenticator**, make sure you complete the full login (these accounts often need the additional `steamMachineAuth` cookie)
     - Session cookies typically last a few hours to a few weeks. If farming worked before and suddenly stops with login errors, this is the most common cause
 
     On-screen error text and what it means:
@@ -290,10 +290,10 @@ This page covers common issues and their solutions when using Steam Game Idler.
   </Accordion>
 
   <Accordion title="Family View is restricting Card Farming or Inventory Manager" id="family-view-restricted">
-    If you see **"Family View is enabled on your Steam account. Disable Family View and try again."**, this is a different problem from the session/cookie errors above — your session cookies are genuinely valid, but Steam's Family View PIN gate is blocking this content class regardless. Reconnecting or re-pasting cookies will not fix this.
+    If you see **"Family View is enabled on your Steam account. Disable Family View and try again."**, this is a different problem from the session/cookie errors above — your session cookies are genuinely valid, but Steam's Family View PIN gate is blocking this content class regardless. Reconnecting or re-pasting cookies will not fix this, in any sign-in mode or tier.
 
-    - Open the Steam client, go to your account menu, and disable **Family View** (you'll need the Family View PIN)
-    - Once disabled, Card Farming and Inventory Manager work normally again with no need to reconnect
+    - Go to [Steam's Family View page](https://store.steampowered.com/parental/) and click **Disable Family View** (you'll need the Family View PIN)
+    - Then try again. If the error appeared while saving your [Steam Credentials](/docs/steam-credentials), save them again, since SGI doesn't keep cookies Family View blocks
   </Accordion>
 
   <Accordion title="Card Farming isn't detecting card drops" id="card-farming-no-drops">

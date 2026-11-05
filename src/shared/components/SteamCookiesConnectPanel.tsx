@@ -19,6 +19,7 @@ import { PageBanner, PageBannerArea } from '@/shared/components/dashboard/PageBa
 import { TierBadge } from '@/shared/components/TierBadge'
 import { useSavedSteamCookies } from '@/shared/hooks/useSavedSteamCookies'
 import { useProModalStore } from '@/shared/stores/proModalStore'
+import { useSessionStore } from '@/shared/stores/sessionStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { openExternalLink } from '@/shared/utils/links'
 import { showErrorToast } from '@/shared/utils/showErrorToast'
@@ -34,6 +35,9 @@ export const STEAM_CREDENTIALS_DOCS_URL = 'https://steamgameidler.com/docs/steam
 // only readable from a Steam Community page's own cookie jar, so this just points at the site
 // itself rather than any particular sub-page.
 const STEAM_COMMUNITY_URL = 'https://steamcommunity.com/'
+// Shown as the link text instead of the full URL: the link can't wrap, so the full
+// `https://.../` pushed the whole link onto its own line at the default window width.
+const STEAM_COMMUNITY_LABEL = 'steamcommunity.com'
 
 type CookieMethod = 'automatic' | 'manual'
 
@@ -49,7 +53,7 @@ interface SteamCookiesConnectPanelProps<T extends SteamCookiesLike> {
   onOpenSettings?: () => void
   // 'standalone' (default): centered, max-width card with its own title/description - a full
   // pre-dashboard-style connect prompt (CardFarmingStartPanel/InventoryConnectPanel). 'embedded':
-  // no AuthCard/centering wrapper, just the error slot/tabs/form/buttons at the host's own width -
+  // no AuthCard/centering wrapper, just the description/tabs/form/error/buttons at the host's own width -
   // for mounting inside an already-chrome'd container (SteamCredentialsTab, inside the Settings
   // modal's tab panel).
   variant?: 'standalone' | 'embedded'
@@ -121,6 +125,7 @@ export function SteamCookiesConnectPanel<T extends SteamCookiesLike>({
   onConnect,
 }: SteamCookiesConnectPanelProps<T>) {
   const { t } = useTranslation()
+  const account = useSessionStore(state => state.account)
   const subscriptionTier = useSubscriptionStore(state => state.subscriptionTier)
   const canUseAutomatic = hasGamerAccess(subscriptionTier)
   const openProModalWithTier = useProModalStore(state => state.openWithTier)
@@ -228,17 +233,6 @@ export function SteamCookiesConnectPanel<T extends SteamCookiesLike>({
 
   const manualForm = (
     <>
-      <Typography color='muted' type='body-xs'>
-        {t('common.manualCookies.getCookiesNote')}{' '}
-        <button
-          type='button'
-          className='inline-flex cursor-pointer items-center gap-1 text-accent hover:text-accent/80 duration-150'
-          onClick={() => openExternalLink(STEAM_COMMUNITY_URL)}
-        >
-          {STEAM_COMMUNITY_URL}
-          <TbExternalLink fontSize={12} />
-        </button>
-      </Typography>
       {prefilledFromSaved && (
         <Typography color='muted' type='body-xs'>
           {savedCredentialsNote}
@@ -250,9 +244,78 @@ export function SteamCookiesConnectPanel<T extends SteamCookiesLike>({
 
   const isStandalone = variant !== 'embedded'
 
+  // A Gamer-tier agent-mode account never needs cookies: its session is minted automatically, so
+  // the tabs and cookie form don't apply to it (SteamCredentialsTab hides them for the same
+  // account). Card Farming/Inventory Manager only show this panel to it when that automatic connect
+  // failed (Family View, Steam being down), so it gets just the error and a retry instead.
+  const isAutomaticOnly = isStandalone && account?.mode === 'agent' && canUseAutomatic
+
+  // The intro: what the credentials are for, plus - on the manual tab only, where it's relevant -
+  // a second paragraph saying where the cookies come from. Owned here rather than by each host so
+  // that second paragraph can follow the selected tab.
+  const cookiesSourceNote =
+    method === 'manual' ? (
+      <>
+        {t('common.manualCookies.getCookiesNote')}{' '}
+        <button
+          type='button'
+          className='inline-flex cursor-pointer items-center gap-1 text-accent hover:text-accent/80 duration-150'
+          onClick={() => openExternalLink(STEAM_COMMUNITY_URL)}
+        >
+          {STEAM_COMMUNITY_LABEL}
+          <TbExternalLink fontSize={12} />
+        </button>
+      </>
+    ) : null
+
+  const buttonSize = isStandalone ? 'md' : 'sm'
+  // The banner's white call to action, like every other banner's main button
+  const primaryButtonClassName = isStandalone ? 'bg-white text-black hover:bg-white/85' : undefined
+  const settingsButton = isStandalone && onOpenSettings && (
+    <Button variant='secondary' onPress={onOpenSettings}>
+      <TbSettings fontSize={18} />
+      {t('common.actions.settings')}
+    </Button>
+  )
+
+  if (isAutomaticOnly) {
+    return (
+      <PageBannerArea>
+        {/* "Steam Community" is Steam's product name, so it isn't translated. */}
+        <PageBanner art={art} description={automaticDescription} title='Steam Community'>
+          <div className='flex flex-col gap-4'>
+            {errorSlot}
+            <div className='flex flex-wrap items-center gap-2'>
+              <Button
+                className={primaryButtonClassName}
+                isPending={isSubmitting}
+                onPress={() => onConnect(undefined)}
+              >
+                {t('common.actions.tryAgain')}
+              </Button>
+              {settingsButton}
+            </div>
+          </div>
+        </PageBanner>
+      </PageBannerArea>
+    )
+  }
+
   const content = (
     <div className='flex flex-col gap-4'>
-      {errorSlot}
+      {/* The embedded host (SteamCredentialsTab) has no banner, so the intro goes here instead. */}
+      {!isStandalone && (
+        <div className='flex flex-col gap-2'>
+          <Typography color='muted' type='body-sm'>
+            {t('dashboard.settings.steamCredentials.description')}
+          </Typography>
+          {cookiesSourceNote && (
+            <Typography color='muted' type='body-sm'>
+              {cookiesSourceNote}
+            </Typography>
+          )}
+        </div>
+      )}
 
       <TabsRoot
         selectedKey={method}
@@ -289,11 +352,14 @@ export function SteamCookiesConnectPanel<T extends SteamCookiesLike>({
         </TabPanel>
       </TabsRoot>
 
+      {/* Between the inputs and the buttons, where the user is already looking after pressing
+          Save/Sign in, rather than above the tabs where it was easy to miss. */}
+      {errorSlot}
+
       <div className='flex flex-wrap items-center gap-2'>
         <Button
-          // The banner's white call to action, like every other banner's main button
-          className={isStandalone ? 'bg-white text-black hover:bg-white/85' : undefined}
-          size={isStandalone ? 'md' : 'sm'}
+          className={primaryButtonClassName}
+          size={buttonSize}
           isDisabled={!canSubmit || isClearing}
           isPending={isSubmitting}
           onPress={handleSubmit}
@@ -302,7 +368,7 @@ export function SteamCookiesConnectPanel<T extends SteamCookiesLike>({
         </Button>
         {showClear && savedCookies && (
           <Button
-            size={isStandalone ? 'md' : 'sm'}
+            size={buttonSize}
             isDisabled={isSubmitting}
             isPending={isClearing}
             variant='secondary'
@@ -311,12 +377,7 @@ export function SteamCookiesConnectPanel<T extends SteamCookiesLike>({
             {t('common.actions.clear')}
           </Button>
         )}
-        {isStandalone && onOpenSettings && (
-          <Button variant='secondary' onPress={onOpenSettings}>
-            <TbSettings fontSize={18} />
-            {t('common.actions.settings')}
-          </Button>
-        )}
+        {settingsButton}
         {isStandalone && showLearnMoreLink && (
           <Button
             className='ml-auto inline-flex items-center gap-1'
@@ -342,7 +403,12 @@ export function SteamCookiesConnectPanel<T extends SteamCookiesLike>({
     <PageBannerArea>
       <PageBanner
         art={art}
-        description={t('dashboard.settings.steamCredentials.description')}
+        description={
+          <>
+            <p>{t('dashboard.settings.steamCredentials.description')}</p>
+            {cookiesSourceNote && <p>{cookiesSourceNote}</p>}
+          </>
+        }
         title={title ?? ''}
       >
         {content}

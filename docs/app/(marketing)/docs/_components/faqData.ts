@@ -256,8 +256,7 @@ export const faqData = [
     markdown:
       "**Couldn't sign in to Steam Community. Check your cookies and try again.**\n" +
       '> * You have entered the incorrect cookies. Follow the steps found in the [Steam Credentials](/docs/steam-credentials) section\n' +
-      "> * Steam accounts with [Family View](https://store.steampowered.com/parental/) _(parental restrictions)_ enabled will also have a `steamParental` cookie that needs to be saved in SGI's settings\n" +
-      '> * If you are using the [Automated Method](/docs/steam-credentials#automated-method), you must disable [Family View](https://store.steampowered.com/parental/) to use this method\n' +
+      '> * If [Family View](https://store.steampowered.com/parental/) _(parental restrictions)_ is enabled, you will see the Family View error below instead. Card Farming and Inventory Manager need it disabled\n' +
       "> * In some cases, Steam accounts might have a `steamMachineAuth` cookie that needs to be saved in SGI's settings",
   },
   {
@@ -270,7 +269,7 @@ export const faqData = [
     question: 'Family View is enabled on your Steam account. Disable Family View and try again.',
     markdown:
       '**Family View is enabled on your Steam account. Disable Family View and try again.**\n' +
-      "> Automatically getting your [Steam Credentials](/docs/steam-credentials) doesn't work while [Family View](https://store.steampowered.com/parental/) _(parental restrictions)_ is enabled. Either disable Family View, or add your cookies by hand in [Settings → Steam Credentials](/docs/steam-credentials), including the `steamParental` cookie.",
+      "> Card Farming and Inventory Manager don't work while [Family View](https://store.steampowered.com/parental/) _(parental restrictions)_ is enabled, whichever way you sign in to SGI. Disable Family View on [Steam's Family View page](https://store.steampowered.com/parental/) (you'll need your Family View PIN), then try again. Adding cookies by hand doesn't get around it.",
   },
   {
     question: 'Please wait X seconds before fetching more item prices',

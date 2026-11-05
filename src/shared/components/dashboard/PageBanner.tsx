@@ -5,7 +5,10 @@ import { usePlatformStore } from '@/shared/stores/platformStore'
 
 interface PageBannerProps {
   title: string
-  description: string
+  // Usually a plain string. A node is allowed for a multi-paragraph description (the Steam
+  // credentials prompt's second "where to get your cookies" paragraph) - pass each paragraph as its
+  // own <p>; the wrapper below supplies the text style and the spacing between them.
+  description: ReactNode
   actions?: ReactNode
   // The right-hand illustration, positioned by the caller. Only shown once there's room for it (the
   // `@4xl:` breakpoint below), since it would otherwise overlap the text.
@@ -75,7 +78,11 @@ export const PageBanner = ({ title, description, actions, art, children }: PageB
     // BANNER_* constants), so every large banner in the app is one size.
     <div
       className={cn(
-        '@container relative w-full',
+        // A flex column so the card below can stretch (`flex-1`) to this box's full height. The
+        // glow fills this box, and `h-full` on the card doesn't resolve against a min-height alone,
+        // so a banner with short children left the card shorter than its glow, which then showed
+        // below it.
+        '@container relative flex w-full flex-col',
         children ? 'min-h-85' : 'aspect-1920/620 max-h-105 min-h-85',
       )}
     >
@@ -83,7 +90,7 @@ export const PageBanner = ({ title, description, actions, art, children }: PageB
       <span aria-hidden='true' className={cn('page-banner-glow rounded-[22px]', motionClassName)} />
       <div
         className={cn(
-          'page-banner relative flex h-full flex-col justify-center overflow-hidden rounded-[22px] p-10',
+          'page-banner relative flex flex-1 flex-col justify-center overflow-hidden rounded-[22px] p-10',
           motionClassName,
         )}
       >
@@ -103,7 +110,7 @@ export const PageBanner = ({ title, description, actions, art, children }: PageB
           <h2 className='text-[40px] text-white font-black leading-[1.05] tracking-tight'>
             {title}
           </h2>
-          <p className='text-sm leading-6 text-muted'>{description}</p>
+          <div className='flex flex-col gap-2 text-sm leading-6 text-muted'>{description}</div>
           {actions && <div className='flex flex-wrap items-center gap-2'>{actions}</div>}
           {children && <div className='w-full'>{children}</div>}
         </div>
