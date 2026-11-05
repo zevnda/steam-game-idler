@@ -1,4 +1,7 @@
-use tauri::{Listener, Manager};
+use tauri::{
+    utils::config::{AppDirectoriesOverride, AppDirectoryOverrides},
+    Listener, Manager,
+};
 use tauri_plugin_window_state::StateFlags;
 
 mod achievement_unlocker;
@@ -35,6 +38,22 @@ mod zoom;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    let mut context = tauri::generate_context!();
+
+    // Portable builds keep window position/size next to the binary instead of AppData, matching the
+    // rest of the app's portable-mode file placement (see `platform::cache_dir`). Only `config` is
+    // overridden because that's the one directory `tauri-plugin-window-state` reads and nothing else
+    // here uses: `local_data` is the WebView2 profile, so a whole-root override would move it and lose
+    // portable users' localStorage (including `licenseKey`). A relative path resolves against the
+    // binary's directory, not the working directory, so it holds when launched from elsewhere.
+    if platform::is_portable() {
+        context.config_mut().app.app_directories_override =
+            Some(AppDirectoriesOverride::Directories(AppDirectoryOverrides {
+                config: Some(".".into()),
+                ..Default::default()
+            }));
+    }
+
     tauri::Builder::default()
         // Must be registered first so it can intercept startup before any other plugin/setup
         // runs on a second launch attempt (Tauri's own recommendation for this plugin).
@@ -51,23 +70,17 @@ pub fn run() {
                 }
             }
         }))
-        .plugin({
-            let mut builder = tauri_plugin_window_state::Builder::new().with_state_flags(
-                StateFlags::SIZE
-                    | StateFlags::POSITION
-                    | StateFlags::MAXIMIZED
-                    | StateFlags::DECORATIONS
-                    | StateFlags::FULLSCREEN,
-            );
-
-            // Portable builds store window position/size next to the binary instead of AppData,
-            // matching the rest of the app's portable-mode file placement (see `platform::cache_dir`).
-            if platform::is_portable() {
-                builder = builder.with_dir("./");
-            }
-
-            builder.build()
-        })
+        .plugin(
+            tauri_plugin_window_state::Builder::new()
+                .with_state_flags(
+                    StateFlags::SIZE
+                        | StateFlags::POSITION
+                        | StateFlags::MAXIMIZED
+                        | StateFlags::DECORATIONS
+                        | StateFlags::FULLSCREEN,
+                )
+                .build(),
+        )
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_opener::init())
@@ -244,7 +257,7 @@ pub fn run() {
             zoom::set_zoom,
             tray::update_tray_menu,
         ])
-        .build(tauri::generate_context!())
+        .build(context)
         .expect("error while building tauri application")
         .run(|app_handle, event| {
             // Without this, quitting the app (tray Quit, titlebar close with close-to-tray off, or

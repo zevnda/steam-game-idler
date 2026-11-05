@@ -7,8 +7,8 @@ import { clearLegacyMigrationData } from '@/shared/utils/update'
 // directory once, before the webview even loads, for anyone upgrading from any pre-6.0.0 release
 // (or a fresh install - both are safe, see its doc comment). This hook is the other half - a
 // one-time `localStorage`/`sessionStorage` clear (preserving `licenseKey` only, see
-// `clearLegacyMigrationData`), gated by `was_legacy_migration_performed` so it only fires on the
-// exact launch the backend just migrated, never on every subsequent relaunch.
+// `clearLegacyMigrationData`), gated by `was_legacy_migration_performed` so it only runs on the
+// exact launch the backend just migrated, and skipped unless the profile really holds pre-6.0.0 data.
 export function useLegacyMigrationCleanup() {
   const ran = useRef(false)
 
@@ -20,8 +20,12 @@ export function useLegacyMigrationCleanup() {
       try {
         const migrated = await invoke<boolean>('was_legacy_migration_performed')
         if (migrated) {
-          await clearLegacyMigrationData()
-          logFrontendInfo('legacyMigration', 'cleared pre-6.0.0 local storage', {})
+          const cleared = await clearLegacyMigrationData()
+          logFrontendInfo(
+            'legacyMigration',
+            cleared ? 'cleared pre-6.0.0 local storage' : 'no pre-6.0.0 local storage to clear',
+            {},
+          )
         }
       } catch (error) {
         console.error('Error in (useLegacyMigrationCleanup):', error)

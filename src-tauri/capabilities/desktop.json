@@ -4,7 +4,6 @@
   "windows": ["main"],
   "permissions": [
     "core:default",
-    "window-state:default",
     "updater:default",
     "process:allow-restart",
     "opener:default",

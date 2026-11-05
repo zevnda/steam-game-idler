@@ -6,7 +6,10 @@
 //! Gated by a marker file rather than a version comparison: a fresh install and a real upgrade
 //! both take the same path, and both are safe since wiping an already-empty/already-new-shaped
 //! cache directory is a no-op. This also self-heals a user who launches v6.0.0 without going
-//! through the in-app updater at all (manual installer, portable zip).
+//! through the in-app updater at all (manual installer, portable zip). The frontend's matching
+//! storage clear can't rely on this marker alone, since every copy of the app shares one WebView2
+//! profile while each portable folder has its own cache directory - see `PRE_V6_ONLY_KEYS` in
+//! `src/shared/utils/update.ts`.
 
 use std::fs;
 
@@ -46,26 +49,48 @@ pub fn run(app_handle: &tauri::AppHandle) -> bool {
         return false;
     }
 
-    // Reuses the Debug tab's "Clear Data" logic verbatim - same directory, same semantics
-    // (not-yet-existing is not an error).
-    if let Err(e) = debug::commands::clear_all_cache_files(app_handle.clone()) {
+    // Same wipe as the Debug tab's "Clear Data" - same directory, same semantics (not-yet-existing
+    // is not an error).
+    if let Err(e) = debug::commands::remove_cache_dir(app_handle) {
         tracing::warn!(error = %e, "legacy_migration: cache clear failed, will retry next launch");
         return false;
     }
     tracing::info!("legacy_migration: cleared pre-6.0.0 cache directory (or none was present)");
 
-    if let Some(parent) = marker.parent() {
-        let _ = fs::create_dir_all(parent);
-    }
-    if let Err(e) = fs::write(&marker, env!("CARGO_PKG_VERSION")) {
-        tracing::warn!(error = %e, "legacy_migration: failed to write marker, will retry next launch");
-        // The cache clear above still happened - the frontend's localStorage clear should still
-        // fire this run even though the *next* run will redundantly retry the (now-empty) cache.
-    } else {
+    // A failure here is logged inside - the cache clear above still happened, so the frontend's
+    // localStorage clear should still fire this run even though the *next* run will redundantly
+    // retry the (now-empty) cache.
+    if write_marker(&marker) {
         tracing::info!("legacy_migration: marker written, migration complete");
     }
 
     true
+}
+
+/// Puts the marker back after the Debug tab's "Clear Data" removes the cache directory it lives in.
+/// Without it the next launch would count as a migration and wipe the cache a second time, taking
+/// whatever the user set up since clearing (settings, per-account files) with it.
+pub fn restore_marker(app_handle: &tauri::AppHandle) {
+    match marker_path(app_handle) {
+        Ok(marker) => {
+            write_marker(&marker);
+        }
+        Err(e) => tracing::warn!(error = %e, "legacy_migration: could not resolve marker path"),
+    }
+}
+
+/// Returns whether the marker was written.
+fn write_marker(marker: &std::path::Path) -> bool {
+    if let Some(parent) = marker.parent() {
+        let _ = fs::create_dir_all(parent);
+    }
+    match fs::write(marker, env!("CARGO_PKG_VERSION")) {
+        Ok(()) => true,
+        Err(e) => {
+            tracing::warn!(error = %e, "legacy_migration: failed to write marker, will retry next launch");
+            false
+        }
+    }
 }
 
 #[tauri::command]

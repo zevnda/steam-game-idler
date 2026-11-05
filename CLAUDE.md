@@ -377,7 +377,9 @@ part of the current one) — extend this list if a future release drops a previo
 loads) wipes the cache directory if it detects a pre-rewrite on-disk shape, since this app resolves
 to the same cache directory and WebView2 profile as its predecessor and an old-shaped file can crash
 a command expecting the new shape. `src/shared/hooks/useLegacyMigrationCleanup.ts` does the
-matching one-time `localStorage`/`sessionStorage` clear (preserving `licenseKey`). Every settings
+matching one-time `localStorage`/`sessionStorage` clear (preserving `licenseKey`), only when the
+profile holds a pre-6.0.0-only key: every copy of the app shares one WebView2 profile, but each
+portable folder has its own cache directory and marker. Every settings
 module's read/load also self-heals to defaults and rewrites the file if deserialization fails for
 any reason (logged via `tracing::warn!`) rather than hard-erroring every read for that user — mirror
 this self-heal pattern in any new settings module, and never repurpose an existing JSON key for a

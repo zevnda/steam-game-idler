@@ -50,7 +50,6 @@
     "@tauri-apps/plugin-opener": "~2.7.1",
     "@tauri-apps/plugin-process": "~2.3.1",
     "@tauri-apps/plugin-updater": "~2.14.1",
-    "@tauri-apps/plugin-window-state": "~2.4.1",
     "fuse.js": "^7.5.0",
     "i18next": "^26.7.1",
     "i18next-browser-languagedetector": "^8.2.1",
