@@ -56,12 +56,16 @@ for (const entry of readdirSync(LOCALES_DIR)) {
 
   const strippedCount = stripEmptyLeaves(parsed)
 
+  // Rewrites even when nothing was stripped: Crowdin exports files with no trailing newline, and
+  // this write is what adds it. Skipping it for a fully translated locale fails CI's Prettier
+  // check on the translations PR.
+  writeFileSync(filePath, `${JSON.stringify(parsed, null, 2)}\n`, 'utf8')
+
   if (strippedCount === 0) {
     console.error(`[strip-crowdin-empty-translations] ${entry}: no empty placeholder strings found`)
     continue
   }
 
-  writeFileSync(filePath, `${JSON.stringify(parsed, null, 2)}\n`, 'utf8')
   totalStripped += strippedCount
   filesChanged++
   console.error(
