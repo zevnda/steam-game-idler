@@ -108,6 +108,9 @@ export interface CardFarmingSettings {
   // Whether the user has dismissed the one-time "farming multiple games at once can slow down
   // drops" notice shown from the `allowMultiGameFarming` settings toggle.
   multiGameFarmingNoticeSeen: boolean
+  // Whether the user ticked "Don't show this again" on the Online-status notice shown on Start
+  // (see CardFarmingPresenceNotice.tsx).
+  presenceNoticeSeen: boolean
   // Agent-mode only - see `card_farming::settings::CardFarmingSettings::skip_refundable_games`'s
   // doc comment. A no-op for CLI-mode accounts (no purchase-date data exists for them).
   skipRefundableGames: boolean

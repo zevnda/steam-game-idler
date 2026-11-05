@@ -618,6 +618,14 @@
         "title": "Farming multiple games at once?",
         "description": "Farming multiple games at the same time can slow down how quickly cards drop per game. If you don't see any cards drop for a while, try turning this back off."
       },
+      "presenceNotice": {
+        "title": "Before you start",
+        "description": "Your status is set to Online, so your friends may get a notification each time Card Farming starts a game. You should consider switching to Offline instead.",
+        "stayOnline": "Stay online and start",
+        "appearOffline": "Appear offline and start",
+        "dontShowAgain": "Don't show this again",
+        "offlineFailed": "Couldn't change your status. Farming started with your current status."
+      },
       "confirmClearBlacklist": {
         "title": "Clear the card farming blacklist?",
         "description": "This will remove all {{count}} games from the card farming blacklist."
