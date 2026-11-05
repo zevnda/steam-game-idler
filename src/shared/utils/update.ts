@@ -117,11 +117,30 @@ export async function preserveKeysAndClearData() {
 // preference keys to carry over - the point is a clean slate, not continuity.
 const LEGACY_MIGRATION_KEYS_TO_PRESERVE = ['licenseKey']
 
+// Keys only a pre-6.0.0 release ever wrote, which is how we tell a real old profile apart from a v6
+// one. The backend's "migrated" flag can't: it only means this cache directory had no marker, which
+// is also true of a portable build run from a new folder. Every copy of the app on a machine shares
+// one WebView2 profile while each portable folder has its own cache directory, so without this check
+// a new portable folder wipes the signed-in accounts of every other copy. Never add a key the current
+// app writes, or that wipe comes back.
+const PRE_V6_ONLY_KEYS = [
+  'userSummary',
+  'freeGamesIds',
+  'searchQueries',
+  'sortStyle',
+  'inventorySortStyle',
+  'lockedTradingCards',
+  'minToTrayNotified',
+]
+
 // Clears local/session storage once for a user upgrading from any pre-6.0.0 release, preserving
-// `LEGACY_MIGRATION_KEYS_TO_PRESERVE`. Only called once, gated by the backend's
-// `was_legacy_migration_performed` (see `useLegacyMigrationCleanup.ts`) - never on every relaunch.
+// `LEGACY_MIGRATION_KEYS_TO_PRESERVE`, and returns whether it did. Called only on a launch the
+// backend flagged via `was_legacy_migration_performed` (see `useLegacyMigrationCleanup.ts`).
 export async function clearLegacyMigrationData() {
+  if (!PRE_V6_ONLY_KEYS.some(key => localStorage.getItem(key) !== null)) return false
+
   await clearDataPreserving(LEGACY_MIGRATION_KEYS_TO_PRESERVE)
+  return true
 }
 
 // The actual download/install/relaunch sequence, shared by both `useCheckForUpdates`'s silent path

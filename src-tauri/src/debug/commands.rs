@@ -101,7 +101,14 @@ pub fn clear_log_file(app_handle: AppHandle) -> AppResult<()> {
 /// separate sibling directory, so this can't race the open log file handle `logging::init` holds.
 #[tauri::command]
 pub fn clear_all_cache_files(app_handle: AppHandle) -> AppResult<()> {
-    let dir = platform::cache_dir(&app_handle)?;
+    remove_cache_dir(&app_handle)?;
+    crate::legacy_migration::restore_marker(&app_handle);
+    Ok(())
+}
+
+/// The wipe itself, shared with `legacy_migration::run`, which writes its own marker afterwards.
+pub fn remove_cache_dir(app_handle: &AppHandle) -> AppResult<()> {
+    let dir = platform::cache_dir(app_handle)?;
     match fs::remove_dir_all(&dir) {
         Ok(()) => {
             tracing::info!(path = %dir.display(), "debug: cleared cache directory");

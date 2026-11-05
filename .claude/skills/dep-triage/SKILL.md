@@ -63,8 +63,7 @@ Before touching anything, check what the **target** version actually ships:
   (exact peer pin); `@tauri-apps/*` JS packages ↔ their Rust crates — the Tauri CLI refuses to
   build when a JS package's major.minor differs from the crate version resolved in `Cargo.lock`,
   which is why `package.json` uses `~` ranges. Bump both sides or neither (`cargo update -p
-  tauri-plugin-<name>`). `tauri-plugin-window-state` comes from a custom git fork
-  (`zevnda/plugins-workspace-custom`), not crates.io — never bump its JS side blindly.
+  tauri-plugin-<name>`).
 - **Raise the manifest floor to the patched version** (`^16.3.8`, not leaving `^16.2.11`) so a
   fresh resolve can never land on a vulnerable version. Note that `^` may resolve higher than the
   PR target — that's fine as long as it's verified, but say which version actually installed.
