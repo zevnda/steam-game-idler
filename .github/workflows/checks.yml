@@ -69,7 +69,32 @@ jobs:
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: pnpm --filter steam-game-idler-docs types:check
 
+  # Decides whether the slow `rust` job needs to run at all - most PRs never touch src-tauri/.
+  changes:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # On pull_request the changed-file list comes from the GitHub API, not a git clone.
+      pull-requests: read
+    outputs:
+      rust: ${{ steps.filter.outputs.rust }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          # This workflow is listed too, so a change to the rust job itself still tests itself.
+          filters: |
+            rust:
+              - 'src-tauri/**'
+              - '.github/workflows/checks.yml'
+
   rust:
+    # Skipped via job-level `if:` rather than a workflow-level `paths:` filter on purpose: GitHub
+    # counts a job skipped by `if:` as passed for a required status check, whereas a workflow that
+    # never starts leaves a required check pending forever and blocks the merge.
+    needs: changes
+    if: needs.changes.outputs.rust == 'true'
     # Same Ubuntu as release.yml's Linux build. Only the Linux cfg branches compile here - the
     # Windows-only code is checked by every local Windows build and by release.yml.
     runs-on: ubuntu-22.04

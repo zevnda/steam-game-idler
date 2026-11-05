@@ -307,6 +307,10 @@ mod tests {
     /// hands off to the shell and returns immediately, it doesn't wait for or report on whether
     /// anything claimed the URI scheme), so this is a real assertion on every machine/CI run, not
     /// state-dependent like `detects_a_real_running_steam_client` above.
+    ///
+    /// Windows-only: it spawns `cmd`, which doesn't exist on Linux (CI's checks run there). That
+    /// isn't an app bug - anti-away belongs to CLI mode, which Linux never offers.
+    #[cfg(windows)]
     #[test]
     fn anti_away_spawns_without_error() {
         assert!(anti_away().is_ok());

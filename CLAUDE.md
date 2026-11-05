@@ -98,7 +98,7 @@ the live user base, not just useful in local dev.
   than replacing them, so scoping never actually happens. Use `pnpm exec prettier --write
   path/to/file.tsx` directly instead.
 - **CI (`.github/workflows/checks.yml`) gates every PR** on Prettier, ESLint, `tsc`, the i18n
-  check (app + docs), and for `src-tauri/`: `cargo fmt --check`, `cargo clippy --all-targets -- -D
+  check (app + docs), and — only when the PR touches `src-tauri/` — `cargo fmt --check`, `cargo clippy --all-targets -- -D
   warnings` and `cargo test --lib`. Run `cargo fmt` and that clippy command after Rust edits — a
   warning fails CI. Crate-wide clippy exceptions live in `Cargo.toml`'s `[lints.clippy]`, each
   with its reason. The pre-commit hook only formats/lints staged files (no cargo compile — it'd
