@@ -19,6 +19,17 @@ namespace SteamUtility.Daemon.Bot
 
     public sealed class AuthFlow
     {
+        // How this sign-in is labelled on the user's Steam account (Security & Devices), replacing
+        // SteamKit2's default of "<machine name> (SteamKit2)". Keeps the machine name so someone
+        // using the app on two PCs can still tell the entries apart. Only sent when signing in, not
+        // when resuming from a saved token, so an existing session isn't relabelled by an update.
+        //
+        // A property rather than a static field on purpose: Environment.MachineName can throw if the
+        // OS won't report a name. Read here, that surfaces as one failed sign-in inside the sign-in
+        // methods' own try/catch. A static field would throw while AuthFlow's type initializes,
+        // taking down the whole daemon at startup, including resuming a saved session.
+        private static string DeviceFriendlyName => $"{Environment.MachineName} (Steam Game Idler)";
+
         private readonly SteamBot _bot;
 
         private TaskCompletionSource<string>? _pendingGuardCodeTcs;
@@ -67,6 +78,7 @@ namespace SteamUtility.Daemon.Bot
                             PlatformType =
                                 EAuthTokenPlatformType.k_EAuthTokenPlatformType_SteamClient,
                             ClientOSType = EOSType.Win11,
+                            DeviceFriendlyName = DeviceFriendlyName,
                             Authenticator = new IpcAuthenticator(this),
                         }
                     );
@@ -136,6 +148,7 @@ namespace SteamUtility.Daemon.Bot
                         IsPersistentSession = true,
                         PlatformType = EAuthTokenPlatformType.k_EAuthTokenPlatformType_SteamClient,
                         ClientOSType = EOSType.Win11,
+                        DeviceFriendlyName = DeviceFriendlyName,
                     }
                 );
 
