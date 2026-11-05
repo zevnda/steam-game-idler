@@ -97,6 +97,11 @@ export const useRecommendedSlides = (games: OwnedGame[]) => {
     const slides: RecommendedSlide[] = []
     const heroOnly: RecommendedSlide[] = []
     for (const game of games) {
+      // Stops at the first candidate still being checked. A batch's checks finish in whatever order
+      // their images load, so skipping past an unchecked game let a later one become slide 1, and
+      // then the earlier one, once checked, was inserted in front of it - changing the slide on
+      // screen. Only ever using a fully checked prefix keeps new slides added at the end.
+      if (!checkedArt.has(game.appId)) break
       const art = checkedArt.get(game.appId)
       if (!art) continue
       if (art.logo) {
