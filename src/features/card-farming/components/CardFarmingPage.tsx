@@ -15,6 +15,10 @@ import {
 import { CardFarmingBlacklistGrid } from './CardFarmingBlacklistGrid'
 import { CardFarmingBrowseGrid } from './CardFarmingBrowseGrid'
 import { CardFarmingEmptyBanner } from './CardFarmingEmptyBanner'
+import {
+  CardFarmingPresenceNotice,
+  useCardFarmingPresenceNotice,
+} from './CardFarmingPresenceNotice'
 import { CardFarmingProgressView } from './CardFarmingProgressView'
 import { CardFarmingStartPanel } from './CardFarmingStartPanel'
 import { CardFarmingWhitelistGrid } from './CardFarmingWhitelistGrid'
@@ -117,6 +121,9 @@ export const CardFarmingPage = () => {
     clearBlacklist,
   } = useCardFarmingBlacklist()
   const { isChecking, isAutoConnecting } = useAutoConnectSteamCookies(account, connect)
+  // Start goes through this so an agent-mode account showing as Online can choose to appear
+  // offline first (GitHub issue #2096) - see CardFarmingPresenceNotice.tsx.
+  const presenceNotice = useCardFarmingPresenceNotice(start)
   const [activeTab, setActiveTab] = useState<CardFarmingTab>('browse')
   // Lives in `cardFarmingStore` (account-keyed, survives this page unmounting) rather than local
   // state - see that store's `dismissedFinished` doc comment for why: a page remount must not
@@ -287,7 +294,7 @@ export const CardFarmingPage = () => {
           }
           isPending={isStarting}
           variant='primary'
-          onPress={start}
+          onPress={presenceNotice.requestStart}
         >
           <TbPlayerPlayFilled fontSize={16} />
           {t('common.actions.start')}
@@ -485,6 +492,8 @@ export const CardFarmingPage = () => {
             onOpenSettings={() => openSettings('cardFarming')}
           />
         )}
+
+        <CardFarmingPresenceNotice notice={presenceNotice} />
 
         <AlertDialog
           isOpen={confirmClearTarget !== null}

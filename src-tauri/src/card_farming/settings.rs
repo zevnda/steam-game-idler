@@ -58,6 +58,14 @@ pub struct CardFarmingSettings {
     /// existed) still deserializes.
     #[serde(default)]
     pub multi_game_farming_notice_seen: bool,
+    /// Whether the user ticked "Don't show this again" on the one-time notice shown when they
+    /// press Start while their agent-mode status is Online (friends get a "now playing"
+    /// notification each time farming starts a game - GitHub issue #2096). Lives here rather than
+    /// in `steam_agent::presence_settings` because only Card Farming shows it. `#[serde(default)]`
+    /// so an existing on-disk settings file (serialized before this field existed) still
+    /// deserializes.
+    #[serde(default)]
+    pub presence_notice_seen: bool,
     /// When on, farming skips any game still inside Steam's refund window - purchased via a real
     /// monetary payment method within the last [`crate::card_farming::refund_window::REFUND_WINDOW_DAYS`]
     /// days, with under [`crate::card_farming::refund_window::REFUND_WINDOW_MAX_PLAYTIME_MINUTES`]
@@ -108,6 +116,7 @@ impl Default for CardFarmingSettings {
             next_task: None,
             auto_farm_cards: false,
             multi_game_farming_notice_seen: false,
+            presence_notice_seen: false,
             skip_refundable_games: false,
             allow_multi_game_farming: false,
             hours_until_farmable: default_hours_until_farmable(),
