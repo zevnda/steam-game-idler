@@ -42,7 +42,7 @@ rand = "0.8"
 chrono = "0.4"
 urlencoding = "2.1.3"
 tauri-plugin-opener = "2.7.1"
-tauri-plugin-dialog = "2.7"
+tauri-plugin-dialog = "2.8"
 
 [features]
 custom-protocol = ["tauri/custom-protocol"]
