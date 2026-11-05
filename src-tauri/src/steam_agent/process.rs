@@ -359,6 +359,24 @@ async fn handle_line(
                 }
             }
 
+            // Steam refused this session's reconnect for good (see `SteamBot.cs`'s
+            // `OnReconnectLogOnRejected`). The daemon sends this ahead of the `status_changed`
+            // pair for the same rejection, so the cached SteamID64 is still intact here.
+            if name == "session_rejected" {
+                let result = payload
+                    .get("result")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("unknown");
+                let last_steam_id = steam_id.lock().unwrap().clone();
+                spawn_session_lost(
+                    app_handle,
+                    &key,
+                    last_steam_id,
+                    "steam rejected the session",
+                );
+                tracing::warn!(account = %key, result, "steam agent: steam rejected this session's reconnect");
+            }
+
             if name == "status_changed" {
                 let resolved = payload.get("steamId").and_then(|v| v.as_str());
                 let reconnecting =
@@ -372,28 +390,12 @@ async fn handle_line(
                     // "Reconnecting"), and the stop calls need the last-known SteamID64 to find
                     // this account's running automation.
                     let last_steam_id = steam_id.lock().unwrap().clone();
-                    match last_steam_id {
-                        Some(sid) => {
-                            // Spawned, not awaited inline - this loop is the sole reader of this
-                            // account's AgentProcess stdout, and handle_session_superseded's idle-
-                            // claims clear sends an `idle_set` IPC request back to that same
-                            // process and awaits its response. Awaiting it here would deadlock:
-                            // the response can only ever be read by this same loop reading its
-                            // next line, which can't happen while it's blocked awaiting this call
-                            // (observed as a real 30s REQUEST_TIMEOUT stall in testing, which also
-                            // delayed the generic AGENT_EVENT emit below by the same 30s since it
-                            // runs later in this function).
-                            let app_handle = app_handle.clone();
-                            let key = key.clone();
-                            tauri::async_runtime::spawn(async move {
-                                handle_session_superseded(&app_handle, &key, &sid).await;
-                            });
-                        }
-                        None => tracing::warn!(
-                            account = %key,
-                            "steam agent: account kicked by concurrent login, but no cached steamId to stop automation with"
-                        ),
-                    }
+                    spawn_session_lost(
+                        app_handle,
+                        &key,
+                        last_steam_id,
+                        "replaced by another client",
+                    );
                 }
 
                 if should_update_steam_id(resolved, reconnecting) {
@@ -503,16 +505,46 @@ async fn handle_line(
     }
 }
 
-/// Reacts to `status_changed{result: "LoggedInElsewhere"}` - the account's session was terminally
-/// replaced by another client of the same logon type (`EResult.LogonSessionReplaced`, e.g. a
-/// second SGI instance signed into the same account - the wire name predates that narrowing, see
-/// `DaemonHost.cs`). Stops this account's automation via the same underlying calls
-/// `stop_farming`/`stop_achievement_unlocker` make, then drops its idle claims without announcing
-/// (see `IdleClaimsRegistry::clear_account`), rather than letting
-/// the daemon's own auto-reconnect (already suppressed for this case - see
-/// `SteamBot.cs::OnDisconnected`) leave stale automation state around. Runs unconditionally here
-/// (not gated behind the frontend being mounted/listening) so pausing is reliable regardless of
-/// whether anyone's looking at the app right now.
+/// Runs [`handle_session_lost`] for an account, given the SteamID64 cached just before the session
+/// ended.
+///
+/// Spawned, not awaited inline - `handle_line`'s caller is the sole reader of this account's
+/// AgentProcess stdout, and the stop calls wait on automation loops that can themselves be awaiting
+/// an IPC response from that same process. Awaiting here would deadlock, since that response can
+/// only be read by the loop blocked on this call (observed as a real 30s REQUEST_TIMEOUT stall in
+/// testing, which also delayed the generic AGENT_EVENT emit by the same 30s).
+fn spawn_session_lost(
+    app_handle: &AppHandle,
+    account_key: &str,
+    last_steam_id: Option<String>,
+    cause: &'static str,
+) {
+    let Some(steam_id) = last_steam_id else {
+        tracing::warn!(
+            account = %account_key,
+            cause,
+            "steam agent: session lost, but no cached steamId to stop automation with"
+        );
+        return;
+    };
+    let app_handle = app_handle.clone();
+    let account_key = account_key.to_string();
+    tauri::async_runtime::spawn(async move {
+        handle_session_lost(&app_handle, &account_key, &steam_id, cause).await;
+    });
+}
+
+/// Reacts to an account's session ending for good, one of two ways: `session_rejected` (Steam
+/// refused the reconnect, e.g. a password change revoked the saved token) or
+/// `status_changed{result: "LoggedInElsewhere"}` (replaced by another client of the same logon
+/// type - `EResult.LogonSessionReplaced`, e.g. a second SGI instance signed into the same account;
+/// the wire name predates that narrowing, see `DaemonHost.cs`). Stops this account's automation via
+/// the same underlying calls `stop_farming`/`stop_achievement_unlocker` make, then drops its idle
+/// claims without announcing (see `IdleClaimsRegistry::clear_account`), rather than leaving
+/// automation running against a session the daemon will never reconnect (see `SteamBot.cs`'s
+/// `OnDisconnected`/`OnReconnectLogOnRejected`). Runs unconditionally here (not gated behind the
+/// frontend being mounted/listening) so stopping is reliable regardless of whether anyone's looking
+/// at the app right now.
 ///
 /// **Not** the path for the user simply launching a game on their real Steam client elsewhere
 /// (`EResult.LoggedInElsewhere`) - that kick auto-reconnects and only *pauses* via the
@@ -523,13 +555,18 @@ async fn handle_line(
 /// already dead Steam-side, and keeping the process alive means a normal re-login later
 /// (`AgentManager::login`, whose `respawn()` already kills any stale existing process for the key
 /// and spawns fresh) is all that's needed to resume - no separate "resume" path required.
-async fn handle_session_superseded(app_handle: &AppHandle, account_key: &str, steam_id: &str) {
+async fn handle_session_lost(
+    app_handle: &AppHandle,
+    account_key: &str,
+    steam_id: &str,
+    cause: &str,
+) {
     if let Err(e) = app_handle
         .state::<crate::card_farming::CardFarmingManager>()
         .stop(steam_id)
         .await
     {
-        tracing::warn!(account = %account_key, error = %e, "steam agent: failed to stop card farming after concurrent-login kick");
+        tracing::warn!(account = %account_key, cause, error = %e, "steam agent: failed to stop card farming after losing the session");
     }
 
     if let Err(e) = app_handle
@@ -537,11 +574,11 @@ async fn handle_session_superseded(app_handle: &AppHandle, account_key: &str, st
         .stop(steam_id)
         .await
     {
-        tracing::warn!(account = %account_key, error = %e, "steam agent: failed to stop achievement unlocker after concurrent-login kick");
+        tracing::warn!(account = %account_key, cause, error = %e, "steam agent: failed to stop achievement unlocker after losing the session");
     }
 
-    // Keyed by the SteamID64 captured before the kick, not re-resolved from `account_key` - this
-    // runs spawned, so by now the caller has already nulled the cached id and `clear_all`'s
+    // Keyed by the SteamID64 captured before the session ended, not re-resolved from `account_key` -
+    // this runs spawned, so by now the cached id has already been nulled and `clear_all`'s
     // `resolve_steam_id` would fail ("no resolved SteamID64 yet"), leaving every claim behind.
     // Nothing to announce either: the daemon connection is already dead Steam-side.
     app_handle
@@ -551,7 +588,8 @@ async fn handle_session_superseded(app_handle: &AppHandle, account_key: &str, st
 
     tracing::warn!(
         account = %account_key,
-        "steam agent: session replaced by another client - automation stopped, re-authentication required"
+        cause,
+        "steam agent: session lost - automation stopped, re-authentication required"
     );
 }
 

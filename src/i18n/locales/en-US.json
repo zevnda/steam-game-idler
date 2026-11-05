@@ -385,7 +385,14 @@
           "modalDescription": "{{account}} was signed in on another device, so its automation has been paused. Sign in again to continue.",
           "reconnect": "Reconnect",
           "sessionReplacedExplainer": "This usually happens when another copy of Steam Game Idler, or a similar tool, signs in to this account. Reconnecting here signs that one out.",
-          "useDifferentMethod": "Use a different sign-in method"
+          "useDifferentMethod": "Use a different sign-in method",
+          "sessionEnded": {
+            "badge": "Sign-in needed",
+            "modalTitle": "Steam ended this session",
+            "modalDescription": "Steam signed {{account}} out, so everything running on it has been stopped. Sign in again to continue.",
+            "explainer": "This can happen after you change your Steam password or sign out of all devices.",
+            "signInAgain": "Sign in again"
+          }
         }
       }
     },

@@ -1,3 +1,4 @@
+import type { AgentReauthReason } from '@/shared/stores/agentReauthStore'
 import type { AccountKey, SignedInAccount } from '@/shared/stores/sessionStore'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -50,11 +51,11 @@ interface AccountRowProps {
   // spinner and makes the row non-interactive so a slow check doesn't look like an unresponsive
   // click.
   isSwitching: boolean
-  // True while agentReauthStore has this account flagged (kicked by a concurrent login on
-  // another device/session) - see useAgentReauthWatcher. Takes priority over isOverCap: an
-  // over-cap account is still a normal live session just not switchable, while this one has
-  // already had its automation stopped and needs fresh credentials before anything else applies.
-  needsReauth: boolean
+  // Set while agentReauthStore has this account flagged (its session ended for good) - see
+  // useAgentReauthWatcher. Takes priority over isOverCap: an over-cap account is still a normal live
+  // session just not switchable, while this one has already had its automation stopped and needs
+  // re-authenticating before anything else applies.
+  reauthReason: AgentReauthReason | undefined
   onSwitch: (key: AccountKey) => void
   onUpsell: () => void
   onReauth: (key: AccountKey) => void
@@ -71,13 +72,14 @@ const AccountRow = ({
   isActive,
   isOverCap,
   isSwitching,
-  needsReauth,
+  reauthReason,
   onSwitch,
   onUpsell,
   onReauth,
   onRequestSignOut,
 }: AccountRowProps) => {
   const { t } = useTranslation()
+  const needsReauth = Boolean(reauthReason)
   const summary = useAccountSummaryStore(state => state.summaries[accountKey])
   const isIdling = useIdlingStore(state => (state.entries[accountKey]?.appIds.length ?? 0) > 0)
   const isFarming = useCardFarmingStore(state => state.entries[accountKey]?.isFarming ?? false)
@@ -153,7 +155,9 @@ const AccountRow = ({
           {needsReauth ? (
             <span className='flex shrink-0 items-center gap-1 rounded-full bg-danger/15 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest leading-3.5 text-danger'>
               <TbAlertTriangle fontSize={10} />
-              {t('dashboard.sidebar.accountSwitcher.reauth.badge')}
+              {reauthReason === 'sessionEnded'
+                ? t('dashboard.sidebar.accountSwitcher.reauth.sessionEnded.badge')
+                : t('dashboard.sidebar.accountSwitcher.reauth.badge')}
             </span>
           ) : null}
           {isPaused && !needsReauth ? (
@@ -361,7 +365,7 @@ export const AccountSwitcher = ({ compact = false }: AccountSwitcherProps) => {
                 isActive={key === activeAccountKey}
                 isOverCap={!allowedAccountKeys.has(key)}
                 isSwitching={switchingKey === key}
-                needsReauth={Boolean(reauthEntries[key])}
+                reauthReason={reauthEntries[key]}
                 onReauth={reauthKey => {
                   setIsOpen(false)
                   openReauth(reauthKey)

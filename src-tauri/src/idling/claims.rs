@@ -245,9 +245,9 @@ impl IdleClaimsRegistry {
 
     /// Empties every owner's claim for one already-resolved `steam_id` without announcing anything -
     /// for when that account's connection is already gone and there's nothing to announce to
-    /// (`steam_agent::process`'s concurrent-login kick, where Steam already dropped the session's
+    /// (`steam_agent::process`'s `handle_session_lost`, where Steam already dropped the session's
     /// games). Takes the SteamID64 directly rather than a `GamesAccount`, because by then
-    /// `resolve_steam_id` can no longer resolve the account - the kick path nulls the cached id.
+    /// `resolve_steam_id` can no longer resolve the account - that path nulls the cached id.
     pub async fn clear_account(&self, steam_id: &str) {
         self.claims.lock().await.remove(steam_id);
         tracing::info!(
