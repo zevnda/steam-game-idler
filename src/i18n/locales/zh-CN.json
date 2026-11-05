@@ -24,7 +24,12 @@
       "startIdling": "开始挂机",
       "stopIdling": "停止挂机",
       "manageAchievements": "管理成就",
-      "viewOnSteam": "在 Steam 上查看"
+      "customOrder": "自定义顺序与解锁延迟",
+      "viewOnSteam": "在 Steam 上查看",
+      "copyAppId": "复制 App ID",
+      "appIdCopied": "App ID 已复制",
+      "cardFarmingBlacklist": "挂卡黑名单",
+      "lists": "列表"
     },
     "minutes": "分钟",
     "zeroUnlimitedHint": "0 为 无限制",
@@ -422,6 +427,12 @@
         "manual": "手动挂机",
         "other": "其他"
       },
+      "empty": {
+        "title": "当前没有游戏在挂机。",
+        "description": "前往「游戏」页面，将鼠标悬停在某个游戏上并点击开始按钮，挂机期间，该游戏会显示在这里。",
+        "browseGames": "浏览您的游戏",
+        "setUpAutoIdle": "设置自动挂机"
+      },
       "errors": {
         "startFailed": "无法开始挂机该游戏",
         "maxPlaytimeCapReached": "该游戏已达到最大游戏时长上限",
@@ -618,8 +629,13 @@
         "title": "没有可掉落的卡牌",
         "description": "所有拥有游戏的卡牌均已挂完，或无可用掉落"
       },
+      "whitelistEmpty": {
+        "title": "没有白名单游戏",
+        "description": "从「有卡牌可掉落」标签页添加游戏，即可只挂机这些游戏，留空则挂机所有有卡牌可掉落的游戏。"
+      },
       "blacklistEmpty": {
-        "title": "暂无黑名单游戏"
+        "title": "暂无黑名单游戏",
+        "description": "从「有卡牌可掉落」标签页添加游戏，即可永不挂机这些游戏，留空则挂机所有有卡牌可掉落的游戏。"
       },
       "connect": {
         "automaticDescription": "自动登录 Steam 社区以检查卡牌掉落"
@@ -843,7 +859,8 @@
       },
       "empty": {
         "title": "未找到物品",
-        "description": "当前搜索与筛选条件下无可交易物品"
+        "description": "当前搜索与筛选条件下无可交易物品",
+        "noItemsDescription": "您还没有任何可以在 Steam 市场上出售的物品，挂机获得的集换式卡牌会显示在这里。"
       },
       "priceData": {
         "sellOrders": "出售订单",
@@ -995,12 +1012,19 @@
           "label": "禁用提示",
           "description": "隐藏应用中的悬停提示"
         },
+        "gameCardStyle": {
+          "label": "游戏卡牌样式",
+          "description": "选择游戏列表中游戏卡牌的形状。",
+          "cover": "封面图",
+          "banner": "横幅图"
+        },
         "background": {
           "label": "背景图片",
           "description": "使用自定义图片作为应用背景",
           "choose": "选择图片",
           "saved": "背景已更新",
-          "cleared": "背景已清除"
+          "cleared": "背景已清除",
+          "signatureThemeActive": "自定义界面主题启用期间，背景图片将被禁用。"
         },
         "theme": {
           "label": "主题",
@@ -1115,6 +1139,10 @@
         "openSearch": "打开搜索",
         "toggleSettings": "切换设置",
         "toggleSidebar": "切换侧边栏"
+      },
+      "help": {
+        "title": "帮助",
+        "troubleshooting": "故障排查"
       },
       "debug": {
         "title": "调试",
