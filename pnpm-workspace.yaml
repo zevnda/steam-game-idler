@@ -16,3 +16,10 @@ allowBuilds:
 onlyBuiltDependencies:
   - esbuild
   - sharp
+
+overrides:
+  # GHSA-g3hv-75wg-m249: minimatch < 11.0.1 is vulnerable, but every typescript-eslint release so far
+  # (through 8.72.1) still asks for ^10. Its only call is `minimatch(path, pattern, { dot: true })`,
+  # which v11 keeps. Scoped to this one parent so eslint's unaffected minimatch@3 stays put. Remove
+  # this once typescript-eslint itself depends on minimatch ^11.
+  '@typescript-eslint/typescript-estree>minimatch': ^11.0.4
