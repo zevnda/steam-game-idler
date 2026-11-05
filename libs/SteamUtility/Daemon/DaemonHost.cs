@@ -86,6 +86,18 @@ namespace SteamUtility.Daemon
                     }
                 );
             };
+            _bot.SessionRejected += result =>
+            {
+                // Nothing can idle on a session Steam won't take back, but IdlingManager keeps its
+                // desired set across any disconnect so it can re-announce after a normal reconnect.
+                // Empty it and report that, or the host would keep showing these games as idling.
+                _idlingManager.SetGames(new List<uint>());
+                IpcServer.SendEvent("idle_state", new { appIds = _idlingManager.CurrentAppIds });
+                // Sent ahead of the status_changed pair that follows this rejection: the first of
+                // those clears the Rust host's cached SteamID64, which it needs to find and stop
+                // this account's automation - see steam_agent/process.rs's handle_line.
+                IpcServer.SendEvent("session_rejected", new { result = result.ToString() });
+            };
             // Lets the Rust host pause/resume its own automation loops (the achievement unlocker)
             // and show the user why nothing is idling - see SteamBot.PlayingBlocked. `appId` is the
             // game the other session is playing, null when unknown or unblocked.

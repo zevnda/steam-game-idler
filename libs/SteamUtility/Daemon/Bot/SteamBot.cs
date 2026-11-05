@@ -85,6 +85,12 @@ namespace SteamUtility.Daemon.Bot
         // until Steam reports the other session stopped playing (see OnPlayingSessionState).
         public event Action<bool, bool>? Disconnected;
 
+        // Steam refused to let this session back on after a disconnect, for good (a revoked token
+        // after a password change, a disabled account, ...) - see OnReconnectLogOnRejected. Fires
+        // before the LogOnStatusChanged/Disconnected pair that follows the rejection, so a consumer
+        // still has that session's last-known state to act on when it hears this.
+        public event Action<EResult>? SessionRejected;
+
         // Fires whenever PlayingBlocked (or the blocking app id) changes - see OnPlayingSessionState
         // for the full state machine. Args: (blocked, appId), where appId is 0 when unknown (a
         // LoggedInElsewhere kick before Steam has told us which game) or when unblocked.
@@ -433,6 +439,7 @@ namespace SteamUtility.Daemon.Bot
                         "Daemon",
                         $"Steam rejected the saved session while reconnecting ({result}, extended: {extendedResult}) - not retrying, signing in again is required"
                     );
+                    SessionRejected?.Invoke(result);
                     break;
             }
         }

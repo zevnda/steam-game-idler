@@ -64,6 +64,12 @@ export const HELP_SECTIONS: HelpSection[] = [
           'No. With Steam Sign-in your password is only used to sign in with Steam, and the app keeps a sign-in token instead. To avoid entering it at all, scan a QR code with the Steam mobile app or use Local Sign-in.',
       },
       {
+        id: 'password-change',
+        question: 'What happens if I change my Steam password?',
+        answer:
+          "With Steam Sign-in, Steam ends the app's session for that account. Everything running on it stops and the app asks you to sign in again. Restart what was running once you're back.",
+      },
+      {
         id: 'platforms',
         question: 'Which operating systems are supported?',
         answer:

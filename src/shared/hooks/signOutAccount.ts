@@ -1,6 +1,7 @@
 ﻿import type { AccountKey } from '@/shared/stores/sessionStore'
 import { useAccountSummaryStore } from '@/shared/stores/accountSummaryStore'
 import { useAchievementUnlockerStore } from '@/shared/stores/achievementUnlockerStore'
+import { useAgentReauthStore } from '@/shared/stores/agentReauthStore'
 import { useCardFarmingStore } from '@/shared/stores/cardFarmingStore'
 import { useGamesListStore } from '@/shared/stores/gamesListStore'
 import { useIdlingStore } from '@/shared/stores/idlingStore'
@@ -31,10 +32,17 @@ export async function signOutAccount(key: AccountKey) {
     // accounts, so they'd fail with SessionNotFound if run after `agent_logout` tears that session
     // down. Concurrent + allSettled so one stuck/failing stop doesn't block the other or the
     // sign-out itself.
-    const stopResults = await Promise.allSettled([
-      invoke('stop_farming', { account }),
-      invoke('stop_achievement_unlocker', { account }),
-    ])
+    //
+    // Skipped for an account whose session already ended for good: the Rust host stopped its
+    // automation at that moment (steam_agent::process::handle_session_lost), and these would fail
+    // anyway since its SteamID64 is gone, reporting a failed cleanup that never happened.
+    const automationAlreadyStopped = useAgentReauthStore.getState().needsReauth(key)
+    const stopResults = automationAlreadyStopped
+      ? []
+      : await Promise.allSettled([
+          invoke('stop_farming', { account }),
+          invoke('stop_achievement_unlocker', { account }),
+        ])
     for (const result of stopResults) {
       if (result.status === 'rejected') {
         console.error('Error stopping automation during sign-out:', result.reason)
@@ -63,6 +71,7 @@ export async function signOutAccount(key: AccountKey) {
   useCardFarmingStore.getState().clearEntry(key)
   useAchievementUnlockerStore.getState().clearEntry(key)
   useAccountSummaryStore.getState().clearSummary(key)
+  useAgentReauthStore.getState().clear(key)
   useSessionStore.getState().clearAccount(key)
 
   const accountsRemaining = Object.keys(useSessionStore.getState().accounts).length

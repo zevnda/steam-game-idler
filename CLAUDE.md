@@ -414,7 +414,7 @@ way; several serde-side field-naming bugs have been found this way.
   `login`, `begin_qr_login`, `login_with_token`, `submit_guard_code`, `logout`, `idle_set` (single
   announcement, up to 32 games — no per-game PID concept), `get_owned_apps`, `achievements_get`,
   `achievement_set`, `achievement_set_bulk`, `stats_update`, `stats_reset_all`, `set_persona_state`.
-  Emits async `status_changed`/`idle_state`/`auth_required` events in addition to responses.
+  Emits async `status_changed`/`idle_state`/`auth_required`/`session_rejected` events in addition to responses.
 - **Recurring Rust/serde gotcha**: `#[serde(rename_all = "camelCase", tag = "...")]` on an **enum**
   only renames the variant names, not fields *inside* a struct variant — add
   `rename_all_fields = "camelCase"` too, or a struct variant's own fields silently expect

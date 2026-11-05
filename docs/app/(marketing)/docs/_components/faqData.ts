@@ -73,6 +73,12 @@ export const faqData = [
       '> See the full breakdown on the [How to Sign In](/docs/get-started/how-to-sign-in) page. In short: **Steam Sign-in** is the recommended method and needs no local Steam client, while **Local Sign-in** requires the Steam client to be installed, running, and signed in.',
   },
   {
+    question: 'What happens if I change my Steam password while using SGI?',
+    markdown:
+      '**What happens if I change my Steam password while using SGI?**\n' +
+      "> With **Steam Sign-in**, Steam ends SGI's session for that account. SGI stops everything running on it and shows a **Steam ended this session** prompt, so click **Sign in again**, sign back in, then restart what was running.",
+  },
+  {
     question: 'Is it possible to run SGI in sleep/hibernation mode?',
     markdown:
       '**Is it possible to run SGI in sleep mode?**\n' +
