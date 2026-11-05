@@ -8,6 +8,7 @@ import { useAccountSummaryStore } from '@/shared/stores/accountSummaryStore'
 import { getAccountKey, useSessionStore } from '@/shared/stores/sessionStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { invoke } from '@/shared/utils/invoke'
+import { APP_OVERLAY_ATTR } from '@/shared/utils/openModals'
 import { hasCasualAccess } from '@/shared/utils/subscriptionAccess'
 import { isPortableCheck } from '@/shared/utils/update'
 
@@ -150,7 +151,12 @@ export const HelpDesk = () => {
           viewport overlay convention - above Titlebar (z-50) and every dashboard route, below
           Chatway's own widget chrome. */}
       {isOpen && (
-        <div className='overlay-fade-in fixed inset-0 z-9998 bg-backdrop' onClick={handleClose} />
+        <div
+          // Lets the global shortcuts treat the open chat like any other modal (see openModals.ts)
+          {...{ [APP_OVERLAY_ATTR]: '' }}
+          className='overlay-fade-in fixed inset-0 z-9998 bg-backdrop'
+          onClick={handleClose}
+        />
       )}
 
       <AppTooltip.Root delay={300}>
