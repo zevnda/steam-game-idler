@@ -97,7 +97,8 @@ pub async fn get_owned_games(
             let games_only = crate::steam_agent::ownership_settings::get(&app_handle, &steam_id)
                 .await?
                 .games_only;
-            let steam_language = crate::achievements::steam_language::steam_language_for_locale(&locale);
+            let steam_language =
+                crate::achievements::steam_language::steam_language_for_locale(&locale);
             agent_manager
                 .get_owned_apps(username, games_only, steam_language)
                 .await?
@@ -164,7 +165,9 @@ pub(crate) async fn all_owned_app_ids(
     let games = match account {
         GamesAccount::Agent { username } => {
             // Names are never shown here, so the schema language is irrelevant.
-            let raw = agent_manager.get_owned_apps(username, false, "english").await?;
+            let raw = agent_manager
+                .get_owned_apps(username, false, "english")
+                .await?;
             merge::from_agent(raw)
         }
         GamesAccount::Local { .. } => {

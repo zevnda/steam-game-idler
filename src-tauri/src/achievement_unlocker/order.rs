@@ -16,7 +16,7 @@
 //! `get_achievement_data` call instead of trusting a saved copy.
 
 use std::collections::HashMap;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::{Arc, LazyLock, Mutex as StdMutex};
 
 use serde::{Deserialize, Serialize};
@@ -63,10 +63,10 @@ const ORDER_DIR_NAME: &str = "achievement_order";
 static FILE_LOCKS: LazyLock<StdMutex<HashMap<PathBuf, Arc<Mutex<()>>>>> =
     LazyLock::new(|| StdMutex::new(HashMap::new()));
 
-fn lock_for_path(path: &PathBuf) -> Arc<Mutex<()>> {
+fn lock_for_path(path: &Path) -> Arc<Mutex<()>> {
     let mut locks = FILE_LOCKS.lock().unwrap();
     locks
-        .entry(path.clone())
+        .entry(path.to_path_buf())
         .or_insert_with(|| Arc::new(Mutex::new(())))
         .clone()
 }

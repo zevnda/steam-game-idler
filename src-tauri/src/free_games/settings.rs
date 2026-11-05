@@ -24,7 +24,7 @@ const SETTINGS_FILE_NAME: &str = "free_games_settings.json";
 
 static WRITE_LOCK: LazyLock<Mutex<()>> = LazyLock::new(|| Mutex::new(()));
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct FreeGamesSettings {
     /// Gamer-tier-gated (no Rust-side enforcement): whether
@@ -35,12 +35,6 @@ pub struct FreeGamesSettings {
     /// a login window during an unattended background poll later - see `free_games::commands`'s
     /// doc comment on that command.
     pub auto_redeem: bool,
-}
-
-impl Default for FreeGamesSettings {
-    fn default() -> Self {
-        Self { auto_redeem: false }
-    }
 }
 
 fn settings_file_path(app_handle: &AppHandle, steam_id: &str) -> AppResult<PathBuf> {

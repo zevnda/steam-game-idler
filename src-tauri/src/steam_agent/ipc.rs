@@ -63,7 +63,12 @@ impl IpcRequest {
     /// `AgentManager::cached_persona_state`), pre-seeds the daemon's `PresenceManager` before it
     /// ever logs on - see `Daemon/Bot/PresenceManager.cs`'s doc comment. `None` preserves the
     /// original behavior (daemon defaults to Online until a follow-up `set_persona_state` call).
-    pub fn login(id: String, user: String, pass_b64: String, persona_state: Option<&'static str>) -> Self {
+    pub fn login(
+        id: String,
+        user: String,
+        pass_b64: String,
+        persona_state: Option<&'static str>,
+    ) -> Self {
         Self {
             id,
             cmd: "login",

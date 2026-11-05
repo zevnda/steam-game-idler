@@ -1,0 +1,126 @@
+# Lint, typecheck, formatting and test checks for the desktop app (frontend + Rust backend) and the
+# docs site.
+#
+# The husky pre-commit hook (lint-staged) formats and lints staged files locally, but it's skipped
+# by `--no-verify`, by `beta/*` branches (see .husky/pre-commit), by GitHub's web editor, and by
+# any clone that never ran `pnpm install` (which is what installs the hook). It also never runs the
+# slow whole-project checks (typecheck, clippy, tests). This is the gate that can't be skipped.
+name: Checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+# A new push to the same PR/branch supersedes the run in flight; nothing here has side effects.
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Same pnpm/Node versions as release.yml, so a check that passes here passes there.
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 11.17.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      # Also runs docs' postinstall (fumadocs-mdx), which generates docs/.source for its typecheck.
+      - name: Install dependencies
+        id: install
+        run: pnpm install --frozen-lockfile
+
+      # Each check runs even if an earlier one failed, so one run reports every problem at once
+      # (but none run if the install itself failed - they would all just fail the same way).
+      - name: Prettier
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: pnpm exec prettier --check .
+
+      - name: ESLint (app)
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: pnpm lint
+
+      - name: Typecheck (app)
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: pnpm typecheck
+
+      - name: i18n keys
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: pnpm i18n:check
+
+      - name: ESLint (docs)
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: pnpm lint:docs
+
+      - name: Typecheck (docs)
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: pnpm --filter steam-game-idler-docs types:check
+
+  rust:
+    # Same Ubuntu as release.yml's Linux build. Only the Linux cfg branches compile here - the
+    # Windows-only code is checked by every local Windows build and by release.yml.
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: src-tauri
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      # Before the slow system-deps install: formatting needs nothing but rustfmt, so a format-only
+      # failure reports in seconds.
+      - name: rustfmt
+        run: cargo fmt --check
+
+      # Tauri's Linux build deps. Unlike release.yml, WebKitGTK isn't version-pinned - this only
+      # compiles against its headers, nothing built here ships.
+      - name: Install system dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libsoup-3.0-dev \
+            libgtk-3-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            libssl-dev \
+            libxdo-dev
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      # Stand-ins for the two git-ignored build outputs the Tauri build looks for, so this job needs
+      # neither a .NET nor a Next.js build: tauri.conf.json bundles `libs/*` (the SteamUtility .NET
+      # build), and tauri-build fails when that pattern matches nothing; `../out` is `frontendDist`
+      # (only embedded in release builds, created empty here as a guard). The Steam Web API key is
+      # deliberately absent too: build.rs only warns, and an empty key compiles.
+      - name: Stub build outputs
+        run: |
+          mkdir -p libs ../out
+          touch libs/ci-placeholder
+
+      - name: Clippy
+        run: cargo clippy --all-targets --locked -- -D warnings
+
+      - name: Tests
+        run: cargo test --lib --locked

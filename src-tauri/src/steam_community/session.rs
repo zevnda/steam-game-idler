@@ -307,12 +307,16 @@ const VALIDATE_RETRY_DELAY: Duration = Duration::from_millis(1500);
 /// not confirmed logout), this header is definitive on a single response - safe to reuse for a
 /// single-shot inline check (see `card_farming::scraper`'s per-poll usage) with no retry needed.
 pub(crate) fn is_session_revoked(response: &reqwest::Response) -> bool {
-    response.headers().get_all("set-cookie").iter().any(|value| {
-        value
-            .to_str()
-            .map(|s| s.contains("steamLoginSecure=deleted"))
-            .unwrap_or(false)
-    })
+    response
+        .headers()
+        .get_all("set-cookie")
+        .iter()
+        .any(|value| {
+            value
+                .to_str()
+                .map(|s| s.contains("steamLoginSecure=deleted"))
+                .unwrap_or(false)
+        })
 }
 
 /// Whether `status`/`body` is Steam Community's "Family View" PIN gate page rather than the

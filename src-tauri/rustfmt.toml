@@ -1,0 +1,4 @@
+# Lets a bare `rustfmt <file>` (the pre-commit hook, editors formatting a single file) parse with
+# the same edition `cargo fmt` takes from Cargo.toml - keep the two in sync. Otherwise rustfmt's
+# defaults apply, matching what `cargo fmt --check` enforces in CI.
+edition = "2021"

@@ -69,7 +69,8 @@ pub fn from_agent(raw_games: Vec<RawOwnedGame>) -> Vec<OwnedGame> {
             name: game.name,
             playtime_forever_minutes: game.playtime_forever_minutes.unwrap_or(0),
             rtime_last_played: game.rtime_last_played.unwrap_or(0),
-            last_refund_eligible_purchase_unix_seconds: game.last_refund_eligible_purchase_unix_seconds,
+            last_refund_eligible_purchase_unix_seconds: game
+                .last_refund_eligible_purchase_unix_seconds,
             achievements_unlocked: None,
             achievements_total: None,
         })

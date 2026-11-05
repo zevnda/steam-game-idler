@@ -254,7 +254,9 @@ pub async fn switch_steam_account() -> AppResult<()> {
     let result = spawn_detached(&steam_exe);
     match &result {
         Ok(()) => tracing::info!("switched local Steam account - client relaunched"),
-        Err(e) => tracing::warn!(error = %e, "failed to relaunch local Steam client after account switch"),
+        Err(e) => {
+            tracing::warn!(error = %e, "failed to relaunch local Steam client after account switch")
+        }
     }
     result
 }

@@ -51,7 +51,10 @@ pub struct OwnedGamesFetch {
     pub possibly_private: bool,
 }
 
-pub async fn fetch_owned_games(steam_id: &str, api_key: Option<String>) -> AppResult<OwnedGamesFetch> {
+pub async fn fetch_owned_games(
+    steam_id: &str,
+    api_key: Option<String>,
+) -> AppResult<OwnedGamesFetch> {
     let key = resolve_api_key(api_key)?;
     let url = format!(
         "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key={key}&steamid={steam_id}&include_appinfo=true&include_played_free_games=true&include_free_sub=true&skip_unvetted_apps=false&include_extended_appinfo=false"
@@ -206,9 +209,21 @@ mod tests {
         assert_eq!(
             progress_from_response(body),
             vec![
-                AchievementProgress { app_id: 513710, unlocked: 2, total: 69 },
-                AchievementProgress { app_id: 359550, unlocked: 0, total: 48 },
-                AchievementProgress { app_id: 1069690, unlocked: 0, total: 0 },
+                AchievementProgress {
+                    app_id: 513710,
+                    unlocked: 2,
+                    total: 69
+                },
+                AchievementProgress {
+                    app_id: 359550,
+                    unlocked: 0,
+                    total: 48
+                },
+                AchievementProgress {
+                    app_id: 1069690,
+                    unlocked: 0,
+                    total: 0
+                },
             ]
         );
     }

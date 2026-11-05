@@ -140,15 +140,24 @@ async fn fetch_page(
     let status = response.status();
     if !status.is_success() {
         tracing::warn!(steam_id, page, %status, "card farming: badge overview page returned an error status");
-        return Err(AppError::CardFarmingScrapeFailed(format!("page {page}: HTTP {status}")));
+        return Err(AppError::CardFarmingScrapeFailed(format!(
+            "page {page}: HTTP {status}"
+        )));
     }
     let html = response.text().await.map_err(|e| {
         tracing::warn!(steam_id, page, error = %e, "card farming: badge overview page response failed to read");
         AppError::CardFarmingScrapeFailed(e.to_string())
     })?;
     if !is_badge_page(&html) {
-        tracing::warn!(steam_id, page, html_len = html.len(), "card farming: badge overview page was not a badge page");
-        return Err(AppError::CardFarmingScrapeFailed(format!("page {page}: not a badge page")));
+        tracing::warn!(
+            steam_id,
+            page,
+            html_len = html.len(),
+            "card farming: badge overview page was not a badge page"
+        );
+        return Err(AppError::CardFarmingScrapeFailed(format!(
+            "page {page}: not a badge page"
+        )));
     }
     Ok(parse_games_with_drops(&html))
 }
@@ -200,12 +209,17 @@ pub async fn get_games_with_drops(
     // Before the generic status check - the Family View gate is itself a 403, and needs its own
     // error so the frontend can explain it.
     if is_family_view_blocked(status, &first_page_html) {
-        tracing::warn!(steam_id, "card farming: badge overview blocked by Family View");
+        tracing::warn!(
+            steam_id,
+            "card farming: badge overview blocked by Family View"
+        );
         return Err(AppError::FamilyViewRestricted(steam_id.to_string()));
     }
     if !status.is_success() {
         tracing::warn!(steam_id, %status, "card farming: badge overview page 1 returned an error status");
-        return Err(AppError::CardFarmingScrapeFailed(format!("page 1: HTTP {status}")));
+        return Err(AppError::CardFarmingScrapeFailed(format!(
+            "page 1: HTTP {status}"
+        )));
     }
     if !is_badge_page(&first_page_html) {
         tracing::warn!(
@@ -213,7 +227,9 @@ pub async fn get_games_with_drops(
             html_len = first_page_html.len(),
             "card farming: badge overview page 1 was not a badge page"
         );
-        return Err(AppError::CardFarmingScrapeFailed("page 1: not a badge page".to_string()));
+        return Err(AppError::CardFarmingScrapeFailed(
+            "page 1: not a badge page".to_string(),
+        ));
     }
 
     let max_page = detect_max_page(&first_page_html);
@@ -243,7 +259,9 @@ mod tests {
 
     #[test]
     fn is_badge_page_accepts_a_real_badge_sheet_even_with_no_rows() {
-        assert!(is_badge_page(r#"<html><body><div class="badges_sheet"></div></body></html>"#));
+        assert!(is_badge_page(
+            r#"<html><body><div class="badges_sheet"></div></body></html>"#
+        ));
     }
 
     #[test]

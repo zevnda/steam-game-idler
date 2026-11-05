@@ -73,7 +73,10 @@ pub async fn validate_steam_web_api_key(api_key: String) -> AppResult<bool> {
 /// `resolve_api_key`), matching this command's previous "blank explicit key falls through"
 /// behavior from when the override still lived in `settings.json`.
 #[tauri::command]
-pub fn set_steam_web_api_key(app_handle: AppHandle, key: Option<String>) -> AppResult<SettingsResponse> {
+pub fn set_steam_web_api_key(
+    app_handle: AppHandle,
+    key: Option<String>,
+) -> AppResult<SettingsResponse> {
     let key = key.map(|k| k.trim().to_string()).filter(|k| !k.is_empty());
     match key {
         Some(k) => credential_store::save_web_api_key(&k)?,

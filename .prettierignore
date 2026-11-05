@@ -9,3 +9,7 @@ pnpm-lock.yaml
 *.md
 *.mdx
 *.d.ts
+# fumadocs-mdx output, regenerated on every docs install (git-ignored in docs/.gitignore)
+docs/.source
+# rewritten by release.yml on every release, never hand-edited
+latest.json

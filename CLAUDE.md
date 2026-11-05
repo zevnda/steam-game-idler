@@ -97,6 +97,12 @@ the live user base, not just useful in local dev.
   args — the script is hardcoded to `prettier --write .` and pnpm/npm append extra args rather
   than replacing them, so scoping never actually happens. Use `pnpm exec prettier --write
   path/to/file.tsx` directly instead.
+- **CI (`.github/workflows/checks.yml`) gates every PR** on Prettier, ESLint, `tsc`, the i18n
+  check (app + docs), and for `src-tauri/`: `cargo fmt --check`, `cargo clippy --all-targets -- -D
+  warnings` and `cargo test --lib`. Run `cargo fmt` and that clippy command after Rust edits — a
+  warning fails CI. Crate-wide clippy exceptions live in `Cargo.toml`'s `[lints.clippy]`, each
+  with its reason. The pre-commit hook only formats/lints staged files (no cargo compile — it'd
+  fight `tauri dev`'s watcher over `target/`).
 - **Never move the physical OS cursor to test a feature** (`SetCursorPos`/`mouse_event`, or a
   separate launched Playwright/Selenium browser).
 - **No automated e2e testing.** There is no `e2e/` suite (a Playwright suite was tried and removed

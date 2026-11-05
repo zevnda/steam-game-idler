@@ -167,9 +167,9 @@ async fn run_once<T: DeserializeOwned>(args: &[&str]) -> AppResult<Result<T, Str
             .unwrap_or_else(|| "unknown_error".to_string())));
     }
 
-    Ok(Ok(envelope
-        .result
-        .ok_or_else(|| AppError::SteamUtility("empty result".to_string()))?))
+    Ok(Ok(envelope.result.ok_or_else(|| {
+        AppError::SteamUtility("empty result".to_string())
+    })?))
 }
 
 /// Forwards a long-lived SteamUtility child's stderr (its `Core/Logging/Log.cs` lines) into this

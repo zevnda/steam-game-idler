@@ -119,7 +119,8 @@ pub fn set_background(app_handle: &tauri::AppHandle, source_path: PathBuf) -> Ap
         ))
     })?;
 
-    let result = settings::set_custom_background(app_handle, Some(filename)).map_err(AppError::SettingsIo);
+    let result =
+        settings::set_custom_background(app_handle, Some(filename)).map_err(AppError::SettingsIo);
     if result.is_ok() {
         tracing::info!("customization: background image saved");
     }
