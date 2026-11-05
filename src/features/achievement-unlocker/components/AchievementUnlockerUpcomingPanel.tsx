@@ -41,7 +41,7 @@ export const AchievementUnlockerUpcomingPanel = ({
         {t('dashboard.achievementUnlocker.progress.upNext')}
       </Typography>
 
-      <div className='flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto'>
+      <div className='no-toolbar-scroll-inset flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto'>
         {achievements.map((achievement, index) => {
           const remainingMs = Math.max(0, achievement.unlockAtMs - now)
           const isNext = index === 0

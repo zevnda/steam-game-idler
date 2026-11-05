@@ -84,6 +84,12 @@ const FILTER_OPTIONS: FilterOption[] = [
   { key: 'locked', labelKey: 'dashboard.inventoryManager.filter.locked', icon: TbLock },
 ]
 
+// Shared with InventorySkeleton, so the loading state's rail has the same width and spacing.
+export const FILTER_PANEL_CLASSNAME =
+  'inventory-filter-panel flex h-full w-56 shrink-0 flex-col gap-4 overflow-y-auto overflow-x-hidden border-r border-border pb-4 pl-6 pr-4 pt-[calc(var(--page-toolbar-height)+0.75rem)]'
+
+export const FILTER_OPTION_COUNT = FILTER_OPTIONS.length
+
 // Left rail: sort (single-select, `GameSortSelect` - the same dropdown every other list page's
 // sort control uses) and type/attribute filters (multi-select, vertically-stacked toggle rows -
 // there's no single-select `Select` equivalent for a multi-select set, and unlike sort this is
@@ -113,7 +119,7 @@ export const InventoryFilterPanel = ({
   }
 
   return (
-    <div className='inventory-filter-panel flex h-full w-56 shrink-0 flex-col gap-4 overflow-y-auto overflow-x-hidden border-r border-border pb-4 pl-6 pr-4 pt-[calc(var(--page-toolbar-height)+0.75rem)]'>
+    <div className={FILTER_PANEL_CLASSNAME}>
       <InputGroup className='rounded-full' isDisabled={isDisabled}>
         <InputGroup.Prefix>
           <RiSearchLine className='text-muted' fontSize={16} />

@@ -974,8 +974,11 @@ body:has(.page-backdrop) .page-toolbar-solid {
    `main`, since which element scrolls varies by page (a tab panel, a virtualized grid, a filter
    panel), and overlays render outside `main`, so their scrollbars aren't affected. The Games list
    is the exception, since its bar starts further down the page: GamesList.tsx sets its inset as the
-   bar scrolls up to dock. */
-main:has(.page-toolbar) *:not(.games-list-scroller)::-webkit-scrollbar-track {
+   bar scrolls up to dock. `.no-toolbar-scroll-inset` opts out a small scroll box that sits further
+   down the page and never runs behind the bar (Achievement Unlocker's Up Next panel), whose track
+   would otherwise start part way down. */
+main:has(.page-toolbar)
+  *:not(.games-list-scroller):not(.no-toolbar-scroll-inset)::-webkit-scrollbar-track {
   margin-top: var(--page-toolbar-height);
 }
 

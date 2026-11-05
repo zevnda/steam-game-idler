@@ -11,12 +11,12 @@ import { InventoryEmptyBanner } from './InventoryEmptyBanner'
 import { InventoryFilterPanel } from './InventoryFilterPanel'
 import { InventoryItemGrid } from './InventoryItemGrid'
 import { InventoryPageHeader } from './InventoryPageHeader'
+import { InventorySkeleton } from './InventorySkeleton'
 import { PriceOrderModal } from './PriceOrderModal'
 import { Alert, toast } from '@heroui/react'
 import { useRouter } from 'next/router'
 import { PageBannerArea } from '@/shared/components/dashboard/PageBanner'
 import { PageBody } from '@/shared/components/dashboard/PageBody'
-import { GameGridSkeleton } from '@/shared/components/GameGridSkeleton'
 import { useAutoConnectSteamCookies } from '@/shared/hooks/useAutoConnectSteamCookies'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
@@ -495,10 +495,7 @@ export const InventoryManagerPage = () => {
           // connect above) replaces the grid with the skeleton again on an explicit refresh-button
           // click - real, visible feedback that the click did something, matching GamesPage's
           // identical `isManualRefreshing` pattern instead of refreshing silently in place.
-          <GameGridSkeleton
-            gridClassName='grid grid-cols-[repeat(auto-fill,minmax(190px,1fr))] gap-4 page-content'
-            tileClassName='h-64 rounded-xl'
-          />
+          <InventorySkeleton />
         ) : !canAccessInventory ? (
           <InventoryConnectPanel
             errorCode={errorCode}

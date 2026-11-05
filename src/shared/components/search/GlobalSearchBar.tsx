@@ -55,7 +55,7 @@ export const GlobalSearchBar = () => {
           </span>
           {/* Gives way to the clear button once there's a query */}
           {!query && (
-            <kbd className='-mr-1.5 flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full bg-foreground/10 px-2 font-sans text-xs font-semibold'>
+            <kbd className='-mr-1.5 flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-foreground/10 px-1.5 font-sans text-[10px] font-semibold'>
               {SEARCH_SHORTCUT}
             </kbd>
           )}

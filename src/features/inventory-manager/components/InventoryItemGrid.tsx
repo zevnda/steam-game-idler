@@ -13,15 +13,16 @@ import { useResponsiveColumnCount } from '@/shared/hooks/useGameGridColumns'
 // (see that file's doc comment for why padding is baked into the grid's coordinate system instead
 // of CSS padding) - not reused directly since that component is hard-typed to `OwnedGame[]` and
 // sizes rows from a thumbnail aspect ratio, neither of which fits a fixed-content item card.
-const GAP = 16
-const PADDING = 24
+// Exported for InventorySkeleton, which lays its placeholder cards out on the same grid.
+export const GAP = 16
+export const PADDING = 24
 // Widened from 190 (one fewer column per row at most container widths) to give the price
 // NumberField's now-always-visible spin buttons (see InputField.tsx) room without the
 // card feeling cramped.
-const CARD_TARGET_WIDTH = 230
+export const CARD_TARGET_WIDTH = 230
 // One frame's fallback before the hidden measurer below reports the card's real rendered height -
 // avoids a 0-height Grid flash on first paint. Not otherwise load-bearing.
-const ESTIMATED_CARD_HEIGHT = 260
+export const ESTIMATED_CARD_HEIGHT = 260
 
 interface CardCallbacks {
   currency: string
