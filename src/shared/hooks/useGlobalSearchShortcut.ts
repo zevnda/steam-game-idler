@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useActiveSearchScope } from '@/shared/search/scopes'
 import { useSearchStore } from '@/shared/stores/searchStore'
+import { isAnyModalOpen } from '@/shared/utils/openModals'
 
 // Single-purpose opens-search shortcut: Ctrl+K to match the app's other Ctrl shortcuts, with `/` kept
 // for anyone already used to it. Kept separate from `useDashboardShortcuts` (which now
@@ -24,6 +25,10 @@ export const useGlobalSearchShortcut = () => {
       const target = e.target as HTMLElement
       if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)
         return
+      // Not on top of an open modal (Settings, the Achievement Manager, a confirmation...): a
+      // result would navigate the page hidden underneath it. Search's own modal counts too, so
+      // pressing the shortcut again while search is open does nothing.
+      if (isAnyModalOpen()) return
 
       e.preventDefault()
       open(scope.id)

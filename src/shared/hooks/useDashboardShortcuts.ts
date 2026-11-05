@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
 import { useSidebarStore } from '@/shared/stores/sidebarStore'
+import { countOpenModals, isAnyModalOpen } from '@/shared/utils/openModals'
 
 // Same order as Sidebar.tsx's `sections` array flattened - kept as its own literal here rather
 // than derived from that array, matching `main`'s own `SIDEBAR_PAGES` const in
@@ -38,9 +39,9 @@ export const useDashboardShortcuts = () => {
       const isSettingsOpen = useSettingsModalStore.getState().isOpen
 
       if (e.key === ']' || e.key === '[') {
-        // Skip while Settings is open - cycling the page underneath a modal that's still open reads
-        // as broken rather than useful (see this hook's own doc comment).
-        if (isSettingsOpen) return
+        // Skip while any modal is open (Settings, the Achievement Manager, a confirmation...) -
+        // cycling the page underneath a modal that's still open reads as broken rather than useful.
+        if (isAnyModalOpen()) return
         e.preventDefault()
         const currentIndex = DASHBOARD_ROUTES.indexOf(router.pathname)
         const base = currentIndex === -1 ? 0 : currentIndex
@@ -53,8 +54,11 @@ export const useDashboardShortcuts = () => {
       if (e.key === ',') {
         e.preventDefault()
         if (isSettingsOpen) {
-          useSettingsModalStore.getState().close()
-        } else {
+          // Only while Settings is the sole modal - closing it from under a dialog it opened (the
+          // multi-game farming notice, for one) would yank that dialog away mid-question.
+          if (countOpenModals() === 1) useSettingsModalStore.getState().close()
+        } else if (!isAnyModalOpen()) {
+          // Not on top of another modal - the user is in the middle of something there.
           useSettingsModalStore.getState().open()
         }
         return
