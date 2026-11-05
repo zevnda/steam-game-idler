@@ -97,7 +97,9 @@
     },
     "tabs": {
       "allGames": "所有游戏",
-      "queue": "队列"
+      "queue": "队列",
+      "overview": "概览",
+      "details": "详情"
     },
     "connect": {
       "automaticTab": "自动",
@@ -612,6 +614,14 @@
         "title": "想要一次挂取多个游戏？",
         "description": "同时挂取多款游戏会降低单款游戏的卡牌掉落速度，若长时间没有卡牌掉落，可以尝试关闭此项功能。"
       },
+      "presenceNotice": {
+        "title": "开始之前",
+        "description": "您的状态已设为「在线」，因此每次卡牌挂机启动游戏时，好友可能会收到通知，建议您改为「离线」状态。",
+        "stayOnline": "保持在线并开始",
+        "appearOffline": "显示为离线并开始",
+        "dontShowAgain": "不再显示此提示",
+        "offlineFailed": "无法更改您的状态，挂机已按当前状态启动。"
+      },
       "confirmClearBlacklist": {
         "title": "清空挂卡黑名单？",
         "description": "这将从挂卡黑名单中移除 {{count}} 款游戏"
@@ -650,6 +660,10 @@
         "completedRefundWindow": "仍在退款期限内（{{date}}时可挂卡）",
         "completedSkippedUnplayed": "已从白名单移除：无游玩时长记录",
         "completedSkippedPlayed": "已从白名单移除：已有游玩时长",
+        "droppedThisSession": "本次会话已掉落",
+        "stillToDrop": "仍待掉落",
+        "cardsProgress": "{{done}} / {{total}} 张卡牌",
+        "nextDropCheck": "下次掉落检查",
         "dropsRemaining_other": "剩余 {{count}} 张卡牌"
       },
       "errors": {
@@ -780,6 +794,10 @@
         "completedMaxPlaytimeWithCount": "已解锁 {{unlocked}}/{{total}}（已达到最大游戏时长）",
         "completedMaxPlaytime": "已达到最大游戏时长",
         "completedNothingToUnlock": "无剩余成就可解锁",
+        "unlockedThisSession": "本次会话已解锁",
+        "stillToUnlock": "仍待解锁",
+        "achievementsProgress": "{{done}} / {{total}} 项成就",
+        "nextAchievement": "下一项成就",
         "remaining_other": "剩余 {{count}} 项成就"
       },
       "errors": {
