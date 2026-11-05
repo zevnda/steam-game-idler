@@ -12,7 +12,8 @@ use crate::steam_agent::AgentManager;
 
 use super::library_run::LibraryRunRegistry;
 use super::{
-    AchievementChangeInput, AchievementData, BulkAchievementResult, SetAchievementsResult, StatUpdate,
+    AchievementChangeInput, AchievementData, BulkAchievementResult, SetAchievementsResult,
+    StatUpdate,
 };
 
 /// Fetches achievement/stat data for `app_id`. One command for both sign-in modes, branching
@@ -41,7 +42,9 @@ pub async fn get_achievement_data(
             )
             .await?
         }
-        GamesAccount::Local { .. } => local_steam::achievements::get_achievement_data(app_id).await?,
+        GamesAccount::Local { .. } => {
+            local_steam::achievements::get_achievement_data(app_id).await?
+        }
     };
 
     backfill_global_percentages(&mut data, app_id).await;
@@ -143,7 +146,12 @@ pub async fn set_achievement(
     };
     match &result {
         Ok(()) => {
-            tracing::info!(app_id, achievement_id, unlock, "achievement manager: set achievement");
+            tracing::info!(
+                app_id,
+                achievement_id,
+                unlock,
+                "achievement manager: set achievement"
+            );
             achievement_progress::schedule_refresh(&app_handle, &account, [app_id]);
         }
         Err(e) => {
@@ -329,7 +337,9 @@ async fn lock_all_via_reset(
     // Only ids/achieved/protected flags matter, never display text - schema language irrelevant.
     let data = match account {
         GamesAccount::Agent { username } => {
-            agent_manager.achievements_get(username, app_id, "english").await
+            agent_manager
+                .achievements_get(username, app_id, "english")
+                .await
         }
         GamesAccount::Local { .. } => local_steam::achievements::get_achievement_data(app_id).await,
     };
@@ -458,7 +468,13 @@ pub async fn set_all_owned_games_achievements(
         return Err(AppError::AchievementUnlockerRunning);
     }
 
-    let app_ids = match crate::games::commands::all_owned_app_ids(&account, agent_manager.inner(), &steam_id).await {
+    let app_ids = match crate::games::commands::all_owned_app_ids(
+        &account,
+        agent_manager.inner(),
+        &steam_id,
+    )
+    .await
+    {
         Ok(app_ids) => app_ids,
         Err(e) => {
             tracing::warn!(steam_id, unlock, error = %e, "library achievement run: failed to fetch owned apps");
@@ -488,10 +504,7 @@ pub async fn set_all_owned_games_achievements(
     let account = &account;
     let mut outcomes = stream::iter(app_ids)
         .map(|app_id| async move {
-            if matches!(
-                super::web_api::confirm_empty_schema(app_id).await,
-                Ok(true)
-            ) {
+            if matches!(super::web_api::confirm_empty_schema(app_id).await, Ok(true)) {
                 return None;
             }
             Some(if unlock {

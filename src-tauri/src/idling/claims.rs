@@ -250,7 +250,10 @@ impl IdleClaimsRegistry {
     /// `resolve_steam_id` can no longer resolve the account - the kick path nulls the cached id.
     pub async fn clear_account(&self, steam_id: &str) {
         self.claims.lock().await.remove(steam_id);
-        tracing::info!(steam_id, "idling: cleared all claims (connection gone, nothing announced)");
+        tracing::info!(
+            steam_id,
+            "idling: cleared all claims (connection gone, nothing announced)"
+        );
     }
 
     /// Wipes every account's claims without announcing anything - used when the processes those

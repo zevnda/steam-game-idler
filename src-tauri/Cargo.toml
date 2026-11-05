@@ -64,6 +64,13 @@ tauri-plugin-clipboard-manager = "2.4.2"
 [target.'cfg(any(target_os = "linux", target_os = "dragonfly", target_os = "freebsd", target_os = "netbsd", target_os = "openbsd"))'.dependencies]
 webkit2gtk = "=2.0.2"
 
+# CI runs clippy with `-D warnings` (.github/workflows/checks.yml), so anything allowed here is a
+# deliberate, crate-wide exception.
+[lints.clippy]
+# Doc comments across the crate use " - " as a dash, which clippy reads as a list item whenever it
+# wraps to the start of a line. It's prose, not a list, so the warning is noise.
+doc_lazy_continuation = "allow"
+
 [profile.dev]
 opt-level = 1
 incremental = true

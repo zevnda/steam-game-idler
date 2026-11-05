@@ -12,7 +12,8 @@ use std::sync::LazyLock;
 use tokio::sync::Semaphore;
 
 use crate::achievements::{
-    AchievementChangeInput, AchievementData, BulkAchievementResult, SetAchievementsResult, StatUpdate,
+    AchievementChangeInput, AchievementData, BulkAchievementResult, SetAchievementsResult,
+    StatUpdate,
 };
 use crate::error::AppResult;
 use crate::steam_utility_exe;

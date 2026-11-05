@@ -301,7 +301,10 @@ fn setup_window(app_handle: &tauri::AppHandle) -> tauri::Result<()> {
                 tracing::warn!(?err, "setup_window: failed to show main window immediately");
             }
             if let Err(err) = window.set_focus() {
-                tracing::warn!(?err, "setup_window: failed to focus main window immediately");
+                tracing::warn!(
+                    ?err,
+                    "setup_window: failed to focus main window immediately"
+                );
             }
         }
         return Ok(());

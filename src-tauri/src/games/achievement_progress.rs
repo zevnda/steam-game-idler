@@ -258,8 +258,8 @@ async fn refresh_now(
         }
         GamesAccount::Local { .. } => {
             // See the module doc comment - no own key means no call at all, never the shared key.
-            let Some(own_api_key) = crate::credential_store::load_web_api_key()
-                .filter(|key| !key.trim().is_empty())
+            let Some(own_api_key) =
+                crate::credential_store::load_web_api_key().filter(|key| !key.trim().is_empty())
             else {
                 return Ok(());
             };

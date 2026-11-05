@@ -67,7 +67,9 @@ const INITIAL_DELAY: Duration = Duration::from_secs(10);
 const INTER_GAME_DELAY: Duration = Duration::from_secs(120);
 
 const MAX_UNLOCK_ATTEMPTS: usize = 3;
-const RETRY_BACKOFF: [Duration; 2] = [Duration::from_secs(2), Duration::from_secs(5)];
+/// The wait before each retry - one entry per gap between attempts, so none after the last one.
+const RETRY_BACKOFF: [Duration; MAX_UNLOCK_ATTEMPTS - 1] =
+    [Duration::from_secs(2), Duration::from_secs(5)];
 
 /// How many of the soonest-upcoming achievements to project in [`ActiveGameProgress::upcoming`] -
 /// matches `main`'s `buildUpcomingQueue` default `limit`.
@@ -277,7 +279,10 @@ impl AchievementUnlockerManager {
             let Some(session) = sessions.get(steam_id) else {
                 return false;
             };
-            (session.idling_apps.clone(), session.excluded_app_ids.clone())
+            (
+                session.idling_apps.clone(),
+                session.excluded_app_ids.clone(),
+            )
         };
         excluded_app_ids.lock().await.insert(app_id);
         let removed = idling_apps.lock().await.remove(&app_id).is_some();
@@ -758,7 +763,9 @@ async fn run_scan_phase(
             .collect(),
     );
 
-    let queue = Arc::new(Mutex::new(VecDeque::from_iter(backlog.into_iter().enumerate())));
+    let queue = Arc::new(Mutex::new(VecDeque::from_iter(
+        backlog.into_iter().enumerate(),
+    )));
     let checked = Arc::new(std::sync::atomic::AtomicU32::new(0));
     let mut handles = Vec::new();
 
@@ -932,7 +939,10 @@ async fn unlock_game(
     if unlocker_settings.idle
         && !excluded_app_ids.lock().await.contains(&app_id)
         && (!unlocker_settings.schedule
-            || is_within_schedule(unlocker_settings.schedule_from, unlocker_settings.schedule_to))
+            || is_within_schedule(
+                unlocker_settings.schedule_from,
+                unlocker_settings.schedule_to,
+            ))
     {
         set_game_idling(idling_apps, app_handle, account, app_id, &game.name, true).await;
         is_idling = true;
@@ -1097,10 +1107,11 @@ async fn unlock_game(
             if succeeded {
                 break;
             }
-            if attempt < MAX_UNLOCK_ATTEMPTS - 1
-                && wait_ticking(RETRY_BACKOFF[attempt], stopped).await
-            {
-                break;
+            // `None` after the final attempt (see RETRY_BACKOFF's length), so no pointless wait.
+            if let Some(&backoff) = RETRY_BACKOFF.get(attempt) {
+                if wait_ticking(backoff, stopped).await {
+                    break;
+                }
             }
         }
 

@@ -29,11 +29,11 @@ use crate::steam_community::credentials;
 use super::refund_window;
 use super::settings;
 use super::whitelist;
+use super::FARMING_STATE_EVENT;
 use super::{
     blacklist, scraper, CompletedFarm, CompletedFarmReason, FarmingProgress, FarmingState,
     GameWithDrops, Phase, SteamCookies,
 };
-use super::FARMING_STATE_EVENT;
 
 /// Mirrors `idling`'s own concurrent-games cap (a real Steam protocol limit - see that module's doc
 /// comment on `MAX_CONCURRENT_GAMES`), defined again here (rather than reaching into `idling`'s
@@ -193,7 +193,9 @@ async fn resolve_candidates(
 
     let mut ready = Vec::new();
     let mut accumulating = Vec::new();
-    let classify = |game: GameWithDrops, ready: &mut Vec<GameWithDrops>, accumulating: &mut Vec<GameWithDrops>| {
+    let classify = |game: GameWithDrops,
+                    ready: &mut Vec<GameWithDrops>,
+                    accumulating: &mut Vec<GameWithDrops>| {
         if game.playtime_hours >= farming_settings.hours_until_farmable as f32 {
             ready.push(game);
         } else {
@@ -335,7 +337,10 @@ async fn resolve_candidates(
         }
     }
 
-    Ok(ResolvedCandidates { ready, accumulating })
+    Ok(ResolvedCandidates {
+        ready,
+        accumulating,
+    })
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -382,11 +387,7 @@ fn select_phase(
             ready.truncate(MAX_CONCURRENT_FARMING);
             Some((Phase::ReadyFarm, ready))
         } else {
-            let target = candidates
-                .ready
-                .iter()
-                .min_by_key(|g| g.remaining)?
-                .clone();
+            let target = candidates.ready.iter().min_by_key(|g| g.remaining)?.clone();
             Some((Phase::ReadyFarm, vec![target]))
         }
     } else if !candidates.accumulating.is_empty() {
@@ -411,7 +412,11 @@ enum CycleOutcome {
     Woken,
 }
 
-async fn race_wait(duration: Duration, stopped: &AtomicBool, wake: &Notify) -> Option<CycleOutcome> {
+async fn race_wait(
+    duration: Duration,
+    stopped: &AtomicBool,
+    wake: &Notify,
+) -> Option<CycleOutcome> {
     tokio::select! {
         stop_requested = wait_ticking(duration, stopped) => {
             stop_requested.then_some(CycleOutcome::Stopped)
@@ -477,12 +482,8 @@ async fn run_restart_cycle(
     }
 
     for target in targets {
-        if let Err(e) = announce_idle_set(
-            app_handle,
-            account.clone(),
-            std::slice::from_ref(target),
-        )
-        .await
+        if let Err(e) =
+            announce_idle_set(app_handle, account.clone(), std::slice::from_ref(target)).await
         {
             tracing::warn!(app_id = target.app_id, error = %e.code(), "card farming: failed to start idling during the individual sweep");
         }
@@ -797,7 +798,9 @@ async fn run_cycle(
             tracing::info!(steam_id, "card farming: resumed");
         }
 
-        let farming_settings = settings::get(&app_handle, &steam_id).await.unwrap_or_default();
+        let farming_settings = settings::get(&app_handle, &steam_id)
+            .await
+            .unwrap_or_default();
         let excluded_snapshot = excluded_app_ids.lock().await.clone();
 
         let mut new_completed = Vec::new();
@@ -897,14 +900,16 @@ async fn run_cycle(
         let now_ms = chrono::Utc::now().timestamp_millis();
         let mut active_progress = Vec::with_capacity(targets.len());
         for game in &targets {
-            let entry = progress.entry(game.app_id).or_insert_with(|| FarmingProgress {
-                app_id: game.app_id,
-                name: game.name.clone(),
-                initial_remaining: game.remaining,
-                remaining: game.remaining,
-                playtime_hours: game.playtime_hours,
-                active_since: now_ms,
-            });
+            let entry = progress
+                .entry(game.app_id)
+                .or_insert_with(|| FarmingProgress {
+                    app_id: game.app_id,
+                    name: game.name.clone(),
+                    initial_remaining: game.remaining,
+                    remaining: game.remaining,
+                    playtime_hours: game.playtime_hours,
+                    active_since: now_ms,
+                });
             // Only a decrease is a drop - logged per drop (not per pass) so a user's log shows
             // whether cards are actually still dropping, e.g. for a "nothing's dropped in X hours"
             // report. A game's final drop shows up as "drops exhausted" in `resolve_candidates`
@@ -1001,7 +1006,10 @@ mod tests {
         };
         let (phase, targets) = select_phase(&candidates, false).unwrap();
         assert_eq!(phase, Phase::ReadyFarm);
-        assert_eq!(targets.iter().map(|g| g.app_id).collect::<Vec<_>>(), vec![1]);
+        assert_eq!(
+            targets.iter().map(|g| g.app_id).collect::<Vec<_>>(),
+            vec![1]
+        );
     }
 
     #[test]

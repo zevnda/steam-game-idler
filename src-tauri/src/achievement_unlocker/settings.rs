@@ -210,7 +210,10 @@ pub async fn customized_app_ids(app_handle: &AppHandle, steam_id: &str) -> AppRe
 /// Settings" action - unlike [`set`] (which deliberately only touches `.settings`, see its doc
 /// comment), a full reset needs to wipe the per-game map too or a game's override would silently
 /// survive the reset.
-pub async fn reset(app_handle: &AppHandle, steam_id: &str) -> AppResult<AchievementUnlockerSettings> {
+pub async fn reset(
+    app_handle: &AppHandle,
+    steam_id: &str,
+) -> AppResult<AchievementUnlockerSettings> {
     let _guard = WRITE_LOCK.lock().await;
     let cached = CachedSettings::default();
     write_unlocked(app_handle, steam_id, &cached)?;

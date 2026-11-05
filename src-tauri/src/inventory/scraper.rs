@@ -48,7 +48,10 @@ async fn fetch_badge_levels(
     api_key: Option<String>,
 ) -> HashMap<u32, u32> {
     let Ok(key) = resolve_api_key(api_key) else {
-        tracing::warn!(steam_id, "inventory: badge level lookup skipped - no API key available");
+        tracing::warn!(
+            steam_id,
+            "inventory: badge level lookup skipped - no API key available"
+        );
         return HashMap::new();
     };
     let url = format!(

@@ -259,6 +259,8 @@ mod tests {
         let data: AchievementData = serde_json::from_str(&wire).unwrap();
         assert_eq!(data.achievements[0].group_id, None);
         assert!(data.groups.is_empty());
-        assert!(serde_json::to_value(&data).unwrap()["achievements"][0].get("groupId").is_none());
+        assert!(serde_json::to_value(&data).unwrap()["achievements"][0]
+            .get("groupId")
+            .is_none());
     }
 }

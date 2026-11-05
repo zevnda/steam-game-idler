@@ -60,19 +60,11 @@ mod tests {
     fn over_playtime_ceiling_never_skips_even_if_purchased_today() {
         let now = 1_000_000;
         assert_eq!(
-            farmable_at_if_in_refund_window(
-                Some(now),
-                REFUND_WINDOW_MAX_PLAYTIME_MINUTES,
-                now
-            ),
+            farmable_at_if_in_refund_window(Some(now), REFUND_WINDOW_MAX_PLAYTIME_MINUTES, now),
             None
         );
         assert_eq!(
-            farmable_at_if_in_refund_window(
-                Some(now),
-                REFUND_WINDOW_MAX_PLAYTIME_MINUTES + 1,
-                now
-            ),
+            farmable_at_if_in_refund_window(Some(now), REFUND_WINDOW_MAX_PLAYTIME_MINUTES + 1, now),
             None
         );
     }
@@ -82,10 +74,7 @@ mod tests {
         let now = 1_000_000;
         let purchased_at = now - DAY; // bought yesterday
         let farmable_at = farmable_at_if_in_refund_window(Some(purchased_at), 0, now);
-        assert_eq!(
-            farmable_at,
-            Some(purchased_at + REFUND_WINDOW_DAYS * DAY)
-        );
+        assert_eq!(farmable_at, Some(purchased_at + REFUND_WINDOW_DAYS * DAY));
     }
 
     #[test]
@@ -105,21 +94,14 @@ mod tests {
     #[test]
     fn exactly_at_playtime_boundary_is_no_longer_skipped() {
         let now = 1_000_000;
+        assert!(farmable_at_if_in_refund_window(
+            Some(now),
+            REFUND_WINDOW_MAX_PLAYTIME_MINUTES - 1,
+            now
+        )
+        .is_some());
         assert_eq!(
-            farmable_at_if_in_refund_window(
-                Some(now),
-                REFUND_WINDOW_MAX_PLAYTIME_MINUTES - 1,
-                now
-            )
-            .is_some(),
-            true
-        );
-        assert_eq!(
-            farmable_at_if_in_refund_window(
-                Some(now),
-                REFUND_WINDOW_MAX_PLAYTIME_MINUTES,
-                now
-            ),
+            farmable_at_if_in_refund_window(Some(now), REFUND_WINDOW_MAX_PLAYTIME_MINUTES, now),
             None
         );
     }
