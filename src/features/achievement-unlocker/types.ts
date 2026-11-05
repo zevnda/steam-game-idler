@@ -60,6 +60,8 @@ export interface UpcomingAchievement {
   id: string
   name: string
   iconLocked: string
+  // The unlocked (colour) icon - see `UpcomingAchievement::icon`
+  icon: string
   percent?: number
   unlockAtMs: number
 }
@@ -73,6 +75,27 @@ export interface ActiveGameProgress {
   isWaitingForSchedule: boolean
   achievementCount: number
   upcoming: UpcomingAchievement[]
+  // The game's overall progress (already unlocked / every achievement), counted up as this session
+  // unlocks - see `ActiveGameProgress::unlocked` on the Rust side.
+  unlocked: number
+  total: number
+}
+
+// A game scanned this pass and waiting for a free worker - see `QueuedUnlock` on the Rust side.
+export interface QueuedUnlock {
+  appId: number
+  name: string
+  achievementCount: number
+}
+
+// One achievement this session unlocked, newest first - see `RecentUnlock` on the Rust side.
+export interface RecentUnlock {
+  appId: number
+  id: string
+  name: string
+  icon: string
+  percent?: number
+  unlockedAtMs: number
 }
 
 // Mirrors src-tauri/src/achievement_unlocker/mod.rs::ScanProgress.
@@ -100,6 +123,11 @@ export interface AchievementUnlockerState {
   scanProgress: AchievementUnlockerScanProgress | null
   active: ActiveGameProgress[]
   completed: CompletedUnlock[]
+  // Unix millis the session started (0 when not running)
+  startedAtMs: number
+  unlockedThisSession: number
+  recent: RecentUnlock[]
+  queued: QueuedUnlock[]
 }
 
 export const DEFAULT_ACHIEVEMENT_UNLOCKER_STATE: AchievementUnlockerState = {
@@ -107,4 +135,8 @@ export const DEFAULT_ACHIEVEMENT_UNLOCKER_STATE: AchievementUnlockerState = {
   scanProgress: null,
   active: [],
   completed: [],
+  startedAtMs: 0,
+  unlockedThisSession: 0,
+  recent: [],
+  queued: [],
 }

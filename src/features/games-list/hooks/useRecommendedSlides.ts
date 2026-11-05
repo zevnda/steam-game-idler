@@ -1,53 +1,14 @@
+import type { HeroArt } from '@/shared/utils/heroArt'
 import type { OwnedGame } from '../types'
 import { useEffect, useMemo, useState } from 'react'
 import { fetchGameArt } from '@/shared/stores/gameArtStore'
+import { checkedHeroArt as checkedArt, checkHeroArt } from '@/shared/utils/heroArt'
 
 const MAX_SLIDES = 6
 const LOOKUP_BATCH_SIZE = 8
-const CDN_BASE = 'https://cdn.cloudflare.steamstatic.com/steam/apps'
 
-interface SlideArt {
-  hero: string
-  // Steam's transparent title artwork. About 98% of games with hero art have one at this path, and
-  // the store API doesn't report it, so it can only be found by trying it. `null` shows the name
-  // as text instead.
-  logo: string | null
-}
-
-export interface RecommendedSlide extends SlideArt {
+export interface RecommendedSlide extends HeroArt {
   game: OwnedGame
-}
-
-// Survives the Games page unmounting, so coming back to it shows the banner straight away instead
-// of re-testing every image behind a skeleton. `null` means the game has no usable hero art.
-const checkedArt = new Map<number, SlideArt | null>()
-
-const imageLoads = (url: string) =>
-  new Promise<boolean>(resolve => {
-    const image = new window.Image()
-    image.onload = () => resolve(true)
-    image.onerror = () => resolve(false)
-    image.src = url
-  })
-
-// Actually loads the images rather than trusting that a URL exists, since a slide with broken art
-// must never reach the banner. This also means a slide's images are already in the browser's cache
-// by the time it's shown, so the crossfade never reveals a half-loaded image.
-const checkSlideArt = async (appId: number, resolvedHero: string | null) => {
-  // The plain path is still worth trying after the store's: it works for many games the store API
-  // has no data on, and in testing it found art for slightly more games overall.
-  const heroes = [resolvedHero, `${CDN_BASE}/${appId}/library_hero.jpg`]
-  let hero: string | null = null
-  for (const url of heroes) {
-    if (url && (await imageLoads(url))) {
-      hero = url
-      break
-    }
-  }
-  if (!hero) return null
-
-  const logo = `${CDN_BASE}/${appId}/logo.png`
-  return { hero, logo: (await imageLoads(logo)) ? logo : null }
 }
 
 // The games the Recommended banner can actually show: only those whose art has loaded successfully.
@@ -75,7 +36,7 @@ export const useRecommendedSlides = (games: OwnedGame[]) => {
         const art = await fetchGameArt(batch)
         await Promise.all(
           batch.map(async appId => {
-            checkedArt.set(appId, await checkSlideArt(appId, art[appId].hero))
+            checkedArt.set(appId, await checkHeroArt(appId, art[appId].hero))
             // One at a time, so the banner can appear as soon as its first slide is ready.
             if (!isCancelled) setCheckCount(count => count + 1)
           }),

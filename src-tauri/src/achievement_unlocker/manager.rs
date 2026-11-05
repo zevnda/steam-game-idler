@@ -47,8 +47,8 @@ use crate::steam_agent::{self, AgentManager};
 use super::settings::ScheduleTime;
 use super::{
     cache, order, settings, AchievementUnlockerEntry, AchievementUnlockerState, ActiveGameProgress,
-    CompletedUnlock, CompletedUnlockReason, ScanProgress, UpcomingAchievement,
-    ACHIEVEMENT_UNLOCKER_STATE_EVENT,
+    CompletedUnlock, CompletedUnlockReason, QueuedUnlock, RecentUnlock, ScanProgress,
+    UpcomingAchievement, ACHIEVEMENT_UNLOCKER_STATE_EVENT,
 };
 
 /// Mirrors `idling`'s own concurrent-games cap (see `card_farming::manager`'s identical constant
@@ -74,6 +74,9 @@ const RETRY_BACKOFF: [Duration; MAX_UNLOCK_ATTEMPTS - 1] =
 /// How many of the soonest-upcoming achievements to project in [`ActiveGameProgress::upcoming`] -
 /// matches `main`'s `buildUpcomingQueue` default `limit`.
 const UPCOMING_LIMIT: usize = 5;
+
+/// How many of this session's unlocks [`AchievementUnlockerState::recent`] keeps, newest first.
+pub const RECENT_LIMIT: usize = 10;
 
 /// Whether the max-playtime cap applies to `app_id` in this session. The cap only limits playtime,
 /// and unlocking on its own doesn't add any - only idling does - so a game this session will never
@@ -177,6 +180,7 @@ impl AchievementUnlockerManager {
         );
         let state = Arc::new(Mutex::new(AchievementUnlockerState {
             is_running: true,
+            started_at_ms: chrono::Utc::now().timestamp_millis(),
             ..Default::default()
         }));
         let stopped = Arc::new(AtomicBool::new(false));
@@ -311,6 +315,7 @@ struct ScannedAchievement {
     id: String,
     name: String,
     icon_locked: String,
+    icon: String,
     percent: Option<f32>,
     delay_next_unlock_ms: Option<u64>,
 }
@@ -325,6 +330,10 @@ struct ScannedGame {
     /// `main`'s `maxAchievementUnlocks || achievements.length` - a JS-falsy `0` override would
     /// silently fall back to "no override" there; `Option::unwrap_or` doesn't have that gotcha.
     achievement_count: u32,
+    /// Already unlocked / every achievement in the schema, at scan time - the starting point for
+    /// [`ActiveGameProgress::unlocked`]/[`ActiveGameProgress::total`].
+    already_unlocked: u32,
+    schema_total: u32,
 }
 
 /// Reason the outer loop in [`run_loop`] ended - only [`EndReason::QueueEmpty`] triggers next-task
@@ -350,21 +359,21 @@ async fn emit_state(
 
 async fn add_active(
     state: &Mutex<AchievementUnlockerState>,
-    app_id: u32,
-    name: &str,
+    game: &ScannedGame,
     is_initial_delay: bool,
-    achievement_count: u32,
 ) {
     let mut s = state.lock().await;
     s.active.push(ActiveGameProgress {
-        app_id,
-        name: name.to_string(),
+        app_id: game.app_id,
+        name: game.name.clone(),
         is_initial_delay,
         initial_delay_ends_at_ms: is_initial_delay
             .then(|| chrono::Utc::now().timestamp_millis() + INITIAL_DELAY.as_millis() as i64),
         is_waiting_for_schedule: false,
-        achievement_count,
+        achievement_count: game.achievement_count,
         upcoming: Vec::new(),
+        unlocked: game.already_unlocked,
+        total: game.schema_total,
     });
 }
 
@@ -432,6 +441,7 @@ async fn update_upcoming(
             id: achievement.id.clone(),
             name: achievement.name.clone(),
             icon_locked: achievement.icon_locked.clone(),
+            icon: achievement.icon.clone(),
             percent: achievement.percent,
             unlock_at_ms: now + cumulative,
         });
@@ -549,6 +559,8 @@ async fn scan_game(
         achievements: Vec::new(),
         delay_before_first_unlock_ms: 0,
         achievement_count,
+        already_unlocked: 0,
+        schema_total: 0,
     };
 
     let unlocker_settings = match settings::get(app_handle, steam_id).await {
@@ -673,6 +685,7 @@ async fn scan_game(
                 id: a.id.clone(),
                 name: a.name.clone(),
                 icon_locked: a.icon_locked.clone(),
+                icon: a.icon_normal.clone(),
                 percent: a.percent,
                 delay_next_unlock_ms: delay_by_id
                     .get(a.id.as_str())
@@ -698,6 +711,7 @@ async fn scan_game(
                 id: a.id.clone(),
                 name: a.name.clone(),
                 icon_locked: a.icon_locked.clone(),
+                icon: a.icon_normal.clone(),
                 percent: a.percent,
                 delay_next_unlock_ms: None,
             })
@@ -715,6 +729,8 @@ async fn scan_game(
         achievements,
         delay_before_first_unlock_ms,
         achievement_count,
+        already_unlocked: data.achievements.iter().filter(|a| a.achieved).count() as u32,
+        schema_total: data.achievements.len() as u32,
     }
 }
 
@@ -1122,9 +1138,28 @@ async fn unlock_game(
         if succeeded {
             remaining = remaining.saturating_sub(1);
             update_game(state, app_id, |g| {
-                g.achievement_count = g.achievement_count.saturating_sub(1)
+                g.achievement_count = g.achievement_count.saturating_sub(1);
+                if g.unlocked < g.total {
+                    g.unlocked += 1;
+                }
             })
             .await;
+            {
+                let mut s = state.lock().await;
+                s.unlocked_this_session += 1;
+                s.recent.insert(
+                    0,
+                    RecentUnlock {
+                        app_id,
+                        id: achievement.id.clone(),
+                        name: achievement.name.clone(),
+                        icon: achievement.icon.clone(),
+                        percent: achievement.percent,
+                        unlocked_at_ms: chrono::Utc::now().timestamp_millis(),
+                    },
+                );
+                s.recent.truncate(RECENT_LIMIT);
+            }
             tracing::info!(app_id, name = %achievement.name, "achievement unlocker: unlocked");
 
             let processed = total - remaining;
@@ -1202,6 +1237,14 @@ async fn run_unlock_phase(
     excluded_app_ids: &Arc<Mutex<HashSet<u32>>>,
     stopped: &Arc<AtomicBool>,
 ) {
+    state.lock().await.queued = ready
+        .iter()
+        .map(|g| QueuedUnlock {
+            app_id: g.app_id,
+            name: g.name.clone(),
+            achievement_count: g.achievement_count,
+        })
+        .collect();
     let queue = Arc::new(Mutex::new(VecDeque::from(ready)));
     let mut handles = Vec::new();
 
@@ -1223,16 +1266,14 @@ async fn run_unlock_phase(
                 }
                 let game = { queue.lock().await.pop_front() };
                 let Some(game) = game else { break };
+                state
+                    .lock()
+                    .await
+                    .queued
+                    .retain(|q| q.app_id != game.app_id);
 
                 if is_first {
-                    add_active(
-                        &state,
-                        game.app_id,
-                        &game.name,
-                        true,
-                        game.achievement_count,
-                    )
-                    .await;
+                    add_active(&state, &game, true).await;
                     emit_state(&app_handle, &steam_id, &state).await;
                     if wait_ticking(INITIAL_DELAY, &stopped).await {
                         remove_active(&state, game.app_id).await;
@@ -1259,14 +1300,7 @@ async fn run_unlock_phase(
                     if stopped.load(Ordering::SeqCst) {
                         break;
                     }
-                    add_active(
-                        &state,
-                        game.app_id,
-                        &game.name,
-                        false,
-                        game.achievement_count,
-                    )
-                    .await;
+                    add_active(&state, &game, false).await;
                 }
                 is_first = false;
                 emit_state(&app_handle, &steam_id, &state).await;
@@ -1491,6 +1525,7 @@ async fn run_loop(
         s.is_running = false;
         s.active.clear();
         s.scan_progress = None;
+        s.queued.clear();
     }
     emit_state(&app_handle, &steam_id, &state).await;
 

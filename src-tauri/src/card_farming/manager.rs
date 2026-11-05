@@ -457,6 +457,13 @@ async fn announce_idle_set(
 /// no Steam-side rate limit in this codebase) and for CLI mode (`IdlingManager::set_games` diffs
 /// kill/spawn per process, fast even for a full batch) alike; the real wall-clock cost of the
 /// individual sweep is the deliberate per-target dwell time itself, identical for both modes.
+/// How long one [`run_restart_cycle`] over `target_count` games takes when nothing interrupts it -
+/// the full idle, the pause, then a short individual sweep per target. Used only to stamp
+/// [`FarmingState::next_check_at_ms`]; keep it in step with `run_restart_cycle`'s own waits.
+fn restart_cycle_duration(target_count: usize) -> Duration {
+    FULL_IDLE_DURATION + MICRO_PAUSE + MICRO_IDLE_DURATION * target_count as u32
+}
+
 async fn run_restart_cycle(
     app_handle: &AppHandle,
     account: &GamesAccount,
@@ -642,6 +649,7 @@ impl CardFarmingManager {
 
         let state = Arc::new(Mutex::new(FarmingState {
             is_farming: true,
+            started_at_ms: chrono::Utc::now().timestamp_millis(),
             ..Default::default()
         }));
         let stopped = Arc::new(AtomicBool::new(false));
@@ -792,6 +800,8 @@ async fn run_cycle(
                 steam_id,
                 "card farming: paused while another session is playing a game"
             );
+            state.lock().await.next_check_at_ms = None;
+            emit_state(&app_handle, &steam_id, &state).await;
             if steam_agent::wait_while_playing_blocked(&app_handle, &account, &stopped).await {
                 break;
             }
@@ -834,6 +844,14 @@ async fn run_cycle(
                 // to `new_completed` before it failed - nothing to report here. A game manually
                 // stopped from the Idling page since the last good pass must stay stopped.
                 last_idle_targets.retain(|t| !excluded_snapshot.contains(&t.app_id));
+                let wait = if last_idle_targets.is_empty() {
+                    SCRAPE_RETRY_DELAY
+                } else {
+                    restart_cycle_duration(last_idle_targets.len())
+                };
+                state.lock().await.next_check_at_ms =
+                    Some(chrono::Utc::now().timestamp_millis() + wait.as_millis() as i64);
+                emit_state(&app_handle, &steam_id, &state).await;
                 let outcome = if last_idle_targets.is_empty() {
                     race_wait(SCRAPE_RETRY_DELAY, &stopped, &wake)
                         .await
@@ -871,7 +889,15 @@ async fn run_cycle(
         };
 
         if !new_completed.is_empty() {
+            // A targeted game that left the badge page dropped its last-known remaining cards -
+            // the per-pass counting below never sees that final decrease (see `cards_dropped`).
+            let final_drops: u32 = new_completed
+                .iter()
+                .filter(|c| matches!(c.reason, CompletedFarmReason::DropsExhausted))
+                .filter_map(|c| progress.get(&c.app_id).map(|p| p.remaining))
+                .sum();
             let mut s = state.lock().await;
+            s.cards_dropped += final_drops;
             s.completed.extend(new_completed);
             drop(s);
             emit_state(&app_handle, &steam_id, &state).await;
@@ -899,6 +925,7 @@ async fn run_cycle(
         progress.retain(|app_id, _| target_ids.contains(app_id));
         let now_ms = chrono::Utc::now().timestamp_millis();
         let mut active_progress = Vec::with_capacity(targets.len());
+        let mut dropped_this_pass: u32 = 0;
         for game in &targets {
             let entry = progress
                 .entry(game.app_id)
@@ -923,6 +950,7 @@ async fn run_cycle(
                     remaining = game.remaining,
                     "card farming: card dropped"
                 );
+                dropped_this_pass += entry.remaining - game.remaining;
             }
             entry.remaining = game.remaining;
             entry.playtime_hours = game.playtime_hours;
@@ -934,6 +962,9 @@ async fn run_cycle(
             s.phase = Some(phase);
             s.active = active_progress;
             s.queue = queue_list;
+            s.cards_dropped += dropped_this_pass;
+            s.next_check_at_ms =
+                Some(now_ms + restart_cycle_duration(targets.len()).as_millis() as i64);
         }
         emit_state(&app_handle, &steam_id, &state).await;
 
@@ -971,6 +1002,7 @@ async fn run_cycle(
         s.phase = None;
         s.active.clear();
         s.queue.clear();
+        s.next_check_at_ms = None;
     }
     emit_state(&app_handle, &steam_id, &state).await;
 
@@ -996,6 +1028,15 @@ mod tests {
             remaining,
             playtime_hours,
         }
+    }
+
+    #[test]
+    fn restart_cycle_duration_adds_one_short_sweep_per_target() {
+        assert_eq!(restart_cycle_duration(0), FULL_IDLE_DURATION + MICRO_PAUSE);
+        assert_eq!(
+            restart_cycle_duration(3),
+            FULL_IDLE_DURATION + MICRO_PAUSE + MICRO_IDLE_DURATION * 3
+        );
     }
 
     #[test]

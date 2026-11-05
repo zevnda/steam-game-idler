@@ -83,6 +83,13 @@ export interface FarmingState {
   // `FarmingState::session_expired`'s doc comment. A hard stop, distinct from the cycle just
   // finishing normally.
   sessionExpired: boolean
+  // Unix millis the session started (0 when not running) - see `FarmingState::started_at_ms`.
+  startedAtMs: number
+  // Cards dropped so far this session - see `FarmingState::cards_dropped`.
+  cardsDropped: number
+  // Unix millis of the next badge-page check, or null when none is scheduled - see
+  // `FarmingState::next_check_at_ms`.
+  nextCheckAtMs: number | null
 }
 
 export const DEFAULT_FARMING_STATE: FarmingState = {
@@ -92,6 +99,9 @@ export const DEFAULT_FARMING_STATE: FarmingState = {
   queue: [],
   completed: [],
   sessionExpired: false,
+  startedAtMs: 0,
+  cardsDropped: 0,
+  nextCheckAtMs: null,
 }
 
 // Mirrors src-tauri/src/card_farming/settings.rs::CardFarmingSettings. Blacklisting/whitelisting

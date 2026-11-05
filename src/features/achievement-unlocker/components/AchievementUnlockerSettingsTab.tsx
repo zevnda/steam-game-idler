@@ -1,6 +1,7 @@
 import type { AchievementUnlockerSettings } from '../types'
 import { Time } from '@internationalized/date'
 import { useEffect, useState } from 'react'
+import { I18nProvider } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
 import { CASUAL_MAX_CONCURRENT_GAMES, MAX_CONCURRENT_GAMES } from '../types'
 import { errorMessageKey } from '../utils/errorMessageKey'
@@ -27,8 +28,9 @@ interface AchievementUnlockerSettingsTabProps {
 // useAchievementUnlockerSettings.ts's doc comment for why a per-account category lives in an
 // otherwise app-wide modal. Deliberately simpler than `main`'s AchievementSettings.tsx: the
 // unlock-interval range is two plain number inputs (min/max minutes), not a dual-thumb range
-// Slider, and `scheduleFrom`/`scheduleTo` render via HeroUI's `TimeField` forced to
-// `hourCycle={24}`/`granularity='minute'` to match `ScheduleTime`'s `{hour, minute}` shape exactly.
+// Slider, and `scheduleFrom`/`scheduleTo` render via HeroUI's `TimeField` with
+// `granularity='minute'` to match `ScheduleTime`'s `{hour, minute}` shape exactly (see
+// ScheduleTimeInputs for its 12/24-hour display).
 // `nextTask` is a two-button toggle since only two real values exist (`cardFarming`/`autoIdle`).
 //
 // Every field auto-saves (toggles/buttons on change, number fields on blur via `InputField`)
@@ -263,20 +265,27 @@ const ScheduleTimeInputs = ({
   value: { hour: number; minute: number }
   onChange: (patch: { hour?: number; minute?: number }) => Promise<boolean>
 }) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   return (
-    <TimeField
-      aria-label={t('dashboard.achievementUnlocker.settings.schedule.title')}
-      granularity='minute'
-      value={new Time(value.hour, value.minute)}
-      onChange={time => time && onChange({ hour: time.hour, minute: time.minute })}
-    >
-      <TimeField.Group>
-        <TimeField.InputContainer>
-          <TimeField.Input>{segment => <TimeField.Segment segment={segment} />}</TimeField.Input>
-        </TimeField.InputContainer>
-      </TimeField.Group>
-    </TimeField>
+    // React Aria takes its 12/24-hour format from the OS language unless told otherwise, while the
+    // rest of the app (the running screen's clock times included) follows the app's language. So a
+    // 24-hour Windows with an English app showed "4:45" here with no AM/PM, against "4:45 PM"
+    // elsewhere. The provider lines it up with the app: 12-hour languages get an AM/PM segment,
+    // 24-hour ones a 24-hour clock. The stored value is 24-hour either way.
+    <I18nProvider locale={i18n.language}>
+      <TimeField
+        aria-label={t('dashboard.achievementUnlocker.settings.schedule.title')}
+        granularity='minute'
+        value={new Time(value.hour, value.minute)}
+        onChange={time => time && onChange({ hour: time.hour, minute: time.minute })}
+      >
+        <TimeField.Group>
+          <TimeField.InputContainer>
+            <TimeField.Input>{segment => <TimeField.Segment segment={segment} />}</TimeField.Input>
+          </TimeField.InputContainer>
+        </TimeField.Group>
+      </TimeField>
+    </I18nProvider>
   )
 }

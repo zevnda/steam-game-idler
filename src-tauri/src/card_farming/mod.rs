@@ -163,6 +163,20 @@ pub struct FarmingState {
     /// (see `AppError::SteamCommunitySessionExpired`) - a hard stop, since every active game shares
     /// the same cookies: one expiring means all of them are dead.
     pub session_expired: bool,
+    /// Unix millis the session started - the running screen's elapsed-time display. `0` only for
+    /// the default (not running) state.
+    pub started_at_ms: i64,
+    /// Cards dropped so far this session, across every game - counted from each observed decrease
+    /// in a targeted game's remaining drops, plus a finished game's last-known remaining when it
+    /// leaves the badge page entirely (its final drops). A display figure only, no cycle logic reads
+    /// it. Drops a game picks up while not targeted (queued, never idled by this session) aren't
+    /// counted, since this session didn't cause them.
+    pub cards_dropped: u32,
+    /// Unix millis of the next badge-page check, i.e. when `remaining` counts can next change -
+    /// stamped as each idle cycle starts. `None` while there's no scheduled check (paused while
+    /// another session is playing, or between passes). An estimate: a manual stop from the Idling
+    /// page wakes the cycle early.
+    pub next_check_at_ms: Option<i64>,
 }
 
 /// One game in [`FarmingState::active`], with a live `remaining` count updated as the cycle polls.

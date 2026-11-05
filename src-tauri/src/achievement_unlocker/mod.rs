@@ -52,6 +52,9 @@ pub struct UpcomingAchievement {
     pub id: String,
     pub name: String,
     pub icon_locked: String,
+    /// The unlocked (colour) icon - what the running screen shows for an achievement that's about
+    /// to unlock. `icon_locked` stays for anything that wants the greyed-out version.
+    pub icon: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub percent: Option<f32>,
     pub unlock_at_ms: i64,
@@ -75,6 +78,34 @@ pub struct ActiveGameProgress {
     /// mirrors `main`'s `achievementCount` display field.
     pub achievement_count: u32,
     pub upcoming: Vec<UpcomingAchievement>,
+    /// The game's overall achievement progress (already unlocked, out of every achievement in its
+    /// schema), read from the same data the scan fetched and counted up as this session unlocks -
+    /// fresher than the games list's cached counts, which only refresh in the background.
+    pub unlocked: u32,
+    pub total: u32,
+}
+
+/// A game the current pass has scanned and is waiting to start, with how many achievements it will
+/// unlock - the running screen's queue, in the order it will run.
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct QueuedUnlock {
+    pub app_id: u32,
+    pub name: String,
+    pub achievement_count: u32,
+}
+
+/// One achievement this session unlocked - kept for the running screen's recent list, newest first.
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RecentUnlock {
+    pub app_id: u32,
+    pub id: String,
+    pub name: String,
+    pub icon: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub percent: Option<f32>,
+    pub unlocked_at_ms: i64,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -140,4 +171,13 @@ pub struct AchievementUnlockerState {
     pub scan_progress: Option<ScanProgress>,
     pub active: Vec<ActiveGameProgress>,
     pub completed: Vec<CompletedUnlock>,
+    /// Unix millis the session started - the running screen's elapsed-time display. `0` only for
+    /// the default (not running) state.
+    pub started_at_ms: i64,
+    /// Achievements unlocked so far this session, across every game.
+    pub unlocked_this_session: u32,
+    /// The last [`manager::RECENT_LIMIT`] unlocks, newest first.
+    pub recent: Vec<RecentUnlock>,
+    /// Games scanned this pass and waiting for a free worker, in run order - see [`QueuedUnlock`].
+    pub queued: Vec<QueuedUnlock>,
 }

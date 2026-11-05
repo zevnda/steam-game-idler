@@ -97,7 +97,9 @@
     },
     "tabs": {
       "allGames": "All Games",
-      "queue": "Queue"
+      "queue": "Queue",
+      "overview": "Overview",
+      "details": "Details"
     },
     "connect": {
       "automaticTab": "Automatic",
@@ -665,7 +667,11 @@
         "completedNoDropsRemaining": "Nothing left to farm",
         "completedRefundWindow": "Still inside the refund window (farmable again {{date}})",
         "completedSkippedUnplayed": "Removed from whitelist: has no recorded playtime",
-        "completedSkippedPlayed": "Removed from whitelist: already has playtime"
+        "completedSkippedPlayed": "Removed from whitelist: already has playtime",
+        "droppedThisSession": "Dropped this session",
+        "stillToDrop": "Still to drop",
+        "cardsProgress": "{{done}} of {{total}} cards",
+        "nextDropCheck": "Next drop check"
       },
       "errors": {
         "title": "Couldn't update card farming",
@@ -797,7 +803,11 @@
         "completedMaxUnlocksReached": "{{unlocked}}/{{total}} unlocked (max unlocks reached)",
         "completedMaxPlaytimeWithCount": "{{unlocked}}/{{total}} unlocked (max playtime reached)",
         "completedMaxPlaytime": "Max playtime reached",
-        "completedNothingToUnlock": "Nothing left to unlock"
+        "completedNothingToUnlock": "Nothing left to unlock",
+        "unlockedThisSession": "Unlocked this session",
+        "stillToUnlock": "Still to unlock",
+        "achievementsProgress": "{{done}} of {{total}} achievements",
+        "nextAchievement": "Next achievement"
       },
       "errors": {
         "title": "Couldn't update the achievement unlocker",
