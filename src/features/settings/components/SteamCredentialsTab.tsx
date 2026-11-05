@@ -121,19 +121,22 @@ export const SteamCredentialsTab = ({
 
   return (
     <div className='flex flex-col gap-5'>
-      <Typography color='muted' type='body-sm'>
-        {t('dashboard.settings.steamCredentials.description')}
-      </Typography>
-
+      {/* The panel renders this description itself (with its manual-tab-only second paragraph),
+          so it's only rendered here for the note that replaces the panel. */}
       {account?.mode === 'agent' && canUseAutomatic ? (
-        <Alert status='default'>
-          <Alert.Indicator />
-          <Alert.Content>
-            <Alert.Description>
-              {t('dashboard.settings.steamCredentials.agentModeNote')}
-            </Alert.Description>
-          </Alert.Content>
-        </Alert>
+        <>
+          <Typography color='muted' type='body-sm'>
+            {t('dashboard.settings.steamCredentials.description')}
+          </Typography>
+          <Alert status='default'>
+            <Alert.Indicator />
+            <Alert.Content>
+              <Alert.Description>
+                {t('dashboard.settings.steamCredentials.agentModeNote')}
+              </Alert.Description>
+            </Alert.Content>
+          </Alert>
+        </>
       ) : (
         <SteamCookiesConnectPanel<SteamCookies>
           automaticDescription={t('dashboard.settings.steamCredentials.automaticDescription')}

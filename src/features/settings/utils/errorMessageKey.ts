@@ -45,6 +45,9 @@ const STEAM_CREDENTIALS_ERROR_KEYS: Record<string, TranslationKey> = {
   steam_credentials_store_io_failed: 'dashboard.settings.steamCredentials.errors.storeIoFailed',
   steam_community_session_failed: 'dashboard.cardFarming.errors.sessionFailed',
   steam_community_session_expired: 'dashboard.cardFarming.errors.sessionFailed',
+  // Both save paths refuse cookies Family View blocks (see
+  // `session::ensure_not_family_view_blocked`), same copy the two features' own panels show.
+  family_view_restricted: 'dashboard.cardFarming.errors.familyViewRestricted',
 }
 const STEAM_CREDENTIALS_GENERIC_KEY: TranslationKey =
   'dashboard.settings.steamCredentials.errors.generic'

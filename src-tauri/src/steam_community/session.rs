@@ -332,6 +332,53 @@ pub(crate) fn is_family_view_blocked(status: reqwest::StatusCode, body: &str) ->
     status == reqwest::StatusCode::FORBIDDEN && body.contains("parentalunlock")
 }
 
+/// Fails with `AppError::FamilyViewRestricted` if Family View's PIN gate blocks this account's
+/// Steam Community pages. Used by the Settings tab's save paths: [`validate`] only reads the
+/// Steam Community home page, which Family View doesn't gate, so without this a Family View
+/// account saved fine in Settings and only hit the gate later in Card Farming/Inventory Manager.
+/// Probes the badge overview, the first page Card Farming reads.
+///
+/// Only a confirmed gate fails the save. A probe that can't complete (network error, unreadable
+/// body) is logged and treated as not blocked - the session itself is already proven, and both
+/// features run the same check on every fetch, so a real gate is still caught on first use.
+pub async fn ensure_not_family_view_blocked(
+    steam_id: &str,
+    cookies: &SteamCookies,
+) -> AppResult<()> {
+    let client =
+        steam_client().map_err(|e| AppError::SteamCommunitySessionFailed(e.to_string()))?;
+    let response = match client
+        .get(format!(
+            "https://steamcommunity.com/profiles/{steam_id}/badges/?l=english"
+        ))
+        .header("Cookie", cookie_header(steam_id, cookies))
+        .send()
+        .await
+    {
+        Ok(response) => response,
+        Err(e) => {
+            tracing::warn!(steam_id, error = %e, "steam community: Family View probe failed, assuming not blocked");
+            return Ok(());
+        }
+    };
+    let status = response.status();
+    let body = match response.text().await {
+        Ok(body) => body,
+        Err(e) => {
+            tracing::warn!(steam_id, error = %e, "steam community: Family View probe body unreadable, assuming not blocked");
+            return Ok(());
+        }
+    };
+    if is_family_view_blocked(status, &body) {
+        tracing::warn!(
+            steam_id,
+            "steam community: credentials blocked by Family View"
+        );
+        return Err(AppError::FamilyViewRestricted(steam_id.to_string()));
+    }
+    Ok(())
+}
+
 pub async fn validate(steam_id: &str, cookies: &SteamCookies) -> AppResult<SessionStatus> {
     let client =
         steam_client().map_err(|e| AppError::SteamCommunitySessionFailed(e.to_string()))?;

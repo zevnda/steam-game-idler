@@ -294,7 +294,7 @@ export const HELP_SECTIONS: HelpSection[] = [
         id: 'sessionFailed',
         question: "Couldn't sign in to Steam Community. Check your cookies and try again.",
         answer:
-          "Your saved cookies are wrong or incomplete. Add them again in Settings → Steam Credentials. If Family View is enabled, you'll also need the steamParental cookie, and some accounts need steamMachineAuth.",
+          'Your saved cookies are wrong or incomplete. Add them again in Settings → Steam Credentials. Some accounts also need steamMachineAuth.',
         href: `${DOCS_URL}/steam-credentials`,
       },
       {
@@ -309,7 +309,7 @@ export const HELP_SECTIONS: HelpSection[] = [
         question:
           'Family View is enabled on your Steam account. Disable Family View and try again.',
         answer:
-          "Automatic cookie retrieval doesn't work with Family View enabled. Disable it, or add your cookies by hand in Settings → Steam Credentials, including steamParental.",
+          'Card Farming and Inventory Manager need Family View turned off, whichever way you sign in. Disable it on Steam (you need your Family View PIN), then try again.',
         href: `${DOCS_URL}/steam-credentials`,
       },
       {
