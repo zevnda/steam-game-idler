@@ -384,7 +384,14 @@
           "modalDescription": "{{account}} 已在其他设备登录，自动化任务已暂停，请重新登录以继续",
           "reconnect": "重新连接",
           "sessionReplacedExplainer": "出现这种情况，通常是因为另一个 Steam Game Idler 副本或类似工具登录了此帐户，在此处重新连接，即可使其下线。",
-          "useDifferentMethod": "使用其他登录方式"
+          "useDifferentMethod": "使用其他登录方式",
+          "sessionEnded": {
+            "badge": "需要登录",
+            "modalTitle": "Steam 已结束本次会话",
+            "modalDescription": "Steam 已将 {{account}} 登出，其上的所有任务均已停止，请重新登录以继续。",
+            "explainer": "在更改 Steam 密码或在所有设备上登出后，可能会出现此情况。",
+            "signInAgain": "重新登录"
+          }
         }
       }
     },
