@@ -1,5 +1,6 @@
 import type { CardFarmingBlacklistEntry } from '../types'
 import { useCallback, useEffect, useState } from 'react'
+import { readCachedList, useCachedListState } from '@/shared/hooks/useCachedListState'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 import { onGameListChange } from '@/shared/utils/gameListsBus'
 import { invoke } from '@/shared/utils/invoke'
@@ -11,8 +12,14 @@ import { invoke } from '@/shared/utils/invoke'
 // submenu can do either from any page; this hears about it through gameListsBus.ts.
 export const useCardFarmingBlacklist = () => {
   const account = useSessionStore(state => state.account)
-  const [blacklist, setBlacklist] = useState<CardFarmingBlacklistEntry[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [blacklist, setBlacklist] = useCachedListState<CardFarmingBlacklistEntry>(
+    'cardFarmingBlacklist',
+    account,
+  )
+  // Only "loading" when there's no earlier copy to show - see useCachedListState.ts
+  const [isLoading, setIsLoading] = useState(
+    () => readCachedList('cardFarmingBlacklist', account) === undefined,
+  )
   const [errorCode, setErrorCode] = useState<string | null>(null)
   const [pendingAppIds, setPendingAppIds] = useState<Set<number>>(new Set())
 
@@ -24,7 +31,10 @@ export const useCardFarmingBlacklist = () => {
     }
 
     let cancelled = false
-    setIsLoading(true)
+    // Show this account's last-known list straight away (if any) while the fetch refreshes it
+    const cached = readCachedList<CardFarmingBlacklistEntry>('cardFarmingBlacklist', account)
+    setBlacklist(cached ?? [])
+    setIsLoading(cached === undefined)
     setErrorCode(null)
 
     invoke<CardFarmingBlacklistEntry[]>('get_card_farming_blacklist', { account })
@@ -44,10 +54,10 @@ export const useCardFarmingBlacklist = () => {
     return () => {
       cancelled = true
     }
-  }, [account])
+  }, [account, setBlacklist])
 
   // The game card context menu can blacklist a game from any page (see gameListsBus.ts)
-  useEffect(() => onGameListChange('cardFarmingBlacklist', setBlacklist), [])
+  useEffect(() => onGameListChange('cardFarmingBlacklist', setBlacklist), [setBlacklist])
 
   const addToBlacklist = useCallback(
     async (game: CardFarmingBlacklistEntry) => {
@@ -71,7 +81,7 @@ export const useCardFarmingBlacklist = () => {
         })
       }
     },
-    [account],
+    [account, setBlacklist],
   )
 
   const removeFromBlacklist = useCallback(
@@ -96,7 +106,7 @@ export const useCardFarmingBlacklist = () => {
         })
       }
     },
-    [account],
+    [account, setBlacklist],
   )
 
   const clearBlacklist = useCallback(async () => {
@@ -109,7 +119,7 @@ export const useCardFarmingBlacklist = () => {
       console.error('Error in (clear_card_farming_blacklist):', error)
       setErrorCode(String(error))
     }
-  }, [account])
+  }, [account, setBlacklist])
 
   return {
     blacklist,

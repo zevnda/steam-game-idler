@@ -52,6 +52,7 @@ import { PageBody } from '@/shared/components/dashboard/PageBody'
 import { ModalDragRegion } from '@/shared/components/ModalDragRegion'
 import { SocialButtons } from '@/shared/components/SocialButtons'
 import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
+import { switchSettingsTab } from '@/shared/utils/pageTransition'
 import { revealTitleIfTruncated } from '@/shared/utils/revealTitleIfTruncated'
 
 // Data-driven tab list, in `main`'s category order - extending this array plus `SettingsTab`
@@ -105,8 +106,9 @@ const TABS: {
 
 // One `TabPanel` + a `main`-style "Settings >" breadcrumb and the category's title, shared by every
 // category below. Titles live here rather than in each tab, reusing the category's `TABS` label, so
-// they stay still in every loading/error state while `PageBody` animates the tab's content in. The
-// unselected panels are unmounted, so that plays each time a category is switched to.
+// they stay still in every loading/error state. Switching category crossfades the whole panel (see
+// pageTransition.ts's `switchSettingsTab`): only the selected panel is mounted, so the old and new
+// panels share the `settings-transition-area` name one at a time.
 //
 // `scrollbar-gutter` reserves the scrollbar's width whether or not a category overflows, so content
 // doesn't shift sideways between short and long categories, or as a category's content loads in.
@@ -132,7 +134,7 @@ const SettingsPanel = ({
   return (
     <TabPanel
       className={cn(
-        'min-h-0 flex-1 py-8 [scrollbar-gutter:stable]',
+        'settings-transition-area min-h-0 flex-1 py-8 [scrollbar-gutter:stable]',
         fill ? 'flex flex-col overflow-hidden' : 'overflow-y-auto',
       )}
       id={id}
@@ -175,7 +177,6 @@ export const SettingsModal = () => {
   const { t } = useTranslation()
   const isOpen = useSettingsModalStore(state => state.isOpen)
   const activeTab = useSettingsModalStore(state => state.activeTab)
-  const setActiveTab = useSettingsModalStore(state => state.setActiveTab)
   const close = useSettingsModalStore(state => state.close)
   const {
     settings,
@@ -231,7 +232,7 @@ export const SettingsModal = () => {
                 className='flex h-full min-h-0 w-full'
                 orientation='vertical'
                 selectedKey={activeTab}
-                onSelectionChange={key => setActiveTab(key as SettingsTab)}
+                onSelectionChange={key => switchSettingsTab(key as SettingsTab)}
               >
                 {/* Fixed-width, non-scrolling nav column - `pt-16` clears the floating close
                     button above it, `border-r`/`bg-background` match Sidebar.tsx's own dashboard

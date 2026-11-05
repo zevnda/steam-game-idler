@@ -1,5 +1,6 @@
 ﻿import type { FavoriteEntry } from '../types'
 import { useCallback, useEffect, useState } from 'react'
+import { readCachedList, useCachedListState } from '@/shared/hooks/useCachedListState'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 import { onGameListChange } from '@/shared/utils/gameListsBus'
 import { invoke } from '@/shared/utils/invoke'
@@ -13,8 +14,11 @@ import { invoke } from '@/shared/utils/invoke'
 // idling/games-list must.
 export const useFavorites = () => {
   const account = useSessionStore(state => state.account)
-  const [favorites, setFavorites] = useState<FavoriteEntry[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [favorites, setFavorites] = useCachedListState<FavoriteEntry>('favorites', account)
+  // Only "loading" when there's no earlier copy to show - see useCachedListState.ts
+  const [isLoading, setIsLoading] = useState(
+    () => readCachedList('favorites', account) === undefined,
+  )
   const [errorCode, setErrorCode] = useState<string | null>(null)
   const [pendingAppIds, setPendingAppIds] = useState<Set<number>>(new Set())
 
@@ -26,7 +30,10 @@ export const useFavorites = () => {
     }
 
     let cancelled = false
-    setIsLoading(true)
+    // Show this account's last-known list straight away (if any) while the fetch refreshes it
+    const cached = readCachedList<FavoriteEntry>('favorites', account)
+    setFavorites(cached ?? [])
+    setIsLoading(cached === undefined)
     setErrorCode(null)
 
     invoke<FavoriteEntry[]>('get_favorites', { account })
@@ -46,12 +53,12 @@ export const useFavorites = () => {
     return () => {
       cancelled = true
     }
-  }, [account])
+  }, [account, setFavorites])
 
   // The game-card context menu (useContextMenu.ts) can add a favorite from outside this page's own
   // UI, bypassing addFavorite below - subscribe so this instance's list stays correct without
   // needing a remount. See gameListsBus.ts's own doc comment.
-  useEffect(() => onGameListChange('favorites', setFavorites), [])
+  useEffect(() => onGameListChange('favorites', setFavorites), [setFavorites])
 
   const addFavorite = useCallback(
     async (game: FavoriteEntry) => {
@@ -63,7 +70,7 @@ export const useFavorites = () => {
         setErrorCode(String(error))
       }
     },
-    [account],
+    [account, setFavorites],
   )
 
   const removeFavorite = useCallback(
@@ -83,7 +90,7 @@ export const useFavorites = () => {
         })
       }
     },
-    [account],
+    [account, setFavorites],
   )
 
   const reorder = useCallback(
@@ -100,7 +107,7 @@ export const useFavorites = () => {
         setErrorCode(String(error))
       }
     },
-    [account],
+    [account, setFavorites],
   )
 
   // Convenience wrapper for the "All Games" tab's single heart button - tracks its own per-game

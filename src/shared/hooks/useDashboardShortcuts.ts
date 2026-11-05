@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
 import { useSidebarStore } from '@/shared/stores/sidebarStore'
 import { countOpenModals, isAnyModalOpen } from '@/shared/utils/openModals'
+import { navigateWithPageTransition } from '@/shared/utils/pageTransition'
 
 // Same order as Sidebar.tsx's `sections` array flattened - kept as its own literal here rather
 // than derived from that array, matching `main`'s own `SIDEBAR_PAGES` const in
@@ -47,7 +48,7 @@ export const useDashboardShortcuts = () => {
         const base = currentIndex === -1 ? 0 : currentIndex
         const delta = e.key === ']' ? 1 : -1
         const nextIndex = (base + delta + DASHBOARD_ROUTES.length) % DASHBOARD_ROUTES.length
-        router.push(DASHBOARD_ROUTES[nextIndex])
+        void navigateWithPageTransition(router, DASHBOARD_ROUTES[nextIndex])
         return
       }
 

@@ -37,6 +37,7 @@ import { searchGames } from '@/shared/search/fuzzySearch'
 import { useSearchStore } from '@/shared/stores/searchStore'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 import { useSortPreferencesStore } from '@/shared/stores/sortPreferencesStore'
+import { switchViewWithTransition } from '@/shared/utils/pageTransition'
 import { OWNED_GAME_SORT_LABEL_KEYS, sortOwnedGames } from '@/shared/utils/sortOwnedGames'
 
 type FavoritesTab = 'browse' | 'list'
@@ -132,9 +133,11 @@ export const FavoritesPage = () => {
         )}
 
         <TabsRoot
-          className='flex min-h-0 flex-1 flex-col'
+          className='tabs-transition-area flex min-h-0 flex-1 flex-col'
           selectedKey={activeTab}
-          onSelectionChange={key => setActiveTab(key as FavoritesTab)}
+          onSelectionChange={key =>
+            switchViewWithTransition('tabs', () => setActiveTab(key as FavoritesTab))
+          }
         >
           <PageToolbar
             start={
@@ -235,7 +238,9 @@ export const FavoritesPage = () => {
                   art={<FavoritesPreview />}
                   description={t('dashboard.favorites.empty.description')}
                   title={t('dashboard.favorites.empty.title')}
-                  onBrowseGames={() => setActiveTab('browse')}
+                  onBrowseGames={() =>
+                    switchViewWithTransition('tabs', () => setActiveTab('browse'))
+                  }
                   onManualAdd={() => setIsManualAddOpen(true)}
                 />
               </PageBannerArea>

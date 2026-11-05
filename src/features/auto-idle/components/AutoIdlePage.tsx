@@ -37,6 +37,7 @@ import { searchGames } from '@/shared/search/fuzzySearch'
 import { useSearchStore } from '@/shared/stores/searchStore'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 import { useSortPreferencesStore } from '@/shared/stores/sortPreferencesStore'
+import { switchViewWithTransition } from '@/shared/utils/pageTransition'
 import { OWNED_GAME_SORT_LABEL_KEYS, sortOwnedGames } from '@/shared/utils/sortOwnedGames'
 
 type AutoIdleTab = 'browse' | 'queue'
@@ -136,9 +137,11 @@ export const AutoIdlePage = () => {
         )}
 
         <TabsRoot
-          className='flex min-h-0 flex-1 flex-col'
+          className='tabs-transition-area flex min-h-0 flex-1 flex-col'
           selectedKey={activeTab}
-          onSelectionChange={key => setActiveTab(key as AutoIdleTab)}
+          onSelectionChange={key =>
+            switchViewWithTransition('tabs', () => setActiveTab(key as AutoIdleTab))
+          }
         >
           <PageToolbar
             start={
@@ -239,7 +242,9 @@ export const AutoIdlePage = () => {
                   art={<AutoIdleQueuePreview />}
                   description={t('dashboard.autoIdle.empty.description')}
                   title={t('common.noGamesQueued')}
-                  onBrowseGames={() => setActiveTab('browse')}
+                  onBrowseGames={() =>
+                    switchViewWithTransition('tabs', () => setActiveTab('browse'))
+                  }
                   onManualAdd={() => setIsManualAddOpen(true)}
                 />
               </PageBannerArea>

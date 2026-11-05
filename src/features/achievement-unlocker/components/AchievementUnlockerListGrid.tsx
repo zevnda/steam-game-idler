@@ -109,6 +109,7 @@ export const AchievementUnlockerListGrid = ({
   useEffect(() => setScrollElement(gridApi?.element ?? null), [gridApi, setScrollElement])
   const {
     width,
+    height,
     usableWidth,
     columnCount: realColumnCount,
   } = useResponsiveColumnCount(containerRef)
@@ -145,6 +146,9 @@ export const AchievementUnlockerListGrid = ({
             {width > 0 && (
               <Grid
                 cellComponent={Cell}
+                // Its first frame's size - see useResponsiveColumnCount
+                defaultHeight={height}
+                defaultWidth={width}
                 cellProps={{
                   queue,
                   realColumnCount,

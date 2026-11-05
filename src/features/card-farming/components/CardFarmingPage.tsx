@@ -50,6 +50,7 @@ import { getAccountKey, useSessionStore } from '@/shared/stores/sessionStore'
 import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
 import { useSortPreferencesStore } from '@/shared/stores/sortPreferencesStore'
 import { invoke } from '@/shared/utils/invoke'
+import { switchViewWithTransition } from '@/shared/utils/pageTransition'
 
 type CardFarmingTab = 'browse' | 'whitelist' | 'blacklist'
 
@@ -324,9 +325,15 @@ export const CardFarmingPage = () => {
             tabs, nested in here, were picked up as this page's tabs and drawn in the toolbar. */}
         <TabsRoot
           isDisabled={!isShowingTabs}
-          className={cn('flex flex-col', !isShowingConnectPanel && 'min-h-0 flex-1')}
+          className={cn(
+            'tabs-transition-area',
+            'flex flex-col',
+            !isShowingConnectPanel && 'min-h-0 flex-1',
+          )}
           selectedKey={activeTab}
-          onSelectionChange={key => setActiveTab(key as CardFarmingTab)}
+          onSelectionChange={key =>
+            switchViewWithTransition('tabs', () => setActiveTab(key as CardFarmingTab))
+          }
         >
           {/* Hidden, not unmounted, while the credentials prompt shows: nothing in it can be used
               yet (the prompt has its own settings button), and the page's tab state needs its tab
@@ -418,7 +425,9 @@ export const CardFarmingPage = () => {
                   <PageBannerArea hasToolbar>
                     <CardFarmingEmptyBanner
                       variant='browse'
-                      onBrowseGames={() => setActiveTab('browse')}
+                      onBrowseGames={() =>
+                        switchViewWithTransition('tabs', () => setActiveTab('browse'))
+                      }
                     />
                   </PageBannerArea>
                 ) : filteredBrowseGames.length === 0 ? (
@@ -448,7 +457,9 @@ export const CardFarmingPage = () => {
                   <PageBannerArea hasToolbar>
                     <CardFarmingEmptyBanner
                       variant='whitelist'
-                      onBrowseGames={() => setActiveTab('browse')}
+                      onBrowseGames={() =>
+                        switchViewWithTransition('tabs', () => setActiveTab('browse'))
+                      }
                     />
                   </PageBannerArea>
                 ) : (
@@ -468,7 +479,9 @@ export const CardFarmingPage = () => {
                   <PageBannerArea hasToolbar>
                     <CardFarmingEmptyBanner
                       variant='blacklist'
-                      onBrowseGames={() => setActiveTab('browse')}
+                      onBrowseGames={() =>
+                        switchViewWithTransition('tabs', () => setActiveTab('browse'))
+                      }
                     />
                   </PageBannerArea>
                 ) : (

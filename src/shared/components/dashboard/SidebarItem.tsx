@@ -2,8 +2,10 @@ import type { ComponentType } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@heroui/react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { AppTooltip } from '@/shared/components/AppTooltip'
 import { useIsActiveRoute } from '@/shared/hooks/useIsActiveRoute'
+import { navigateWithPageTransition } from '@/shared/utils/pageTransition'
 import { revealTitleIfTruncated } from '@/shared/utils/revealTitleIfTruncated'
 
 interface SidebarItemProps {
@@ -60,6 +62,7 @@ export const SidebarItem = ({
   iconHighlighted = false,
 }: SidebarItemProps) => {
   const { t } = useTranslation()
+  const router = useRouter()
   const isActive = useIsActiveRoute(href)
   const runningLabel = t('common.status.running')
 
@@ -80,6 +83,12 @@ export const SidebarItem = ({
           : 'text-muted hover:bg-surface-hover hover:text-foreground',
       )}
       href={href}
+      // Still a real link (focus, Enter, accessible role), but the navigation itself goes through
+      // the crossfade - see pageTransition.ts.
+      onClick={event => {
+        event.preventDefault()
+        void navigateWithPageTransition(router, href)
+      }}
     >
       {/* Sits in the sidebar's 8px side padding, against the edge of the window. Always mounted so
           it can grow in and shrink out. */}

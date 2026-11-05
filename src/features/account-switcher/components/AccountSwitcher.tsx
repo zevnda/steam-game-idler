@@ -28,6 +28,7 @@ import { useSteamWarningStore } from '@/shared/stores/steamWarningStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { logFrontendInfo } from '@/shared/utils/frontendLogging'
 import { invoke } from '@/shared/utils/invoke'
+import { navigateWithPageTransition } from '@/shared/utils/pageTransition'
 import { revealTitleIfTruncated } from '@/shared/utils/revealTitleIfTruncated'
 import { computeAllowedAccountKeys } from '@/shared/utils/subscriptionAccess'
 
@@ -257,14 +258,17 @@ export const AccountSwitcher = ({ compact = false }: AccountSwitcherProps) => {
         return
       }
     }
-    switchAccount(key)
-    // A query is scoped to the previous account's data (owned games, achievements, cards) - stale
-    // once the active account changes, same reasoning as the page redirect above.
-    useSearchStore.getState().clearAllQueries()
+    // The switch and the redirect share one crossfade, so the old account's page fades into the new
+    // account's Games page instead of jumping (see pageTransition.ts).
+    void navigateWithPageTransition(router, '/dashboard', () => {
+      switchAccount(key)
+      // A query is scoped to the previous account's data (owned games, achievements, cards) -
+      // stale once the active account changes, same reasoning as the page redirect above.
+      useSearchStore.getState().clearAllQueries()
+    })
     const displayName = summaries[key]?.personaName || identifierFor(target)
     logFrontendInfo('accountSwitcher', 'switched active account', { mode: target.mode })
     toast.info(t('dashboard.sidebar.accountSwitcher.switched', { name: displayName }))
-    void router.push('/dashboard')
   }
 
   const performSignOut = async (key: AccountKey) => {

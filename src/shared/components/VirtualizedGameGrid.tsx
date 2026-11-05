@@ -92,6 +92,7 @@ export const VirtualizedGameGrid = ({ games, renderCard }: VirtualizedGameGridPr
   // horizontal scrollbar on top of the vertical one).
   const {
     width,
+    height,
     usableWidth,
     columnCount: realColumnCount,
   } = useResponsiveColumnCount(containerRef)
@@ -116,6 +117,9 @@ export const VirtualizedGameGrid = ({ games, renderCard }: VirtualizedGameGridPr
       {width > 0 && (
         <Grid
           cellComponent={Cell}
+          // Its first frame's size - see useResponsiveColumnCount
+          defaultHeight={height}
+          defaultWidth={width}
           cellProps={{ games, realColumnCount, cardWidth, cardHeight, renderCard }}
           className='page-toolbar-offset pb-6'
           columnCount={realColumnCount + 2}

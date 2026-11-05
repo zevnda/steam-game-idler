@@ -847,28 +847,33 @@ body {
   }
 }
 
-/* PageBody.tsx - the short fade-and-rise a routed dashboard page's content plays on navigation.
-   Skipped for reduced motion here, and for forceReducedMotion in the component itself, since
-   moving a whole page's layer is exactly the kind of work the older WebKitGTK builds lag on. */
-@keyframes page-enter {
-  from {
-    translate: 0 8px;
-    opacity: 0;
-  }
-  to {
-    translate: 0 0;
-    opacity: 1;
-  }
+/* pageTransition.ts - the crossfade between views, via the View Transitions API (see its
+   `TransitionScope` for which element each area is). Each area is only named while its own
+   transition runs (the `data-view-transition` attribute on <html>): the browser draws named areas
+   above everything else, so the dashboard's area staying named during a Settings switch would paint
+   the page over the Settings modal. See pageTransition.ts for why nothing else (including :root) is
+   named. */
+html[data-view-transition='page'] .page-transition-area {
+  view-transition-name: page;
 }
 
-.page-enter {
-  animation: page-enter 0.28s ease backwards;
+html[data-view-transition='settings'] .settings-transition-area {
+  view-transition-name: settings;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .page-enter {
-    animation: none;
-  }
+html[data-view-transition='tabs'] .tabs-transition-area {
+  view-transition-name: tabs;
+}
+
+html[data-view-transition='achievement-manager'] .achievement-manager-transition-area {
+  view-transition-name: achievement-manager;
+}
+
+/* Every crossfade above shares one timing */
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: 0.13s;
+  animation-timing-function: ease;
 }
 
 /* Column layout for every non-virtualized game grid and loading skeleton. The minimum width must

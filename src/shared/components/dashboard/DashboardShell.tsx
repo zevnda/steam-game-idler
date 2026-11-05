@@ -83,7 +83,8 @@ export const DashboardShell = ({ children }: DashboardShellProps) => {
           solid regardless of a custom background) - `CustomBackground` is the sole owner of this
           area's canvas, whether that's a plain solid layer or a Casual-tier image, see its own
           doc comment. */}
-      <main className='min-w-0 flex-1 overflow-y-auto pt-14'>{children}</main>
+      {/* `page-transition-area`: what pageTransition.ts crossfades between pages */}
+      <main className='page-transition-area min-w-0 flex-1 overflow-y-auto pt-14'>{children}</main>
 
       <SettingsModal />
       <AddAccountModal />

@@ -4,6 +4,7 @@ import { Button, cn } from '@heroui/react'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { PageBanner, PageBannerPreview } from '@/shared/components/dashboard/PageBanner'
+import { navigateWithPageTransition } from '@/shared/utils/pageTransition'
 
 // Colourful trading cards for the preview, the same for everyone. The foil shows off the holo card
 // style. Game and card names are brand names, so aren't translated, and the prices are made up.
@@ -86,7 +87,7 @@ export const InventoryEmptyBanner = () => {
       actions={
         <Button
           className='bg-white text-black hover:bg-white/85'
-          onPress={() => router.push('/dashboard/card-farming')}
+          onPress={() => navigateWithPageTransition(router, '/dashboard/card-farming')}
         >
           <TbCards fontSize={18} />
           {t('dashboard.sidebar.nav.cardFarming')}
