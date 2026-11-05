@@ -1,4 +1,7 @@
+import type { BootstrapPhase } from '@/shared/hooks/useSessionBootstrap'
 import type { AppProps } from 'next/app'
+import type { ReactNode } from 'react'
+import { useEffect, useState } from 'react'
 import { Toast } from '@heroui/react'
 import { useRouter } from 'next/router'
 import Script from 'next/script'
@@ -39,19 +42,19 @@ const App = (props: AppProps) => {
   useGlobalErrorLogging()
   const versionStatus = useVersionPolicy()
   const isUpdating = useUpdateStore(state => state.isUpdating)
+  // AppContent's session check, reported up so the one launch loader below can cover it too.
+  const [bootstrapPhase, setBootstrapPhase] = useState<BootstrapPhase>('checking')
 
+  let content: ReactNode
   if (versionStatus === 'checking') {
-    return (
+    content = (
       <>
         <LinuxResizeHandles />
         <Titlebar minimal />
-        <FullscreenLoader visible />
       </>
     )
-  }
-
-  if (versionStatus === 'unsupported') {
-    return (
+  } else if (versionStatus === 'unsupported') {
+    content = (
       <>
         <LinuxResizeHandles />
         <Titlebar minimal />
@@ -71,12 +74,33 @@ const App = (props: AppProps) => {
         )}
       </>
     )
+  } else {
+    content = <AppContent {...props} onBootstrapPhaseChange={setBootstrapPhase} />
   }
 
-  return <AppContent {...props} />
+  return (
+    <>
+      {content}
+      {/* One launch loader for both startup checks (version policy, then session restore), kept
+          at this fixed position so it stays mounted across the handoff between them. Each branch
+          used to render its own, so the switch to AppContent remounted it and restarted the
+          splash animation (the logo's stroke draw replayed) about a second into every launch.
+          Hidden while updating, where UpdateLoader (same z-index) is the splash instead. */}
+      <FullscreenLoader
+        visible={
+          versionStatus === 'checking' ||
+          (versionStatus !== 'unsupported' && bootstrapPhase === 'checking' && !isUpdating)
+        }
+      />
+    </>
+  )
 }
 
-const AppContent = ({ Component, pageProps }: AppProps) => {
+interface AppContentProps extends AppProps {
+  onBootstrapPhaseChange: (phase: BootstrapPhase) => void
+}
+
+const AppContent = ({ Component, pageProps, onBootstrapPhaseChange }: AppContentProps) => {
   const router = useRouter()
   const isDashboard = router.pathname.startsWith('/dashboard')
   // Runs before everything else that might read/hydrate from localStorage - see its own doc
@@ -92,6 +116,10 @@ const AppContent = ({ Component, pageProps }: AppProps) => {
   // fixes. `bootstrapPhase` gates the routed content below the same way pages/index.tsx used to
   // gate itself alone.
   const bootstrapPhase = useSessionBootstrap()
+  useEffect(() => onBootstrapPhaseChange(bootstrapPhase), [bootstrapPhase, onBootstrapPhaseChange])
+  // A later remount (the policy re-check flipping unsupported -> supported) restarts the session
+  // check, so the parent's copy resets with it rather than keeping a stale 'idle'.
+  useEffect(() => () => onBootstrapPhaseChange('checking'), [onBootstrapPhaseChange])
   // Mounted here rather than in pages/index.tsx so it keeps running (and can still show
   // UpdateLoader) regardless of which route the user is currently on - a signed-in user parked on
   // /dashboard/* for hours must still get a silent major/first-check update, not just users still
@@ -174,11 +202,10 @@ const AppContent = ({ Component, pageProps }: AppProps) => {
       {bootstrapPhase !== 'checking' && <ChangelogModal />}
       <GoProModal />
       {showOutdatedPrompt && <VersionPolicyDialog variant='outdated' />}
-      {/* Blocks the routed page (dashboard or pre-dashboard) until useSessionBootstrap has
-          re-validated any persisted session - see that hook's doc comment. Everything above this
-          (Titlebar, toasts, the Chatway widget) stays mounted through the check since none of it
-          depends on session state. */}
-      <FullscreenLoader visible={bootstrapPhase === 'checking'} />
+      {/* The routed page (dashboard or pre-dashboard) is held back until useSessionBootstrap has
+          re-validated any persisted session - see that hook's doc comment. App's FullscreenLoader
+          covers the window meanwhile. Everything above this (Titlebar, toasts, the Chatway
+          widget) stays mounted through the check since none of it depends on session state. */}
       {bootstrapPhase === 'checking' ? null : isDashboard ? (
         // ErrorBoundary wraps only the routed page, not DashboardShell itself - a crash in one
         // page's rendering shouldn't unmount the shell and kill long-running features (card

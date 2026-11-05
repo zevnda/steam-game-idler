@@ -11,7 +11,7 @@ import { peekCachedSubscriptionTier } from '@/shared/stores/subscriptionStore'
 import { invoke } from '@/shared/utils/invoke'
 import { computeAllowedAccountKeys } from '@/shared/utils/subscriptionAccess'
 
-type BootstrapPhase = 'checking' | 'idle'
+export type BootstrapPhase = 'checking' | 'idle'
 
 // Thrown by resumeAccount only for a failure that's genuinely unrecoverable no matter how many
 // times it's retried - the ONLY case that justifies deleting a persisted account (see
