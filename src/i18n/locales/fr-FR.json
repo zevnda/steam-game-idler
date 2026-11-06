@@ -192,7 +192,6 @@
         "description": "Obtenez automatiquement les jeux gratuits sur Steam dès qu'ils deviennent disponibles — ne ratez plus jamais une offre gratuite."
       },
       "sellDupes": {
-        "title": "Vendez les articles en double",
         "description": "Lister facilement en un seul clic tous les articles d'inventaire en double à vendre."
       },
       "customPresence": {
@@ -217,7 +216,6 @@
       "gamer": {
         "name": "Joueur",
         "freeGames": "Récupération automatique des jeux gratuits",
-        "sellDupes": "Vendez les objets d'inventaire en doublons",
         "importTimings": "Importez les délais de déverrouillage de succès",
         "multipleUnlockerGames": "Débloquez 32 jeux d'un coup",
         "multiAccount": "10 comptes simultanés"
@@ -665,8 +663,6 @@
         }
       },
       "order": {
-        "delayBeforeFirstUnlock": "Délai avant le premier déblocage",
-        "delayUntilNextUnlock": "Délai jusqu'au prochain déverrouillage",
         "reset": "Réinitialiser",
         "skipped": "Ignoré",
         "empty": {
@@ -728,7 +724,6 @@
       }
     },
     "inventoryManager": {
-      "fetchPrice": "Récupérer le prix",
       "fetchingPrice": "Récupération du prix…",
       "badgeLevel": "Badge de niveau {{level}}",
       "noBadge": "Aucun badge fabriqué",
@@ -737,25 +732,13 @@
       },
       "actions": {
         "listSelected": "Vendre la sélection ({{count}})",
-        "sellAll": "Tout vendre ({{count}})",
-        "sellDupes": "Vendre les doublons",
         "removeListings": "Supprimer les annonces",
-        "lockItem": "Verrouiller cet élément pour qu'il ne soit jamais vendu automatiquement",
-        "list": "Mettre sur le marché",
         "cardExchange": "Voir sur Steam Card Exchange"
       },
       "confirm": {
         "listSelected": {
           "title": "Afficher les {{count}} éléments sélectionnés ?",
           "description": "Cette action va afficher tous les éléments sélectionnés au prix défini. Temps estimé : {{time}}. Laissez l'app s'exécuter jusqu'à ce que le processus soit terminé."
-        },
-        "sellAll": {
-          "title": "Vendre tous les éléments visibles ?",
-          "description": "Cette action récupérera un prix du marché et mettra en vente jusqu'à {{count}} éléments actuellement visibles, en utilisant vos paramètres de préférences de prix et de limite de vente. Temps estimé : {{time}}. Laissez l'app s'exécuter jusqu'à ce que le processus soit terminé."
-        },
-        "sellDupes": {
-          "title": "Vendre les éléments en double ?",
-          "description": "Cette action récupérera un prix du marché et mettra en vente jusqu'à {{count}} éléments en double (en gardant une copie de chaque), en utilisant vos paramètres de préférences de prix et de limite de vente. Temps estimé : {{time}}. Laissez l'app s'exécuter jusqu'à ce que le processus soit terminé."
         },
         "removeListings": {
           "title": "Supprimer toutes les annonces actives ?",
@@ -795,7 +778,6 @@
         },
         "pricePreference": {
           "title": "Prix par défaut",
-          "description": "Quel prix utiliser pour la vente d'éléments en gros.",
           "options": {
             "highestBuyOrder": "Ordre d'achat le plus élevé",
             "lowestSellOrder": "Ordre de vente le plus bas"
@@ -806,11 +788,9 @@
           "description": "Ajoute {{value}} à tous les prix listés, qu'ils soient remplis automatiquement ou manuellement."
         },
         "sellLimit": {
-          "title": "Limite de vente",
           "description": "Lister uniquement les éléments entre {{min}} et {{max}}."
         },
         "sellDelay": {
-          "title": "Délai de vente",
           "description": "Attendre {{value}} secondes entre chaque carte pour éviter la limite de débit."
         }
       },
@@ -818,18 +798,14 @@
         "noListings": "Vous n'avez aucune annonce active sur le marché.",
         "removedListings": "Supprimé {{count}} de {{total}} annonces",
         "removeFailed": "Impossible de supprimer une annonce.",
-        "noneEligible": "Aucun élément ne satisfait les condition requises pour la vente - vérifiez les limites de vente dans les paramètres de votre inventaire.",
         "priceFetchCooldown": "Veuillez patienter {{seconds}} secondes avant de récupérer plus de prix d'objets",
         "itemLocked": "Cet élément est verrouillé et ne peut pas être listé.",
-        "priceOutOfRange": "{{price}} est en dehors de vos limites de ventes configurées ({{min}} - {{max}}).",
         "listed_one": "{{count}} élément listé",
         "listed_other": "{{count}} éléments listés",
         "listFailed_one": "{{count}} élément n'a pas pu être listé",
         "listFailed_other": "{{count}} éléments n'ont pas pu être listés",
         "skippedLocked_one": "Ignoré {{count}} élément verrouillé",
-        "skippedLocked_other": "Ignoré {{count}} éléments verrouillés",
-        "skippedOutOfRange_one": "Ignoré {{count}} élément en dehors des limites de vente",
-        "skippedOutOfRange_other": "Ignoré {{count}} éléments en dehors des limites de vente"
+        "skippedLocked_other": "Ignoré {{count}} éléments verrouillés"
       },
       "errors": {
         "title": "Impossible de mettre à jour votre inventaire",

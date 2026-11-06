@@ -194,7 +194,6 @@
         "description": "Steam'de ücretsiz oyunlar erişime açıldığı anda otomatik olarak hesabınıza ekleyin; hiçbir ücretsiz oyunu kaçırmayın."
       },
       "sellDupes": {
-        "title": "Yinelenen Eşyaları Sat",
         "description": "Tek tıklamayla envanterinizdeki tüm yinelenen eşyaları kolayca satışa çıkarın."
       },
       "customPresence": {
@@ -219,7 +218,6 @@
       "gamer": {
         "name": "Oyuncu",
         "freeGames": "Otomatik Ücretsiz Oyun Alma",
-        "sellDupes": "Yinelenen Envanter Eşyalarını Sat",
         "importTimings": "Başarı Kilidi Açma Zamanlarını İçe Aktar",
         "multipleUnlockerGames": "Aynı Anda 32 Oyunun Kilidini Aç",
         "multiAccount": "Aynı Anda 10 Hesap"
@@ -623,7 +621,6 @@
         }
       },
       "order": {
-        "delayBeforeFirstUnlock": "İlk başarım açılmadan önce beklenecek süre",
         "reset": "Sıfırla",
         "skipped": "Atlandı",
         "empty": {
@@ -681,7 +678,6 @@
       }
     },
     "inventoryManager": {
-      "fetchPrice": "Fiyatı getir",
       "fetchingPrice": "Fiyat getiriliyor…",
       "badgeLevel": "Rozet seviyesi {{level}}",
       "noBadge": "Rozet yapılmadı",
@@ -699,11 +695,9 @@
           "description": "Otomatik olarak doldurulan veya manuel olarak girilen her liste fiyatına {{value}} ekler."
         },
         "sellLimit": {
-          "title": "Satış Limiti",
           "description": "Sadece {{min}} ve {{max}} arasındaki fiyatta ürünleri listele."
         },
         "sellDelay": {
-          "title": "Satış Gecikmesi",
           "description": "Aşırı satış sınırlamasından kaçınmak için her bir öğenin listelenmesi arasında {{value}} saniye kadar bekleyin."
         }
       },
@@ -711,10 +705,8 @@
         "noListings": "Aktif market listelemeniz bulunmamaktadır.",
         "removedListings": "{{total}} listelenmelerden {{count}} adet listeleme kaldırıldı",
         "removeFailed": "Listelenme silinemiyor.",
-        "noneEligible": "Satılmaya elverişli öğe yoktu - envanter ayarlarınızdan satış limitini kontrol ediniz.",
         "priceFetchCooldown": "Lütfen daha fazla ürün fiyatı getirmeden önce {{seconds}} saniye kadar bekleyiniz",
-        "itemLocked": "Bu öğe kilitlenmiş listelenemez.",
-        "priceOutOfRange": "Fiyat {{price}} kadar belirlenmiş satış limitinizin ({{min}}-{{max}}) dışında."
+        "itemLocked": "Bu öğe kilitlenmiş listelenemez."
       },
       "errors": {
         "title": "Envanteriniz güncellenemedi",

@@ -221,7 +221,6 @@
         "description": "Automatycznie odbieraj darmowe gry na Steam natychmiast po ich udostępnieniu — nie przegap żadnej okazji."
       },
       "sellDupes": {
-        "title": "Sprzedawanie zduplikowanych przedmiotów",
         "description": "Wystawiaj na sprzedaż wszystkie zduplikowane przedmioty z ekwipunku jednym kliknięciem."
       },
       "customPresence": {
@@ -246,7 +245,6 @@
       "gamer": {
         "name": "Gamer",
         "freeGames": "Automatyczne odbieranie darmowych gier",
-        "sellDupes": "Sprzedaż zduplikowanych przedmiotów z ekwipunku",
         "importTimings": "Importowanie czasów odblokowania osiągnięć",
         "multipleUnlockerGames": "Odblokowywanie osiągnięć w 32 grach jednocześnie",
         "multiAccount": "10 jednocześnie zalogowanych kont"
@@ -773,8 +771,6 @@
         }
       },
       "order": {
-        "delayBeforeFirstUnlock": "Opóźnienie przed pierwszym odblokowaniem",
-        "delayUntilNextUnlock": "Opóźnienie przed następnym odblokowaniem",
         "reset": "Resetuj",
         "skipped": "Pominięto",
         "protectedSection": {
@@ -857,7 +853,6 @@
       }
     },
     "inventoryManager": {
-      "fetchPrice": "Pobierz cenę",
       "fetchingPrice": "Pobieranie ceny…",
       "badgeLevel": "Poziom odznaki {{level}}",
       "noBadge": "Nie utworzono odznaki",
@@ -866,25 +861,13 @@
       },
       "actions": {
         "listSelected": "Wystaw zaznaczone ({{count}})",
-        "sellAll": "Sprzedaj wszystko ({{count}})",
-        "sellDupes": "Sprzedaj duplikaty",
         "removeListings": "Usuń oferty",
-        "lockItem": "Zablokuj ten przedmiot, aby nigdy nie był sprzedawany automatycznie",
-        "list": "Wystaw na rynku",
         "cardExchange": "Wyświetl w SteamCardExchange"
       },
       "confirm": {
         "listSelected": {
           "title": "Wystawić {{count}} zaznaczonych przedmiotów?",
           "description": "Każdy zaznaczony przedmiot zostanie wystawiony po wprowadzonej cenie. Szacowany czas: {{time}}. Pozostaw aplikację uruchomioną do zakończenia procesu."
-        },
-        "sellAll": {
-          "title": "Sprzedać wszystkie widoczne przedmioty?",
-          "description": "Dla maksymalnie {{count}} widocznych obecnie przedmiotów zostanie pobrana cena rynkowa, a następnie przedmioty te zostaną wystawione zgodnie z preferencjami cenowymi i limitami sprzedaży w ustawieniach ekwipunku. Szacowany czas: {{time}}. Pozostaw aplikację uruchomioną do zakończenia procesu."
-        },
-        "sellDupes": {
-          "title": "Sprzedać zduplikowane przedmioty?",
-          "description": "Dla maksymalnie {{count}} zduplikowanych przedmiotów zostanie pobrana cena rynkowa, a następnie zostaną one wystawione na sprzedaż (z zachowaniem jednej kopii każdego przedmiotu). Zastosowane zostaną preferencje cenowe i limity sprzedaży z ustawień ekwipunku. Szacowany czas: {{time}}. Pozostaw aplikację uruchomioną do zakończenia procesu."
         },
         "removeListings": {
           "title": "Usunąć wszystkie aktywne oferty?",
@@ -925,7 +908,6 @@
         },
         "pricePreference": {
           "title": "Cena domyślna",
-          "description": "Którą cenę stosować podczas masowej sprzedaży przedmiotów.",
           "options": {
             "highestBuyOrder": "Najwyższa oferta kupna",
             "lowestSellOrder": "Najniższa oferta sprzedaży"
@@ -936,11 +918,9 @@
           "description": "Dodaje {{value}} do ceny każdego wystawianego przedmiotu, niezależnie od tego, czy cena została uzupełniona automatycznie, czy wpisana ręcznie."
         },
         "sellLimit": {
-          "title": "Limit ceny sprzedaży",
           "description": "Wystawiaj tylko przedmioty w cenie od {{min}} do {{max}}."
         },
         "sellDelay": {
-          "title": "Opóźnienie między sprzedażą",
           "description": "Odczekuj {{value}} s między wystawianiem kolejnych przedmiotów, aby uniknąć limitów żądań."
         }
       },
@@ -948,10 +928,8 @@
         "noListings": "Nie masz żadnych aktywnych ofert na rynku.",
         "removedListings": "Usunięto {{count}} z {{total}} ofert",
         "removeFailed": "Nie udało się usunąć żadnej oferty.",
-        "noneEligible": "Żadne przedmioty nie kwalifikowały się do sprzedaży — sprawdź limity cenowe w ustawieniach ekwipunku.",
         "priceFetchCooldown": "Odczekaj {{seconds}} s przed pobraniem kolejnych cen przedmiotów",
         "itemLocked": "Ten przedmiot jest zablokowany i nie można go wystawić na sprzedaż.",
-        "priceOutOfRange": "Cena {{price}} wykracza poza skonfigurowany limit sprzedaży ({{min}}–{{max}}).",
         "listed_one": "Wystawiono {{count}} przedmiot",
         "listed_few": "Wystawiono {{count}} przedmioty",
         "listed_many": "Wystawiono {{count}} przedmiotów",
@@ -963,11 +941,7 @@
         "skippedLocked_one": "Pominięto {{count}} zablokowany przedmiot",
         "skippedLocked_few": "Pominięto {{count}} zablokowane przedmioty",
         "skippedLocked_many": "Pominięto {{count}} zablokowanych przedmiotów",
-        "skippedLocked_other": "Pominięto {{count}} zablokowanych przedmiotów",
-        "skippedOutOfRange_one": "Pominięto {{count}} przedmiot poza limitem sprzedaży",
-        "skippedOutOfRange_few": "Pominięto {{count}} przedmioty poza limitem sprzedaży",
-        "skippedOutOfRange_many": "Pominięto {{count}} przedmiotów poza limitem sprzedaży",
-        "skippedOutOfRange_other": "Pominięto {{count}} przedmiotów poza limitem sprzedaży"
+        "skippedLocked_other": "Pominięto {{count}} zablokowanych przedmiotów"
       },
       "errors": {
         "title": "Nie udało się zaktualizować ekwipunku",
