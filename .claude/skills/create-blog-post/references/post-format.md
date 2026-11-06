@@ -97,23 +97,24 @@ then convert and place the final file:
 ffmpeg -y -i in.png -vf "scale=1600:-2:flags=lanczos" -c:v libwebp -quality 85 docs/public/blog/{slug}/name.webp
 ```
 
-Covers: `scale=1200:630`, quality 88. Keep files small (< ~150 KB). Insert finished images with
+Covers are converted by `build_cover.py` (1200x630, quality 88). Keep files small (< ~150 KB). Insert finished images with
 `<Figure src width height alt caption />` (real pixel size), and covers via frontmatter `image` +
 `imageAlt`.
 
-### Covers - `templates/cover.html` + `scripts/render_html.py`
+### Covers - `../blog-shared/covers/` + `scripts/build_cover.py`
 
-Copy the template to the scratchpad and edit only the marked spots: CATEGORY (the frontmatter
-category), TITLE (3-8 words, 1-3 key words in `<span class="hl">`), and the VISUAL slot plus its
-styles. The brand pill, background and layout are fixed so every cover matches the site. The
-title sizes and wraps itself (largest size that fits 2 balanced lines, else 3; a highlighted
-phrase never splits), so don't set font sizes or add `<br>`s. The visual is an
-original, abstract illustration of the topic built in HTML/CSS (cards, progress bars, trophies,
-icons as inline SVG), ideally one `.glass` card plus at most one floating accent (`.orb`). Never
-real game art, never a fake Steam/SGI UI screenshot, never Steam/Valve logos. `imageAlt`
-describes the visual, so keep the two in step. Render with `"$PY" -I render_html.py cover.html cover.png` (2x), check it at full size and
-imagine it at thumbnail size: the headline must be readable, nothing clipped, nothing overlapping.
-Iterate until it's good enough to be the face of the post.
+**Read [../../blog-shared/covers/README.md](../../blog-shared/covers/README.md) first** and follow
+it. In short: every cover shares one fixed frame (starfield, brand pill, eyebrow, title on the
+left, URL), but the visual on the right must be a picture of the post's one idea, built from a
+different archetype than the 2 most recent covers and with a new accent hue. List cards (a
+glass card of rows with tag pills) are banned as the main visual: that pattern made six covers
+look identical. Write the cover as a fragment, `covers/{slug}.html` (category, title with 1-3
+`<span class="hl">` key words, hue, tilt, the visual's CSS and markup). Build it with
+`"$PY" -I build_cover.py {slug} --png <scratchpad>/cover.png --webp docs/public/blog/{slug}/cover.webp`.
+The title sizes and wraps itself, so don't set font sizes or add `<br>`s. Never real game art, a
+fake Steam/SGI UI screenshot, or Steam/Valve logos. Check the render at full size and at
+thumbnail size, tile it next to the existing covers to confirm it doesn't look like a sibling,
+add it to the registry, and keep `imageAlt` in step with the visual.
 
 ### Diagrams - `scripts/render_html.py`
 

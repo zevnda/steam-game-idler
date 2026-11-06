@@ -6,7 +6,7 @@ it as the header of that file describes. This file is *how* to research.
 
 When a fetch method fails or a better one works, record it in sources.md before moving on.
 
-Every stream ends in the research log (`seo-blog-research-{slug}.md`) as entries like:
+Every stream ends in the research log (`research/seo-blog-research-{slug}.md`, gitignored) as entries like:
 
 ```md
 - **Claim:** Achievement Sets are opt-in per game and in Steam client beta only.

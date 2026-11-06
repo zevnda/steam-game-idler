@@ -1,7 +1,8 @@
 // Landing-page FAQ - the most common pre-download questions, ordered and phrased after the real
-// Search Console queries that land on this page (see seo-brief.md). The full list lives at
-// /docs/faq. Also the single source for the page's FAQPage JSON-LD (layout.tsx), so the markup can
-// never drift from what's actually shown.
+// Search Console queries that land on this page (see the local-only
+// .claude/skills/blog-shared/research/seo-brief.md). The full list lives at /docs/faq. Also the
+// single source for the page's FAQPage JSON-LD (layout.tsx), so the markup can never drift from
+// what's actually shown.
 export const FAQ = [
   {
     question: 'What is a Steam idler?',

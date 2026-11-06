@@ -4,9 +4,9 @@ The blog's memory, shared by `/find-blog-topics` and `/create-blog-post`. Both s
 first and update it before finishing. This file is what keeps topics from being proposed twice,
 rejected ones from coming back without new evidence, and news sweeps from re-reading the same
 weeks. Newest entries go first in each section. Keep entries short; full research lives in the
-gitignored `seo-blog-research-{slug}.md` files.
+gitignored `research/seo-blog-research-{slug}.md` files.
 
-**Last discovery sweep:** 2026-10-29 (window 10-23..10-29: no client update; Steam Scream V and Personal Calendar only; Protobufs were SteamOS/store/CS2. Autocomplete surfaced a playtime-mechanics gap - 2 queued)
+**Last discovery sweep:** 2026-11-06 (window 10-29..11-06: no Steam client update or user-facing announcement; Steamworks dev posts only; SteamKit2 4.0 beta / ASF V7 pre-release are .NET refactors. Pillar gap: free games - 1 queued, 3 post updates)
 
 ## Queued - passed the gate, not written yet
 
@@ -19,21 +19,22 @@ gitignored `seo-blog-research-{slug}.md` files.
 - **Write by:** YYYY-MM-DD (news) or - (evergreen) | **Added:** YYYY-MM-DD by find-blog-topics
 -->
 
-## Planned app work - separate commit, do next (user confirmed 2026-10-20)
+## Planned post updates (from the 2026-11-06 sweep)
 
-### Move the desktop app's sidebar ads off `/supported-games/*`
-- **Why:** the docs site's `/supported-games/*` pages were removed (2026-10-20). The app's
-  `src/shared/components/pro/AdSlot.tsx` loads `https://steamgameidler.com/supported-games/{slug}`
-  in an iframe (rotating through a hardcoded slug list) to request Google ads, so **from the deploy
-  that removed them, in-app sidebar ads load a 404 page instead of an ad** until this is done.
-- **To do:** decide the replacement (a dedicated, minimal ad-container route on the docs site,
-  kept out of the sitemap and `noindex`, like the `(embed)` changelog route; or another ad
-  approach), update `AdSlot.tsx`, and release. Already-installed old versions keep requesting
-  the old URLs until they update.
-- **Also:** the Vercel Firewall rule that 403s `/supported-games/*` for non-app visitors can be
-  removed once the route is gone, so the old URLs return a clean 404 (Search Console still lists
-  45 old supported-games URLs; 404 is the right "gone" signal). Re-point that rule at whatever
-  route replaces it, if the new ad container needs the same protection.
+- **`/blog/remove-steam-achievements` CTR - on 2026-11-17** (with the title review): 90d to
+  2026-11-03 = ~2,060 impressions, 7 clicks (0.3%) at pos ~7-9; "how to remove steam achievements"
+  alone 489 imp / 0 clicks @ 9.2, plus ~600 imp across "reset" phrasings. Test a title/description
+  that leads with "How to Remove or Reset Steam Achievements" and keeps the honest "what actually
+  works" answer. Then Request indexing.
+- **`/blog/how-steam-trading-cards-work` - add a "Steam gems" section** (Booster Pack Creator, gem
+  sacks, turning cards into gems vs selling). The post never mentions gems; autocomplete
+  2026-11-06: "steam gems what do they do / worth / to usd / purpose", "steam booster pack
+  creator". SERP is weak (mein-mmo, expertbeacon, forum threads). SGI tie indirect (inventory
+  manager sells cards, no gems feature). An update, not a new post: the post already targets
+  booster packs (H5). Keep money claims conservative (H8).
+- **`/blog/how-to-level-up-on-steam` - Steam Awards 2026 badge** (existing trigger): still not on
+  Steamworks upcoming-events 2026-11-06; 2025 nominations opened 2025-11-25. 454 imp / 0 clicks at
+  pos ~16 (page 2), so a fresh, dated badge section is the best lever. Re-check ~2026-11-20.
 
 ## Planned docs updates - do after the blog launch (user confirmed 2026-10-20)
 
@@ -68,47 +69,67 @@ published. GSC figures are 2026-07-20 to 2026-10-17; re-pull before starting.
 
 <!-- ### <title> - `docs/blog/<slug>.mdx` - written YYYY-MM-DD -->
 
-### Steam Achievement Percentages Explained: How Rarity Is Calculated - `docs/blog/steam-achievement-percentages.mdx` - written 2026-10-29
-- Primary keyword: how are steam achievement percentages calculated
-- Inbound link added: `/blog/steam-achievement-sets` (Global Stats bullet; no `updated:` change).
-- Revisit: when Achievement Sets leave beta (Global Stats toggle, DLC-set percentages), or 2027-10.
-  Re-check the "rare = under 10%" table against live counts on each revisit.
-
-### How Steam Tracks Playtime: AFK, Offline, Invisible and Can You Reset It? - `docs/blog/how-steam-tracks-playtime.mdx` - written 2026-10-29
-- Primary keyword: how does steam track playtime | Scope: mechanics only (no "fake/edit playtime"
-  intent - SSA Automation clause, user-delegated decision 2026-10-29).
-- Inbound link added: `/docs/features/playtime-booster` ("How idling works" paragraph).
-- Revisit: 2027-10 (yearly), or if Valve documents Offline Mode playtime / `playtime_disconnected`,
-  or changes playtime privacy options. Bump `date:` if the PR waits days to merge.
+### What Does Free to Keep Mean on Steam? Free Weekends and Free-to-Play Explained - `docs/blog/steam-free-to-keep.mdx` - written 2026-11-06
+- Primary keyword: what does free to keep mean on steam | Queued and written the same day (2026-11-06 sweep).
+- Inbound link added: `/docs/features/free-games/what-counts-as-a-free-game` (one sentence after the F2P paragraph).
+- Revisit: 2027-11 (yearly), or if Valve changes the Free to Keep / Free Weekend card or review rules
+  in Steamworks docs. Add an SGI Free Games screenshot (MEDIA marker) during the next live Free to Keep promo.
+  Bump `date:` if the PR waits days to merge.
 
 ## Published
 
 <!-- ### <title> - `/blog/<slug>` - published YYYY-MM-DD
 - Primary keyword: ... | Revisit: YYYY-MM-DD (why: beta ends / sale season / yearly refresh) -->
 
+### Steam Achievement Percentages Explained: How Rarity Is Calculated - `/blog/steam-achievement-percentages` - published 2026-10-29
+- Primary keyword: how are steam achievement percentages calculated | Revisit: when Achievement Sets leave beta (Global Stats toggle, DLC-set percentages), or 2027-10. Re-check the "rare = under 10%" table each revisit.
+- Merged in #2217 (2026-10-29). URL Inspection 2026-11-06: Submitted and indexed, canonical matches, crawled 2026-10-29. Only 10 impressions so far.
+
+### How Steam Tracks Playtime: AFK, Offline, Invisible and Can You Reset It? - `/blog/how-steam-tracks-playtime` - published 2026-10-29
+- Primary keyword: how does steam track playtime | Revisit: 2027-10 (yearly), or if Valve documents Offline Mode playtime / `playtime_disconnected`, or changes playtime privacy options.
+- Merged in #2217 (2026-10-29). URL Inspection 2026-11-06: Submitted and indexed, canonical matches, crawled 2026-10-29. ~194 impressions; "does steam count afk hours" 28 @ pos 4.
+
 ### Can You Remove, Hide or Reset Steam Achievements? What Actually Works - `/blog/remove-steam-achievements` - published 2026-10-20
 - Primary keyword: can you remove steam achievements | Revisit: 2027-10 (yearly), or if Valve changes privacy/private-game rules or adds an official reset
-- Indexed 2026-10-20 (URL Inspection 2026-10-21: Submitted and indexed, canonical matches; re-checked 2026-10-23, 2026-10-29: PASS).
+- Indexed 2026-10-20 (URL Inspection 2026-10-21: Submitted and indexed, canonical matches; re-checked 2026-10-23, 2026-10-29, 2026-11-06: PASS).
 - 2026-10-29: GSC to 10-26 shows ~800 impressions at pos 6-10 ("how to remove steam achievements" 279 @ 10.1) but only 1-2 clicks. Too early to act; if CTR is still ~0 at the 2026-11-17 review, test a title/description that matches the "how to remove/reset" wording.
 
 ### How to Level Up on Steam: Every Source of XP, and What It Costs - `/blog/how-to-level-up-on-steam` - published 2026-10-20
 - Primary keyword: how to level up on steam | Revisit: each Winter/Summer Sale (new Seasonal Badge), and before the 2026 Steam Awards nominations (late Nov) to confirm the badge
-- Indexed 2026-10-20 (URL Inspection 2026-10-21: Submitted and indexed, canonical matches; re-checked 2026-10-23, 2026-10-29: PASS).
+- Indexed 2026-10-20 (URL Inspection 2026-10-21: Submitted and indexed, canonical matches; re-checked 2026-10-23, 2026-10-29, 2026-11-06: PASS).
 - 2026-10-29: Steam Awards 2025 nominations opened 2025-11-25 (Steam news API); 2026 dates aren't on Steamworks' upcoming-events page yet. Re-check ~2026-11-20 and update the badge section once they're announced.
 
 ### How Steam Trading Cards Work: Drops, Badges, Booster Packs and Selling - `/blog/how-steam-trading-cards-work` - published 2026-10-20
 - Primary keyword: how do steam trading cards work | Revisit: 2027-10 (yearly refresh), or if Valve changes card/booster/badge rules
-- Indexed 2026-10-20 (URL Inspection: Submitted and indexed; re-checked 2026-10-23, 2026-10-29: PASS).
+- Indexed 2026-10-20 (URL Inspection: Submitted and indexed; re-checked 2026-10-23, 2026-10-29, 2026-11-06: PASS).
 
 ### Steam Achievement Sets: What the Beta Changes for Achievement Hunters - `/blog/steam-achievement-sets` - published 2026-10-20
 - Primary keyword: steam achievement sets | Revisit: when Achievement Sets leave beta (check the Steam news API), then set `updated:`
-- Indexed 2026-10-20 (URL Inspection: Submitted and indexed; re-checked 2026-10-23, 2026-10-29: PASS).
+- Indexed 2026-10-20 (URL Inspection: Submitted and indexed; re-checked 2026-10-23, 2026-10-29, 2026-11-06: PASS).
 
 ## Rejected - don't re-propose without new evidence
 
 <!-- ### <topic>
 - Rejected YYYY-MM-DD: gate H1/H5/... - one-line evidence
 - Revisit only if: <the specific change that would flip it> -->
+
+### "Is Steam Game Idler safe?" (brand safety query)
+- Rejected 2026-11-06: same user decision as the idle-ban post (SSA Automation clause). GSC 90d:
+  272 impressions, 2 clicks @ 9.1, landing on `/` and `/privacy`. A brand/FAQ intent, not a post.
+- Revisit only if: the user decides how to address the SSA clause (then it's a home/docs FAQ fix first).
+
+### "steamunlocked achievements" (GSC riser, 152 -> 1,060 impressions in 17 days)
+- Rejected 2026-11-06: H3 - SteamUnlocked is a piracy site; the impressions are brand confusion.
+- Revisit only if: never.
+
+### Steam trade holds ("steam trade hold 15 days / remove / even with authenticator")
+- Rejected 2026-11-06: S2 0 / H6 - strong autocomplete, but Valve's support FAQ answers it, SGI
+  doesn't trade, and GSC shows 0 impressions.
+- Revisit only if: SGI's inventory manager starts hitting market/trade holds that users ask about.
+
+### Steamworks sale-event display / pre-release review changes (2026-11-03/04)
+- Rejected 2026-11-06: H1 - developer-facing store changes; no cards, achievements or playtime.
+- Revisit only if: either turns out to change something players see on cards/achievements.
 
 ### Steam Points value ("are steam points worth it", "points per dollar", "can points buy games")
 - Rejected 2026-10-29: S2 0 - big autocomplete cluster, but SGI does nothing with Points; GSC 5
@@ -145,7 +166,7 @@ published. GSC figures are 2026-07-20 to 2026-10-17; re-pull before starting.
 ### Can you get banned for idling Steam games?
 - Rejected 2026-10-20: user decision (brand/legal, not SEO). Research found the Steam Subscriber
   Agreement has banned "Automation" that fakes playtime or earns "rewards or progress without
-  genuine user input" since its 2025-09-18 revision (see `seo-blog-research-steam-idle-ban.md`).
+  genuine user input" since its 2025-09-18 revision (see `research/seo-blog-research-steam-idle-ban.md`).
   An honest post must say so; one that omits it would mislead.
 - Revisit only if: the user asks for it, or Valve changes/clarifies that clause.
 - Also noted for the user (not acted on, their call): the home FAQ and docs achievement-unlocker
@@ -153,7 +174,7 @@ published. GSC figures are 2026-07-20 to 2026-10-17; re-pull before starting.
 
 ### "How to unlock Steam achievements" guide post
 - Rejected 2026-10-20: H5 - ~1,100 impressions already land on
-  `/docs/features/achievement-unlocker` (pos ~7), and `seo-brief-achievement-unlocker.md` targets
+  `/docs/features/achievement-unlocker` (pos ~7), and `research/seo-brief-achievement-unlocker.md` targets
   this cluster on that page.
 - Revisit only if: that brief is dropped, or GSC shows the page losing these queries.
 
@@ -180,10 +201,10 @@ indexed in time.
 
 | Event | Dates | Notes |
 |---|---|---|
-| Steam Winter Sale 2026 | 17 Dec 2026 - 4 Jan 2027 (confirmed 2026-10-20, still listed 2026-10-29) | Pitch window opens ~late Nov (sale page not live as of 2026-10-20, so nothing to verify yet). Verify what the sale awards (event badge, stickers, Points items, cards?) from the sale page before a cards/badges angle. |
+| Steam Winter Sale 2026 | 17 Dec 2026 - 4 Jan 2027 (confirmed 2026-10-20, still listed 2026-11-06) | Pitch window opens ~late Nov (sale page not live as of 2026-10-20, so nothing to verify yet). Verify what the sale awards (event badge, stickers, Points items, cards?) from the sale page before a cards/badges angle. |
 | Steam Spring Sale 2027 | 18 - 25 Mar 2027 (confirmed) | Same check. |
 | Steam Summer Sale 2027 | 24 Jun - 8 Jul 2027 (confirmed) | Same check. |
 | Steam Autumn Sale | 2026 edition began 1 Oct 2026 (Steam news); 2027 TBD | Earlier than the old late-November habit - don't assume dates. |
 | Steam Next Fest | 22 Feb - 1 Mar 2027, 14 - 21 Jun 2027 (confirmed) | Demos have no cards/achievements - usually *not* a fit. |
-| Steam Awards nominations | 2025: opened 25 Nov 2025; 2026 TBD (not on upcoming-events 2026-10-29) | Awards a badge (XP). Not a post - an update trigger for the level-up post. |
+| Steam Awards nominations | 2025: opened 25 Nov 2025; 2026 TBD (not on upcoming-events 2026-11-06) | Awards a badge (XP). Not a post - an update trigger for the level-up post. |
 | Themed fests | many; see Steamworks upcoming events | Genre sales - not a fit unless cards/achievements change. |
