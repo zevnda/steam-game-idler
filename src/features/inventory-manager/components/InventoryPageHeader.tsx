@@ -45,11 +45,11 @@ interface InventoryPageHeaderProps {
   onRemoveListings: () => void
 }
 
-// This page's toolbar: title/count, bulk actions (list selected / sell all / sell dupes / remove listings), a
+// This page's toolbar: title/count, bulk actions (list selected / list all / list dupes / remove listings), a
 // refresh button, and the settings-gear shortcut - mirrors `main`'s PageHeader scope minus
 // pagination (InventoryItemGrid is now virtualized - a single scrolling view, no per-page split),
 // with HeroUI v3's `AlertDialog` replacing `main`'s `CustomModal`-based confirmations (same
-// component Sidebar's sign-out confirm already established). "Sell dupes" is the one gamer-tier
+// component Sidebar's sign-out confirm already established). "List dupes" is the one gamer-tier
 // gate here - enforced only at this call site, no Rust-side check.
 export const InventoryPageHeader = ({
   itemCount,

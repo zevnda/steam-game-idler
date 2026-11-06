@@ -2605,17 +2605,17 @@ export class MockApp {
       {
         kind: 'btn',
         id: 'inv-sellall',
-        label: `Sell all (${INV_TOTAL})`,
+        label: `List all (${INV_TOTAL})`,
         variant: 'secondary',
         wideOnly: true,
       },
       {
         kind: 'btn',
         id: 'inv-dupes',
-        label: 'Sell dupes',
+        label: 'List dupes',
         variant: 'secondary',
         tier: 'gamer',
-        onClick: () => this.toast('Sell dupes is part of the Gamer plan', 'sparkles', pal.gamer),
+        onClick: () => this.toast('List dupes is part of the Gamer plan', 'sparkles', pal.gamer),
       },
       {
         kind: 'btn',

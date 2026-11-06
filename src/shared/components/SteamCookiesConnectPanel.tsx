@@ -100,7 +100,7 @@ interface SteamCookiesConnectPanelProps<T extends SteamCookiesLike> {
 // near-duplicates. Always shows both the automatic (gamer-tier) and manual tabs, rather than hiding
 // automatic entirely for a non-gamer account: the automatic tab stays a real, selectable `Tab`
 // (never `isDisabled`), just intercepted in `onSelectionChange` to open the pro modal instead of
-// switching tabs when gated - mirrors `InventoryPageHeader`'s "Sell Dupes" button gate. Deliberately
+// switching tabs when gated - mirrors `InventoryPageHeader`'s "List Dupes" button gate. Deliberately
 // just a **connect** step - it never starts/fetches anything feature-specific itself, only
 // validates+persists cookies via the caller's `onConnect`.
 //

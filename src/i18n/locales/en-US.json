@@ -221,7 +221,7 @@
         "description": "Automatically redeem free games on Steam the moment they become available — never miss a freebie."
       },
       "sellDupes": {
-        "title": "Sell Duplicate Items",
+        "title": "List Duplicate Items",
         "description": "Easily list all duplicate inventory items for sale with a single click."
       },
       "customPresence": {
@@ -246,7 +246,7 @@
       "gamer": {
         "name": "Gamer",
         "freeGames": "Automatic Free Game Redemption",
-        "sellDupes": "Sell Duplicate Inventory Items",
+        "sellDupes": "List Duplicate Inventory Items",
         "importTimings": "Import Achievement Unlock Timings",
         "multipleUnlockerGames": "Unlock 32 Games At Once",
         "multiAccount": "10 Concurrent Accounts"
@@ -884,10 +884,10 @@
       },
       "actions": {
         "listSelected": "List selected ({{count}})",
-        "sellAll": "Sell all ({{count}})",
-        "sellDupes": "Sell dupes",
+        "sellAll": "List all ({{count}})",
+        "sellDupes": "List dupes",
         "removeListings": "Remove listings",
-        "lockItem": "Lock this item so it's never sold automatically",
+        "lockItem": "Lock this item so it's never listed automatically",
         "list": "List on the market",
         "cardExchange": "View on SteamCardExchange"
       },
@@ -897,12 +897,12 @@
           "description": "This will list every selected item at its entered price. Estimated time: {{time}}. Leave the app running until the process is complete."
         },
         "sellAll": {
-          "title": "Sell all visible items?",
-          "description": "This will fetch a market price for and list up to {{count}} items currently shown, using your inventory settings' price preference and sell limits. Estimated time: {{time}}. Leave the app running until the process is complete."
+          "title": "List all visible items?",
+          "description": "This will fetch a market price for and list up to {{count}} items currently shown, using your inventory settings' price preference and price limits. Estimated time: {{time}}. Leave the app running until the process is complete."
         },
         "sellDupes": {
-          "title": "Sell duplicate items?",
-          "description": "This will fetch a market price for and list up to {{count}} duplicate items (keeping one copy of each), using your inventory settings' price preference and sell limits. Estimated time: {{time}}. Leave the app running until the process is complete."
+          "title": "List duplicate items?",
+          "description": "This will fetch a market price for and list up to {{count}} duplicate items (keeping one copy of each), using your inventory settings' price preference and price limits. Estimated time: {{time}}. Leave the app running until the process is complete."
         },
         "removeListings": {
           "title": "Remove all active listings?",
@@ -943,7 +943,7 @@
         },
         "pricePreference": {
           "title": "Default price",
-          "description": "Which price to use when bulk selling items.",
+          "description": "Which price to use when bulk listing items.",
           "options": {
             "highestBuyOrder": "Highest buy order",
             "lowestSellOrder": "Lowest sell order"
@@ -954,11 +954,11 @@
           "description": "Adds {{value}} to every listing price, whether auto-filled or entered manually."
         },
         "sellLimit": {
-          "title": "Sell limit",
+          "title": "Price limit",
           "description": "Only list items priced between {{min}} and {{max}}."
         },
         "sellDelay": {
-          "title": "Sell delay",
+          "title": "Listing delay",
           "description": "Wait {{value}} seconds between listing each item to avoid rate limiting."
         }
       },
@@ -970,14 +970,14 @@
         "noListings": "You have no active market listings.",
         "removedListings": "Removed {{count}} of {{total}} listings",
         "removeFailed": "Couldn't remove any listings.",
-        "noneEligible": "No items were eligible to sell - check your inventory settings' sell limits.",
+        "noneEligible": "No items were eligible to list - check your inventory settings' price limits.",
         "priceFetchCooldown": "Please wait {{seconds}} seconds before fetching more item prices",
         "itemLocked": "This item is locked and can't be listed.",
-        "priceOutOfRange": "{{price}} is outside your configured sell limit ({{min}}-{{max}}).",
+        "priceOutOfRange": "{{price}} is outside your configured price limit ({{min}}-{{max}}).",
         "skippedLocked_one": "Skipped {{count}} locked item",
         "skippedLocked_other": "Skipped {{count}} locked items",
-        "skippedOutOfRange_one": "Skipped {{count}} item outside your sell limit",
-        "skippedOutOfRange_other": "Skipped {{count}} items outside your sell limit"
+        "skippedOutOfRange_one": "Skipped {{count}} item outside your price limit",
+        "skippedOutOfRange_other": "Skipped {{count}} items outside your price limit"
       },
       "errors": {
         "title": "Couldn't update your inventory",

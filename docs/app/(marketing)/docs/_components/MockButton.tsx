@@ -180,13 +180,13 @@ export default function MockButton({ type, content }: MockButtonProps) {
   } else if (type === 'list-selected') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        Sell Selected
+        List Selected
       </span>
     )
   } else if (type === 'list-all') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        Sell All
+        List All
       </span>
     )
   } else if (type === 'save') {
@@ -314,7 +314,7 @@ export default function MockButton({ type, content }: MockButtonProps) {
   } else if (type === 'sell-dupes') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbCopy fontSize={16} className='inline' /> Sell Dupes
+        <TbCopy fontSize={16} className='inline' /> List Dupes
       </span>
     )
   } else if (type === 'steam-sign-in') {

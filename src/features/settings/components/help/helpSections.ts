@@ -328,7 +328,7 @@ export const HELP_SECTIONS: HelpSection[] = [
         id: 'priceRateLimit',
         question: 'Steam is rate-limiting price lookups right now. Please try again in a moment.',
         answer:
-          "Steam's limit was reached. Wait anywhere from a few minutes to an hour, then try again. Increasing the sell delay in Settings → Inventory Manager makes this less likely.",
+          "Steam's limit was reached. Wait anywhere from a few minutes to an hour, then try again. Increasing the listing delay in Settings → Inventory Manager makes this less likely.",
         href: `${DOCS_URL}/settings/inventory-manager`,
       },
     ],

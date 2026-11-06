@@ -334,8 +334,8 @@ export const InventoryManagerPage = () => {
     setSelectedIds(new Set())
   }, [selectedIds, priceDrafts, listItems, settings, isLocked, currencyDecimalPlaces, t])
 
-  // Shared by "Sell all" (candidates = the currently filtered view, matching `main`'s own scoping)
-  // and "Sell dupes" (candidates = dupeCandidates, ignores filters). A user-entered `priceDrafts`
+  // Shared by "List all" (candidates = the currently filtered view, matching `main`'s own scoping)
+  // and "List dupes" (candidates = dupeCandidates, ignores filters). A user-entered `priceDrafts`
   // value (from the price modal or manual input, whichever is why the card shows as selected) wins
   // over the auto-computed price - it's an explicit override, not just a selection side-effect, so
   // it must be honored here the same as it already is by handleListSingle/handleListSelected. Only
