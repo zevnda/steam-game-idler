@@ -140,6 +140,21 @@
   },
   "notifications": {
     "markAllRead": "Mark all as read",
+    "unread": "Unread",
+    "read": "Read",
+    "open": "Open",
+    "caughtUp": "You're all caught up",
+    "caughtUpDescription": "Nothing new. Older notifications are under Read.",
+    "noneRead": "No read notifications",
+    "noneReadDescription": "Notifications you've read show up here.",
+    "types": {
+      "update": "Update",
+      "issue": "Known issue",
+      "giveaway": "Giveaway",
+      "testing": "Testing",
+      "news": "News",
+      "announcement": "Announcement"
+    },
     "empty": "No notifications yet"
   },
   "menu": {
