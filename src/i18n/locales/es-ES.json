@@ -192,7 +192,6 @@
         "description": "Canjea automáticamente los juegos gratuitos en Steam en el momento en que estén disponibles: no te pierdas ninguna oferta."
       },
       "sellDupes": {
-        "title": "Vender artículos duplicados",
         "description": "Publica fácilmente todos los artículos duplicados de tu inventario para la venta con un solo clic."
       },
       "customPresence": {
@@ -217,7 +216,6 @@
       "gamer": {
         "name": "Jugador/a",
         "freeGames": "Canje automático de juegos gratuitos",
-        "sellDupes": "Vender artículos duplicados del inventario",
         "importTimings": "Importar tiempos de desbloqueo de logros",
         "multipleUnlockerGames": "Desbloquea 32 juegos a la vez",
         "multiAccount": "10 cuentas simultáneas"
@@ -664,7 +662,6 @@
         }
       },
       "order": {
-        "delayBeforeFirstUnlock": "Retraso antes del primer desbloqueo",
         "reset": "Reiniciar",
         "skipped": "Saltado",
         "empty": {
@@ -726,7 +723,6 @@
       }
     },
     "inventoryManager": {
-      "fetchPrice": "Obtener precio",
       "fetchingPrice": "Obteniendo Precio…",
       "badgeLevel": "Nivel de insignia {{level}}",
       "noBadge": "Sin insignia fabricada",
@@ -735,25 +731,13 @@
       },
       "actions": {
         "listSelected": "Lista seleccionada ({{count}})",
-        "sellAll": "Vender todo ({{count}})",
-        "sellDupes": "Vender duplicados",
         "removeListings": "Eliminar listados",
-        "lockItem": "Bloquea este artículo para que nunca se venda automáticamente",
-        "list": "Listado en el mercado",
         "cardExchange": "Ver en SteamCardExchange"
       },
       "confirm": {
         "listSelected": {
           "title": "¿Mostrar {{count}} elementos seleccionados?",
           "description": "Esto mostrará todos los artículos seleccionados con su precio correspondiente. Tiempo estimado: {{time}}. Deje la aplicación en ejecución hasta que finalice el proceso."
-        },
-        "sellAll": {
-          "title": "¿Vender todos los artículos visibles?",
-          "description": "Esto obtendrá el precio de mercado y listará hasta {{count}} artículos mostrados actualmente, utilizando la preferencia de precio y los límites de venta de la configuración de tu inventario. Tiempo estimado: {{time}}. Deja la aplicación en ejecución hasta que finalice el proceso."
-        },
-        "sellDupes": {
-          "title": "¿Vender artículos duplicados?",
-          "description": "Esto calculará el precio de mercado y listará hasta {{count}} artículos duplicados (conservando una copia de cada uno), según la preferencia de precio y los límites de venta de la configuración de tu inventario. Tiempo estimado: {{time}}. Deja la aplicación en ejecución hasta que finalice el proceso."
         },
         "removeListings": {
           "title": "¿Eliminar todos los anuncios activos?",
@@ -793,7 +777,6 @@
         },
         "pricePreference": {
           "title": "Precio predeterminado",
-          "description": "Qué precio utilizar al vender artículos al por mayor.",
           "options": {
             "highestBuyOrder": "Orden de compra más alta",
             "lowestSellOrder": "Orden de venta más baja"
@@ -804,11 +787,9 @@
           "description": "Agrega {{value}} a cada precio de lista, ya sea que se complete automáticamente o se ingrese manualmente."
         },
         "sellLimit": {
-          "title": "Límite de Venta",
           "description": "Solo poner a la venta artículos con un precio entre {{min}} y {{max}}."
         },
         "sellDelay": {
-          "title": "Retraso en la venta",
           "description": "Espere {{value}} segundos entre cada elemento listado para evitar la limitación de velocidad."
         }
       },
@@ -816,18 +797,14 @@
         "noListings": "No tienes anuncios activos en el mercado.",
         "removedListings": "Se eliminaron {{count}} de {{total}} anuncios",
         "removeFailed": "No se pudo eliminar ningún anuncio.",
-        "noneEligible": "Ningún artículo cumplía los requisitos para la venta. Compruebe los límites de venta en la configuración de su inventario.",
         "priceFetchCooldown": "Por favor, espere {{seconds}} segundos antes de obtener más precios de artículos",
         "itemLocked": "Este artículo está bloqueado y no se puede publicar.",
-        "priceOutOfRange": "{{price}} está fuera de su límite de venta configurado ({{min}}-{{max}}).",
         "listed_one": "{{count}} artículo listado",
         "listed_other": "{{count}} artículos listados",
         "listFailed_one": "{{count}} artículo no pudo ser listado",
         "listFailed_other": "{{count}} artículos no pudieron ser listados",
         "skippedLocked_one": "Se ha omitido {{count}} artículo bloqueado",
-        "skippedLocked_other": "Se han omitido {{count}} artículos bloqueados",
-        "skippedOutOfRange_one": "Se ha omitido {{count}} artículo por estar fuera de tu límite de venta",
-        "skippedOutOfRange_other": "Se han omitido {{count}} artículos por estar fuera de tu límite de venta"
+        "skippedLocked_other": "Se han omitido {{count}} artículos bloqueados"
       },
       "errors": {
         "title": "No se pudo actualizar su inventario",

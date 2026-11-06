@@ -221,7 +221,6 @@
         "description": "第一时间自动领取 Steam 限时免费游戏，绝不错过福利"
       },
       "sellDupes": {
-        "title": "出售重复物品",
         "description": "一键轻松上架所有重复的库存物品"
       },
       "customPresence": {
@@ -246,7 +245,6 @@
       "gamer": {
         "name": "Gamer",
         "freeGames": "自动领取免费游戏",
-        "sellDupes": "出售重复库存物品",
         "importTimings": "导入成就解锁时间",
         "multipleUnlockerGames": "同时解锁 32 款游戏",
         "multiAccount": "10 个并行账号"
@@ -752,8 +750,6 @@
         }
       },
       "order": {
-        "delayBeforeFirstUnlock": "首次解锁前的延迟",
-        "delayUntilNextUnlock": "推迟至下次解锁",
         "reset": "重置",
         "skipped": "已跳过",
         "protectedSection": {
@@ -830,7 +826,6 @@
       }
     },
     "inventoryManager": {
-      "fetchPrice": "获取价格",
       "fetchingPrice": "正在获取价格……",
       "badgeLevel": "徽章等级 {{level}}",
       "noBadge": "未合成徽章",
@@ -839,25 +834,13 @@
       },
       "actions": {
         "listSelected": "上架所选（{{count}}）",
-        "sellAll": "全部出售（{{count}}）",
-        "sellDupes": "出售重复物品",
         "removeListings": "移除上架",
-        "lockItem": "锁定此物品，使其永远不会被自动出售",
-        "list": "在市场上架",
         "cardExchange": "在 Steam Card Exchange 上查看"
       },
       "confirm": {
         "listSelected": {
           "title": "上架 {{count}} 件所选物品？",
           "description": "这将按输入的价格上架每件所选物品，预计时间：{{time}}，请保持应用运行直至完成"
-        },
-        "sellAll": {
-          "title": "出售所有可见物品？",
-          "description": "这将为当前显示的至多 {{count}} 件物品获取市场价格并上架，使用您库存设置中的价格偏好和出售限制，预计时间：{{time}}，请保持应用运行直至完成"
-        },
-        "sellDupes": {
-          "title": "出售重复物品？",
-          "description": "这将为至多 {{count}} 件重复物品（每种保留一个）获取市场价格并上架，使用您库存设置中的价格偏好和出售限制，预计时间：{{time}}，请保持应用运行直至完成"
         },
         "removeListings": {
           "title": "移除所有活跃上架？",
@@ -898,7 +881,6 @@
         },
         "pricePreference": {
           "title": "默认价格",
-          "description": "批量出售物品时使用的价格基准",
           "options": {
             "highestBuyOrder": "最高求购价",
             "lowestSellOrder": "最低出售价"
@@ -909,11 +891,9 @@
           "description": "为每个上架价格增加 {{value}}，无论是自动填充还是手动输入"
         },
         "sellLimit": {
-          "title": "出售限制",
           "description": "仅上架价格在 {{min}} 到 {{max}} 之间的物品"
         },
         "sellDelay": {
-          "title": "出售延迟",
           "description": "每上架一件物品后等待 {{value}} 秒，以避免频率限制"
         }
       },
@@ -921,14 +901,11 @@
         "noListings": "您没有活跃的市场挂牌",
         "removedListings": "已移除 {{total}} 个挂牌中的 {{count}} 个",
         "removeFailed": "无法移除任何挂牌",
-        "noneEligible": "没有符合条件的物品可出售——请检查您的库存设置中的出售限制",
         "priceFetchCooldown": "请等待 {{seconds}} 秒后再获取更多物品价格",
         "itemLocked": "此物品已锁定，无法上架",
-        "priceOutOfRange": "{{price}} 超出了您设置的出售限制（{{min}}-{{max}}）",
         "listed_other": "已上架 {{count}} 件物品",
         "listFailed_other": "{{count}} 件物品无法上架",
-        "skippedLocked_other": "跳过了 {{count}} 件已锁定物品",
-        "skippedOutOfRange_other": "跳过了 {{count}} 件超出出售限制的物品"
+        "skippedLocked_other": "跳过了 {{count}} 件已锁定物品"
       },
       "errors": {
         "title": "无法更新您的库存",

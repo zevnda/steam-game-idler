@@ -214,7 +214,6 @@
         "description": "Riscatta automaticamente i giochi gratuiti su Steam appena diventano disponibili: non perderti mai un titolo gratis."
       },
       "sellDupes": {
-        "title": "Vendi oggetti duplicati",
         "description": "Metti facilmente in vendita tutti gli oggetti duplicati dell'inventario con un solo clic."
       },
       "customPresence": {
@@ -239,7 +238,6 @@
       "gamer": {
         "name": "Gamer",
         "freeGames": "Riscatto automatico dei giochi gratuiti",
-        "sellDupes": "Vendi oggetti duplicati dell'inventario",
         "importTimings": "Importa tempistiche di sblocco obiettivi",
         "multipleUnlockerGames": "Sblocca 32 giochi contemporaneamente",
         "multiAccount": "10 account contemporanei"
@@ -721,8 +719,6 @@
         }
       },
       "order": {
-        "delayBeforeFirstUnlock": "Ritardo prima del primo sblocco",
-        "delayUntilNextUnlock": "Attesa prima del prossimo sblocco",
         "reset": "Ripristina",
         "skipped": "Saltato",
         "protectedSection": {
@@ -797,7 +793,6 @@
       }
     },
     "inventoryManager": {
-      "fetchPrice": "Recupera prezzo",
       "fetchingPrice": "Recupero prezzo...",
       "badgeLevel": "Livello medaglia {{level}}",
       "noBadge": "Nessuna medaglia creata",
@@ -806,25 +801,13 @@
       },
       "actions": {
         "listSelected": "Vendi selezionati ({{count}})",
-        "sellAll": "Vendi tutti ({{count}})",
-        "sellDupes": "Vendi duplicati",
         "removeListings": "Rimuovi inserzioni",
-        "lockItem": "Blocca vendita automatica",
-        "list": "Vendi sul mercato",
         "cardExchange": "Visualizza su SteamCardExchange"
       },
       "confirm": {
         "listSelected": {
           "title": "Vendere {{count}} oggetti selezionati?",
           "description": "Questo metterà in vendita ogni oggetto selezionato al prezzo inserito. Tempo stimato: {{time}}. Lascia l'app in esecuzione fino al completamento."
-        },
-        "sellAll": {
-          "title": "Vendere tutti gli oggetti visibili?",
-          "description": "Questo recupererà un prezzo di mercato e metterà in vendita fino a {{count}} oggetti attualmente mostrati, usando la preferenza di prezzo e i limiti di vendita delle impostazioni dell'inventario. Tempo stimato: {{time}}. Lascia l'app in esecuzione fino al completamento."
-        },
-        "sellDupes": {
-          "title": "Vendere gli oggetti duplicati?",
-          "description": "Questo recupererà un prezzo di mercato e metterà in vendita fino a {{count}} oggetti duplicati (conservando una copia di ciascuno), usando la preferenza di prezzo e i limiti di vendita delle impostazioni dell'inventario. Tempo stimato: {{time}}. Lascia l'app in esecuzione fino al completamento."
         },
         "removeListings": {
           "title": "Rimuovere tutte le inserzioni attive?",
@@ -864,7 +847,6 @@
         },
         "pricePreference": {
           "title": "Prezzo predefinito",
-          "description": "Quale prezzo usare durante la vendita in blocco degli oggetti.",
           "options": {
             "highestBuyOrder": "Ordine di acquisto più alto",
             "lowestSellOrder": "Ordine di vendita più basso"
@@ -875,11 +857,9 @@
           "description": "Aggiunge {{value}} al prezzo di ogni inserzione, sia compilato automaticamente che inserito manualmente."
         },
         "sellLimit": {
-          "title": "Limite di vendita",
           "description": "Metti in vendita solo oggetti con prezzo compreso tra {{min}} e {{max}}."
         },
         "sellDelay": {
-          "title": "Ritardo vendita",
           "description": "Attendi {{value}} secondi tra la messa in vendita di ogni oggetto per evitare limiti di frequenza."
         }
       },
@@ -887,18 +867,14 @@
         "noListings": "Non hai inserzioni di mercato attive.",
         "removedListings": "Rimosse {{count}} di {{total}} inserzioni",
         "removeFailed": "Impossibile rimuovere inserzioni.",
-        "noneEligible": "Nessun oggetto era idoneo alla vendita: controlla i limiti di vendita nelle impostazioni dell'inventario.",
         "priceFetchCooldown": "Attendi {{seconds}} secondi prima di recuperare altri prezzi",
         "itemLocked": "Questo oggetto è bloccato e non può essere messo in vendita.",
-        "priceOutOfRange": "{{price}} è fuori dal limite di vendita configurato ({{min}}-{{max}}).",
         "listed_one": "{{count}} oggetto messo in vendita",
         "listed_other": "{{count}} oggetti messi in vendita",
         "listFailed_one": "{{count}} oggetto non è stato messo in vendita",
         "listFailed_other": "{{count}} oggetti non sono stati messi in vendita",
         "skippedLocked_one": "{{count}} oggetto bloccato saltato",
-        "skippedLocked_other": "{{count}} oggetti bloccati saltati",
-        "skippedOutOfRange_one": "{{count}} oggetto fuori dal limite di vendita saltato",
-        "skippedOutOfRange_other": "{{count}} oggetti fuori dal limite di vendita saltati"
+        "skippedLocked_other": "{{count}} oggetti bloccati saltati"
       },
       "errors": {
         "title": "Impossibile aggiornare l'inventario",

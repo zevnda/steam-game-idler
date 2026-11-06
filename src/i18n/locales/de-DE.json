@@ -191,7 +191,6 @@
         "description": "Kostenlose Spiele auf Steam werden automatisch eingelöst, sobald sie verfügbar sind – so verpassen Sie nie wieder ein Gratisspiel."
       },
       "sellDupes": {
-        "title": "Doppelte Artikel verkaufen",
         "description": "Alle doppelten Inventarartikel einfach mit einem Klick zum Verkauf auflisten."
       },
       "customPresence": {
@@ -216,7 +215,6 @@
       "gamer": {
         "name": "Gamer",
         "freeGames": "Automatische Einlösung des Gratisspiels",
-        "sellDupes": "Doppelte Inventar Gegenstände verkaufen",
         "importTimings": "Erfolgs-Entsperrzeitpunkte importieren",
         "multipleUnlockerGames": "Schalte 32 Spiele gleichzeitig frei",
         "multiAccount": "10 gleichzeitige Konten"
@@ -575,7 +573,6 @@
         }
       },
       "order": {
-        "delayBeforeFirstUnlock": "Verzögerung vor der ersten Entsperrung",
         "reset": "Zurücksetzen",
         "skipped": "Übersprungen",
         "empty": {
@@ -633,7 +630,6 @@
         },
         "pricePreference": {
           "title": "Standardpreis",
-          "description": "Welcher Preis für den Massenverkauf von Gegenständen.",
           "options": {
             "highestBuyOrder": "Höchster Kaufauftrag",
             "lowestSellOrder": "Niedrigster Kaufauftrag"
@@ -644,11 +640,9 @@
           "description": "Fügt {{value}} zu jedem Angebotspreis hinzu, egal ob dieser automatisch ausgefüllt oder manuell eingegeben wurde."
         },
         "sellLimit": {
-          "title": "Verkaufs Limit",
           "description": "Es werden nur Artikel aufgelistet, deren Preis zwischen {{min}} und {{max}} liegt."
         },
         "sellDelay": {
-          "title": "Verkaufsverzögerung",
           "description": "Warten Sie {{value}} Sekunden zwischen dem Auflisten der einzelnen Elemente, um eine Ratenbegrenzung zu vermeiden."
         }
       },
@@ -656,10 +650,8 @@
         "noListings": "Sie haben keine aktiven Markteinträge.",
         "removedListings": "{{count}} der {{total}} Einträge entfernt",
         "removeFailed": "Es konnten keine Einträge entfernt werden.",
-        "noneEligible": "Keine Gegenstände waren zum Verkauf berechtigt - überprüfen Sie die Verkaufsgrenzen Ihrer Inventareinstellungen.",
         "priceFetchCooldown": "Bitte warten Sie {{seconds}} Sekunden, bevor Sie weitere Gegenstandspreise abrufen",
-        "itemLocked": "Dieser Gegenstand ist gesperrt und kann nicht angeboten werden.",
-        "priceOutOfRange": "{{price}} liegt außerhalb Ihres konfigurierten Verkaufslimits ({{min}}-{{max}})."
+        "itemLocked": "Dieser Gegenstand ist gesperrt und kann nicht angeboten werden."
       },
       "errors": {
         "title": "Ihr Inventar konnte nicht aktualisiert werden",

@@ -194,7 +194,6 @@
         "description": "Automaticamente resgata jogos gratuitos no Steam assim que ficam disponíveis - Nunca perca um presente."
       },
       "sellDupes": {
-        "title": "Vender itens duplicados",
         "description": "Liste com facilidade a venda todos os itens duplicados do seu inventário com um único clique."
       },
       "customPresence": {
@@ -219,7 +218,6 @@
       "gamer": {
         "name": "Gamer",
         "freeGames": "Resgate automático de jogos",
-        "sellDupes": "Venda de itens duplicados",
         "importTimings": "Importe o tempo de destrave das conquistas",
         "multipleUnlockerGames": "Destrave 32 jogos de uma só vez",
         "multiAccount": "10 contas simultâneas"
@@ -667,8 +665,6 @@
         }
       },
       "order": {
-        "delayBeforeFirstUnlock": "Atraso antes do primeiro desbloqueio",
-        "delayUntilNextUnlock": "Atraso para o próximo desbloqueio",
         "reset": "Limpar",
         "skipped": "Pulado",
         "empty": {
@@ -730,7 +726,6 @@
       }
     },
     "inventoryManager": {
-      "fetchPrice": "Buscar preço",
       "fetchingPrice": "Buscando preço…",
       "badgeLevel": "Nível da Insígnia {{level}}",
       "noBadge": "Sem insígnia fabricada",
@@ -739,25 +734,13 @@
       },
       "actions": {
         "listSelected": "Anunciar selecionados ({{count}})",
-        "sellAll": "Vender todos ({{count}})",
-        "sellDupes": "Vender duplicados",
         "removeListings": "Remover anúncios",
-        "lockItem": "Travar este item para que ele nunca seja vendido automaticamente",
-        "list": "Anunciar no mercado",
         "cardExchange": "Ver o SteamCardExchange"
       },
       "confirm": {
         "listSelected": {
           "title": "Anunciar {{count}} itens selecionados?",
           "description": "Isso irá mostrar todo item selecionado com seu preço correspondente. Tempo estimado: {{time}}. Deixe o aplicativo aberto até que o processo esteja completo."
-        },
-        "sellAll": {
-          "title": "Vender todos os itens visíveis?",
-          "description": "Esta ação buscará o preço de mercado e colocará até {{count}} itens atualmente exibidos, usando suas preferências de preço e limites de venda definidos nas configurações de inventário. Tempo estimado: {{time}}. Deixe o aplicativo em execução até que o processo seja concluído."
-        },
-        "sellDupes": {
-          "title": "Vender itens duplicados?",
-          "description": "Isso buscará o preço de mercado e listará até {{count}} itens duplicados (mantendo uma cópia de cada), utilizando as preferências de preço e os limites de venda das suas configurações de inventário. Tempo estimado: {{time}}. Mantenha o aplicativo em execução até que o processo seja concluído."
         },
         "removeListings": {
           "title": "Remover todos os anúncios ativos?",
@@ -797,7 +780,6 @@
         },
         "pricePreference": {
           "title": "Preço padrão",
-          "description": "Qual preço usar quando comprar itens em atacado.",
           "options": {
             "highestBuyOrder": "Maior ordem de compra",
             "lowestSellOrder": "Menor ordem de venda"
@@ -808,11 +790,9 @@
           "description": "Adiciona {{value}} para todo preço da lista, tanto preenchido automaticamente ou manualmente."
         },
         "sellLimit": {
-          "title": "Limite de vendas",
           "description": "Apenas anunciar itens com preço entre {{min}} e {{max}}."
         },
         "sellDelay": {
-          "title": "Atraso de venda",
           "description": "Esperar {{value}} segundos entre os anúncios para evitar o limite de venda."
         }
       },
@@ -820,18 +800,14 @@
         "noListings": "Você não tem anúncios ativos no mercado.",
         "removedListings": "Removido {{count}} de {{total}} anúncios",
         "removeFailed": "Não foi possível remover nenhum anúncio.",
-        "noneEligible": "Não há itens elegíveis para vender — confira as configurações de limite no seu inventário.",
         "priceFetchCooldown": "Por favor, espere {{seconds}} segundos antes de colocar mais itens para venda",
         "itemLocked": "Este item está bloqueado e não pode ser anunciado.",
-        "priceOutOfRange": "{{price}} está fora do seu limite de venda ({{min}}-{{max}}).",
         "listed_one": "{{count}} item anunciado",
         "listed_other": "{{count}} itens anunciados",
         "listFailed_one": "{{count}} item não pode ser anunciado",
         "listFailed_other": "{{count}} itens não puderam ser anunciados",
         "skippedLocked_one": "{{count}} item bloqueado ignorado",
-        "skippedLocked_other": "{{count}} itens bloqueados ignorados",
-        "skippedOutOfRange_one": "{{count}} item fora do seu limite de venda foi ignorado",
-        "skippedOutOfRange_other": "{{count}} itens fora do seu limite de venda foram ignorados"
+        "skippedLocked_other": "{{count}} itens bloqueados ignorados"
       },
       "errors": {
         "title": "Não foi possível atualizar seu inventário",
