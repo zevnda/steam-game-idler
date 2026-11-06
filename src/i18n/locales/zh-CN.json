@@ -140,6 +140,21 @@
   },
   "notifications": {
     "markAllRead": "全部标为已读",
+    "unread": "未读",
+    "read": "已读",
+    "open": "打开",
+    "caughtUp": "已全部读完",
+    "caughtUpDescription": "暂无新通知，较早的通知请在「已读」中查看",
+    "noneRead": "暂无已读通知",
+    "noneReadDescription": "您已读的通知会显示在这里",
+    "types": {
+      "update": "更新",
+      "issue": "已知问题",
+      "giveaway": "抽奖",
+      "testing": "测试",
+      "news": "新闻",
+      "announcement": "公告"
+    },
     "empty": "暂无通知"
   },
   "menu": {
@@ -221,6 +236,7 @@
         "description": "第一时间自动领取 Steam 限时免费游戏，绝不错过福利"
       },
       "sellDupes": {
+        "title": "列出重复物品",
         "description": "一键轻松上架所有重复的库存物品"
       },
       "customPresence": {
@@ -245,6 +261,7 @@
       "gamer": {
         "name": "Gamer",
         "freeGames": "自动领取免费游戏",
+        "sellDupes": "列出重复库存物品",
         "importTimings": "导入成就解锁时间",
         "multipleUnlockerGames": "同时解锁 32 款游戏",
         "multiAccount": "10 个并行账号"
@@ -497,7 +514,7 @@
     "achievements": {
       "tabs": {
         "achievements": "成就",
-        "statistics": "数据"
+        "statistics": "统计数据"
       },
       "header": {
         "viewOnSteam": "在 Steam 上查看",
@@ -750,6 +767,42 @@
         }
       },
       "order": {
+        "unlocksAt": "解锁时间",
+        "rightAway": "立即",
+        "timeRange": "{{from}} – {{to}}",
+        "timeline": {
+          "start": "解锁器会启动此游戏",
+          "end": "解锁器已完成此游戏"
+        },
+        "wait": {
+          "firstNone": "游戏启动后立即解锁",
+          "firstSet": "游戏启动后等待 {{duration}}",
+          "random": "随机等待",
+          "randomRange": "随机等待 · {{min}}–{{max}} 分钟",
+          "none": "不等待",
+          "set": "等待 {{duration}}",
+          "firstHeading": "首次解锁前等待",
+          "heading": "解锁 <name>{{name}}</name> 前等待",
+          "randomPreset": "随机",
+          "custom": "自定义",
+          "hours": "小时",
+          "hoursUnit": "时",
+          "minutesUnit": "分"
+        },
+        "duration": {
+          "days": "{{d}} 天",
+          "daysHours": "{{d}} 天 {{h}} 小时",
+          "hours": "{{h}} 小时",
+          "hoursMinutes": "{{h}} 小时 {{m}} 分钟",
+          "minutes": "{{m}} 分钟",
+          "minutesSeconds": "{{m}} 分钟 {{s}} 秒",
+          "seconds": "{{s}} 秒"
+        },
+        "summary": {
+          "unlocking": "正在解锁 {{included}} / {{total}}",
+          "finishes": "预计 <time>{{duration}}</time> 后完成",
+          "finishesRange": "预计 <time>{{from}}</time> 至 <time>{{to}}</time> 之间完成"
+        },
         "reset": "重置",
         "skipped": "已跳过",
         "protectedSection": {
@@ -774,6 +827,8 @@
       },
       "importTimings": {
         "title": "导入时间轴",
+        "cardTitle": "复制其他玩家配置",
+        "cardDescription": "获取并使用其他玩家的真实的成就解锁时间",
         "description": "获取另一位玩家的真实成就解锁时间，并据此推导出符合实际的每项成就延迟",
         "inputPlaceholder": "SteamID64、个人资料 URL 或自定义 URL",
         "importButton": "导入",
@@ -791,7 +846,7 @@
         "starting": "正在启动……",
         "waitingForSchedule": "等待计划解锁时段",
         "currentGame": "当前游戏",
-        "upNext": "下一个",
+        "upNext": "下一项",
         "completedCount": "已解锁 {{unlocked}}/{{total}}",
         "completedMaxUnlocksReached": "已解锁 {{unlocked}}/{{total}}（已达到最大解锁数）",
         "completedMaxPlaytimeWithCount": "已解锁 {{unlocked}}/{{total}}（已达到最大游戏时长）",
@@ -826,7 +881,10 @@
       }
     },
     "inventoryManager": {
+      "fetchPrice": "获取市场价格",
       "fetchingPrice": "正在获取价格……",
+      "priceLabel": "物品价格",
+      "unlockHint": "点击解锁并上架",
       "badgeLevel": "徽章等级 {{level}}",
       "noBadge": "未合成徽章",
       "connect": {
@@ -834,13 +892,25 @@
       },
       "actions": {
         "listSelected": "上架所选（{{count}}）",
+        "sellAll": "全部上架（{{count}}）",
+        "sellDupes": "上架重复物品",
         "removeListings": "移除上架",
+        "lockItem": "锁定此物品，使其永远不会被自动上架",
+        "listOne": "上架",
         "cardExchange": "在 Steam Card Exchange 上查看"
       },
       "confirm": {
         "listSelected": {
           "title": "上架 {{count}} 件所选物品？",
           "description": "这将按输入的价格上架每件所选物品，预计时间：{{time}}，请保持应用运行直至完成"
+        },
+        "sellAll": {
+          "title": "上架所有可见物品？",
+          "description": "此操作将为当前显示的至多 {{count}} 件物品获取市场价格并上架，所用价格偏好与价格限制均取自您的库存设置，预计耗时：{{time}}，请保持应用运行，直至该过程完成"
+        },
+        "sellDupes": {
+          "title": "上架重复物品？",
+          "description": "此操作将为至多 {{count}} 件重复物品获取市场价格并上架（每件保留一份），所用价格偏好与价格限制均取自您的库存设置，预计耗时：{{time}}，请保持应用运行，直至该过程完成"
         },
         "removeListings": {
           "title": "移除所有活跃上架？",
@@ -857,7 +927,8 @@
         "sale": "特卖中",
         "dupes": "重复项",
         "badge": "已有徽章",
-        "locked": "已锁定"
+        "locked": "已锁定",
+        "selected": "已选中"
       },
       "sort": {
         "label": "排序",
@@ -881,6 +952,7 @@
         },
         "pricePreference": {
           "title": "默认价格",
+          "description": "批量上架物品时采用的价格种类",
           "options": {
             "highestBuyOrder": "最高求购价",
             "lowestSellOrder": "最低出售价"
@@ -891,9 +963,11 @@
           "description": "为每个上架价格增加 {{value}}，无论是自动填充还是手动输入"
         },
         "sellLimit": {
+          "title": "价格限制",
           "description": "仅上架价格在 {{min}} 到 {{max}} 之间的物品"
         },
         "sellDelay": {
+          "title": "上架延迟",
           "description": "每上架一件物品后等待 {{value}} 秒，以避免频率限制"
         }
       },
@@ -901,11 +975,14 @@
         "noListings": "您没有活跃的市场挂牌",
         "removedListings": "已移除 {{total}} 个挂牌中的 {{count}} 个",
         "removeFailed": "无法移除任何挂牌",
+        "noneEligible": "没有符合上架条件的物品，请检查库存设置中的价格限制",
         "priceFetchCooldown": "请等待 {{seconds}} 秒后再获取更多物品价格",
         "itemLocked": "此物品已锁定，无法上架",
+        "priceOutOfRange": "{{price}} 超出您设置的价格限制（{{min}}-{{max}}）",
         "listed_other": "已上架 {{count}} 件物品",
         "listFailed_other": "{{count}} 件物品无法上架",
-        "skippedLocked_other": "跳过了 {{count}} 件已锁定物品"
+        "skippedLocked_other": "跳过了 {{count}} 件已锁定物品",
+        "skippedOutOfRange_other": "已跳过 {{count}} 件超出价格限制的物品"
       },
       "errors": {
         "title": "无法更新您的库存",
