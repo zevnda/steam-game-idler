@@ -23,6 +23,7 @@ pub fn steam_language_for_locale(locale: &str) -> &'static str {
         "es-ES" => "spanish",
         "fr-FR" => "french",
         "it-IT" => "italian",
+        "pl-PL" => "polish",
         "pt-BR" => "brazilian",
         "ru-RU" => "russian",
         "tr-TR" => "turkish",
@@ -41,6 +42,7 @@ mod tests {
         assert_eq!(steam_language_for_locale("es-ES"), "spanish");
         assert_eq!(steam_language_for_locale("zh-CN"), "schinese");
         assert_eq!(steam_language_for_locale("pt-BR"), "brazilian");
+        assert_eq!(steam_language_for_locale("pl-PL"), "polish");
     }
 
     #[test]
