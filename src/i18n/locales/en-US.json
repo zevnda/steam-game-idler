@@ -890,8 +890,10 @@
       }
     },
     "inventoryManager": {
-      "fetchPrice": "Fetch price",
+      "fetchPrice": "Get market price",
       "fetchingPrice": "Fetching price…",
+      "priceLabel": "Item price",
+      "unlockHint": "Click to unlock and list it",
       "badgeLevel": "Badge level {{level}}",
       "noBadge": "No badge crafted",
       "connect": {
@@ -903,7 +905,7 @@
         "sellDupes": "List dupes",
         "removeListings": "Remove listings",
         "lockItem": "Lock this item so it's never listed automatically",
-        "list": "List on the market",
+        "listOne": "List",
         "cardExchange": "View on SteamCardExchange"
       },
       "confirm": {
@@ -934,7 +936,8 @@
         "sale": "On sale",
         "dupes": "Duplicates",
         "badge": "Has badge",
-        "locked": "Locked"
+        "locked": "Locked",
+        "selected": "Selected"
       },
       "sort": {
         "label": "Sort by",

@@ -151,9 +151,12 @@ export const InventoryManagerPage = () => {
       if (filterValues.has('badge') && !(item.badgeLevel > 0)) return false
       if (filterValues.has('dupes') && !(dupeCounts[item.marketHashName] > 1)) return false
       if (filterValues.has('locked') && !isLocked(item.assetid)) return false
+      // Just the items ticked for "List selected", to review them before listing. Live, so
+      // unticking one here drops it from view straight away.
+      if (filterValues.has('selected') && !selectedIds.has(item.assetid)) return false
       return true
     })
-  }, [items, searchQuery, filterValues, isLocked])
+  }, [items, searchQuery, filterValues, isLocked, selectedIds])
 
   const sortedItems = useMemo(() => {
     const list = [...filteredItems]
