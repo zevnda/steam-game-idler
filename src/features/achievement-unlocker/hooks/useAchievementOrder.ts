@@ -1,5 +1,5 @@
 ﻿import type { AchievementData, AchievementDto } from '@/features/achievement-manager/types'
-import type { AchievementOrder, AchievementTiming } from '../types'
+import type { AchievementOrder, AchievementTiming, AchievementUnlockerSettings } from '../types'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { errorMessageKey, importTimingsErrorMessageKey } from '../utils/errorMessageKey'
@@ -11,7 +11,7 @@ import {
   unownedDlcGroupIdsOf,
 } from '@/features/achievement-manager/utils/groupAchievements'
 import { useSessionStore } from '@/shared/stores/sessionStore'
-import { logFrontendInfo } from '@/shared/utils/frontendLogging'
+import { logFrontendInfo, logFrontendWarn } from '@/shared/utils/frontendLogging'
 import { invoke } from '@/shared/utils/invoke'
 
 interface OpenGame {
@@ -67,11 +67,25 @@ export const useAchievementOrder = (openGame: OpenGame | null) => {
   // unlocker skips them - see isArchivedLocked in groupAchievements.ts). Protected and unowned DLC
   // both take precedence, so each achievement lands in exactly one read-only list.
   const [archivedAchievements, setArchivedAchievements] = useState<AchievementDto[]>([])
+  // The account's Unlock interval setting (minutes) - what an unset `delayNextUnlock` falls back
+  // to at run time (manager.rs's `random_delay_ms`). Display-only here: it labels random waits and
+  // feeds the timeline's "Unlocks at"/finish estimates. Null until loaded, or if loading it fails -
+  // the editor stays fully usable without it, it just can't show the range.
+  const [unlockInterval, setUnlockInterval] = useState<[number, number] | null>(null)
 
   const load = useCallback(async () => {
     if (!account || !openGame) return
     setIsLoading(true)
     setLoadErrorCode(null)
+    // Separate from the main load below so a settings read failure never blocks editing the order.
+    invoke<AchievementUnlockerSettings>('get_achievement_unlocker_settings', { account })
+      .then(settings => setUnlockInterval(settings.interval))
+      .catch(error => {
+        setUnlockInterval(null)
+        logFrontendWarn('useAchievementOrder', 'could not load unlock interval for estimates', {
+          error: String(error),
+        })
+      })
     try {
       const [data, order] = await Promise.all([
         invoke<AchievementData>('get_achievement_data', {
@@ -289,6 +303,7 @@ export const useAchievementOrder = (openGame: OpenGame | null) => {
     dlcGroupIds,
     unownedDlcAchievements,
     archivedAchievements,
+    unlockInterval,
     refresh: load,
     reorder,
     toggleSkip,

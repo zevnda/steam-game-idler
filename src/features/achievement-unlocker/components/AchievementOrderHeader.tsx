@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { TbX } from 'react-icons/tb'
-import { Alert, Button, Typography } from '@heroui/react'
+import { TbUsers, TbX } from 'react-icons/tb'
+import { Alert, Button, cn, Typography } from '@heroui/react'
 import { TierBadge } from '@/shared/components/TierBadge'
 
 interface AchievementOrderHeaderProps {
@@ -9,26 +9,25 @@ interface AchievementOrderHeaderProps {
   canImportTimings: boolean
   hasProtectedAchievements: boolean
   onClose: () => void
-  onReset: () => void
   onImportTimings: () => void
   onUpsell: () => void
 }
 
 // Static/fixed header for the achievement-order overlay - mirrors AchievementManagerHeader.tsx's
-// header/body split (bg-background, border-b, shrink-0, close-then-title on the left) so the reset and
-// import controls stay reachable while the virtualized achievement list scrolls beneath them,
-// instead of scrolling away with it like the previous inline row did. The delay-before-first-unlock
-// input lives in AchievementOrderListHeader.tsx instead, above the list, so it lines up with each
-// row's own per-achievement delay input. The protected-achievements alert mirrors
-// AchievementManagerHeader.tsx's own, below the controls row, but with unlocker-specific wording -
-// see useAchievementOrder.ts's `hasProtectedAchievements` for why it disqualifies the whole game.
+// header/body split (bg-background, border-b, shrink-0, close-then-title on the left) so import
+// stays reachable while the virtualized timeline scrolls beneath them. The
+// delay-before-first-unlock wait lives at the top of the timeline itself (AchievementOrderList.tsx's
+// StartRow), not here. Import timings is a card in the title row rather than a small toolbar button:
+// users repeatedly couldn't find it as a button, and as a card it can say what it does. The
+// protected-achievements alert mirrors AchievementManagerHeader.tsx's own, with unlocker-specific
+// wording - see useAchievementOrder.ts's `hasProtectedAchievements` for why it disqualifies the
+// whole game.
 export const AchievementOrderHeader = ({
   name,
   isDisabled,
   canImportTimings,
   hasProtectedAchievements,
   onClose,
-  onReset,
   onImportTimings,
   onUpsell,
 }: AchievementOrderHeaderProps) => {
@@ -47,33 +46,58 @@ export const AchievementOrderHeader = ({
           <Button isIconOnly variant='ghost' onPress={onClose}>
             <TbX fontSize={18} />
           </Button>
-          <Typography className='max-w-65 truncate' data-tauri-drag-region type='h3'>
-            {name}
-          </Typography>
+          <div className='flex min-w-0 flex-col' data-tauri-drag-region>
+            <Typography className='max-w-100 truncate' data-tauri-drag-region type='h3'>
+              {name}
+            </Typography>
+            <Typography color='muted' data-tauri-drag-region type='body-xs'>
+              {t('common.gameCardMenu.customOrder')}
+            </Typography>
+          </div>
         </div>
 
-        <div className='flex shrink-0 items-center gap-2'>
-          <Button isDisabled={isDisabled} size='sm' variant='danger' onPress={onReset}>
-            {t('dashboard.achievementUnlocker.order.reset')}
-          </Button>
-          {canImportTimings ? (
-            <Button isDisabled={isDisabled} size='sm' variant='secondary' onPress={onImportTimings}>
-              {t('dashboard.achievementUnlocker.importTimings.title')}
-            </Button>
-          ) : (
-            // Not `isDisabled` on the Button - HeroUI maps that to a native `disabled` attribute,
-            // which swallows the real click a gated upsell needs entirely (confirmed live via CDP).
-            // The wrapping span only supplies the native hover tooltip; the Button itself stays real
-            // and pressable, styled to look disabled, with `onPress` opening the upsell - regardless
-            // of `isDisabled` (loading/error/empty), since opening the upsell modal isn't an edit.
-            <Button className='opacity-50' size='sm' variant='secondary' onPress={onUpsell}>
-              <span className='flex items-center gap-1.5'>
-                {t('dashboard.achievementUnlocker.importTimings.title')}
-                <TierBadge tier='gamer' />
-              </span>
-            </Button>
+        {/* The whole card is the button. Sits in the title row's right side (where Reset used to
+            be, before it moved next to Save) - capped in width so a long locale's description
+            wraps inside the card instead of squeezing the game name. Plain spans inside rather
+            than Typography, which can render block elements a <button> can't contain.
+            Gated: stays a real, enabled button (never native `disabled` - a real click on a
+            native-disabled control fires no event at all, so the upsell would never open), with
+            the press rerouted to the upsell regardless of `isDisabled` (loading/error/empty),
+            since opening the upsell modal isn't an edit. Native `disabled` is only used for that
+            genuine nothing-loaded-yet state on an account that does have access. */}
+        <button
+          className={cn(
+            'flex min-w-0 max-w-160 items-center gap-3 rounded-xl border border-border bg-surface px-3 py-2 text-left outline-none duration-150',
+            'focus-visible:ring-2 focus-visible:ring-focus',
+            'enabled:cursor-pointer enabled:hover:border-accent/50 enabled:hover:bg-surface-hover',
+            'disabled:opacity-50',
           )}
-        </div>
+          disabled={canImportTimings && isDisabled}
+          type='button'
+          onClick={canImportTimings ? onImportTimings : onUpsell}
+        >
+          <span
+            className={cn(
+              'flex size-9 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent',
+              !canImportTimings && 'opacity-60',
+            )}
+          >
+            <TbUsers fontSize={18} />
+          </span>
+          <span className='flex min-w-0 flex-1 flex-col'>
+            <span className='flex flex-wrap items-center gap-2'>
+              <span className='text-sm font-semibold text-foreground'>
+                {t('dashboard.achievementUnlocker.importTimings.cardTitle')}
+              </span>
+              {!canImportTimings && <TierBadge tier='gamer' />}
+            </span>
+            <span className='text-xs text-muted'>
+              {/* A shorter line than the modal's own `importTimings.description` - the card only
+                  needs to say what it does; the modal it opens explains the rest. */}
+              {t('dashboard.achievementUnlocker.importTimings.cardDescription')}
+            </span>
+          </span>
+        </button>
       </div>
 
       {hasProtectedAchievements && (

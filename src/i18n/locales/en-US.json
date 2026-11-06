@@ -759,8 +759,42 @@
         }
       },
       "order": {
-        "delayBeforeFirstUnlock": "Delay before first unlock",
-        "delayUntilNextUnlock": "Delay until next unlock",
+        "unlocksAt": "Unlocks at",
+        "rightAway": "Right away",
+        "timeRange": "{{from}} – {{to}}",
+        "timeline": {
+          "start": "The unlocker starts this game",
+          "end": "The unlocker finished the game"
+        },
+        "wait": {
+          "firstNone": "Unlock right after the game starts",
+          "firstSet": "Wait {{duration}} after the game starts",
+          "random": "Random wait",
+          "randomRange": "Random wait · {{min}}–{{max}} min",
+          "none": "No wait",
+          "set": "Wait {{duration}}",
+          "firstHeading": "Wait before the first unlock",
+          "heading": "Wait before unlocking <name>{{name}}</name>",
+          "randomPreset": "Random",
+          "custom": "Custom",
+          "hours": "Hours",
+          "hoursUnit": "h",
+          "minutesUnit": "m"
+        },
+        "duration": {
+          "days": "{{d}}d",
+          "daysHours": "{{d}}d {{h}}h",
+          "hours": "{{h}}h",
+          "hoursMinutes": "{{h}}h {{m}}m",
+          "minutes": "{{m}} min",
+          "minutesSeconds": "{{m}}m {{s}}s",
+          "seconds": "{{s}}s"
+        },
+        "summary": {
+          "unlocking": "Unlocking {{included}} of {{total}}",
+          "finishes": "finishes in about <time>{{duration}}</time>",
+          "finishesRange": "finishes in about <time>{{from}}</time> to <time>{{to}}</time>"
+        },
         "reset": "Reset",
         "skipped": "Skipped",
         "protectedSection": {
@@ -785,6 +819,8 @@
       },
       "importTimings": {
         "title": "Import timings",
+        "cardTitle": "Copy another player",
+        "cardDescription": "Fetch another player's real achievement unlock times and use them",
         "description": "Fetch another player's real achievement unlock times and use them to derive realistic per-achievement delays.",
         "inputPlaceholder": "SteamID64, profile URL, or vanity URL",
         "importButton": "Import",

@@ -21,9 +21,10 @@ const ICON_BASE_URL = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/ima
 // description line below the name mirrors AchievementRow.tsx's own treatment too. Keep
 // AchievementOrderList.tsx's CARD_HEIGHT in sync with this row's actual rendered height.
 // No delay input here - `delayNextUnlock` is the wait time *between* this achievement and the
-// next one, not a property of either achievement, so it renders in its own connector element
-// (AchievementOrderList.tsx's ConnectorRow) positioned between two cards instead.
-const ROW_GRID = 'grid-cols-[28px_44px_1fr_28px]'
+// next one, not a property of either achievement, so it renders as a WaitChip on the timeline
+// line below the card (AchievementOrderList.tsx's AchievementOrderUnit) instead. The `auto`
+// column holds the "Unlocks at" estimate, empty on read-only and skipped cards.
+const ROW_GRID = 'grid-cols-[28px_44px_1fr_auto_28px]'
 
 interface DragHandleProps {
   attributes: DraggableAttributes
@@ -44,6 +45,9 @@ interface AchievementOrderRowProps {
   // archived.
   readOnlyReason?: 'protected' | 'unownedDlc' | 'archived'
   isOverlay?: boolean
+  // Pre-formatted "Unlocks at" time (see orderTimeline.ts's formatTimeRange) - omitted for skipped
+  // and read-only cards, which never unlock as part of the run.
+  unlocksAt?: string
   dragHandleProps?: DragHandleProps
   onToggleSkip?: (id: string) => void
 }
@@ -72,6 +76,7 @@ export const AchievementOrderRow = ({
   isDlc = false,
   readOnlyReason,
   isOverlay = false,
+  unlocksAt,
   dragHandleProps,
   onToggleSkip,
 }: AchievementOrderRowProps) => {
@@ -84,13 +89,19 @@ export const AchievementOrderRow = ({
   return (
     <div
       className={cn(
-        'grid items-center gap-3 rounded-xl border px-3 py-2.5 bg-surface',
+        'grid items-center gap-3 rounded-xl border px-3 py-2.5',
         ROW_GRID,
         'duration-150',
-        // De-emphasis for a skipped row comes from a solid, quieter card background rather than
-        // `opacity` - same reasoning as AchievementRow.tsx's own de-emphasis treatment, so the
-        // checkbox/delay input/name stay fully legible instead of visually fading along with it.
-        isSkipped || isReadOnly ? 'border-border/60' : 'border-border',
+        // A skipped card reads as switched off: no card fill, a dashed outline, a greyed icon, and
+        // just its name and "Skipped" tag (rarity pill and description are dropped). Never the
+        // whole card via `opacity`, so the checkbox (the one control that brings it back) and the
+        // name stay fully legible. The card keeps its height - the 44px icon still sets it - so
+        // AchievementOrderList.tsx's fixed CARD_HEIGHT holds either way.
+        isSkipped
+          ? 'border-dashed border-surface-tertiary bg-transparent'
+          : isReadOnly
+            ? 'border-border/60 bg-surface'
+            : 'border-border bg-surface',
         !isOverlay && !isReadOnly && 'hover:border-accent/50',
         isOverlay && 'border-accent shadow-xl ring-2 ring-accent/30',
       )}
@@ -140,6 +151,7 @@ export const AchievementOrderRow = ({
         className={cn(
           'rounded-lg ring-2 ring-border/50',
           (readOnlyReason === 'unownedDlc' || readOnlyReason === 'archived') && 'grayscale',
+          isSkipped && 'opacity-50 grayscale',
         )}
         height={44}
         src={icon}
@@ -162,7 +174,7 @@ export const AchievementOrderRow = ({
               {t('dashboard.achievementUnlocker.order.skipped')}
             </span>
           )}
-          {rarityTier && (
+          {rarityTier && !isSkipped && (
             <span
               className={cn(
                 'shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold whitespace-nowrap',
@@ -176,14 +188,29 @@ export const AchievementOrderRow = ({
         {/* AchievementRow.tsx's equivalent blur condition also checks `!achievement.achieved` -
             omitted here since useAchievementOrder.ts's `load` only ever populates both the orderable
             and protected lists from still-locked achievements, so `achieved` is always false. */}
-        <Typography
-          className={cn('truncate', achievement.hidden && 'blur-xs hover:blur-none')}
-          color='muted'
-          type='body-xs'
-        >
-          {achievement.description || t('dashboard.achievements.noDescription')}
-        </Typography>
+        {!isSkipped && (
+          <Typography
+            className={cn('truncate', achievement.hidden && 'blur-xs hover:blur-none')}
+            color='muted'
+            type='body-xs'
+          >
+            {achievement.description || t('dashboard.achievements.noDescription')}
+          </Typography>
+        )}
       </div>
+
+      {unlocksAt ? (
+        <div className='flex flex-col items-end text-right'>
+          <Typography className='uppercase tracking-wide text-[10px]' color='muted' type='body-xs'>
+            {t('dashboard.achievementUnlocker.order.unlocksAt')}
+          </Typography>
+          <Typography className='tabular-nums whitespace-nowrap' type='body-xs'>
+            {unlocksAt}
+          </Typography>
+        </div>
+      ) : (
+        <span aria-hidden />
+      )}
 
       {isReadOnly ? (
         <span aria-hidden />

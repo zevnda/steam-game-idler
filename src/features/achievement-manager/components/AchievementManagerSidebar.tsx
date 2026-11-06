@@ -13,6 +13,7 @@ import {
   TbShoppingCartX,
   TbX,
 } from 'react-icons/tb'
+import { AchievementManagerSidebarSkeleton } from './AchievementManagerSkeletons'
 import { DlcBadge } from './DlcBadge'
 import { ProgressRing } from './ProgressRing'
 import { Button, cn, Typography } from '@heroui/react'
@@ -222,6 +223,9 @@ export const AchievementManagerSidebar = ({
             {name}
           </Typography>
 
+          {/* `sections` is null only until the first load lands - a refresh keeps the previous
+              data on screen - so this placeholder only ever shows on open. */}
+          {sections === null && <AchievementManagerSidebarSkeleton />}
           {sections !== null && (
             <>
               <div className='flex items-center gap-3'>

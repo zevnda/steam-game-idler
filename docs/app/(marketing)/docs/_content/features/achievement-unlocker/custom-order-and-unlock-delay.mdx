@@ -12,7 +12,9 @@ The Custom Order & Unlock Delay feature lets you set the exact order in which ac
 
 The `unlock delay` is how long SGI waits after unlocking one achievement before unlocking the next. For example, if you set a delay of 10 minutes on achievement one, SGI will unlock achievement one, wait 10 minutes, and then unlock achievement two.
 
-Per-achievement unlock delays override the global value set in [<MockButton type='context-cog' content='Settings → Achievement Unlocker → Unlock Interval' />](/docs/settings/achievement-unlocker#unlock-interval). If no per-achievement unlock delay is set, the [Unlock Interval](/docs/settings/achievement-unlocker#unlock-interval) value is used.
+Per-achievement unlock delays override the global value set in [<MockButton type='context-cog' content='Settings → Achievement Unlocker → Unlock Interval' />](/docs/settings/achievement-unlocker#unlock-interval). If no per-achievement unlock delay is set, the [Unlock Interval](/docs/settings/achievement-unlocker#unlock-interval) value is used, and the page shows that wait as **Random wait** with your interval's range.
+
+The page lays your order out as a timeline: each achievement is a numbered step, and the wait before the next one sits on the line between them. Each step shows roughly when it will unlock, counted from when the Achievement Unlocker starts the game, and the bottom of the page shows how many achievements will unlock and about how long the whole order takes. Random waits make these times a range.
 
 You can customize the order, set delays, or both. Each step is optional.
 
@@ -42,11 +44,11 @@ You can customize the order, set delays, or both. Each step is optional.
   </Step>
 
   <Step>
-    Enter a value (in minutes) in **Delay before first unlock** to set how long SGI waits before unlocking the very first achievement
+    Click the wait at the top of the timeline (**Unlock right after the game starts** by default) to set how long SGI waits before unlocking the very first achievement
   </Step>
 
   <Step>
-    Enter a delay (in minutes) in the input field of each achievement to set how long SGI waits after unlocking that achievement before unlocking the next one
+    Click the wait between two achievements to set how long SGI waits after unlocking one before unlocking the next. Pick a preset, or type hours and minutes under **Custom**. Choose **Random** to go back to your Unlock Interval
   </Step>
 
   <Step>

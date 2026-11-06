@@ -11,9 +11,10 @@ import {
   unownedDlcGroupIdsOf,
 } from '../utils/groupAchievements'
 import { AchievementManagerSidebar } from './AchievementManagerSidebar'
+import { AchievementsViewSkeleton, StatisticsViewSkeleton } from './AchievementManagerSkeletons'
 import { AchievementsView } from './AchievementsView'
 import { StatisticsView } from './StatisticsView'
-import { Alert, AlertDialog, Button, cn, Modal, Skeleton } from '@heroui/react'
+import { Alert, AlertDialog, Button, Modal } from '@heroui/react'
 import { useAchievementManagerStore } from '@/shared/stores/achievementManagerStore'
 import { usePlatformStore } from '@/shared/stores/platformStore'
 import { switchViewWithTransition } from '@/shared/utils/pageTransition'
@@ -126,34 +127,13 @@ export const AchievementManagerOverlay = () => {
                   The pane remounts afterwards, so search/filter/selection start fresh, same as a
                   nav change; the sidebar keeps showing the previous data meanwhile. */}
               {isLoading ? (
-                // Mirrors the active view's real layout (title line, toolbar line, then 64px
-                // AchievementList / 56px StatisticsList rows with an 8px gap) so content lands where
-                // the placeholders were instead of jumping. Keep in sync if those layouts change.
-                <div className='flex min-h-0 flex-1 flex-col overflow-hidden px-6 pt-5'>
-                  <Skeleton className='h-8 w-56 rounded-lg' />
-                  <div className='mt-3 mb-4 flex gap-3'>
-                    <Skeleton className='h-10 flex-1 rounded-full' />
-                    {view.kind === 'statistics' ? (
-                      <Skeleton className='h-10 w-32 rounded-full' />
-                    ) : (
-                      <>
-                        <Skeleton className='h-10 w-60 rounded-full' />
-                        <Skeleton className='h-10 w-62 rounded-full' />
-                      </>
-                    )}
-                  </div>
-                  <div className='flex flex-col gap-2'>
-                    {Array.from({ length: 12 }, (_, index) => (
-                      <Skeleton
-                        key={index}
-                        className={cn(
-                          'w-full shrink-0 rounded-xl',
-                          view.kind === 'statistics' ? 'h-14' : 'h-16',
-                        )}
-                      />
-                    ))}
-                  </div>
-                </div>
+                // Mirrors the active view's real layout (see AchievementManagerSkeletons.tsx) so
+                // content lands where the placeholders were instead of jumping.
+                view.kind === 'statistics' ? (
+                  <StatisticsViewSkeleton />
+                ) : (
+                  <AchievementsViewSkeleton />
+                )
               ) : loadErrorCode ? (
                 <div className='flex flex-1 flex-col items-center justify-center gap-4 p-8'>
                   <Alert className='max-w-md' status='danger'>

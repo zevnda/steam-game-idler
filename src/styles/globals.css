@@ -954,8 +954,11 @@ html[data-view-transition='achievement-manager'] .achievement-manager-transition
    on one wrapping a virtualized grid, which scrolls and reserves that room itself: both reserving it
    would leave an empty strip beside the real scrollbar. Matches a marker on the grid's container,
    not react-window's own [role='grid'], which only exists once that container has been measured:
-   the panel's width would then change during the measuring, causing a ResizeObserver loop error. */
-main .overflow-y-auto:not(.inventory-filter-panel, :has(.virtual-grid-host)) {
+   the panel's width would then change during the measuring, causing a ResizeObserver loop error.
+   GameGridSkeleton.tsx is excluded for the same reason as a virtualized grid: it leaves the room on
+   its own box, so its panel reserving it too would leave the skeleton 14px narrower than the real
+   grid - enough to lose a column and draw bigger tiles than the cards that replace it. */
+main .overflow-y-auto:not(.inventory-filter-panel, :has(.virtual-grid-host, .game-grid-skeleton)) {
   scrollbar-gutter: stable;
 }
 

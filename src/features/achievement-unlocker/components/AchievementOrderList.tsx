@@ -1,158 +1,219 @@
 import type { AchievementDto } from '@/features/achievement-manager/types'
 import type { TranslationKey } from '@/i18n'
+import type { ReactNode } from 'react'
 import type { RowComponentProps } from 'react-window'
 import type { OrderableAchievement } from '../hooks/useAchievementOrder'
+import type { OrderTimeline } from '../utils/orderTimeline'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbArchive, TbBan, TbHourglassLow, TbShoppingCartX } from 'react-icons/tb'
+import {
+  TbArchive,
+  TbBan,
+  TbFlagFilled,
+  TbMinus,
+  TbPlayerPlayFilled,
+  TbShoppingCartX,
+} from 'react-icons/tb'
 import { List } from 'react-window'
+import { formatTimeRange } from '../utils/orderTimeline'
 import { AchievementOrderRow } from './AchievementOrderRow'
+import { WaitChip } from './WaitChip'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { cn, NumberField, Typography } from '@heroui/react'
+import { cn, Skeleton, Typography } from '@heroui/react'
 import { isInGroups } from '@/features/achievement-manager/utils/groupAchievements'
 import { revealTitleIfTruncated } from '@/shared/utils/revealTitleIfTruncated'
 
 // AchievementOrderRow's intrinsic height (44px icon + 2 * 10px `py-2.5` padding + 2px border = 66)
-// - the description line added below the name still fits under the 44px icon column (name +
-// description text stack to ~36px), so the icon still drives the card's height, not the text. The
-// delay-before-first-unlock row reuses this same height (see DelayRow below) so both card-shaped
-// rows share one constant.
+// - the description line below the name still fits under the 44px icon column, so the icon still
+// drives the card's height, not the text.
 const CARD_HEIGHT = 66
 
-// A NumberField.Group is a fixed `h-9` (36px, see @heroui/styles' number-field.css) - centered via
-// `items-center` in ConnectorRow's `h-13` (52px) wrapper, that leaves an even ~8px above/below.
-const CONNECTOR_HEIGHT = 52
+// The `h-11` strip under a card holding its WaitChip (a `h-7` chip, centered).
+const WAIT_HEIGHT = 44
 
-// Achievement rows sit flush against each other (no gap) - each card's own trailing ConnectorRow
-// already reads as belonging to it, so the *only* place a visible gap still makes sense is between
-// the delay-before-first-unlock row and the achievement list below it (DelayRow is the one row with
-// no connecting line, see its own doc comment). `pb-2` on that row's wrapper in `Row` below supplies
-// the real CSS gap; this constant keeps `getRowHeight` in sync with it so react-window still
-// allocates enough space for that padding instead of the row's content overflowing into it.
-const DELAY_BEFORE_FIRST_GAP = 8
+// Under a card with no wait after it (skipped, or the last included achievement) - just enough
+// space that it doesn't touch the next card, with the timeline line still running through it.
+const NO_WAIT_SPACER = 8
 
-const DELAY_BEFORE_FIRST_ROW_HEIGHT = CARD_HEIGHT + DELAY_BEFORE_FIRST_GAP
+// StartRow: `pt-2` off the list's top edge, the start node's own `h-7` row (exactly its 28px
+// node, no extra air), then the `h-11` strip holding the delay-before-first-unlock WaitChip. The
+// node row being exactly node-height is what makes the node-to-chip gap the same 8px as every
+// card-to-chip gap below it (a `h-7` chip centered in the `h-11` strip).
+const START_ROW_HEIGHT = 8 + 28 + WAIT_HEIGHT
+
+// EndRow's `h-14` - the line's last stretch plus the end node.
+const END_ROW_HEIGHT = 56
 
 // A read-only section's header row (see ReadOnlySectionHeaderRow below) - its label sits at the
 // bottom of this height via `items-end pb-2`, so the space above the label is what visually
-// separates the section from whatever's above it (the last orderable card, which has no trailing
-// connector to fill that gap, or the previous read-only section).
+// separates the section from whatever's above it.
 const READ_ONLY_HEADER_HEIGHT = 48
 
-// Read-only cards aren't linked by ConnectorRows (they're not part of the unlock sequence), so they
-// get a plain `pb-2` gap between them instead, same size as the delay-before-first row's own gap.
-const READ_ONLY_ROW_HEIGHT = CARD_HEIGHT + DELAY_BEFORE_FIRST_GAP
+// Read-only cards aren't part of the timeline, so they get a plain `pb-2` gap between them.
+const READ_ONLY_ROW_HEIGHT = CARD_HEIGHT + 8
 
-interface DelayRowProps {
+// The timeline's left column: a dashed vertical line, optionally with a node centered on it.
+// `line` trims the line for the two ends of the timeline (starts at the start node's center,
+// ends at the end node's center) so it never dangles past either end. Every row sharing this
+// fixed `w-9` column is what makes the separate virtualized rows read as one continuous line.
+const Rail = ({
+  line = 'full',
+  children,
+}: {
+  line?: 'full' | 'fromCenter' | 'toCenter'
+  children?: ReactNode
+}) => (
+  <div className='relative flex w-9 shrink-0 items-center justify-center self-stretch'>
+    <span
+      aria-hidden
+      className={cn(
+        'absolute left-1/2 -translate-x-1/2 border-l-2 border-dashed border-surface-tertiary',
+        line === 'full' && 'inset-y-0',
+        line === 'fromCenter' && 'top-1/2 bottom-0',
+        line === 'toCenter' && 'top-0 bottom-1/2',
+      )}
+    />
+    {children}
+  </div>
+)
+
+// The step-number node on a card's rail - solid accent for an included achievement, a small
+// muted dash for a skipped one (it has no step in the run). Exported for the drag overlay
+// (AchievementOrderOverlay.tsx), which renders the card outside this list.
+export const StepNode = ({ step }: { step: number | undefined }) =>
+  step === undefined ? (
+    <span className='relative flex size-5 items-center justify-center rounded-full bg-background text-muted ring-1 ring-surface-tertiary'>
+      <TbMinus fontSize={10} />
+    </span>
+  ) : (
+    <span className='relative flex size-7 items-center justify-center rounded-full bg-accent text-xs font-semibold text-accent-foreground tabular-nums'>
+      {step}
+    </span>
+  )
+
+// A skeleton node sits on the rail's dashed line, so it gets an opaque backing - Skeleton's own
+// fill is translucent, and the line would otherwise show straight through it.
+const SkeletonNode = () => (
+  <span className='relative rounded-full bg-background'>
+    <Skeleton className='size-7 rounded-full' />
+  </span>
+)
+
+// One skeleton wait chip, centered in its `h-11` strip like the real WaitChip.
+const SkeletonWait = ({ width }: { width: string }) => (
+  <div className='flex h-11 items-center gap-3'>
+    <Rail />
+    <div className='flex min-w-0 flex-1 justify-center'>
+      <Skeleton className={cn('h-7 rounded-full', width)} />
+    </div>
+  </div>
+)
+
+// Loading placeholder for the whole timeline - built from the same Rail, row heights and card
+// shell as the real thing (StartRow, AchievementOrderUnit, AchievementOrderRow's grid), so the
+// layout doesn't jump when the data lands. Fixed count; the overlay's body clips any overflow.
+// A plain block, not a flex column: in a height-limited flex column the fixed `h-*` rows would
+// shrink to fit the body, squashing the wait strips (the real list doesn't hit this - react-window
+// positions every row absolutely at its exact height).
+export const AchievementOrderSkeleton = () => (
+  <div className='overflow-hidden px-6 pt-2'>
+    <div className='flex h-7 items-center gap-3'>
+      <Rail line='fromCenter'>
+        <SkeletonNode />
+      </Rail>
+      <Skeleton className='h-3.5 w-48 rounded-full' />
+    </div>
+    <SkeletonWait width='w-56' />
+    {Array.from({ length: 6 }, (_, index) => (
+      <div key={index}>
+        <div className='flex gap-3'>
+          <Rail>
+            <SkeletonNode />
+          </Rail>
+          <div className='grid h-16.5 min-w-0 flex-1 grid-cols-[28px_44px_1fr_auto_28px] items-center gap-3 rounded-xl border border-border bg-surface px-3'>
+            <Skeleton className='mx-auto size-4.5 rounded-md' />
+            <Skeleton className='size-11 rounded-lg' />
+            <div className='flex min-w-0 flex-col gap-2'>
+              <Skeleton className='h-3.5 w-48 max-w-full rounded-full' />
+              <Skeleton className='h-3 w-72 max-w-full rounded-full' />
+            </div>
+            <div className='flex flex-col items-end gap-2'>
+              <Skeleton className='h-2.5 w-16 rounded-full' />
+              <Skeleton className='h-3 w-24 rounded-full' />
+            </div>
+            <Skeleton className='mx-auto h-5 w-2 rounded-full' />
+          </div>
+        </div>
+        <SkeletonWait width='w-44' />
+      </div>
+    ))}
+  </div>
+)
+
+interface StartRowProps {
   delayBeforeFirstUnlock: number | ''
+  interval: [number, number] | null
   isDisabled: boolean
   onDelayChange: (value: number | '') => void
 }
 
-// Scrolls with the achievement rows below it (not a pinned header) - it's the virtualized list's
-// own index-0 row rather than a sibling element, so it moves out of view like any other row instead
-// of staying fixed while the list scrolls beneath it. Styled as its own dashed-border card (rather
-// than a real AchievementOrderRow card) precisely so it reads as "a setting", not a 6th achievement.
-// Unlike ConnectorRow below, this one is a deliberate special case kept as-is: it only ever has one
-// adjacent card (the first achievement), never two, so it needs no connecting line threaded through
-// it. Its icon+label-on-the-left, stepper-on-the-right layout mirrors ConnectorRow's own instead -
-// keep the two in sync (label placement, stepper width) since they read as siblings despite one
-// being a bordered box and the other a bare connector. Sizes itself naturally like AchievementOrderRow
-// does (no `h-full`) - the gap comes entirely from the `Row` wrapper's own `pb-2` below, not from
-// padding in here.
-const DelayRow = ({ delayBeforeFirstUnlock, isDisabled, onDelayChange }: DelayRowProps) => {
+// The top of the timeline: where the clock starts, then the delay before the first unlock as the
+// first wait on the line. Scrolls with the list (index 0 of the virtualized list) rather than
+// staying pinned, and isn't a sortable item - nothing can be dragged above it.
+const StartRow = ({
+  delayBeforeFirstUnlock,
+  interval,
+  isDisabled,
+  onDelayChange,
+}: StartRowProps) => {
   const { t } = useTranslation()
 
   return (
-    <div className='flex items-center gap-2 rounded-xl border border-dashed border-border bg-surface px-3 py-2.5 mt-2'>
-      <TbHourglassLow className='shrink-0 text-muted' fontSize={18} />
-      <Typography type='body-xs'>
-        {t('dashboard.achievementUnlocker.order.delayBeforeFirstUnlock')}
-      </Typography>
-      <div className='ml-auto flex shrink-0 items-center gap-1.5'>
-        <NumberField
-          aria-label={t('dashboard.achievementUnlocker.order.delayBeforeFirstUnlock')}
-          className='w-42'
-          formatOptions={{ maximumFractionDigits: 2, useGrouping: false }}
-          isDisabled={isDisabled}
-          minValue={0}
-          step={0.01}
-          value={delayBeforeFirstUnlock === '' ? NaN : delayBeforeFirstUnlock}
-          onChange={value => onDelayChange(Number.isNaN(value) ? '' : value)}
-        >
-          <NumberField.Group className='bg-field hover:bg-field-hover text-foreground'>
-            <NumberField.DecrementButton />
-            <NumberField.Input />
-            <NumberField.IncrementButton />
-          </NumberField.Group>
-        </NumberField>
-        <Typography color='muted' type='body-xs'>
-          {t('common.minutes')}
-        </Typography>
+    <div className='flex flex-col pt-2'>
+      <div className='flex h-7 items-center gap-3'>
+        <Rail line='fromCenter'>
+          <span className='relative flex size-7 items-center justify-center rounded-full bg-default text-foreground'>
+            <TbPlayerPlayFilled fontSize={12} />
+          </span>
+        </Rail>
+        <div className='flex min-w-0 flex-wrap items-center gap-x-2'>
+          <Typography type='body-xs' weight='semibold'>
+            {t('dashboard.achievementUnlocker.order.timeline.start')}
+          </Typography>
+        </div>
+      </div>
+      <div className='flex h-11 items-center gap-3'>
+        <Rail />
+        {/* Centered under the card column (not the full row), so it lines up with the cards. */}
+        <div className='flex min-w-0 flex-1 justify-center'>
+          <WaitChip
+            interval={interval}
+            isDisabled={isDisabled}
+            kind='first'
+            value={delayBeforeFirstUnlock === '' ? undefined : delayBeforeFirstUnlock}
+            onChange={value => onDelayChange(value ?? '')}
+          />
+        </div>
       </div>
     </div>
   )
 }
 
-interface ConnectorRowProps {
-  achievementName: string
-  delay: number | undefined
-  isDisabled: boolean
-  onDelayChange: (value: number | null) => void
-}
-
-// Sits in the gap between two achievement cards - `delayNextUnlock` is the wait time *after*
-// unlocking the achievement above and *before* unlocking the one below, so it's a property of the
-// transition, not of either card. The dashed vertical line is positioned under the cards' checkbox
-// column (28px column + 12px `px-3` padding, centered = 26px) so it reads as running continuously
-// from the bottom of the card above, through this row, to the top of the card below - achievement
-// rows have no gap between them (see DELAY_BEFORE_FIRST_GAP above), so the line touches both
-// neighboring cards exactly with nothing left unlined.
-const ConnectorRow = ({ achievementName, delay, isDisabled, onDelayChange }: ConnectorRowProps) => {
+// The bottom of the timeline - closes the line off so the last card doesn't read as cut off.
+const EndRow = () => {
   const { t } = useTranslation()
 
   return (
-    <div className='relative flex h-13 items-center'>
-      <span
-        aria-hidden
-        className='absolute top-0 bottom-0 left-6.5 border-l border-dashed border-border'
-      />
-      <div className='flex flex-1 items-center justify-between gap-2 pl-10 pr-3'>
-        <div className='flex min-w-0 items-center gap-1.5'>
-          <TbHourglassLow className='shrink-0 text-muted' fontSize={14} />
-          {/* Capped at two lines - this row has a fixed virtualized height (`h-13`), so a longer
-              locale wrapping further would spill into the neighbouring cards. */}
-          <Typography
-            className='line-clamp-2'
-            color='muted'
-            type='body-xs'
-            onMouseEnter={revealTitleIfTruncated}
-          >
-            {t('dashboard.achievementUnlocker.order.delayUntilNextUnlock')}
-          </Typography>
-        </div>
-        <div className='flex shrink-0 items-center gap-1.5'>
-          <NumberField
-            className='w-42'
-            formatOptions={{ maximumFractionDigits: 2, useGrouping: false }}
-            isDisabled={isDisabled}
-            minValue={0}
-            step={0.01}
-            value={delay ?? NaN}
-            onChange={value => onDelayChange(Number.isNaN(value) ? null : value)}
-          >
-            <NumberField.Group className='bg-field hover:bg-field-hover text-foreground'>
-              <NumberField.DecrementButton />
-              <NumberField.Input />
-              <NumberField.IncrementButton />
-            </NumberField.Group>
-          </NumberField>
-          <Typography color='muted' type='body-xs'>
-            {t('common.minutes')}
-          </Typography>
-        </div>
-      </div>
+    <div className='flex h-14 items-center gap-3'>
+      <Rail line='toCenter'>
+        <span className='relative flex size-7 items-center justify-center rounded-full bg-default text-foreground'>
+          <TbFlagFilled fontSize={12} />
+        </span>
+      </Rail>
+      <Typography type='body-xs' weight='semibold'>
+        {t('dashboard.achievementUnlocker.order.timeline.end')}
+      </Typography>
     </div>
   )
 }
@@ -160,27 +221,32 @@ const ConnectorRow = ({ achievementName, delay, isDisabled, onDelayChange }: Con
 interface AchievementOrderUnitProps {
   achievement: OrderableAchievement
   appId: number
-  hasConnector: boolean
   isDlc: boolean
+  step: number | undefined
+  unlocksAt: string | undefined
+  // Name of the next included achievement - set only when this achievement's wait actually runs
+  // (see orderTimeline.ts's `nextNameById`), which is also what decides whether its WaitChip shows.
+  nextName: string | undefined
+  interval: [number, number] | null
   onToggleSkip: (id: string) => void
   onSetDelay: (id: string, value: number | null) => void
 }
 
-// One achievement's card plus (if there's a next achievement) the ConnectorRow for the delay after
-// it, both under a single `useSortable` call/DOM node. This is deliberate: dnd-kit's live drag
-// preview works by giving every sortable item its own `transform` that animates it toward its
-// prospective new slot *while the drag is still in progress* - if the connector were its own,
-// unrelated virtualized row (as it was before), it would have no such transform at all, so it would
-// stay frozen in its old position for the whole drag and only jump to the right place once the
-// array actually reordered on drop. Wrapping both under the achievement's own sortable node means
-// they share that one transform, so the delay visibly travels with its achievement in real time
-// instead of "snapping" after the fact - which also means reordering naturally carries
-// `delayNextUnlock` along, since it's just the same achievement object moving in the array.
+// One achievement's card plus the wait after it, under a single `useSortable` call/DOM node. This
+// is deliberate: dnd-kit's live drag preview gives every sortable item its own `transform` that
+// animates it toward its prospective slot *while the drag is in progress* - if the wait were its
+// own unrelated virtualized row, it would stay frozen in place for the whole drag and only jump
+// once the array reordered on drop. Sharing the achievement's sortable node means the wait visibly
+// travels with its achievement, and reordering naturally carries `delayNextUnlock` along, since
+// it's the same achievement object moving in the array.
 const AchievementOrderUnit = ({
   achievement,
   appId,
-  hasConnector,
   isDlc,
+  step,
+  unlocksAt,
+  nextName,
+  interval,
   onToggleSkip,
   onSetDelay,
 }: AchievementOrderUnitProps) => {
@@ -195,21 +261,40 @@ const AchievementOrderUnit = ({
         transition: sortable.transition,
       }}
     >
-      <AchievementOrderRow
-        achievement={achievement}
-        appId={appId}
-        dragHandleProps={{ attributes: sortable.attributes, listeners: sortable.listeners }}
-        isDlc={isDlc}
-        isSkipped={achievement.skip}
-        onToggleSkip={onToggleSkip}
-      />
-      {hasConnector && (
-        <ConnectorRow
-          achievementName={achievement.name}
-          delay={achievement.delayNextUnlock}
-          isDisabled={achievement.skip}
-          onDelayChange={value => onSetDelay(achievement.id, value)}
-        />
+      <div className='flex gap-3'>
+        <Rail>
+          <StepNode step={step} />
+        </Rail>
+        <div className='min-w-0 flex-1'>
+          <AchievementOrderRow
+            achievement={achievement}
+            appId={appId}
+            dragHandleProps={{ attributes: sortable.attributes, listeners: sortable.listeners }}
+            isDlc={isDlc}
+            isSkipped={achievement.skip}
+            unlocksAt={unlocksAt}
+            onToggleSkip={onToggleSkip}
+          />
+        </div>
+      </div>
+      {nextName !== undefined ? (
+        <div className='flex h-11 items-center gap-3'>
+          <Rail />
+          {/* Centered under the card column (not the full row), so it lines up with the cards. */}
+          <div className='flex min-w-0 flex-1 justify-center'>
+            <WaitChip
+              interval={interval}
+              kind='next'
+              nextName={nextName}
+              value={achievement.delayNextUnlock}
+              onChange={value => onSetDelay(achievement.id, value ?? null)}
+            />
+          </div>
+        </div>
+      ) : (
+        <div className='flex h-2 gap-3'>
+          <Rail />
+        </div>
       )}
     </div>
   )
@@ -231,27 +316,25 @@ const READ_ONLY_SECTION_ICONS = {
 
 // Everything after the real order: one read-only section per reason an achievement can't be part
 // of it - protected first, then unowned DLC, then archived - each a header plus one plain card per
-// achievement.
-// Precomputed once per render of AchievementOrderList (not per Row) since Row and getRowHeight
-// both index into it.
+// achievement. Precomputed once per render of AchievementOrderList (not per Row) since Row and
+// getRowHeight both index into it.
 type TrailingRow =
   | { type: 'header'; reason: ReadOnlyReason; count: number }
   | { type: 'card'; reason: ReadOnlyReason; achievement: AchievementDto }
 
-// Labels one read-only section below the real order. Deliberately a plain label with no connecting
-// line or delay input - these achievements aren't part of the unlock sequence at all (see
-// useAchievementOrder.ts's `protectedAchievements`/`unownedDlcAchievements`), so nothing here should
-// read as a step in it. The title itself is the explanation for unowned DLC and archived; for
-// protected, the
-// longer *why* lives in a tooltip on each card's marker and the header alert in
-// AchievementOrderHeader.tsx rather than here, since this row has a fixed virtualized height and a
-// wrapping description would overflow it in longer locales.
+// Labels one read-only section below the timeline. Indented to line up with the timeline's cards
+// (`pl-12` = the rail's `w-9` + `gap-3`) but with no rail of its own - these achievements aren't
+// part of the unlock sequence at all (see useAchievementOrder.ts's `protectedAchievements`/
+// `unownedDlcAchievements`), so nothing here should read as a step in it. The title is the
+// explanation for unowned DLC and archived; for protected, the longer *why* lives in a tooltip on
+// each card's marker and the header alert in AchievementOrderHeader.tsx, since this row has a
+// fixed virtualized height and a wrapping description would overflow it in longer locales.
 const ReadOnlySectionHeaderRow = ({ reason, count }: { reason: ReadOnlyReason; count: number }) => {
   const { t } = useTranslation()
   const Icon = READ_ONLY_SECTION_ICONS[reason]
 
   return (
-    <div className='flex h-full items-end gap-2 pb-2'>
+    <div className='flex h-full items-end gap-2 pb-2 pl-12'>
       <Icon
         className={cn('mb-0.5 shrink-0', reason === 'protected' ? 'text-warning' : 'text-muted')}
         fontSize={14}
@@ -271,6 +354,8 @@ const ReadOnlySectionHeaderRow = ({ reason, count }: { reason: ReadOnlyReason; c
 interface RowProps {
   achievements: OrderableAchievement[]
   trailingRows: TrailingRow[]
+  timeline: OrderTimeline
+  interval: [number, number] | null
   dlcGroupIds: Set<number>
   appId: number
   delayBeforeFirstUnlock: number | ''
@@ -280,24 +365,31 @@ interface RowProps {
   onSetDelay: (id: string, value: number | null) => void
 }
 
+// Row layout: while there's an order to show, index 0 is StartRow, then one AchievementOrderUnit
+// per achievement, then EndRow; the `trailingRows` read-only sections follow. With no orderable
+// achievements at all (only read-only ones), the start/end rows are left out - a timeline with
+// nothing on it would just be noise above the read-only sections. Keep `getRowHeight` below in
+// sync with this.
+const timelineRowCount = (achievements: OrderableAchievement[]) =>
+  achievements.length > 0 ? achievements.length + 2 : 0
+
+// Every row wrapper carries the list's `px-6` side padding itself (the read-only card's `pl-18` is
+// that plus the timeline's `pl-12` indent) rather than the overlay's Modal.Body padding the List -
+// padding outside the List would inset its scroll container, leaving the scrollbar floating 24px
+// in from the modal's edge instead of sitting at it.
+//
 // `ariaAttributes` go on this outer wrapper, not inside AchievementOrderUnit/AchievementOrderRow
 // themselves - same reasoning as `AchievementsList.tsx`'s `Row`: an explicit `role` would otherwise
 // override/strip AchievementOrderRow's own implicit roles (checkbox, drag handle) from the
 // accessibility tree.
-//
-// Index 0 is the delay-before-first-unlock row (see DelayRow above). Every index after that is one
-// AchievementOrderUnit - achievements[index - 1]'s card, plus its trailing connector unless it's the
-// last achievement (nothing follows it, so no delay-after-it to show) - and past the last one, the
-// `trailingRows` read-only sections. Only achievements are sortable items (see
-// AchievementOrderUnit's own `useSortable` call, and the parent's `SortableContext items` list in
-// AchievementOrderOverlay.tsx) - the delay-before-first row isn't one of them, same special case as
-// DelayRow's own doc comment describes.
 const Row = ({
   ariaAttributes,
   index,
   style,
   achievements,
   trailingRows,
+  timeline,
+  interval,
   dlcGroupIds,
   appId,
   delayBeforeFirstUnlock,
@@ -306,31 +398,21 @@ const Row = ({
   onToggleSkip,
   onSetDelay,
 }: RowComponentProps<RowProps>) => {
-  if (index === 0) {
-    return (
-      <div {...ariaAttributes} className='pb-2' style={style}>
-        <DelayRow
-          delayBeforeFirstUnlock={delayBeforeFirstUnlock}
-          isDisabled={isDelayDisabled}
-          onDelayChange={onDelayChange}
-        />
-      </div>
-    )
-  }
+  const { t } = useTranslation()
+  const timelineRows = timelineRowCount(achievements)
 
-  const achievementIndex = index - 1
-  if (achievementIndex >= achievements.length) {
-    const trailing = trailingRows[achievementIndex - achievements.length]
+  if (index >= timelineRows) {
+    const trailing = trailingRows[index - timelineRows]
     if (!trailing) return null
     if (trailing.type === 'header') {
       return (
-        <div {...ariaAttributes} style={style}>
+        <div {...ariaAttributes} className='px-6' style={style}>
           <ReadOnlySectionHeaderRow count={trailing.count} reason={trailing.reason} />
         </div>
       )
     }
     return (
-      <div {...ariaAttributes} className='pb-2' style={style}>
+      <div {...ariaAttributes} className='pr-6 pb-2 pl-18' style={style}>
         <AchievementOrderRow
           achievement={trailing.achievement}
           appId={appId}
@@ -341,11 +423,36 @@ const Row = ({
     )
   }
 
-  const achievement = achievements[achievementIndex]
+  if (index === 0) {
+    return (
+      <div {...ariaAttributes} className='px-6' style={style}>
+        <StartRow
+          delayBeforeFirstUnlock={delayBeforeFirstUnlock}
+          interval={interval}
+          isDisabled={isDelayDisabled}
+          onDelayChange={onDelayChange}
+        />
+      </div>
+    )
+  }
+
+  if (index === timelineRows - 1) {
+    return (
+      <div {...ariaAttributes} className='px-6' style={style}>
+        <EndRow />
+      </div>
+    )
+  }
+
+  const achievement = achievements[index - 1]
   if (!achievement) return null
+  const step = timeline.steps.get(achievement.id)
+  // No estimate until the Unlock interval loads - without it, any random wait would count as 0
+  // and the time shown would be wrong rather than merely missing.
+  const unlocksAt = step && interval ? formatTimeRange(t, step.earliest, step.latest) : undefined
 
   return (
-    <div {...ariaAttributes} style={style}>
+    <div {...ariaAttributes} className='px-6' style={style}>
       {/* Keyed by achievement id, not just positioned by react-window's own row index on this Row -
           react-window recycles a row's DOM node across renders of the same list slot, so without
           this key a reorder would leave the *same* AchievementOrderUnit instance (and its
@@ -357,8 +464,11 @@ const Row = ({
         key={achievement.id}
         achievement={achievement}
         appId={appId}
-        hasConnector={achievementIndex < achievements.length - 1}
+        interval={interval}
         isDlc={isInGroups(achievement, dlcGroupIds)}
+        nextName={timeline.nextNameById.get(achievement.id)}
+        step={step?.step}
+        unlocksAt={unlocksAt}
         onSetDelay={onSetDelay}
         onToggleSkip={onToggleSkip}
       />
@@ -366,19 +476,19 @@ const Row = ({
   )
 }
 
-// Row heights mirror `Row`'s own shape above: index 0 (delay-before-first) and the last achievement
-// have no connector, every other achievement's row is a card plus a connector, then each trailing
-// read-only section's header followed by one plain card per achievement. Keep both in sync.
-const getRowHeight = (index: number, { achievements, trailingRows }: RowProps) => {
-  if (index === 0) return DELAY_BEFORE_FIRST_ROW_HEIGHT
-  const achievementIndex = index - 1
-  if (achievementIndex >= achievements.length) {
-    return trailingRows[achievementIndex - achievements.length]?.type === 'header'
+// Mirrors `Row`'s shape above - keep both in sync.
+const getRowHeight = (index: number, { achievements, trailingRows, timeline }: RowProps) => {
+  const timelineRows = timelineRowCount(achievements)
+  if (index >= timelineRows) {
+    return trailingRows[index - timelineRows]?.type === 'header'
       ? READ_ONLY_HEADER_HEIGHT
       : READ_ONLY_ROW_HEIGHT
   }
-  const hasConnector = achievementIndex < achievements.length - 1
-  return CARD_HEIGHT + (hasConnector ? CONNECTOR_HEIGHT : 0)
+  if (index === 0) return START_ROW_HEIGHT
+  if (index === timelineRows - 1) return END_ROW_HEIGHT
+  const achievement = achievements[index - 1]
+  const hasWait = achievement !== undefined && timeline.nextNameById.has(achievement.id)
+  return CARD_HEIGHT + (hasWait ? WAIT_HEIGHT : NO_WAIT_SPACER)
 }
 
 interface AchievementOrderListProps extends Omit<RowProps, 'trailingRows'> {
@@ -387,18 +497,18 @@ interface AchievementOrderListProps extends Omit<RowProps, 'trailingRows'> {
   archivedAchievements: AchievementDto[]
 }
 
-// Virtualized replacement for the previous plain `.map()` of AchievementOrderRow - some games ship
-// 300+ achievements (see AchievementsList.tsx's identical reasoning). Must render inside the parent
-// DndContext/SortableContext (AchievementOrderOverlay.tsx owns both, since reordering needs to call
-// back into useAchievementOrder's `reorder`) rather than owning them itself - only the currently
-// mounted (visible) rows are real drop targets at any moment, dnd-kit's own documented tradeoff for
-// combining virtualization with sortable lists; dragging near either edge of the visible window
-// auto-scrolls the list (dnd-kit's default PointerSensor autoscroll targets the nearest scrollable
-// ancestor, which is this `List`'s own root), bringing the next rows into range.
-// Protected, unowned-DLC and archived achievements render as trailing rows after the real order (see
-// TrailingRow), outside the parent SortableContext's `items` - they're never drag sources or
-// targets, and sitting after the last orderable card means they can't be mistaken for a step
-// between two others or pick up a connector's delay.
+// The order editor drawn as a vertical timeline: a start node, then each achievement as a
+// numbered step with the wait before the next one drawn on the line between them, then an end
+// node. Virtualized - some games ship 300+ achievements (see AchievementsList.tsx's identical
+// reasoning). Must render inside the parent DndContext/SortableContext (AchievementOrderOverlay.tsx
+// owns both, since reordering needs to call back into useAchievementOrder's `reorder`) rather than
+// owning them itself - only the currently mounted (visible) rows are real drop targets at any
+// moment, dnd-kit's own documented tradeoff for combining virtualization with sortable lists;
+// dragging near either edge of the visible window auto-scrolls the list (dnd-kit's default
+// PointerSensor autoscroll targets the nearest scrollable ancestor, which is this `List`'s own
+// root), bringing the next rows into range. Protected, unowned-DLC and archived achievements
+// render as trailing rows after the timeline (see TrailingRow), outside the parent
+// SortableContext's `items` - they're never drag sources or targets.
 export const AchievementOrderList = ({
   protectedAchievements,
   unownedDlcAchievements,
@@ -423,7 +533,7 @@ export const AchievementOrderList = ({
   return (
     <List
       rowComponent={Row}
-      rowCount={props.achievements.length + 1 + trailingRows.length}
+      rowCount={timelineRowCount(props.achievements) + trailingRows.length}
       rowHeight={getRowHeight}
       rowProps={{ ...props, trailingRows }}
       style={{ height: '100%', width: '100%' }}
