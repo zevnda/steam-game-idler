@@ -206,7 +206,7 @@ export const AchievementManagerOverlay = () => {
                 </Button>
                 <Button
                   isPending={isMutating}
-                  variant={confirmBulk === 'lock' ? 'danger' : 'primary'}
+                  variant={confirmBulk === 'lock' ? 'danger-soft' : 'primary'}
                   onPress={handleConfirmBulk}
                 >
                   {confirmBulk === 'lock'

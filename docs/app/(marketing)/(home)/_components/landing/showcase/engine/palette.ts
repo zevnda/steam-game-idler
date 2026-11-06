@@ -51,6 +51,10 @@ export interface Palette {
   accentFg: string
   success: string
   danger: string
+  /** HeroUI's `danger-soft` button: a 15% danger wash (20% hovered) with danger-tinted text */
+  dangerSoft: string
+  dangerSoftHover: string
+  dangerSoftFg: string
   gold: string
   casual: string
   gamer: string
@@ -64,6 +68,10 @@ const STATUS = {
   muted: oklch(0.705, 0.015, 286.067),
   success: oklch(0.7329, 0.1935, 150.81),
   danger: oklch(0.594, 0.1967, 24.63),
+  dangerSoft: oklch(0.594, 0.1967, 24.63, 0.15),
+  dangerSoftHover: oklch(0.594, 0.1967, 24.63, 0.2),
+  // approximates `color-mix(in oklab, var(--danger) 80%, var(--foreground) 30%)`
+  dangerSoftFg: oklch(0.68, 0.16, 24.63),
   gold: '#ffc700', // Sidebar.tsx's claimable free-games icon colour
   casual: oklch(0.72, 0.14, 210),
   gamer: oklch(0.55, 0.2, 300),

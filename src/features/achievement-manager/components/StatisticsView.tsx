@@ -160,7 +160,7 @@ export const StatisticsView = ({ stats, isMutating, onSave, onResetAll }: Statis
                 >
                   {t('common.actions.cancel')}
                 </Button>
-                <Button isPending={isMutating} variant='danger' onPress={handleConfirmReset}>
+                <Button isPending={isMutating} variant='danger-soft' onPress={handleConfirmReset}>
                   {t('dashboard.achievements.actions.resetAll')}
                 </Button>
               </AlertDialog.Footer>

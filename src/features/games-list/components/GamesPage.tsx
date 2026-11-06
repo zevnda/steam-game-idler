@@ -148,6 +148,7 @@ export const GamesPage = () => {
         isIconOnly
         aria-label={t('common.actions.refresh')}
         isPending={isRefreshing}
+        variant='secondary'
         onPress={refresh}
       >
         <TbRefresh fontSize={18} />

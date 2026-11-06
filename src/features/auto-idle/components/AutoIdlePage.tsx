@@ -103,6 +103,7 @@ export const AutoIdlePage = () => {
       <Button
         isIconOnly
         aria-label={t('common.manualAdd.title')}
+        variant='secondary'
         onPress={() => setIsManualAddOpen(true)}
       >
         <TbPlus fontSize={18} />
@@ -176,7 +177,7 @@ export const AutoIdlePage = () => {
             {activeTab === 'queue' && queue.length > 0 && (
               <Button
                 className='shrink-0'
-                variant='danger'
+                variant='danger-soft'
                 onPress={() => setConfirmClearOpen(true)}
               >
                 {t('common.actions.clear')}
@@ -269,7 +270,7 @@ export const AutoIdlePage = () => {
                     {t('common.actions.cancel')}
                   </Button>
                   <Button
-                    variant='danger'
+                    variant='danger-soft'
                     onPress={() => {
                       reorder([])
                       setConfirmClearOpen(false)

@@ -1464,13 +1464,16 @@ export class MockApp {
           : '#ffffff'
         : danger
           ? hov
-            ? 'rgb(214 64 69)'
-            : pal.danger
+            ? pal.dangerSoftHover
+            : pal.dangerSoft
           : hov
             ? pal.segment
             : pal.default
     fillRR(ctx, x, y, w, h, h / 2, bg)
-    const fg = a.dim ? pal.muted : (a.color ?? (primary ? '#000000' : '#fcfcfc'))
+    // destructive actions use the app's soft `danger-soft` button, so tinted text on a red wash
+    const fg = a.dim
+      ? pal.muted
+      : (a.color ?? (primary ? '#000000' : danger ? pal.dangerSoftFg : '#fcfcfc'))
     let cx = x + 16
     if (a.icon) {
       icon(ctx, a.icon, cx + 8, y + h / 2, 16, fg)
@@ -1483,7 +1486,7 @@ export class MockApp {
     return w
   }
 
-  /** A round white icon button - the toolbar's refresh/add/settings controls. */
+  /** A round secondary icon button - the toolbar's refresh/add/settings controls. */
   private iconBtn(
     id: string,
     x: number,
@@ -1493,14 +1496,14 @@ export class MockApp {
     size = 36,
     dim = false,
   ) {
-    const { ctx } = this
+    const { ctx, pal } = this
     ctx.save()
     if (dim) ctx.globalAlpha *= 0.5
     ctx.beginPath()
     ctx.arc(x + size / 2, y + size / 2, size / 2, 0, Math.PI * 2)
-    ctx.fillStyle = this.hovered(id) && !dim ? '#e6e6e6' : '#ffffff'
+    ctx.fillStyle = this.hovered(id) && !dim ? pal.segment : pal.default
     ctx.fill()
-    icon(ctx, ic, x + size / 2, y + size / 2, size * 0.5, '#000')
+    icon(ctx, ic, x + size / 2, y + size / 2, size * 0.5, pal.foreground)
     ctx.restore()
     this.region(id, x, y, size, size, dim ? undefined : (onClick ?? (() => {})))
   }

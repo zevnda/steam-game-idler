@@ -277,12 +277,13 @@ export const CardFarmingPage = () => {
       <Button
         isIconOnly
         aria-label={t('common.actions.settings')}
+        variant='secondary'
         onPress={() => openSettings('cardFarming')}
       >
         <TbSettings fontSize={18} />
       </Button>
       {isShowingConnectPanel ? null : state.isFarming ? (
-        <Button isPending={isStopping} variant='danger' onPress={handleStop}>
+        <Button isPending={isStopping} variant='danger-soft' onPress={handleStop}>
           <TbPlayerStopFilled fontSize={18} />
           {t('dashboard.cardFarming.actions.stop')}
         </Button>
@@ -400,7 +401,7 @@ export const CardFarmingPage = () => {
                 <Button
                   className='shrink-0'
                   isDisabled={!isShowingTabs}
-                  variant='danger'
+                  variant='danger-soft'
                   onPress={() => setConfirmClearTarget('whitelist')}
                 >
                   {t('common.actions.clear')}
@@ -410,7 +411,7 @@ export const CardFarmingPage = () => {
                 <Button
                   className='shrink-0'
                   isDisabled={!isShowingTabs}
-                  variant='danger'
+                  variant='danger-soft'
                   onPress={() => setConfirmClearTarget('blacklist')}
                 >
                   {t('common.actions.clear')}
@@ -546,7 +547,7 @@ export const CardFarmingPage = () => {
                     {t('common.actions.cancel')}
                   </Button>
                   <Button
-                    variant='danger'
+                    variant='danger-soft'
                     onPress={() => {
                       if (confirmClearTarget === 'blacklist') {
                         clearBlacklist()
