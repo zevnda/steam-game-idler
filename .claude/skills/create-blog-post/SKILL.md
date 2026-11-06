@@ -43,8 +43,8 @@ The topic is: `$ARGUMENTS`. If it's empty, ask for one and stop.
 
 | File | Purpose |
 |---|---|
-| `seo-blog-research-{slug}.md` (repo root) | Research log: every source, what it says, date accessed. Gitignored by the existing `seo-*.md` rule, and kept so a later update starts from it. |
-| `seo-blog-brief-{slug}.md` (repo root) | Validity verdict + SEO brief. Also gitignored. |
+| `../blog-shared/research/seo-blog-research-{slug}.md` | Research log: every source, what it says, date accessed. Gitignored (local only), and kept so a later update starts from it. |
+| `../blog-shared/research/seo-blog-brief-{slug}.md` | Validity verdict + SEO brief. Also gitignored. |
 | `docs/blog/{slug}.mdx` | The post. |
 | `docs/public/blog/{slug}/` | Where the post's images go (the user adds them, see the media plan). |
 | [../blog-shared/topic-backlog.md](../blog-shared/topic-backlog.md) | Shared with `/find-blog-topics`: queued, written, published and rejected topics. Read first, update last. |
@@ -63,7 +63,7 @@ Use the session scratchpad for raw downloads (transcripts, rendered HTML, frames
    `docs/app/(marketing)/docs/_content/`. You'll need both for cannibalisation checks and
    internal links.
 3. Read `.agents/product-marketing.md` (audience, positioning) and any `seo-baseline*.md` /
-   `seo-brief*.md` at the repo root (real GSC query data already captured).
+   `seo-brief*.md` in `../blog-shared/research/` (real GSC query data already captured).
 4. Read [../blog-shared/topic-backlog.md](../blog-shared/topic-backlog.md):
    - Topic is **Queued** (usually from `/find-blog-topics`) → start from its evidence and angle,
      but still verify everything and run the full gate. A queue entry is a lead, not a pass.
@@ -72,7 +72,7 @@ Use the session scratchpad for raw downloads (transcripts, rendered HTML, frames
    - Topic is already **Published** → this is update mode (next step), or a cannibalisation
      refusal if it's a new post on the same keyword.
 5. **Update mode:** if `$ARGUMENTS` matches an existing post's slug or title, this is a refresh.
-   Read the post and its `seo-blog-research-{slug}.md`. Re-run Phases 2-6 against what's changed,
+   Read the post and its `research/seo-blog-research-{slug}.md`. Re-run Phases 2-6 against what's changed,
    and set `updated:` only if the content changes in substance.
 
 ### Phase 1: Load the SEO toolchain
@@ -135,7 +135,7 @@ is confirmed, what is rumour or unconfirmed, what's still unknown.
 ### Phase 3: Validity gate - decide before writing a word
 
 Score the topic with [../blog-shared/validity-gate.md](../blog-shared/validity-gate.md) and write the
-verdict at the top of `seo-blog-brief-{slug}.md`:
+verdict at the top of `research/seo-blog-brief-{slug}.md`:
 
 - **PROCEED** - write it.
 - **PROCEED WITH CHANGES** - the topic is viable only with a different angle, scope, timing or
@@ -183,7 +183,7 @@ post-format.md for where each field ends up). It must pin down:
 3. **Media - produce it yourself.** Decide where an image, screenshot, diagram, table or video
    would make the page clearly better (comprehension, Google Images, video results, AI-answer
    extraction), then **make it** with the tools in post-format.md's "Producing media": always a
-   1200x630 cover from the cover template, original diagrams from HTML, real screenshots of
+   1200x630 cover (a fresh visual per post - follow `../blog-shared/covers/README.md`), original diagrams from HTML, real screenshots of
    public pages the post discusses (privacy/credit rules apply), and `<YouTube>` embeds for
    videos that explain something better (credited). Look at every render before using it, and
    iterate until it's good. Leave a `{/* MEDIA: ... */}` marker **only** for what you can't

@@ -1,23 +1,14 @@
 <!doctype html>
 <!--
-  Blog cover template - 1200x630, doubles as the OG/social image and the blog card. Render with
-  ../scripts/render_html.py. To make a cover: copy this file to the scratchpad, then edit ONLY the
-  three marked spots (CATEGORY, TITLE, VISUAL + its styles). Keep the rest so every cover matches.
+  Blog cover FRAME - 1200x630, doubles as the OG/social image and the blog card. Don't copy or
+  edit this file to make a cover. Write a fragment in ../covers/{slug}.html and build it with
+  ../scripts/build_cover.py, which fills the {{...}} slots below. See ../covers/README.md for the
+  fragment format, the visual archetypes and the variety rules.
 
-  Design: the site's own look (steamgameidler.com home hero and the site OG images) - black
-  starfield, soft rainbow glows, the nav PRO pill's rainbow rim around the brand, a mono eyebrow,
-  a headline with rainbow-tinted key words, and the visual in a glass card with the 3D window's rainbow rim glow.
-
-  Rules (see create-blog-post/references/post-format.md "Producing media"):
-  - Title: the post's short headline, 3-8 words. Wrap 1-3 key words in <span class="hl"> for the
-    rainbow-tinted gradient; a highlighted phrase never breaks across lines. The title sizes itself
-    (fitTitle below): the largest size that fits 2 balanced lines, else 3, with no word
-    overflowing - so don't hand-tune font sizes or add <br>s.
-  - VISUAL: an original, abstract illustration of the topic built from HTML/CSS (cards, bars,
-    trophies, icons as inline SVG) inside the .visual slot, ideally one .glass card plus at most
-    one floating accent. Never real game art, never a fake screenshot of Steam or SGI UI, never
-    Steam/Valve logos. The cover's alt text describes this visual, so keep the two in step.
-  - Always look at the rendered PNG before using it.
+  Fixed (identical on every cover): black starfield, brand pill, mono eyebrow, the title column
+  with rainbow-tinted key words (.hl), the URL, and the visual slot on the right.
+  Per cover: CATEGORY, TITLE, HUE (the accent: background tint + glow behind the visual), TILT
+  (tilted toward the title or flat), the visual's own STYLE and VISUAL markup.
 -->
 <html>
   <head>
@@ -75,12 +66,16 @@
         -webkit-font-smoothing: antialiased;
       }
       .stage {
+        --hue: 265;
+        --accent: hsl(var(--hue), 62%, 64%);
+        --accent-soft: hsla(var(--hue), 62%, 64%, 0.16);
+        --accent-deep: hsl(var(--hue), 52%, 48%);
         position: relative;
         width: 1200px;
         height: 630px;
         overflow: hidden;
         background:
-          radial-gradient(45% 60% at 85% 50%, rgba(120, 70, 200, 0.2), transparent 70%),
+          radial-gradient(45% 60% at 85% 50%, hsla(var(--hue), 60%, 45%, 0.1), transparent 70%),
           radial-gradient(40% 45% at 0% 100%, rgba(60, 170, 200, 0.12), transparent 70%),
           radial-gradient(35% 40% at 100% 0%, rgba(220, 120, 60, 0.1), transparent 70%), #000;
       }
@@ -200,8 +195,10 @@
       }
       .visual__inner {
         position: relative;
-        transform: rotateY(-12deg) rotateX(4deg);
         transform-style: preserve-3d;
+      }
+      .visual__inner.tilt {
+        transform: rotateY(-12deg) rotateX(4deg);
       }
       .visual__inner::before {
         content: '';
@@ -209,9 +206,16 @@
         inset: -6%;
         z-index: -1;
         border-radius: 12%;
-        background: var(--rainbow-glow);
+        background: conic-gradient(
+          from 90deg,
+          hsl(var(--hue), 55%, 58%),
+          hsl(calc(var(--hue) + 50), 55%, 58%),
+          hsl(calc(var(--hue) - 50), 55%, 58%),
+          hsl(var(--hue), 55%, 58%)
+        );
         filter: blur(48px);
-        opacity: 0.45;
+        /* kept low on purpose (user call, 2026-11-06): the glow is a hint of color, not a halo */
+        opacity: 0.1;
       }
       /* reusable visual pieces */
       .glass {
@@ -254,74 +258,13 @@
         background: radial-gradient(circle at 35% 30%, #26262c, #0b0b0e 70%);
       }
     </style>
-    <!-- VISUAL STYLES: per-cover CSS goes here -->
+    <!-- per-cover STYLE -->
     <style>
-      .sets {
-        width: 400px;
-        padding: 26px 26px 20px;
-      }
-      .sets .head {
-        font-size: 21px;
-        font-weight: 700;
-        margin-bottom: 16px;
-      }
-      .row {
-        padding: 14px 0;
-        border-top: 1px solid rgba(255, 255, 255, 0.07);
-      }
-      .row .top {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-        font-size: 17px;
-        font-weight: 600;
-      }
-      .bar {
-        height: 9px;
-        border-radius: 99px;
-        background: rgba(255, 255, 255, 0.08);
-        overflow: hidden;
-      }
-      .bar i {
-        display: block;
-        height: 100%;
-        border-radius: 99px;
-      }
-      .done .tag {
-        background: hsla(210, 70%, 62%, 0.16);
-        color: var(--blue);
-      }
-      .done i {
-        width: 100%;
-        background: linear-gradient(90deg, hsl(210, 60%, 50%), var(--blue));
-      }
-      .dlc .tag {
-        background: hsla(265, 60%, 68%, 0.16);
-        color: var(--purple);
-      }
-      .dlc i {
-        width: 62%;
-        background: linear-gradient(90deg, hsl(265, 50%, 55%), var(--purple));
-      }
-      .archived {
-        opacity: 0.55;
-      }
-      .archived .bar {
-        background: repeating-linear-gradient(
-          90deg,
-          rgba(255, 255, 255, 0.18) 0 10px,
-          transparent 10px 18px
-        );
-      }
-      .sets-orb {
-        right: -30px;
-        top: -42px;
-      }
+      {{STYLE}}
     </style>
   </head>
   <body>
-    <div class="stage">
+    <div class="stage" style="--hue: {{HUE}}">
       <canvas id="stars" width="1200" height="630"></canvas>
 
       <div class="content">
@@ -337,53 +280,16 @@
         >
         <div class="headline">
           <!-- CATEGORY: the post's frontmatter category -->
-          <div class="eyebrow">Steam News</div>
+          <div class="eyebrow">{{CATEGORY}}</div>
           <!-- TITLE -->
-          <h1>Steam <span class="hl">Achievement Sets</span>, explained</h1>
+          <h1>{{TITLE}}</h1>
         </div>
         <div class="url">steamgameidler.com/blog</div>
       </div>
 
-      <!-- VISUAL: everything inside .visual__inner -->
+      <!-- per-cover VISUAL -->
       <div class="visual">
-        <div class="visual__inner">
-          <div class="glass sets">
-            <div class="head">Achievement sets</div>
-            <div class="row done">
-              <div class="top"><span>Base game</span><span class="tag">COMPLETE</span></div>
-              <div class="bar"><i></i></div>
-            </div>
-            <div class="row dlc">
-              <div class="top"><span>DLC expansion</span><span class="tag">DLC · 62%</span></div>
-              <div class="bar"><i></i></div>
-            </div>
-            <div class="row archived">
-              <div class="top"><span>Season one</span><span class="tag">ARCHIVED</span></div>
-              <div class="bar"></div>
-            </div>
-          </div>
-          <div class="orb sets-orb">
-            <div>
-              <svg
-                width="38"
-                height="38"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="white"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
-                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
-                <path d="M4 22h16" />
-                <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
-                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
-                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
-              </svg>
-            </div>
-          </div>
-        </div>
+        <div class="visual__inner {{TILT}}">{{VISUAL}}</div>
       </div>
     </div>
 

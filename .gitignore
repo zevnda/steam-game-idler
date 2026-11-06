@@ -32,6 +32,8 @@ desktop.ini
 !/.claude/skills/
 /.agents/
 seo-*.md
+# Blog research logs and briefs (/create-blog-post, /find-blog-topics) - local working notes
+.claude/skills/blog-shared/research/
 
 # debug
 npm-debug.log*

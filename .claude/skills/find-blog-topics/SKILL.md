@@ -51,7 +51,7 @@ All in `.claude/skills/blog-shared/`:
 ### Phase 0: Ground yourself
 
 1. Read the four shared files above, then `docs/CLAUDE.md`, `.agents/product-marketing.md`, and
-   any `seo-baseline*.md` / `seo-brief*.md` at the repo root.
+   any `seo-baseline*.md` / `seo-brief*.md` in `../blog-shared/research/`.
 2. Inventory what the site already covers: every `docs/blog/*.mdx` (title, keywords) and every
    docs page title/description under `docs/app/(marketing)/docs/_content/`, plus
    `/alternatives/*`. Candidates are judged against this.
