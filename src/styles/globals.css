@@ -313,6 +313,10 @@ body {
   animation-name: pro-shooting-star;
   animation-timing-function: ease-out;
   animation-iteration-count: infinite;
+  /* Each star has a per-instance inline `animation-delay` (up to several seconds). Without a
+     backwards fill, the element shows its un-animated base style (fully opaque, untranslated)
+     for that whole delay, so delayed stars sat frozen on screen when the modal opened. */
+  animation-fill-mode: backwards;
 }
 
 @keyframes pro-float {
