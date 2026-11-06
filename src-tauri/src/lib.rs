@@ -284,6 +284,54 @@ pub fn run() {
         });
 }
 
+/// Builds the main window from `tauri.conf.json`'s single `app.windows[]` entry, which is marked
+/// `"create": false` so Tauri doesn't auto-create it before `setup()` runs. It's built here instead
+/// because `on_new_window` can only be attached at build time, never to an existing window.
+///
+/// Without a new-window handler, wry silently swallows every new-window request (a
+/// `target="_blank"` link or `window.open`) and nothing happens. That's what made the Chatway
+/// help-desk widget's Discord/GitHub channel buttons dead: they call `window.open` from inside
+/// Chatway's own cross-origin iframe, so the app's frontend can't intercept them, and only the
+/// native webview layer ever sees them. Every such request now opens in the user's default browser
+/// instead. The app never wants a second in-app webview window, so the in-app request is always
+/// denied. Only http(s) is forwarded, so a page in the webview can't use this to launch an
+/// arbitrary protocol handler.
+///
+/// Plain anchor clicks inside the Chatway iframe (links in chat messages) never raise a
+/// new-window request at all, though `window.open` from the same iframe does.
+/// `chatway_link_bridge.js` rewrites those clicks into `window.open` calls so they reach this
+/// handler too; see that file for details.
+fn build_main_window(app_handle: &tauri::AppHandle) -> tauri::Result<tauri::WebviewWindow> {
+    use tauri::webview::NewWindowResponse;
+    use tauri_plugin_opener::OpenerExt;
+
+    let config = app_handle
+        .config()
+        .app
+        .windows
+        .first()
+        .cloned()
+        .expect("tauri.conf.json must define the main window");
+
+    let opener_handle = app_handle.clone();
+    tauri::WebviewWindowBuilder::from_config(app_handle, &config)?
+        .initialization_script_for_all_frames(include_str!("chatway_link_bridge.js"))
+        .on_new_window(move |url, _features| {
+            if matches!(url.scheme(), "http" | "https") {
+                match opener_handle.opener().open_url(url.as_str(), None::<&str>) {
+                    Ok(()) => tracing::info!(%url, "webview: opened new-window request in browser"),
+                    Err(err) => {
+                        tracing::warn!(%url, ?err, "webview: failed to open new-window request")
+                    }
+                }
+            } else {
+                tracing::warn!(%url, "webview: blocked non-http(s) new-window request");
+            }
+            NewWindowResponse::Deny
+        })
+        .build()
+}
+
 /// The window starts hidden (`tauri.conf.json`'s `visible`/`focus` are both `false`) so the
 /// frontend's blank-then-painted webview never flashes as a visible window. On Windows it's shown
 /// only once the frontend emits `ready` after its first real paint - unless `Settings::
@@ -300,9 +348,7 @@ pub fn run() {
 /// avoid (Linux only) for the window reliably appearing at all - revisit if a Wayland-safe
 /// activation-token approach is worth the extra complexity later.
 fn setup_window(app_handle: &tauri::AppHandle) -> tauri::Result<()> {
-    let window = app_handle
-        .get_webview_window("main")
-        .expect("main window must exist at setup time");
+    let window = build_main_window(app_handle)?;
 
     let should_start_minimized = settings::load(app_handle)
         .map(|settings| settings.start_minimized)
