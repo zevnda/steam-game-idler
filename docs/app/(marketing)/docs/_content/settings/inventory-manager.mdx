@@ -33,16 +33,16 @@ Add or subtract a fixed amount from every item's sale price
 
 Useful for undercutting the market or adding a small buffer above the default price. For example, setting `-0.05` reduces every listing price by $0.05.
 
-If the adjusted price falls below your [Sell Limit](#sell-limit) minimum, the item will not be listed.
+If the adjusted price falls below your [Price Limit](#price-limit) minimum, the item will not be listed.
 
-## Sell Limit
+## Price Limit
 Set a minimum and maximum price range for listings
 
 Items whose final price falls outside this range will be skipped and not listed for sale. This protects you from accidentally selling valuable items too cheaply or listing common items at unrealistic prices.
 
 For example, with a minimum of `0.05` and a maximum of `2.00`, only items priced between $0.05 and $2.00 will be listed.
 
-## Sell Delay
+## Listing Delay
 Set how long SGI waits between listing each item *(in seconds)*
 
 Steam's marketplace API has strict rate limits. If you list items too quickly, Steam will temporarily block further listings. A higher delay is safer if you're selling a large number of items.

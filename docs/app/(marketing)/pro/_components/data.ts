@@ -196,13 +196,13 @@ export const allFeatures: Feature[] = [
   },
   {
     icon: TbCurrencyDollar,
-    title: 'Sell Duplicate Items',
+    title: 'List Duplicate Items',
     description: 'Easily list all duplicate inventory items for sale with a single click.',
     detail:
       'Instead of pricing and listing every duplicate card, background, and emoticon by hand, one click puts all of your spares up for sale on the Steam marketplace while keeping one copy of each.',
     tier: 'gamer',
     imgBg: `${CDN_BASE_URL}/pro-modal/pro9.webp`,
-    tierLabel: 'Sell Duplicate Inventory Items',
+    tierLabel: 'List Duplicate Inventory Items',
     id: 'sell-duplicate-items',
   },
   {
@@ -262,7 +262,7 @@ export const comparisonRows: ComparisonRow[] = [
   { label: 'Automatic Steam Credentials Retrieval', icon: TbKey, tier: 'gamer' },
   { label: 'Automatic Free Game Redemption', icon: TbGift, tier: 'gamer' },
   { label: 'Trading Card Monitor', icon: TbCards, tier: 'gamer' },
-  { label: 'Sell Duplicate Inventory Items', icon: TbCurrencyDollar, tier: 'gamer' },
+  { label: 'List Duplicate Inventory Items', icon: TbCurrencyDollar, tier: 'gamer' },
   { label: 'Import Achievement Unlock Timings', icon: TbClock, tier: 'gamer' },
   { label: 'Custom Idle Status Message', icon: TbUserCircle, tier: 'gamer' },
 ]

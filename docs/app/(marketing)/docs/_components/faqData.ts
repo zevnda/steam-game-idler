@@ -291,6 +291,6 @@ export const faqData = [
       '>\n' +
       '> Rate limit times can vary, so you may need to wait a few minutes to an hour before trying again.\n' +
       '>\n' +
-      '> To avoid hitting the rate limit in the future, consider increasing the [Sell Delay](/docs/settings/inventory-manager#sell-delay) in [Settings → Inventory Manager](/docs/settings/inventory-manager).',
+      '> To avoid hitting the rate limit in the future, consider increasing the [Listing Delay](/docs/settings/inventory-manager#listing-delay) in [Settings → Inventory Manager](/docs/settings/inventory-manager).',
   },
 ]

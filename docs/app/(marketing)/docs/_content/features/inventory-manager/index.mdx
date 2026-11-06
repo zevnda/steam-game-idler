@@ -14,7 +14,7 @@ import { Step, Steps } from 'fumadocs-ui/components/steps';
 The Inventory Manager feature allows you to manage your Steam inventory directly within SGI, including the ability to view all your marketable items (trading cards, foil cards, emoticons, backgrounds, and more) and sell them on the Steam marketplace.
 
 <Callout type="warn">
-    This feature uses an undocumented Steam API endpoint with strict rate limits to fetch card prices. If you encounter errors while selling cards or fetching card prices, please try increasing the [Sell Delay](/docs/settings/inventory-manager#sell-delay), or wait a few hours before trying  again
+    This feature uses an undocumented Steam API endpoint with strict rate limits to fetch card prices. If you encounter errors while selling cards or fetching card prices, please try increasing the [Listing Delay](/docs/settings/inventory-manager#listing-delay), or wait a few hours before trying  again
 </Callout>
 
 <Callout type="info">
@@ -32,34 +32,34 @@ The Inventory Manager feature allows you to manage your Steam inventory directly
     Click <MockButton type='inventory-manager' /> in the sidebar
   </Step>
 
-    #### Sell individual items
+    #### List individual items
     <Steps>
       <Step>
-        Find the item you want to sell and input a sale price
+        Find the item you want to list and input a sale price
       </Step>
       <Step>
         Click the <MockButton type='list-card' /> button to list the item
       </Step>
     </Steps>
 
-    #### Sell multiple selected items
+    #### List multiple selected items
     <Steps>
       <Step>
-        Find the items you want to sell and input a sale price for each one
+        Find the items you want to list and input a sale price for each one
       </Step>
       <Step>
         Click <MockButton type='list-selected' /> to list the selected items
       </Step>
     </Steps>
 
-    #### Sell all items
+    #### List all items
     <Steps>
       <Step>
         Click <MockButton type='list-all' /> to list all items in your inventory
       </Step>
     </Steps>
 
-    #### Sell duplicate items
+    #### List duplicate items
     <Steps>
       <Step>
         Click <MockButton type='sell-dupes' /> to automatically list all duplicate items for sale, keeping one copy of each

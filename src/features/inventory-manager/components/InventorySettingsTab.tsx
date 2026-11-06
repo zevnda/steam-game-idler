@@ -164,7 +164,7 @@ export const InventorySettingsTab = ({
       >
         <div className='flex items-center gap-2'>
           <InputField
-            ariaLabel='sell limit minimum'
+            ariaLabel='price limit minimum'
             className='w-28'
             formatOptions={getCurrencyNumberFormatOptions(draft.currency)}
             minValue={0.01}
@@ -181,7 +181,7 @@ export const InventorySettingsTab = ({
             }
           />
           <InputField
-            ariaLabel='sell limit maximum'
+            ariaLabel='price limit maximum'
             className='w-28'
             formatOptions={getCurrencyNumberFormatOptions(draft.currency)}
             minValue={draft.sellLimit.min}
@@ -200,7 +200,7 @@ export const InventorySettingsTab = ({
         title={t('dashboard.inventoryManager.settings.sellDelay.title')}
       >
         <InputField
-          ariaLabel='sell delay'
+          ariaLabel='listing delay'
           className='w-28'
           minValue={1}
           value={draft.sellDelay}

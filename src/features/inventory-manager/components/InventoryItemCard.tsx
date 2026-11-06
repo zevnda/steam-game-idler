@@ -17,7 +17,7 @@ interface InventoryItemCardProps {
   priceValue: number
   isFetchingPrice: boolean
   isListing: boolean
-  // Any bulk market action (list selected/sell all/sell dupes/remove listings) in flight -
+  // Any bulk market action (list selected/list all/list dupes/remove listings) in flight -
   // disables this card's own "list single" button even when it's not itself the one listing (its
   // `isPending` spinner stays tied to `isListing` alone) - see InventoryPageHeader.tsx's `isBusy`
   // doc comment for why per-action flags alone don't prevent an overlapping click.
