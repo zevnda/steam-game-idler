@@ -12,7 +12,6 @@ import {
   AlertDialog,
   Button,
   EmptyState,
-  Skeleton,
   Tab,
   TabIndicator,
   TabList,
@@ -29,6 +28,7 @@ import { EmptyListBanner } from '@/shared/components/dashboard/EmptyListBanner'
 import { PageBannerArea } from '@/shared/components/dashboard/PageBanner'
 import { PageBody } from '@/shared/components/dashboard/PageBody'
 import { CountChip, PageToolbar } from '@/shared/components/dashboard/PageToolbar'
+import { GameGridSkeleton } from '@/shared/components/GameGridSkeleton'
 import { GameListTabPanel } from '@/shared/components/GameListTabPanel'
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
 import { ManualAddGameModal } from '@/shared/components/ManualAddGameModal'
@@ -187,11 +187,7 @@ export const AutoIdlePage = () => {
 
           <TabPanel className='min-h-0 flex-1 overflow-y-auto p-0' id='browse'>
             {phase === 'loading' ? (
-              <div className='game-grid page-content'>
-                {Array.from({ length: 12 }, (_, index) => (
-                  <Skeleton key={index} className='aspect-(--game-card-aspect) rounded-xl' />
-                ))}
-              </div>
+              <GameGridSkeleton />
             ) : gamesErrorCode ? (
               <div className='flex flex-1 flex-col items-center justify-center gap-4 p-8'>
                 <Alert className='max-w-md' status='danger'>
@@ -231,11 +227,7 @@ export const AutoIdlePage = () => {
 
           <GameListTabPanel id='queue'>
             {queueLoading ? (
-              <div className='game-grid page-content'>
-                {Array.from({ length: 6 }, (_, index) => (
-                  <Skeleton key={index} className='aspect-(--game-card-aspect) rounded-xl' />
-                ))}
-              </div>
+              <GameGridSkeleton />
             ) : queue.length === 0 ? (
               <PageBannerArea hasToolbar>
                 <EmptyListBanner

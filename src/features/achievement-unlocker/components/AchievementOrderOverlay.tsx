@@ -1,11 +1,13 @@
 import type { CurrentOs } from '@/shared/stores/platformStore'
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
+import type { ReactNode } from 'react'
 import { useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { useAchievementOrder } from '../hooks/useAchievementOrder'
 import { errorMessageKey } from '../utils/errorMessageKey'
+import { buildOrderTimeline, formatWait } from '../utils/orderTimeline'
 import { AchievementOrderHeader } from './AchievementOrderHeader'
-import { AchievementOrderList } from './AchievementOrderList'
+import { AchievementOrderList, AchievementOrderSkeleton, StepNode } from './AchievementOrderList'
 import { AchievementOrderRow } from './AchievementOrderRow'
 import { ImportTimingsModal } from './ImportTimingsModal'
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
@@ -33,14 +35,23 @@ const loadErrorMessageKey = (code: string, currentOs: CurrentOs | null) => {
     : errorMessageKey(code)
 }
 
+// One end of the footer's finish estimate - `children` is filled in by `<Trans>` from the
+// translation's `<time>` tag.
+const FinishTimeChip = ({ children }: { children?: ReactNode }) => (
+  <span className='rounded-full bg-default px-2 py-0.5 font-medium text-foreground whitespace-nowrap'>
+    {children}
+  </span>
+)
+
 // Per-game achievement-order overlay - not a route (static export can't do a dynamic [appId]
 // segment). Mirrors AchievementManagerOverlay.tsx's header/body
 // split (a static header - close/title/reset/import - above a scrolling body, driven entirely by
 // its own store) but with drag-reorder/skip/delay editing instead of unlock/lock actions, and no
 // game art (a per-achievement editor has no use for hero/capsule art the way the achievements/
-// statistics browser does). The delay-before-first-unlock control lives inside the virtualized list
-// itself (AchievementOrderList.tsx's index-0 row), not the static header, so it scrolls with the
-// achievement rows instead of staying pinned.
+// statistics browser does). The list is drawn as a timeline (see AchievementOrderList.tsx), whose
+// index-0 row holds the delay-before-first-unlock wait, so it scrolls with the achievement rows
+// instead of staying pinned. The footer's summary (how many unlock, roughly how long it takes) is
+// derived from the same `buildOrderTimeline` projection the list's "Unlocks at" times come from.
 export const AchievementOrderOverlay = () => {
   const { t } = useTranslation()
   const openGame = useAchievementOrderStore(state => state.openGame)
@@ -62,6 +73,7 @@ export const AchievementOrderOverlay = () => {
     unownedDlcAchievements,
     archivedAchievements,
     dlcGroupIds,
+    unlockInterval,
     refresh,
     reorder,
     toggleSkip,
@@ -75,6 +87,11 @@ export const AchievementOrderOverlay = () => {
   const [isImportOpen, setIsImportOpen] = useState(false)
   const [isImporting, setIsImporting] = useState(false)
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
+
+  const timeline = useMemo(
+    () => buildOrderTimeline(achievements, delayBeforeFirstUnlock, unlockInterval),
+    [achievements, delayBeforeFirstUnlock, unlockInterval],
+  )
 
   const activeAchievement = useMemo(
     () => achievements.find(achievement => achievement.id === activeId) ?? null,
@@ -125,17 +142,15 @@ export const AchievementOrderOverlay = () => {
                   name={openGame.name}
                   onClose={() => handleOpenChange(false)}
                   onImportTimings={() => setIsImportOpen(true)}
-                  onReset={resetOrder}
                   onUpsell={() => openProModalWithTier('gamer')}
                 />
               )}
-              <Modal.Body className='relative z-10 flex min-h-0 flex-1 flex-col m-0 px-6'>
+              {/* No side padding here - AchievementOrderList.tsx's rows (and its skeleton) pad
+                  themselves, so the List's scrollbar sits at the modal's edge. The error and empty
+                  states below carry their own `p-8`. */}
+              <Modal.Body className='relative z-10 flex min-h-0 flex-1 flex-col m-0 px-0'>
                 {isLoading ? (
-                  <div className='flex flex-col gap-2'>
-                    {Array.from({ length: 8 }, (_, index) => (
-                      <Skeleton key={index} className='h-14 w-full rounded-lg' />
-                    ))}
-                  </div>
+                  <AchievementOrderSkeleton />
                 ) : loadErrorCode ? (
                   <div className='flex flex-1 flex-col items-center justify-center gap-4 p-8'>
                     <Alert className='max-w-md' status='danger'>
@@ -180,6 +195,8 @@ export const AchievementOrderOverlay = () => {
                             appId={openGame.appId}
                             delayBeforeFirstUnlock={delayBeforeFirstUnlock}
                             isDelayDisabled={areControlsDisabled}
+                            interval={unlockInterval}
+                            timeline={timeline}
                             onDelayChange={setDelayBeforeFirstUnlock}
                             onSetDelay={setDelay}
                             protectedAchievements={protectedAchievements}
@@ -195,27 +212,94 @@ export const AchievementOrderOverlay = () => {
                           synchronously in `onDragEnd`, but React's commit still lands a frame later
                           than the overlay's animation start) and reads as a snap-back-then-correct
                           glitch - same fix as AchievementUnlockerListGrid.tsx's DragOverlay. */}
+                      {/* The overlay is sized to the whole dragged unit (rail + card + wait), so it
+                          redraws the rail's step node beside the card to keep the card in its own
+                          column instead of stretching across the rail. The wait itself is left out -
+                          just the card follows the pointer. */}
                       <DragOverlay dropAnimation={null}>
                         {activeAchievement ? (
-                          <AchievementOrderRow
-                            isOverlay
-                            achievement={activeAchievement}
-                            appId={openGame.appId}
-                            isDlc={isInGroups(activeAchievement, dlcGroupIds)}
-                            isSkipped={activeAchievement.skip}
-                            onToggleSkip={toggleSkip}
-                          />
+                          <div className='flex gap-3'>
+                            <div className='flex w-9 shrink-0 items-center justify-center'>
+                              <StepNode step={timeline.steps.get(activeAchievement.id)?.step} />
+                            </div>
+                            <div className='min-w-0 flex-1'>
+                              <AchievementOrderRow
+                                isOverlay
+                                achievement={activeAchievement}
+                                appId={openGame.appId}
+                                isDlc={isInGroups(activeAchievement, dlcGroupIds)}
+                                isSkipped={activeAchievement.skip}
+                                onToggleSkip={toggleSkip}
+                              />
+                            </div>
+                          </div>
                         ) : null}
                       </DragOverlay>
                     </DndContext>
                   )
                 )}
               </Modal.Body>
+              {/* Footer placeholder while loading - same bar as the real footer below (summary on
+                  the left, Reset + Save on the right) so it doesn't pop in once data arrives. */}
+              {isLoading && (
+                <Modal.Footer className='bg-background shrink-0 justify-between gap-4 border-t border-border px-6 py-3 mt-0'>
+                  <Skeleton className='h-3.5 w-80 rounded-full' />
+                  <div className='flex shrink-0 items-center gap-2'>
+                    <Skeleton className='h-10 w-20 rounded-full' />
+                    <Skeleton className='h-10 w-18 rounded-full' />
+                  </div>
+                </Modal.Footer>
+              )}
               {!isLoading && !loadErrorCode && achievements.length > 0 && (
-                <Modal.Footer className='bg-background shrink-0 border-t border-border px-6 py-3 mt-0'>
-                  <Button isPending={isSaving} onPress={save}>
-                    {t('common.actions.save')}
-                  </Button>
+                <Modal.Footer className='bg-background shrink-0 justify-between gap-4 border-t border-border px-6 py-3 mt-0'>
+                  <Typography
+                    className='flex flex-wrap items-center gap-x-1 gap-y-1 tabular-nums'
+                    color='muted'
+                    type='body-xs'
+                  >
+                    {t('dashboard.achievementUnlocker.order.summary.unlocking', {
+                      included: timeline.includedCount,
+                      total: achievements.length,
+                    })}
+                    {/* The finish estimate needs the Unlock interval for any random wait - left
+                        out rather than shown wrong if that setting couldn't be loaded. */}
+                    {unlockInterval && timeline.latestFinish > 0 && (
+                      <>
+                        <span aria-hidden className='mx-1 size-1 rounded-full bg-muted' />
+                        {/* Times in chips so the two ends of the range stand out from the
+                            sentence around them - a range only when random waits make the two
+                            ends differ, same rule as formatTimeRange. */}
+                        {Math.round(timeline.earliestFinish * 60) ===
+                        Math.round(timeline.latestFinish * 60) ? (
+                          <Trans
+                            components={{ time: <FinishTimeChip /> }}
+                            i18nKey='dashboard.achievementUnlocker.order.summary.finishes'
+                            values={{ duration: formatWait(t, timeline.latestFinish) }}
+                          />
+                        ) : (
+                          <Trans
+                            components={{ time: <FinishTimeChip /> }}
+                            i18nKey='dashboard.achievementUnlocker.order.summary.finishesRange'
+                            values={{
+                              from: formatWait(t, timeline.earliestFinish),
+                              to: formatWait(t, timeline.latestFinish),
+                            }}
+                          />
+                        )}
+                      </>
+                    )}
+                  </Typography>
+                  {/* Reset sits with Save - both act on the whole order, and Reset only changes
+                      the unsaved draft (useAchievementOrder.ts's `resetOrder`), so it lands next to
+                      the button that would commit it. */}
+                  <div className='flex shrink-0 items-center gap-2'>
+                    <Button isDisabled={isSaving} variant='danger' onPress={resetOrder}>
+                      {t('dashboard.achievementUnlocker.order.reset')}
+                    </Button>
+                    <Button isPending={isSaving} onPress={save}>
+                      {t('common.actions.save')}
+                    </Button>
+                  </div>
                 </Modal.Footer>
               )}
             </Modal.Dialog>

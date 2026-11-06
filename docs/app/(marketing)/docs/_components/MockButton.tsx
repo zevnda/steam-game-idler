@@ -26,6 +26,7 @@ import {
   TbTrophyFilled,
   TbUpload,
   TbUserCircle,
+  TbUsers,
 } from 'react-icons/tb'
 
 type ButtonType =
@@ -61,7 +62,7 @@ type ButtonType =
   | 'steam'
   | 'start-manually'
   | 'checkbox'
-  | 'import-timings'
+  | 'copy-another-player'
   | 'sell-dupes'
   | 'steam-sign-in'
   | 'local-sign-in'
@@ -294,10 +295,12 @@ export default function MockButton({ type, content }: MockButtonProps) {
         <TbPlayerPlayFilled fontSize={16} className='inline' /> Start
       </span>
     )
-  } else if (type === 'import-timings') {
+  } else if (type === 'copy-another-player') {
+    // The custom order page's "Copy another player" card - the whole card is the button that
+    // opens Import Timings, so the mock is just its icon + title.
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        Import Timings
+        <TbUsers fontSize={14} className='inline' /> Copy another player
       </span>
     )
   } else if (type === 'checkbox') {
