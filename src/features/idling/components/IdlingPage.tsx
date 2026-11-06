@@ -75,7 +75,7 @@ export const IdlingPage = () => {
           <PageToolbar
             start={<PageTitle count={appIds.length} title={t('dashboard.sidebar.nav.idling')} />}
           >
-            <Button isPending={isStoppingAll} variant='danger' onPress={stopAll}>
+            <Button isPending={isStoppingAll} variant='danger-soft' onPress={stopAll}>
               <TbPlayerStopFilled fontSize={18} />
               {t('dashboard.idling.stopAll')}
             </Button>

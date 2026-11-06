@@ -17,6 +17,7 @@ export const BackToTopButton = ({ visible, onPress }: BackToTopButtonProps) => {
       className={`absolute bottom-4 right-4 z-10 shadow-lg transition-all duration-200 ease-out ${
         visible ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-2 opacity-0'
       }`}
+      variant='secondary'
       onPress={onPress}
     >
       <TbArrowUp fontSize={18} />

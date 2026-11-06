@@ -28,7 +28,7 @@ const IdlingPreview = () => {
   return (
     <PageBannerPreview
       action={
-        <Button size='sm' variant='danger'>
+        <Button size='sm' variant='danger-soft'>
           <TbPlayerStopFilled fontSize={14} />
           {t('common.actions.stop')}
         </Button>

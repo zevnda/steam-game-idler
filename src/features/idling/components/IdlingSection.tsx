@@ -41,7 +41,7 @@ export const IdlingSection = ({
           <CountChip count={games.length} />
         </div>
         {onStop && (
-          <Button size='sm' variant='danger' isPending={isStopping} onPress={onStop}>
+          <Button size='sm' variant='danger-soft' isPending={isStopping} onPress={onStop}>
             <TbPlayerStopFilled fontSize={16} />
             {t('common.actions.stop')}
           </Button>

@@ -433,7 +433,7 @@ export const AccountSwitcher = ({ compact = false }: AccountSwitcherProps) => {
                 </Button>
                 <Button
                   isPending={isSigningOut}
-                  variant='danger'
+                  variant='danger-soft'
                   onPress={() => pendingSignOut && performSignOut(pendingSignOut.key)}
                 >
                   {t('common.actions.signOut')}

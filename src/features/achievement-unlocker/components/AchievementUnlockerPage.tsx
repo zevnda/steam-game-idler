@@ -181,6 +181,7 @@ export const AchievementUnlockerPage = () => {
       <Button
         isIconOnly
         aria-label={t('common.manualAdd.title')}
+        variant='secondary'
         onPress={() => setIsManualAddOpen(true)}
       >
         <TbPlus fontSize={18} />
@@ -188,12 +189,13 @@ export const AchievementUnlockerPage = () => {
       <Button
         isIconOnly
         aria-label={t('common.actions.settings')}
+        variant='secondary'
         onPress={() => openSettings('achievementUnlocker')}
       >
         <TbSettings fontSize={18} />
       </Button>
       {runState.isRunning ? (
-        <Button isPending={isStopping} variant='danger' onPress={handleStop}>
+        <Button isPending={isStopping} variant='danger-soft' onPress={handleStop}>
           <TbPlayerStopFilled fontSize={16} />
           {t('common.actions.stop')}
         </Button>
@@ -311,7 +313,7 @@ export const AchievementUnlockerPage = () => {
               <Button
                 className='shrink-0'
                 isDisabled={!isShowingTabs}
-                variant='danger'
+                variant='danger-soft'
                 onPress={() => setConfirmClearOpen(true)}
               >
                 {t('common.actions.clear')}
@@ -410,7 +412,7 @@ export const AchievementUnlockerPage = () => {
                     {t('common.actions.cancel')}
                   </Button>
                   <Button
-                    variant='danger'
+                    variant='danger-soft'
                     onPress={() => {
                       reorder([])
                       setConfirmClearOpen(false)

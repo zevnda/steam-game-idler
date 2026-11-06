@@ -10,7 +10,7 @@ interface BackButtonProps {
 const BackButton = ({ onPress }: BackButtonProps) => {
   return (
     <div className='fixed left-4 top-18'>
-      <Button isIconOnly onPress={onPress}>
+      <Button isIconOnly variant='secondary' onPress={onPress}>
         <TbArrowLeft fontSize={18} />
       </Button>
     </div>

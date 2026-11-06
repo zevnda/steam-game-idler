@@ -143,13 +143,13 @@ export const DebugSettingsTab = ({
           </Button>
         </div>
         <div className='flex flex-wrap items-center gap-2'>
-          <Button isPending={isClearingLogs} size='sm' variant='danger' onPress={clearLogs}>
+          <Button isPending={isClearingLogs} size='sm' variant='danger-soft' onPress={clearLogs}>
             {t('dashboard.settings.debug.logs.clear')}
           </Button>
-          <Button size='sm' variant='danger' onPress={() => setOpenDialog('reset')}>
+          <Button size='sm' variant='danger-soft' onPress={() => setOpenDialog('reset')}>
             {t('dashboard.settings.debug.resetSettings.button')}
           </Button>
-          <Button size='sm' variant='danger' onPress={() => setOpenDialog('clearData')}>
+          <Button size='sm' variant='danger-soft' onPress={() => setOpenDialog('clearData')}>
             {t('dashboard.settings.debug.clearData.button')}
           </Button>
           {/* Natively disabled with no account signed in - a genuine "nothing to act on" state,
@@ -158,7 +158,7 @@ export const DebugSettingsTab = ({
           <Button
             isDisabled={!account}
             size='sm'
-            variant='danger'
+            variant='danger-soft'
             onPress={() => setOpenDialog('lockAllAchievements')}
           >
             {t(LIBRARY_RUN_KEYS.lock.button)}
@@ -166,7 +166,7 @@ export const DebugSettingsTab = ({
           <Button
             isDisabled={!account}
             size='sm'
-            variant='danger'
+            variant='danger-soft'
             onPress={() => setOpenDialog('unlockAllAchievements')}
           >
             {t(LIBRARY_RUN_KEYS.unlock.button)}
@@ -231,7 +231,7 @@ export const DebugSettingsTab = ({
                 </Button>
                 <Button
                   isPending={isResetting}
-                  variant='danger'
+                  variant='danger-soft'
                   onPress={async () => {
                     await resetSettings()
                     closeDialog()
@@ -264,7 +264,7 @@ export const DebugSettingsTab = ({
                 <Button isDisabled={isClearingData} variant='secondary' onPress={closeDialog}>
                   {t('common.actions.cancel')}
                 </Button>
-                <Button isPending={isClearingData} variant='danger' onPress={clearData}>
+                <Button isPending={isClearingData} variant='danger-soft' onPress={clearData}>
                   {t('dashboard.settings.debug.clearData.button')}
                 </Button>
               </AlertDialog.Footer>
@@ -331,7 +331,7 @@ export const DebugSettingsTab = ({
                     </Button>
                     <Button
                       isPending={libraryRun !== null}
-                      variant='danger'
+                      variant='danger-soft'
                       onPress={async () => {
                         await setAllAchievements(libraryRunDialog === 'unlock')
                         closeDialog()

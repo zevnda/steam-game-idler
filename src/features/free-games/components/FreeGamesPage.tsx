@@ -57,6 +57,7 @@ export const FreeGamesPage = () => {
               isIconOnly
               aria-label={t('common.actions.refresh')}
               isPending={isRefreshing}
+              variant='secondary'
               onPress={refresh}
             >
               <TbRefresh fontSize={18} />
@@ -64,6 +65,7 @@ export const FreeGamesPage = () => {
             <Button
               isIconOnly
               aria-label={t('common.actions.settings')}
+              variant='secondary'
               onPress={() => openSettings('freeGames')}
             >
               <TbSettings fontSize={18} />

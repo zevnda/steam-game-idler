@@ -293,7 +293,7 @@ export const AchievementOrderOverlay = () => {
                       the unsaved draft (useAchievementOrder.ts's `resetOrder`), so it lands next to
                       the button that would commit it. */}
                   <div className='flex shrink-0 items-center gap-2'>
-                    <Button isDisabled={isSaving} variant='danger' onPress={resetOrder}>
+                    <Button isDisabled={isSaving} variant='danger-soft' onPress={resetOrder}>
                       {t('dashboard.achievementUnlocker.order.reset')}
                     </Button>
                     <Button isPending={isSaving} onPress={save}>

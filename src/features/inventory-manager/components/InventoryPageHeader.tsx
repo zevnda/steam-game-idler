@@ -133,7 +133,7 @@ export const InventoryPageHeader = ({
             <Button
               isDisabled={!hasLoaded || itemCount === 0 || isBusy}
               isPending={isRemovingListings}
-              variant='danger'
+              variant='danger-soft'
               onPress={() => setOpenDialog('removeListings')}
             >
               {t('dashboard.inventoryManager.actions.removeListings')}
@@ -143,6 +143,7 @@ export const InventoryPageHeader = ({
               isIconOnly
               aria-label={t('common.actions.refresh')}
               isPending={isFetching}
+              variant='secondary'
               onPress={onRefresh}
             >
               <TbRefresh fontSize={18} />
@@ -150,7 +151,12 @@ export const InventoryPageHeader = ({
           </>
         )}
 
-        <Button isIconOnly aria-label={t('common.actions.settings')} onPress={onOpenSettings}>
+        <Button
+          isIconOnly
+          aria-label={t('common.actions.settings')}
+          variant='secondary'
+          onPress={onOpenSettings}
+        >
           <TbSettings fontSize={18} />
         </Button>
       </PageToolbar>
@@ -284,7 +290,7 @@ export const InventoryPageHeader = ({
                   {t('common.actions.cancel')}
                 </Button>
                 <Button
-                  variant='danger'
+                  variant='danger-soft'
                   onPress={() => {
                     onRemoveListings()
                     closeDialog()

@@ -74,7 +74,7 @@ export const ChangelogModal = () => {
               </Button>
               <Button
                 size='sm'
-                className='bg-white text-black hover:bg-white/90'
+                variant='secondary'
                 onPress={() =>
                   openExternalLink(`https://steamgameidler.com/changelog#${appVersion ?? ''}`)
                 }
