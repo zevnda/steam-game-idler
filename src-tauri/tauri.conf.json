@@ -67,6 +67,8 @@
     "withGlobalTauri": true,
     "windows": [
       {
+        "label": "main",
+        "create": false,
         "title": "Steam Game Idler",
         "width": 1300,
         "height": 850,
