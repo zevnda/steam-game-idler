@@ -9,8 +9,10 @@
   inherits: false;
 }
 
-/* The docs TOC's active range (set inline by Fumadocs' clerk TOC). Registered so the range itself
-   can transition - the clip-path and the fading trail both read it, so they glide in step. */
+/* The docs/blog TOC's active range, set on the thumb wrapper ([data-toc-thumb]) by TocHead.tsx from
+   Fumadocs' clerk TOC (which stopped setting these vars itself in fumadocs-ui 16.18). Registered
+   so the range itself can transition - the trail's mask and the head both read it, so they glide
+   in step. */
 @property --track-top {
   syntax: '<length>';
   initial-value: 0px;
@@ -3826,7 +3828,9 @@ button[aria-label='Copy Link'] {
    sits at the bottom of the range (where you are) and eases after it like the changelog's chases
    the scroll. The head's x follows the rail's bends - TocHead.tsx sets --toc-head-x. The blog's
    TOC is the same component (blog/_components/TableOfContents.tsx) and shares every rule here
-   through .blog-toc. */
+   through .blog-toc. Everything below targets [data-toc-thumb], an attribute TocHead.tsx puts on
+   the thumb wrapper, rather than Fumadocs' own classes or inline styles: those changed in 16.18
+   and silently dropped this whole look until the selectors were moved off them. */
 /* the blog sits outside .docs-shell, so it takes the docs' text tones here */
 .blog-toc {
   --color-fd-muted-foreground: #a3a3a3;
@@ -3854,13 +3858,13 @@ button[aria-label='Copy Link'] {
 }
 
 /* the thumb's wrapper carries the range vars - ease them here instead of snapping */
-:is(#nd-toc, .blog-toc) div:has(> svg[style*='--track-top']) {
+:is(#nd-toc, .blog-toc) [data-toc-thumb] {
   transition:
     --track-top 420ms cubic-bezier(0.22, 1, 0.36, 1),
     --track-bottom 420ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-:is(#nd-toc, .blog-toc) svg[style*='--track-top'] {
+:is(#nd-toc, .blog-toc) [data-toc-thumb] > svg {
   /* the vars now animate, so the mask follows them every frame - a transition would lag */
   transition: none;
   overflow: visible;
@@ -3885,7 +3889,7 @@ button[aria-label='Copy Link'] {
 /* the trace in the site's rainbow (the changelog timeline's colours) - an SVG paint server from
    _components/RainbowDefs.tsx, since an SVG stroke can't take a CSS gradient. Sharp, no glow:
    only the head glows, as on the changelog. */
-:is(#nd-toc, .blog-toc) svg[style*='--track-top'] path {
+:is(#nd-toc, .blog-toc) [data-toc-thumb] > svg path {
   stroke: url(#sgi-rainbow);
   stroke-width: 2px;
 }
@@ -3893,7 +3897,7 @@ button[aria-label='Copy Link'] {
 /* The head: the changelog's dot, a white-hot core (::after, over the trail) in a glow (::before,
    under it), both in the trace's colour where they sit - the gradient is the stroke's, sampled
    at --track-bottom in the same px-down-the-list units RainbowDefs' PERIOD (600) uses. */
-:is(#nd-toc, .blog-toc) div:has(> svg[style*='--track-top']) {
+:is(#nd-toc, .blog-toc) [data-toc-thumb] {
   &::before,
   &::after {
     content: '';
@@ -3950,7 +3954,7 @@ button[aria-label='Copy Link'] {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :is(#nd-toc, .blog-toc) div:has(> svg[style*='--track-top']) {
+  :is(#nd-toc, .blog-toc) [data-toc-thumb] {
     transition: none;
   }
 }
