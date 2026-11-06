@@ -1,1 +1,1281 @@
-{}
+{
+  "common": {
+    "actions": {
+      "submit": "Zatwierdź",
+      "cancel": "Anuluj",
+      "close": "Zamknij",
+      "tryAgain": "Spróbuj ponownie",
+      "continue": "Kontynuuj",
+      "refresh": "Odśwież",
+      "save": "Zapisz",
+      "settings": "Ustawienia",
+      "signIn": "Zaloguj się",
+      "signOut": "Wyloguj się",
+      "start": "Uruchom",
+      "stop": "Zatrzymaj",
+      "clear": "Wyczyść",
+      "done": "Gotowe",
+      "copy": "Kopiuj",
+      "paste": "Wklej",
+      "add": "Dodaj",
+      "ok": "OK"
+    },
+    "gameCardMenu": {
+      "startIdling": "Rozpocznij nabijanie czasu gry",
+      "stopIdling": "Zatrzymaj nabijanie czasu gry",
+      "manageAchievements": "Zarządzaj osiągnięciami",
+      "customOrder": "Indywidualna kolejność i opóźnienia odblokowywania",
+      "viewOnSteam": "Wyświetl na Steam",
+      "copyAppId": "Kopiuj App ID",
+      "appIdCopied": "Skopiowano App ID",
+      "cardFarmingBlacklist": "Czarna lista farmienia kart",
+      "lists": "Listy"
+    },
+    "minutes": "min",
+    "zeroUnlimitedHint": "0 = bez limitu",
+    "errorBoundary": {
+      "title": "Coś poszło nie tak",
+      "description": "Wystąpił nieoczekiwany błąd. Spróbuj ponownie. Jeśli problem nie ustąpi, skontaktuj się z nami, korzystając z sekcji Pomoc i wsparcie."
+    },
+    "manualCookies": {
+      "slsLabel": "steamLoginSecure",
+      "smaLabel": "steamMachineAuth",
+      "smaDescription": "Opcjonalne. Potrzebne tylko wtedy, gdy Twoje konto oczekuje na potwierdzenie urządzenia Steam Guard.",
+      "getCookiesNote": "Pliki cookie należy pobrać z",
+      "savedFromSettingsNote": "Wczytano dane logowania Steam zapisane w Ustawieniach.",
+      "savedToast": "Zapisano dane logowania",
+      "clearedToast": "Usunięto dane logowania",
+      "clearFailed": "Nie udało się usunąć zapisanych danych logowania Steam. ({{code}})"
+    },
+    "manualAdd": {
+      "title": "Dodaj grę ręcznie",
+      "description": "Dodaj grę, podając jej Steam App ID, jeśli nie pojawia się automatycznie.",
+      "nameLabel": "Nazwa",
+      "namePlaceholder": "np. K-On! The Movie",
+      "appIdLabel": "App ID",
+      "appIdPlaceholder": "np. 518440",
+      "duplicateError": "Ta gra o podanym App ID znajduje się już na liście"
+    },
+    "search": {
+      "placeholder": "Szukaj",
+      "recentSearches": "Ostatnie wyszukiwania",
+      "noRecentSearches": "Brak ostatnich wyszukiwań",
+      "noResults": "Nie znaleziono wyników",
+      "noResultsTitle": "Brak gier pasujących do wyszukiwania",
+      "noResultsDescription": "Spróbuj użyć innego tytułu lub App ID."
+    },
+    "errors": {
+      "generic": "Coś poszło nie tak. Spróbuj ponownie. ({{code}})",
+      "steamUtilityMissing": "Brak komponentu agenta Steam w tej instalacji.",
+      "processSpawnFailed": "Nie udało się uruchomić procesu agenta Steam.",
+      "processExited": "Proces agenta Steam został nieoczekiwanie zamknięty.",
+      "timeout": "Steam zbyt długo nie odpowiada. Spróbuj ponownie.",
+      "sessionNotFound": "Sesja Steam nie jest już aktywna. Zaloguj się ponownie.",
+      "steamIdUnknown": "Nie udało się jeszcze ustalić Twojego Steam ID. Spróbuj ponownie za chwilę.",
+      "steamNotRunning": "Steam nie jest uruchomiony. Uruchom Steam i spróbuj ponownie."
+    },
+    "notifications": "Powiadomienia",
+    "menu": "Menu",
+    "needHelp": "Potrzebujesz pomocy?",
+    "learnMore": "Dowiedz się więcej",
+    "status": {
+      "saved": "Zapisano",
+      "cleared": "Wyczyszczono",
+      "paused": "Wstrzymano",
+      "running": "Działa"
+    },
+    "steamWarning": {
+      "title": "Uwaga",
+      "description": "Steam jest zamknięty. Uruchom go ponownie, aby kontynuować."
+    },
+    "banner": {
+      "pastDue": "Twoja subskrypcja PRO ma zaległą płatność. Zaktualizuj metodę płatności, aby nie utracić dostępu.",
+      "manageSubscription": "Zarządzaj subskrypcją"
+    },
+    "badges": {
+      "beta": "Beta"
+    },
+    "tabs": {
+      "allGames": "Wszystkie gry",
+      "queue": "Kolejka",
+      "overview": "Przegląd",
+      "details": "Szczegóły"
+    },
+    "connect": {
+      "automaticTab": "Automatycznie",
+      "manualTab": "Ręcznie"
+    },
+    "sort": {
+      "nameAsc": "Nazwa (A–Z)",
+      "nameDesc": "Nazwa (Z–A)"
+    },
+    "noGamesQueued": "Brak gier w kolejce",
+    "completedThisSessionCount": "Ukończono w tej sesji ({{count}})"
+  },
+  "versionPolicy": {
+    "outdated": {
+      "title": "Zalecana aktualizacja",
+      "description": "Ta wersja Steam Game Idler wkrótce przestanie działać. Zaktualizuj aplikację teraz, aby nadal korzystać z niej bez przerw."
+    },
+    "unsupported": {
+      "title": "Wymagana aktualizacja",
+      "description": "Ta wersja Steam Game Idler nie jest już obsługiwana. Zaktualizuj aplikację do najnowszej wersji, aby dalej z niej korzystać."
+    },
+    "currentVersion": "Twoja wersja: {{version}}",
+    "installUpdate": "Zainstaluj aktualizację",
+    "downloadUpdate": "Pobierz aktualizację",
+    "remindLater": "Przypomnij później"
+  },
+  "update": {
+    "downloading": "Pobieranie aktualizacji…"
+  },
+  "toast": {
+    "checkUpdate": {
+      "none": "Masz już najnowszą wersję",
+      "error": "Nie udało się sprawdzić dostępności aktualizacji. Spróbuj ponownie."
+    },
+    "paypalCheckout": {
+      "error": "Nie udało się rozpocząć płatności przez PayPal. Spróbuj ponownie."
+    }
+  },
+  "notifications": {
+    "markAllRead": "Oznacz wszystkie jako przeczytane",
+    "empty": "Nie masz jeszcze żadnych powiadomień"
+  },
+  "menu": {
+    "guide": "Dokumentacja",
+    "issue": "Zgłoś problem",
+    "feature": "Zaproponuj funkcję",
+    "joinDiscord": "Dołącz do naszego Discorda",
+    "changelog": "Dziennik zmian",
+    "update": "Sprawdź dostępność aktualizacji"
+  },
+  "changelog": {
+    "star": "Oceń nas na GitHubie"
+  },
+  "titlebar": {
+    "closeToTrayNotification": "Steam Game Idler będzie nadal działać w tle",
+    "helpDesk": "Centrum pomocy",
+    "updateReady": "Aktualizacja gotowa"
+  },
+  "tray": {
+    "show": "Pokaż",
+    "recenter": "Przywróć domyślne położenie okna",
+    "update": "Sprawdź dostępność aktualizacji..",
+    "quit": "Zamknij aplikację"
+  },
+  "proMode": {
+    "hero": {
+      "headline": "Odblokuj więcej funkcji",
+      "subtext": "Najważniejsze funkcje SGI są <1>darmowe</1> i <3>zawsze takie pozostaną</3>. PRO powstało wyłącznie z myślą o osobach, które chcą wspierać dalszy rozwój SGI — dodatkowe funkcje to nasz sposób, by powiedzieć <5>dziękujemy</5> za Twoje wsparcie.",
+      "viewTiers": "Zobacz plany PRO",
+      "startingAt": "Już od ${{price}}/mies. · Anuluj w dowolnym momencie"
+    },
+    "section": {
+      "topFeatures": "Najważniejsze funkcje",
+      "seeAllFeatures": "Zobacz wszystkie funkcje",
+      "chooseTier": "Wybierz plan",
+      "comparePlans": "Porównaj plany",
+      "faq": "Najczęściej zadawane pytania"
+    },
+    "cards": {
+      "adFree": {
+        "title": "Bez reklam",
+        "description": "Korzystaj z SGI bez reklam, w całkowicie przejrzystym interfejsie, który nie rozprasza uwagi."
+      },
+      "themes": {
+        "title": "Wyjątkowe motywy",
+        "description": "Dostosuj SGI za pomocą ekskluzywnych motywów kolorystycznych i animowanych motywów sygnaturowych."
+      },
+      "customBackground": {
+        "title": "Własny obraz tła"
+      },
+      "customFont": {
+        "title": "Własne czcionki"
+      },
+      "liveSupport": {
+        "title": "Wsparcie na żywo w czasie rzeczywistym",
+        "description": "Pomiń kolejkę — rozmawiaj bezpośrednio z twórcą za pośrednictwem wbudowanego centrum pomocy i otrzymuj wsparcie na bieżąco."
+      },
+      "credentials": {
+        "title": "Automatyczne pobieranie danych logowania Steam"
+      },
+      "multiAccount": {
+        "title": "Obsługa wielu kont",
+        "description": "Zaloguj się na kilka kont Steam i zarządzaj nimi jednocześnie."
+      },
+      "autoFarmCards": {
+        "title": "Monitor kart kolekcjonerskich",
+        "description": "SGI monitoruje Twoją bibliotekę i automatycznie rozpoczyna farmienie każdej gry, w której pozostały jeszcze karty do zdobycia."
+      },
+      "gamesList": {
+        "title": "Automatyczne aktualizowanie listy gier",
+        "description": "Lista gier odświeża się automatycznie co 15 minut podczas dodawania gier i grania w nie."
+      },
+      "multipleUnlockerGames": {
+        "title": "Odblokowywanie osiągnięć w wielu grach",
+        "description": "Zamiast odblokowywać osiągnięcia pojedynczo, możesz odblokowywać je jednocześnie w kilku grach za pomocą narzędzia do odblokowywania osiągnięć."
+      },
+      "freeGames": {
+        "title": "Odbieranie darmowych gier",
+        "description": "Automatycznie odbieraj darmowe gry na Steam natychmiast po ich udostępnieniu — nie przegap żadnej okazji."
+      },
+      "sellDupes": {
+        "title": "Sprzedawanie zduplikowanych przedmiotów",
+        "description": "Wystawiaj na sprzedaż wszystkie zduplikowane przedmioty z ekwipunku jednym kliknięciem."
+      },
+      "customPresence": {
+        "title": "Własny status Steam"
+      }
+    },
+    "tier": {
+      "mostPopular": "Najpopularniejszy",
+      "perMonth": "/mies.",
+      "everythingInCasualPlus": "Wszystkie korzyści planu Casual oraz",
+      "currentPlan": "Obecny plan",
+      "continueWithStripe": "Stripe",
+      "continueWithPaypal": "PayPal",
+      "processing": "Przetwarzanie…",
+      "cancelAnytime": "Anuluj w dowolnym momencie",
+      "casual": {
+        "name": "Casual",
+        "discordRole": "Rola PRO na Discordzie",
+        "multiAccount": "3 jednocześnie zalogowane konta",
+        "multipleUnlockerGames": "Odblokowywanie osiągnięć w 3 grach jednocześnie"
+      },
+      "gamer": {
+        "name": "Gamer",
+        "freeGames": "Automatyczne odbieranie darmowych gier",
+        "sellDupes": "Sprzedaż zduplikowanych przedmiotów z ekwipunku",
+        "importTimings": "Importowanie czasów odblokowania osiągnięć",
+        "multipleUnlockerGames": "Odblokowywanie osiągnięć w 32 grach jednocześnie",
+        "multiAccount": "10 jednocześnie zalogowanych kont"
+      }
+    },
+    "faq": {
+      "subscriptionNotActivated": {
+        "q": "Zakup PRO, ale subskrypcja nie została aktywowana?",
+        "a": "Po dokonaniu płatności otrzymasz e-mail z kluczem licencyjnym. Otwórz aplikację, przejdź do Ustawienia → Subskrypcja, wklej klucz licencyjny w odpowiednim polu i kliknij Aktywuj. Jeśli problem nadal występuje, skontaktuj się z nami za pośrednictwem centrum pomocy w prawym górnym rogu aplikacji lub pod adresem contact@steamgameidler.com."
+      },
+      "transferDevice": {
+        "q": "Jak przenieść klucz licencyjny na nowe urządzenie?",
+        "a": "Klucz licencyjny może być aktywny tylko na jednym urządzeniu jednocześnie. Aby go przenieść, otwórz aplikację na nowym urządzeniu, przejdź do Ustawienia → Subskrypcja, wpisz klucz licencyjny i kliknij Aktywuj. Pojawi się prośba o potwierdzenie przeniesienia. Po potwierdzeniu nowe urządzenie zostanie aktywowane, a poprzednie utraci dostęp przy następnym uruchomieniu aplikacji. Jeśli aplikacja została ponownie zainstalowana na tym samym komputerze, przenoszenie nie jest potrzebne — urządzenie jest rozpoznawane na podstawie identyfikatora sprzętu."
+      },
+      "cancel": {
+        "q": "Jak anulować subskrypcję?",
+        "a": "Przejdź do Ustawienia → Subskrypcja → Zarządzaj subskrypcją i postępuj zgodnie z instrukcjami anulowania. Po anulowaniu zachowasz dostęp do korzyści PRO do końca bieżącego okresu rozliczeniowego."
+      },
+      "switchTier": {
+        "q": "Czy mogę zmienić plan?",
+        "a": "Tak. Anuluj obecną subskrypcję, a następnie ponownie wykup wybrany plan, korzystając ze standardowej procedury subskrypcji."
+      },
+      "invoices": {
+        "q": "Gdzie znajdę faktury i potwierdzenia płatności?",
+        "a": "Po wykupieniu subskrypcji otrzymasz potwierdzenie płatności e-mailem. Pełną historię płatności znajdziesz w Ustawienia → Subskrypcja → Zarządzaj subskrypcją."
+      },
+      "refund": {
+        "q": "Jaka jest polityka zwrotów?",
+        "a": "Subskrypcje PRO są traktowane jako darowizny i zasadniczo nie podlegają zwrotowi. Każdy wniosek o zwrot rozpatrujemy indywidualnie. Skontaktuj się z nami za pośrednictwem centrum pomocy w prawym górnym rogu aplikacji lub pod adresem contact@steamgameidler.com."
+      },
+      "chargeback": {
+        "q": "Co się stanie, jeśli zgłoszę obciążenie zwrotne (chargeback)?",
+        "a": "Nieuczciwe obciążenia zwrotne poważnie szkodzą temu niewielkiemu, niezależnemu projektowi. Zgłoszenie obciążenia zwrotnego bez wcześniejszego kontaktu z nami może skutkować trwałym odebraniem dostępu do aplikacji. Jeśli wystąpił błąd w płatności, chętnie pomożemy go jak najszybciej rozwiązać — skontaktuj się z nami za pośrednictwem centrum pomocy w prawym górnym rogu aplikacji lub pod adresem contact@steamgameidler.com."
+      }
+    },
+    "modal": {
+      "footer": "Podane ceny są wyrażone w USD i nie obejmują podatków ani opłat za przewalutowanie, które mogą zależeć od Twojej lokalizacji i metody płatności."
+    },
+    "comparisonTable": {
+      "learnMoreFeatures": "Dowiedz się więcej o poszczególnych funkcjach"
+    }
+  },
+  "auth": {
+    "landing": {
+      "title": "Zaloguj się do Steam Game Idler",
+      "agentButton": "Logowanie przez Steam",
+      "localButton": "Logowanie lokalne",
+      "localAlreadySignedIn": "Na tym urządzeniu jest już zalogowane konto w lokalnym kliencie Steam — jednocześnie można zalogować tylko jedno konto.",
+      "acknowledge": "Kontynuując, akceptujesz <0>Warunki korzystania z usługi</0> i potwierdzasz zapoznanie się z naszą <1>Polityką prywatności</1>."
+    },
+    "signIn": {
+      "usernameLabel": "Nazwa użytkownika",
+      "usernamePlaceholder": "Wpisz nazwę użytkownika Steam",
+      "passwordLabel": "Hasło",
+      "passwordPlaceholder": "Wpisz hasło do Steam",
+      "usernameRequired": "Wpisz nazwę użytkownika Steam.",
+      "passwordRequired": "Wpisz hasło do Steam.",
+      "credentialsSectionLabel": "Zaloguj się, używając nazwy konta",
+      "guardCode": {
+        "deviceTitle": "Sprawdź aplikację Steam Mobile",
+        "deviceDescription": "Wpisz kod z aplikacji Steam Mobile.",
+        "emailTitle": "Sprawdź skrzynkę e-mail",
+        "emailDescription": "Wysłaliśmy kod na adres {{email}}. Wpisz go poniżej.",
+        "confirmationTitle": "Potwierdź logowanie",
+        "confirmationDescription": "Zatwierdź prośbę o logowanie w aplikacji Steam Mobile, aby kontynuować.",
+        "codeLabel": "Kod Steam Guard",
+        "incorrectCode": "Nieprawidłowy kod. Spróbuj ponownie.",
+        "submitButton": "Zweryfikuj"
+      },
+      "qrCode": {
+        "sectionLabel": "Możesz też zalogować się za pomocą kodu QR",
+        "instructions": "Użyj aplikacji Steam Mobile, aby zalogować się za pomocą kodu QR."
+      },
+      "errors": {
+        "title": "Nie udało się zalogować",
+        "invalidCredentials": "Nieprawidłowa nazwa użytkownika lub hasło.",
+        "denied": "Odrzucono prośbę o logowanie w aplikacji Steam Mobile. Spróbuj ponownie.",
+        "generic": "Coś poszło nie tak podczas logowania. Spróbuj ponownie. ({{code}})"
+      }
+    },
+    "localSignIn": {
+      "title": "Wybierz konto",
+      "noAccounts": "Na tym urządzeniu nie znaleziono żadnych kont Steam. Zaloguj się co najmniej raz w kliencie Steam, a następnie odśwież listę.",
+      "errors": {
+        "steamNotFound": "Nie udało się znaleźć lokalnej instalacji Steam.",
+        "loginVdfUnreadable": "Nie udało się odczytać zapisanych kont Steam na tym urządzeniu.",
+        "accountNotFound": "Nie można już znaleźć tego konta.",
+        "switchFailed": "Nie udało się przełączyć kont Steam.",
+        "launchFailed": "Nie udało się uruchomić klienta Steam.",
+        "summaryUnavailable": "Nie można teraz wczytać szczegółów konta."
+      }
+    },
+    "hero": {
+      "title": "Jedyne narzędzie do<1/>automatyzacji Steam,<1/>którego potrzebujesz",
+      "subtitle": "Zdobywaj karty kolekcjonerskie, odblokowuj osiągnięcia, nabijaj czas gry i automatyzuj korzystanie ze Steam — wszystko w jednym narzędziu."
+    }
+  },
+  "dashboard": {
+    "sidebar": {
+      "goPro": {
+        "title": "Odblokuj korzyści PRO"
+      },
+      "nav": {
+        "games": "Gry",
+        "idling": "Nabijanie czasu gry",
+        "favorites": "Ulubione",
+        "freeGames": "Darmowe gry",
+        "cardFarming": "Farmienie kart",
+        "achievementUnlocker": "Odblokowywanie osiągnięć",
+        "autoIdle": "Automatyczne nabijanie czasu gry",
+        "inventoryManager": "Zarządzanie ekwipunkiem"
+      },
+      "signOut": {
+        "confirmTitle": "Wylogować się?",
+        "confirmDescription": "Spowoduje to zatrzymanie automatyzacji działającej obecnie dla konta {{name}} i wylogowanie tego konta.",
+        "error": "Nie udało się w pełni zakończyć czyszczenia po wylogowaniu, ale konto zostało wylogowane."
+      },
+      "tier": {
+        "free": "Bezpłatny"
+      },
+      "accountSwitcher": {
+        "modeAgent": "Zalogowano przez Steam",
+        "modeLocal": "Lokalny klient Steam",
+        "switched": "Przełączono na konto {{name}}",
+        "steamRequired": "Aby przełączyć się na to konto, Steam musi być uruchomiony",
+        "addAccount": {
+          "trigger": "Dodaj kolejne konto",
+          "capReachedMax": "Osiągnięto maksymalną liczbę kont, na które można jednocześnie zalogować się przez Steam.",
+          "added": "Dodano konto {{name}}",
+          "capReached_one": "Plan {{tier}} pozwala zalogować jednocześnie {{count}} konto przez Steam. Wyloguj się z jednego konta, aby dodać kolejne, lub przejdź na wyższy plan.",
+          "capReached_few": "Plan {{tier}} pozwala zalogować jednocześnie {{count}} konta przez Steam. Wyloguj się z jednego konta, aby dodać kolejne, lub przejdź na wyższy plan.",
+          "capReached_many": "Plan {{tier}} pozwala zalogować jednocześnie {{count}} kont przez Steam. Wyloguj się z jednego konta, aby dodać kolejne, lub przejdź na wyższy plan.",
+          "capReached_other": "Plan {{tier}} pozwala zalogować jednocześnie {{count}} kont przez Steam. Wyloguj się z jednego konta, aby dodać kolejne, lub przejdź na wyższy plan."
+        },
+        "reauth": {
+          "badge": "Zalogowano w innym miejscu",
+          "modalTitle": "Zalogowano na innym urządzeniu",
+          "modalDescription": "Konto {{account}} zostało zalogowane na innym urządzeniu, dlatego jego automatyzacja została wstrzymana. Zaloguj się ponownie, aby kontynuować.",
+          "reconnect": "Połącz ponownie",
+          "sessionReplacedExplainer": "Zwykle dzieje się tak, gdy inne uruchomienie Steam Game Idler lub podobne narzędzie loguje się na to konto. Ponowne połączenie tutaj spowoduje wylogowanie tamtej sesji.",
+          "useDifferentMethod": "Użyj innej metody logowania",
+          "sessionEnded": {
+            "badge": "Wymagane ponowne logowanie",
+            "modalTitle": "Steam zakończył tę sesję",
+            "modalDescription": "Steam wylogował konto {{account}}, dlatego wszystkie działające na nim zadania zostały zatrzymane. Zaloguj się ponownie, aby kontynuować.",
+            "explainer": "Może się tak zdarzyć po zmianie hasła Steam lub wylogowaniu ze wszystkich urządzeń.",
+            "signInAgain": "Zaloguj się ponownie"
+          }
+        }
+      }
+    },
+    "games": {
+      "unknownName": "Aplikacja {{appId}}",
+      "carousels": {
+        "recommended": "Polecane"
+      },
+      "sort": {
+        "playtimeDesc": "Czas gry (od największego)",
+        "playtimeAsc": "Czas gry (od najmniejszego)",
+        "recentlyPlayedDesc": "Ostatnio uruchamiane (od najnowszych)",
+        "recentlyPlayedAsc": "Ostatnio uruchamiane (od najstarszych)",
+        "achievementsDesc": "Ukończenie (od najwyższego)",
+        "achievementsAsc": "Ukończenie (od najniższego)"
+      },
+      "empty": {
+        "title": "Nie znaleziono gier",
+        "description": "To konto nie ma jeszcze żadnych gier."
+      },
+      "errors": {
+        "title": "Nie udało się wczytać gier",
+        "webApiUnavailable": "Nie można teraz pobrać danych o czasie gry ze Steam.",
+        "cacheIoFailed": "Nie udało się odczytać ani zapisać pamięci podręcznej gier.",
+        "generic": "Coś poszło nie tak podczas wczytywania gier. Spróbuj ponownie. ({{code}})"
+      },
+      "privacyWarning": {
+        "title": "Niektóre dane o grach mogą być niedostępne",
+        "description": "Twój profil Steam lub szczegóły gier wydają się ustawione jako prywatne, dlatego dane o czasie gry, ostatnio uruchamianych grach i część gier mogą być niekompletne. Ustaw profil jako publiczny lub dodaj własny klucz Steam Web API w Ustawieniach, aby rozwiązać ten problem.",
+        "changeSettings": "Zmień ustawienia prywatności",
+        "useOwnKey": "Dodaj własny klucz API"
+      }
+    },
+    "playingElsewhere": {
+      "title": "Wstrzymano podczas grania",
+      "description": "To konto gra obecnie w inną grę w ramach innej sesji Steam, dlatego nabijanie czasu gry i automatyzacja zostały wstrzymane. Wszystko wznowi się automatycznie około minuty po zakończeniu tamtej sesji gry.",
+      "descriptionWithGame": "To konto gra obecnie w {{game}} w ramach innej sesji Steam, dlatego nabijanie czasu gry i automatyzacja zostały wstrzymane. Wszystko wznowi się automatycznie około minuty po zakończeniu tamtej sesji gry."
+    },
+    "idling": {
+      "stopAll": "Zatrzymaj wszystko",
+      "sections": {
+        "manual": "Uruchomione ręcznie",
+        "other": "Pozostałe"
+      },
+      "empty": {
+        "title": "Obecnie nic nie jest uruchomione.",
+        "description": "Przejdź na stronę Gry, najedź kursorem na wybraną grę i kliknij przycisk odtwarzania. Gra pojawi się tutaj na czas nabijania czasu gry.",
+        "browseGames": "Przeglądaj swoje gry",
+        "setUpAutoIdle": "Skonfiguruj automatyczne nabijanie czasu gry"
+      },
+      "errors": {
+        "startFailed": "Nie udało się rozpocząć nabijania czasu gry w tej grze.",
+        "maxPlaytimeCapReached": "Ta gra osiągnęła już maksymalny limit czasu gry.",
+        "generic": "Coś poszło nie tak podczas aktualizowania zadań nabijania czasu gry. Spróbuj ponownie. ({{code}})"
+      }
+    },
+    "favorites": {
+      "confirmClear": {
+        "title": "Wyczyścić wszystkie ulubione?",
+        "description": "Spowoduje to usunięcie wszystkich {{count}} gier z listy ulubionych."
+      },
+      "empty": {
+        "title": "Brak ulubionych",
+        "description": "Dodaj gry z karty Wszystkie gry, aby pojawiły się tutaj."
+      },
+      "errors": {
+        "title": "Nie udało się zaktualizować listy ulubionych",
+        "cacheIoFailed": "Nie udało się odczytać ani zapisać pamięci podręcznej ulubionych.",
+        "generic": "Coś poszło nie tak podczas aktualizowania listy ulubionych. Spróbuj ponownie. ({{code}})"
+      }
+    },
+    "freeGames": {
+      "actions": {
+        "claim": "Odbierz",
+        "claimed": "Odebrano"
+      },
+      "outcomes": {
+        "alreadyOwned": "Masz już tę grę."
+      },
+      "empty": {
+        "title": "Obecnie brak darmowych gier",
+        "description": "Wróć później — Steam co jakiś czas udostępnia gry za darmo."
+      },
+      "errors": {
+        "title": "Nie udało się wczytać darmowych gier",
+        "scrapeFailed": "Nie można teraz sprawdzić darmowych gier na Steam.",
+        "storeLoginFailed": "Nie udało się zalogować do Sklepu Steam. Spróbuj ponownie.",
+        "storeLogoutFailed": "Nie udało się wylogować ze Sklepu Steam. Spróbuj ponownie.",
+        "claimFailed": "Nie udało się odebrać tej gry. Być może nie jest już darmowa albo już ją posiadasz.",
+        "generic": "Coś poszło nie tak podczas wczytywania darmowych gier. Spróbuj ponownie. ({{code}})"
+      },
+      "notifications": {
+        "title": "Dostępne darmowe gry!",
+        "bodyOne": "Gra {{name}} jest teraz dostępna za darmo na Steam.",
+        "bodyMany": "Na Steam dostępnych jest {{count}} nowych darmowych gier."
+      },
+      "autoRedeem": {
+        "success": "Automatycznie odebrano grę {{name}}",
+        "failure": "Nie udało się automatycznie odebrać gry {{name}}"
+      },
+      "correction": {
+        "granted": "Gra {{name}} została jednak pomyślnie odebrana — wcześniejsze powiadomienie o błędzie było nieprawidłowe."
+      }
+    },
+    "achievements": {
+      "tabs": {
+        "achievements": "Osiągnięcia",
+        "statistics": "Statystyki"
+      },
+      "header": {
+        "viewOnSteam": "Wyświetl na Steam",
+        "viewOnSteamDb": "Wyświetl na SteamDB"
+      },
+      "protectedAlert": {
+        "title": "Niektóre elementy są chronione",
+        "description": "Osiągnięcia lub statystyki oznaczone jako chronione są ustawiane przez serwer gry i nie mogą być zmieniane przez klienta."
+      },
+      "unlockedCount": "Odblokowano {{unlocked}} / {{total}}",
+      "noDescription": "Brak opisu",
+      "protectedTooltip": "Ustawiane przez serwer gry i niemożliwe do zmiany przez klienta.",
+      "edited": "Edytowano",
+      "incrementOnly": "Tylko wzrasta",
+      "incrementOnlyTooltip": "Ta statystyka może tylko wzrastać — nigdy nie maleje.",
+      "sets": {
+        "baseGame": "Gra podstawowa",
+        "dlc": "DLC",
+        "notOwned": "Nieposiadane"
+      },
+      "archived": {
+        "badge": "Zarchiwizowano"
+      },
+      "views": {
+        "all": "Wszystkie osiągnięcia"
+      },
+      "filters": {
+        "all": "Wszystkie",
+        "locked": "Zablokowane",
+        "unlocked": "Odblokowane"
+      },
+      "selection": {
+        "selectAll": "Zaznacz wszystko"
+      },
+      "sort": {
+        "percent": "Odsetek globalnych odblokowań",
+        "unlocked": "Najpierw odblokowane",
+        "locked": "Najpierw zablokowane",
+        "unprotected": "Najpierw niechronione",
+        "protected": "Najpierw chronione"
+      },
+      "rarity": {
+        "common": "Pospolite",
+        "uncommon": "Niepospolite",
+        "rare": "Rzadkie",
+        "epic": "Epickie",
+        "legendary": "Legendarne"
+      },
+      "actions": {
+        "unlock": "Odblokuj",
+        "lock": "Zablokuj",
+        "unlockAll": "Odblokuj wszystkie",
+        "lockAll": "Zablokuj wszystkie",
+        "saveChanges": "Zapisz zmiany",
+        "resetAll": "Przywróć wszystko"
+      },
+      "confirmUnlockAll": {
+        "title": "Odblokować wszystkie osiągnięcia?",
+        "description": "Spowoduje to odblokowanie wszystkich osiągnięć w tej grze, które nie są już odblokowane ani chronione."
+      },
+      "confirmLockAll": {
+        "title": "Zablokować wszystkie osiągnięcia?",
+        "description": "Spowoduje to zablokowanie wszystkich osiągnięć w tej grze, które nie są już zablokowane ani chronione."
+      },
+      "confirmApplyChanges": {
+        "title": "Zastosować oczekujące zmiany?",
+        "descriptionBoth": "Spowoduje to odblokowanie {{unlockCount}} i zablokowanie {{lockCount}} wybranych osiągnięć.",
+        "descriptionUnlockOnly": "Spowoduje to odblokowanie {{unlockCount}} wybranych osiągnięć.",
+        "descriptionLockOnly": "Spowoduje to zablokowanie {{lockCount}} wybranych osiągnięć."
+      },
+      "confirmResetStats": {
+        "title": "Zresetować wszystkie statystyki?",
+        "description": "Spowoduje to przywrócenie domyślnych wartości wszystkich statystyk tej gry. Tej operacji nie można cofnąć."
+      },
+      "empty": {
+        "title": "Brak osiągnięć",
+        "description": "Ta gra nie ma żadnych osiągnięć."
+      },
+      "emptyStats": {
+        "title": "Brak statystyk",
+        "description": "Ta gra nie ma żadnych statystyk."
+      },
+      "searchNoResults": {
+        "title": "Brak wyników pasujących do wyszukiwania",
+        "description": "Spróbuj użyć innego hasła."
+      },
+      "toasts": {
+        "achievementUnlocked": "Odblokowano osiągnięcie „{{name}}”",
+        "achievementLocked": "Zablokowano osiągnięcie „{{name}}”",
+        "bulkNoChanges": "Brak zmian — osiągnięcia są już w wybranym stanie lub są chronione.",
+        "applyPartialFailure": "Nie udało się zaktualizować niektórych wybranych osiągnięć. Spróbuj ponownie.",
+        "statsReset": "Statystyki zostały zresetowane",
+        "bulkUnlocked_one": "Odblokowano {{count}} osiągnięcie",
+        "bulkUnlocked_few": "Odblokowano {{count}} osiągnięcia",
+        "bulkUnlocked_many": "Odblokowano {{count}} osiągnięć",
+        "bulkUnlocked_other": "Odblokowano {{count}} osiągnięć",
+        "bulkLocked_one": "Zablokowano {{count}} osiągnięcie",
+        "bulkLocked_few": "Zablokowano {{count}} osiągnięcia",
+        "bulkLocked_many": "Zablokowano {{count}} osiągnięć",
+        "bulkLocked_other": "Zablokowano {{count}} osiągnięć",
+        "changesApplied_one": "Zaktualizowano {{count}} osiągnięcie",
+        "changesApplied_few": "Zaktualizowano {{count}} osiągnięcia",
+        "changesApplied_many": "Zaktualizowano {{count}} osiągnięć",
+        "changesApplied_other": "Zaktualizowano {{count}} osiągnięć",
+        "statsSaved_one": "Zapisano {{count}} statystykę",
+        "statsSaved_few": "Zapisano {{count}} statystyki",
+        "statsSaved_many": "Zapisano {{count}} statystyk",
+        "statsSaved_other": "Zapisano {{count}} statystyk"
+      },
+      "errors": {
+        "title": "Nie udało się wczytać osiągnięć",
+        "invalidApp": "Ta aplikacja nie zawiera danych o osiągnięciach.",
+        "achievementNotFound": "Nie udało się znaleźć tego osiągnięcia.",
+        "statNotFound": "Nie udało się znaleźć tej statystyki.",
+        "protected": "Ta wartość jest ustawiana przez serwer gry i nie może zostać zmieniona.",
+        "unsupportedGameCoordinator": "Ta gra nie obsługuje osiągnięć przy logowaniu przez Steam — użyj lokalnego klienta Steam.",
+        "unsupportedGameCoordinatorLinux": "Ta gra nie obsługuje osiągnięć przy logowaniu przez Steam.",
+        "generic": "Coś poszło nie tak podczas wczytywania osiągnięć. Spróbuj ponownie. ({{code}})"
+      },
+      "pendingChanges_one": "{{count}} zmiana",
+      "pendingChanges_few": "{{count}} zmiany",
+      "pendingChanges_many": "{{count}} zmian",
+      "pendingChanges_other": "{{count}} zmian"
+    },
+    "cardFarming": {
+      "actions": {
+        "stop": "Zatrzymaj farmienie"
+      },
+      "confirmClearWhitelist": {
+        "title": "Wyczyścić białą listę farmienia kart?",
+        "description": "Spowoduje to usunięcie wszystkich {{count}} gier z białej listy farmienia kart. Program ponownie będzie uwzględniać każdą posiadaną grę, w której można zdobyć karty."
+      },
+      "multiGameNotice": {
+        "title": "Farmienie kilku gier jednocześnie?",
+        "description": "Farmienie kilku gier naraz może spowolnić tempo zdobywania kart w każdej z nich. Jeśli przez dłuższy czas nie wypadają żadne karty, spróbuj wyłączyć tę opcję."
+      },
+      "presenceNotice": {
+        "title": "Przed rozpoczęciem",
+        "description": "Twój status to Online, więc za każdym razem, gdy farmienie kart uruchomi grę, znajomi mogą otrzymać powiadomienie. Rozważ zmianę statusu na Offline.",
+        "stayOnline": "Pozostań online i rozpocznij",
+        "appearOffline": "Ustaw status offline i rozpocznij",
+        "dontShowAgain": "Nie pokazuj ponownie",
+        "offlineFailed": "Nie udało się zmienić statusu. Farmienie rozpoczęto z obecnym statusem."
+      },
+      "confirmClearBlacklist": {
+        "title": "Wyczyścić czarną listę farmienia kart?",
+        "description": "Spowoduje to usunięcie wszystkich {{count}} gier z czarnej listy farmienia kart."
+      },
+      "tabs": {
+        "gamesWithDrops": "Gry z dostępnymi kartami",
+        "whitelisted": "Na białej liście",
+        "blacklisted": "Na czarnej liście"
+      },
+      "sort": {
+        "dropsDesc": "Pozostałe karty (od największej liczby)",
+        "dropsAsc": "Pozostałe karty (od najmniejszej liczby)"
+      },
+      "browseEmpty": {
+        "title": "Brak kart do zdobycia",
+        "description": "Wszystkie karty kolekcjonerskie w posiadanych grach zostały już zdobyte lub obecnie nie są dostępne."
+      },
+      "whitelistEmpty": {
+        "title": "Brak gier na białej liście",
+        "description": "Dodaj gry z karty Gry z dostępnymi kartami, aby farmić tylko te gry. Pozostaw listę pustą, aby farmić wszystkie gry z dostępnymi kartami."
+      },
+      "blacklistEmpty": {
+        "title": "Brak gier na czarnej liście",
+        "description": "Dodaj gry z karty Gry z dostępnymi kartami, aby nigdy ich nie farmić. Pozostaw listę pustą, aby farmić wszystkie gry z dostępnymi kartami."
+      },
+      "connect": {
+        "automaticDescription": "Automatycznie loguje się do Społeczności Steam, aby sprawdzić dostępność kart."
+      },
+      "progress": {
+        "activeTitleReadyFarm": "Farmienie kart ({{count}})",
+        "activeTitleBulkIdle": "Nabijanie czasu gry ({{count}})",
+        "queueTitle": "Następne w kolejce ({{count}})",
+        "accumulatingPlaytime": "{{hours}} godz. / {{threshold}} godz. do rozpoczęcia farmienia",
+        "waitingTurn": "Oczekiwanie na swoją kolej",
+        "completedNoDropsRemaining": "Nie ma już kart do zdobycia",
+        "completedRefundWindow": "Nadal trwa okres zwrotu (ponowne farmienie możliwe {{date}})",
+        "completedSkippedUnplayed": "Usunięto z białej listy: brak zarejestrowanego czasu gry",
+        "completedSkippedPlayed": "Usunięto z białej listy: gra ma już zarejestrowany czas gry",
+        "droppedThisSession": "Karty, które wypadły w tej sesji",
+        "stillToDrop": "Pozostało do zdobycia",
+        "cardsProgress": "{{done}} z {{total}} kart",
+        "nextDropCheck": "Następne sprawdzenie dostępności kart",
+        "dropsRemaining_one": "Pozostała {{count}} karta",
+        "dropsRemaining_few": "Pozostały {{count}} karty",
+        "dropsRemaining_many": "Pozostało {{count}} kart",
+        "dropsRemaining_other": "Pozostało {{count}} kart"
+      },
+      "errors": {
+        "title": "Nie udało się zaktualizować farmienia kart",
+        "sessionFailed": "Nie udało się zalogować do Społeczności Steam. Sprawdź pliki cookie i spróbuj ponownie.",
+        "sessionExpired": "Sesja Społeczności Steam wygasła. Połącz się ponownie, aby kontynuować.",
+        "scrapeFailed": "Nie można teraz sprawdzić dostępności kart na Steam.",
+        "familyViewRestricted": "Na Twoim koncie Steam jest włączony tryb Family View. Wyłącz go i spróbuj ponownie.",
+        "generic": "Coś poszło nie tak podczas aktualizowania farmienia kart. Spróbuj ponownie. ({{code}})"
+      },
+      "settings": {
+        "hoursUntilFarmable": {
+          "title": "Liczba godzin do rozpoczęcia farmienia",
+          "description": "Ile godzin czasu gry potrzeba, aby gra kwalifikowała się do farmienia kart. Ustaw 0, aby od razu rozpocząć farmienie."
+        },
+        "allowMultiGameFarming": {
+          "title": "Farmienie wielu gier jednocześnie",
+          "description": "Zdobywaj karty w maksymalnie 32 grach jednocześnie zamiast w jednej. W niektórych przypadkach może to znacznie spowolnić tempo zdobywania kart w poszczególnych grach."
+        },
+        "skipRefundableGames": {
+          "title": "Pomijaj gry kwalifikujące się do zwrotu",
+          "description": "Nie zdobywaj kart w grach, które nadal mieszczą się w okresie zwrotu Steam (zakupione w ciągu ostatnich 14 dni i z czasem gry krótszym niż 2 godziny)."
+        },
+        "autoFarmCards": {
+          "title": "Monitoruj dostępność kart",
+          "description": "Okresowo sprawdzaj, czy w posiadanych grach pozostały karty do zdobycia, i automatycznie rozpoczynaj ich farmienie."
+        },
+        "skipNoPlaytime": {
+          "title": "Pomijaj gry bez rozegranego czasu",
+          "description": "Nie zdobywaj kart w grach, dla których nie zarejestrowano żadnego czasu gry."
+        },
+        "farmUnplayedOnly": {
+          "title": "Tylko nierozpoczęte gry",
+          "description": "Zdobywaj karty wyłącznie w grach, dla których nie zarejestrowano żadnego czasu gry."
+        },
+        "nextTask": {
+          "title": "Po zakończeniu uruchom kolejne zadanie",
+          "description": "Po zakończeniu farmienia automatycznie uruchom kolejne zadanie automatyzacji."
+        }
+      }
+    },
+    "achievementUnlocker": {
+      "addAllToQueue": "Dodaj wszystko do kolejki",
+      "confirmAddAllToQueue": {
+        "title": "Dodać wszystkie {{count}} gier do kolejki?",
+        "description": "Każda gra musi zostać przeskanowana w poszukiwaniu osiągnięć, co może zająć dużo czasu w przypadku dużej biblioteki. Zalecamy ręczne dodawanie gier."
+      },
+      "confirmClearQueue": {
+        "title": "Wyczyścić kolejkę odblokowywania osiągnięć?",
+        "description": "Spowoduje to usunięcie wszystkich {{count}} gier z kolejki odblokowywania osiągnięć."
+      },
+      "empty": {
+        "description": "Dodaj gry z karty Wszystkie gry do kolejki, aby automatycznie odblokowywać w nich osiągnięcia."
+      },
+      "settings": {
+        "idle": {
+          "title": "Nabijaj czas gry podczas odblokowywania",
+          "description": "Nabija czas gry w danej grze podczas odblokowywania jej osiągnięć."
+        },
+        "hidden": {
+          "title": "Pomijaj ukryte osiągnięcia",
+          "description": "Nie odblokowuj osiągnięć oznaczonych przez Steam jako ukryte."
+        },
+        "multipleGames": {
+          "title": "Uruchamiaj kilka gier jednocześnie",
+          "description": "Przetwarzaj jednocześnie do {{count}} gier z kolejki zamiast jednej po drugiej."
+        },
+        "interval": {
+          "title": "Odstęp między odblokowaniami",
+          "description": "Odczekuj losowy czas od {{min}} do {{max}} min między kolejnymi odblokowaniami.",
+          "to": "do"
+        },
+        "schedule": {
+          "title": "Odblokowuj tylko według harmonogramu",
+          "description": "Odblokowuj osiągnięcia wyłącznie w przedziale czasowym podanym poniżej."
+        },
+        "nextTask": {
+          "description": "Po opróżnieniu kolejki automatycznie uruchom kolejne zadanie automatyzacji."
+        }
+      },
+      "order": {
+        "delayBeforeFirstUnlock": "Opóźnienie przed pierwszym odblokowaniem",
+        "delayUntilNextUnlock": "Opóźnienie przed następnym odblokowaniem",
+        "reset": "Resetuj",
+        "skipped": "Pominięto",
+        "protectedSection": {
+          "title": "Chronione osiągnięcia"
+        },
+        "unownedDlcSection": {
+          "title": "Z DLC, którego nie posiadasz"
+        },
+        "archivedSection": {
+          "title": "Zarchiwizowane osiągnięcia"
+        },
+        "protectedAlert": {
+          "description": "Narzędzie do odblokowywania osiągnięć pomija gry zawierające jakiekolwiek chronione osiągnięcia, więc ta kolejność nie zostanie użyta."
+        },
+        "empty": {
+          "title": "Nie ma już elementów do uporządkowania",
+          "description": "Ta gra nie ma już żadnych osiągnięć do odblokowania."
+        },
+        "toasts": {
+          "saved": "Zapisano kolejność odblokowywania osiągnięć"
+        }
+      },
+      "importTimings": {
+        "title": "Importuj czasy",
+        "description": "Pobierz rzeczywiste czasy odblokowania osiągnięć innego gracza i wykorzystaj je do wyznaczenia realistycznych opóźnień dla poszczególnych osiągnięć.",
+        "inputPlaceholder": "SteamID64, adres URL profilu lub niestandardowy adres URL",
+        "importButton": "Importuj",
+        "errors": {
+          "profilePrivate": "Ten profil jest prywatny lub nie udostępnia publicznych danych o osiągnięciach.",
+          "noTimestamps": "Ten gracz nie ma osiągnięć z zapisanymi znacznikami czasu odblokowania w tej grze.",
+          "notFound": "Nie udało się znaleźć tego profilu.",
+          "generic": "Nie udało się teraz zaimportować czasów. Spróbuj ponownie. ({{code}})"
+        },
+        "success_one": "Zaimportowano czas dla {{count}} osiągnięcia",
+        "success_few": "Zaimportowano czasy dla {{count}} osiągnięć",
+        "success_many": "Zaimportowano czasy dla {{count}} osiągnięć",
+        "success_other": "Zaimportowano czasy dla {{count}} osiągnięć"
+      },
+      "progress": {
+        "scanning": "Sprawdzanie gier w kolejce pod kątem osiągnięć do odblokowania",
+        "scanningCount": "Sprawdzono {{checked}} z {{total}}",
+        "starting": "Uruchamianie…",
+        "waitingForSchedule": "Oczekiwanie na zaplanowany przedział odblokowywania",
+        "currentGame": "Aktualna gra",
+        "upNext": "Następna w kolejce",
+        "completedCount": "Odblokowano {{unlocked}}/{{total}}",
+        "completedMaxUnlocksReached": "Odblokowano {{unlocked}}/{{total}} (osiągnięto limit odblokowań)",
+        "completedMaxPlaytimeWithCount": "Odblokowano {{unlocked}}/{{total}} (osiągnięto limit czasu gry)",
+        "completedMaxPlaytime": "Osiągnięto maksymalny czas gry",
+        "completedNothingToUnlock": "Nie ma już nic do odblokowania",
+        "unlockedThisSession": "Odblokowano w tej sesji",
+        "stillToUnlock": "Pozostało do odblokowania",
+        "achievementsProgress": "{{done}} z {{total}} osiągnięć",
+        "nextAchievement": "Następne osiągnięcie",
+        "remaining_one": "Pozostało {{count}} osiągnięcie",
+        "remaining_few": "Pozostały {{count}} osiągnięcia",
+        "remaining_many": "Pozostało {{count}} osiągnięć",
+        "remaining_other": "Pozostało {{count}} osiągnięć"
+      },
+      "errors": {
+        "title": "Nie udało się zaktualizować narzędzia do odblokowywania osiągnięć",
+        "queueCacheIoFailed": "Nie udało się odczytać ani zapisać kolejki odblokowywania osiągnięć.",
+        "settingsIoFailed": "Nie udało się odczytać ani zapisać ustawień narzędzia do odblokowywania osiągnięć.",
+        "orderIoFailed": "Nie udało się odczytać ani zapisać kolejności osiągnięć w tej grze.",
+        "libraryRunInProgress": "Nie można rozpocząć, gdy w ustawieniach debugowania trwa blokowanie lub odblokowywanie osiągnięć we wszystkich grach. Spróbuj ponownie po zakończeniu tego procesu."
+      }
+    },
+    "autoIdle": {
+      "confirmClearQueue": {
+        "title": "Wyczyścić kolejkę automatycznego nabijania czasu gry?",
+        "description": "Spowoduje to usunięcie wszystkich {{count}} gier z kolejki automatycznego nabijania czasu gry."
+      },
+      "empty": {
+        "description": "Dodaj gry z karty Wszystkie gry, aby automatycznie nabijać w nich czas gry przy każdym uruchomieniu aplikacji."
+      },
+      "errors": {
+        "title": "Nie udało się zaktualizować automatycznego nabijania czasu gry",
+        "cacheIoFailed": "Nie udało się odczytać ani zapisać kolejki automatycznego nabijania czasu gry.",
+        "generic": "Coś poszło nie tak podczas aktualizowania automatycznego nabijania czasu gry. Spróbuj ponownie. ({{code}})"
+      }
+    },
+    "inventoryManager": {
+      "fetchPrice": "Pobierz cenę",
+      "fetchingPrice": "Pobieranie ceny…",
+      "badgeLevel": "Poziom odznaki {{level}}",
+      "noBadge": "Nie utworzono odznaki",
+      "connect": {
+        "automaticDescription": "Automatycznie loguje się do Społeczności Steam, aby wczytać Twój ekwipunek."
+      },
+      "actions": {
+        "listSelected": "Wystaw zaznaczone ({{count}})",
+        "sellAll": "Sprzedaj wszystko ({{count}})",
+        "sellDupes": "Sprzedaj duplikaty",
+        "removeListings": "Usuń oferty",
+        "lockItem": "Zablokuj ten przedmiot, aby nigdy nie był sprzedawany automatycznie",
+        "list": "Wystaw na rynku",
+        "cardExchange": "Wyświetl w SteamCardExchange"
+      },
+      "confirm": {
+        "listSelected": {
+          "title": "Wystawić {{count}} zaznaczonych przedmiotów?",
+          "description": "Każdy zaznaczony przedmiot zostanie wystawiony po wprowadzonej cenie. Szacowany czas: {{time}}. Pozostaw aplikację uruchomioną do zakończenia procesu."
+        },
+        "sellAll": {
+          "title": "Sprzedać wszystkie widoczne przedmioty?",
+          "description": "Dla maksymalnie {{count}} widocznych obecnie przedmiotów zostanie pobrana cena rynkowa, a następnie przedmioty te zostaną wystawione zgodnie z preferencjami cenowymi i limitami sprzedaży w ustawieniach ekwipunku. Szacowany czas: {{time}}. Pozostaw aplikację uruchomioną do zakończenia procesu."
+        },
+        "sellDupes": {
+          "title": "Sprzedać zduplikowane przedmioty?",
+          "description": "Dla maksymalnie {{count}} zduplikowanych przedmiotów zostanie pobrana cena rynkowa, a następnie zostaną one wystawione na sprzedaż (z zachowaniem jednej kopii każdego przedmiotu). Zastosowane zostaną preferencje cenowe i limity sprzedaży z ustawień ekwipunku. Szacowany czas: {{time}}. Pozostaw aplikację uruchomioną do zakończenia procesu."
+        },
+        "removeListings": {
+          "title": "Usunąć wszystkie aktywne oferty?",
+          "description": "Spowoduje to anulowanie wszystkich aktywnych ofert rynkowych tego konta. Szacowany czas: {{time}}. Pozostaw aplikację uruchomioną do zakończenia procesu."
+        }
+      },
+      "filter": {
+        "label": "Filtr",
+        "cards": "Karty kolekcjonerskie",
+        "foil": "Foliowane",
+        "backgrounds": "Tła",
+        "emoticons": "Emotikony",
+        "boosters": "Pakiety wzmacniające",
+        "sale": "Wystawione na sprzedaż",
+        "dupes": "Duplikaty",
+        "badge": "Ma odznakę",
+        "locked": "Zablokowane"
+      },
+      "sort": {
+        "label": "Sortuj według",
+        "game-asc": "Gra (A–Z)",
+        "game-desc": "Gra (Z–A)",
+        "badge-desc": "Poziom odznaki"
+      },
+      "empty": {
+        "title": "Nie znaleziono przedmiotów",
+        "description": "Żadne przedmioty dostępne na rynku nie pasują do bieżącego wyszukiwania i filtrów.",
+        "noItemsDescription": "Nie masz jeszcze żadnych przedmiotów, które można sprzedać na Rynku Steam. Zdobyte karty kolekcjonerskie pojawią się tutaj."
+      },
+      "priceData": {
+        "sellOrders": "Oferty sprzedaży",
+        "buyOrders": "Oferty kupna"
+      },
+      "settings": {
+        "currency": {
+          "title": "Waluta",
+          "description": "Waluta używana do pobierania cen rynkowych i wystawiania przedmiotów."
+        },
+        "pricePreference": {
+          "title": "Cena domyślna",
+          "description": "Którą cenę stosować podczas masowej sprzedaży przedmiotów.",
+          "options": {
+            "highestBuyOrder": "Najwyższa oferta kupna",
+            "lowestSellOrder": "Najniższa oferta sprzedaży"
+          }
+        },
+        "priceAdjustment": {
+          "title": "Korekta ceny",
+          "description": "Dodaje {{value}} do ceny każdego wystawianego przedmiotu, niezależnie od tego, czy cena została uzupełniona automatycznie, czy wpisana ręcznie."
+        },
+        "sellLimit": {
+          "title": "Limit ceny sprzedaży",
+          "description": "Wystawiaj tylko przedmioty w cenie od {{min}} do {{max}}."
+        },
+        "sellDelay": {
+          "title": "Opóźnienie między sprzedażą",
+          "description": "Odczekuj {{value}} s między wystawianiem kolejnych przedmiotów, aby uniknąć limitów żądań."
+        }
+      },
+      "toasts": {
+        "noListings": "Nie masz żadnych aktywnych ofert na rynku.",
+        "removedListings": "Usunięto {{count}} z {{total}} ofert",
+        "removeFailed": "Nie udało się usunąć żadnej oferty.",
+        "noneEligible": "Żadne przedmioty nie kwalifikowały się do sprzedaży — sprawdź limity cenowe w ustawieniach ekwipunku.",
+        "priceFetchCooldown": "Odczekaj {{seconds}} s przed pobraniem kolejnych cen przedmiotów",
+        "itemLocked": "Ten przedmiot jest zablokowany i nie można go wystawić na sprzedaż.",
+        "priceOutOfRange": "Cena {{price}} wykracza poza skonfigurowany limit sprzedaży ({{min}}–{{max}}).",
+        "listed_one": "Wystawiono {{count}} przedmiot",
+        "listed_few": "Wystawiono {{count}} przedmioty",
+        "listed_many": "Wystawiono {{count}} przedmiotów",
+        "listed_other": "Wystawiono {{count}} przedmiotów",
+        "listFailed_one": "Nie udało się wystawić {{count}} przedmiotu",
+        "listFailed_few": "Nie udało się wystawić {{count}} przedmiotów",
+        "listFailed_many": "Nie udało się wystawić {{count}} przedmiotów",
+        "listFailed_other": "Nie udało się wystawić {{count}} przedmiotów",
+        "skippedLocked_one": "Pominięto {{count}} zablokowany przedmiot",
+        "skippedLocked_few": "Pominięto {{count}} zablokowane przedmioty",
+        "skippedLocked_many": "Pominięto {{count}} zablokowanych przedmiotów",
+        "skippedLocked_other": "Pominięto {{count}} zablokowanych przedmiotów",
+        "skippedOutOfRange_one": "Pominięto {{count}} przedmiot poza limitem sprzedaży",
+        "skippedOutOfRange_few": "Pominięto {{count}} przedmioty poza limitem sprzedaży",
+        "skippedOutOfRange_many": "Pominięto {{count}} przedmiotów poza limitem sprzedaży",
+        "skippedOutOfRange_other": "Pominięto {{count}} przedmiotów poza limitem sprzedaży"
+      },
+      "errors": {
+        "title": "Nie udało się zaktualizować ekwipunku",
+        "fetchFailed": "Nie można teraz wczytać ekwipunku ze Społeczności Steam.",
+        "cacheIoFailed": "Nie udało się odczytać ani zapisać pamięci podręcznej ekwipunku.",
+        "priceFetchFailed": "Nie można teraz pobrać ceny rynkowej.",
+        "priceRateLimited": "Steam ogranicza obecnie liczbę zapytań o ceny. Spróbuj ponownie za chwilę.",
+        "itemNotFound": "Nie można znaleźć tego przedmiotu w pamięci podręcznej ekwipunku.",
+        "listingsFetchFailed": "Nie udało się odczytać aktywnych ofert rynkowych.",
+        "settingsIoFailed": "Nie udało się odczytać ani zapisać ustawień ekwipunku.",
+        "generic": "Coś poszło nie tak podczas aktualizowania ekwipunku. Spróbuj ponownie. ({{code}})"
+      }
+    },
+    "settings": {
+      "title": "Ustawienia",
+      "general": {
+        "title": "Ogólne",
+        "account": {
+          "displayNameLabel": "Nazwa wyświetlana",
+          "steamIdLabel": "Steam ID"
+        },
+        "apiKey": {
+          "label": "Klucz Steam Web API",
+          "placeholder": "Pozostaw puste, aby użyć wbudowanego klucza",
+          "description": "Zastępuje wbudowany klucz Steam Web API aplikacji."
+        },
+        "antiAway": {
+          "label": "Zawsze online",
+          "description": "Okresowo odświeżaj swój status Steam, aby podczas nabijania czasu gry nie wyświetlał się jako „Z dala od komputera”."
+        },
+        "runAtStartup": {
+          "label": "Uruchamiaj przy starcie systemu",
+          "description": "Automatycznie uruchamiaj Steam Game Idler po zalogowaniu do systemu Windows."
+        },
+        "startMinimized": {
+          "label": "Uruchamiaj w zasobniku systemowym",
+          "description": "Uruchamiaj Steam Game Idler w zasobniku systemowym, bez wyświetlania okna."
+        },
+        "closeToTray": {
+          "label": "Zamykaj do zasobnika systemowego",
+          "description": "Po zamknięciu okna Steam Game Idler nadal będzie działać w zasobniku systemowym."
+        },
+        "autoUpdateGamesList": {
+          "label": "Automatycznie aktualizuj listę gier",
+          "description": "Cicho odświeżaj listę gier w tle, aby była aktualna bez konieczności ręcznego odświeżania."
+        },
+        "personaState": {
+          "label": "Status online",
+          "description": "Wybierz status widoczny dla znajomych po zalogowaniu.",
+          "options": {
+            "online": "Online",
+            "busy": "Zajęty",
+            "away": "Zaraz wracam",
+            "snooze": "Drzemka",
+            "lookingToTrade": "Chce wymieniać się",
+            "lookingToPlay": "Chce grać",
+            "invisible": "Niewidoczny",
+            "offline": "Offline"
+          }
+        },
+        "customIdleStatus": {
+          "label": "Własny status podczas nabijania czasu gry",
+          "description": "Zastąp tekst „Gra w [gra]”, który widzą Twoi znajomi podczas nabijania czasu gry, własną wiadomością.",
+          "placeholder": "np. Farmię karty kolekcjonerskie"
+        },
+        "gamesOnly": {
+          "label": "Pokazuj tylko gry",
+          "description": "W bibliotece pokazuj tylko posiadane gry i gry udostępnione w ramach Chmury rodzinnej, ukrywając DLC, ścieżki dźwiękowe, filmy i narzędzia. Zmiana tego ustawienia odświeży listę gier."
+        },
+        "language": {
+          "label": "Język",
+          "description": "Wybierz język interfejsu aplikacji.",
+          "helpTranslate": "Pomóż tłumaczyć SGI"
+        }
+      },
+      "subscription": {
+        "title": "Subskrypcja",
+        "status": {
+          "title": "Status subskrypcji",
+          "description": "Twój obecny plan i szczegóły rozliczeń.",
+          "inactive": "Nieaktywna",
+          "renewsOn": "Odnawia się {{date}}",
+          "cancelsOn": "Zostanie anulowana {{date}}",
+          "manage": "Zarządzaj subskrypcją",
+          "upgrade": "Przejdź na wyższy plan"
+        },
+        "licenseKey": {
+          "title": "Klucz licencyjny",
+          "description": "Aktywuj klucz licencyjny, aby odblokować funkcje PRO na tym urządzeniu.",
+          "placeholder": "Wpisz klucz licencyjny",
+          "activate": "Aktywuj",
+          "activated": "Klucz licencyjny został aktywowany",
+          "copied": "Skopiowano klucz licencyjny"
+        },
+        "transfer": {
+          "title": "Przenieść ten klucz licencyjny?",
+          "description": "Ten klucz licencyjny jest już aktywny na innym urządzeniu. Aktywowanie go tutaj spowoduje dezaktywację na tamtym urządzeniu."
+        },
+        "errors": {
+          "activationFailed": "Nie udało się aktywować tego klucza licencyjnego. Sprawdź, czy jest poprawny, i spróbuj ponownie."
+        }
+      },
+      "customization": {
+        "title": "Dostosowywanie",
+        "tooltips": {
+          "label": "Wyłącz podpowiedzi",
+          "description": "Ukryj podpowiedzi wyświetlane po najechaniu kursorem w całej aplikacji."
+        },
+        "gameCardStyle": {
+          "label": "Styl karty gry",
+          "description": "Wybierz wygląd kart gier na listach.",
+          "cover": "Okładka",
+          "banner": "Baner"
+        },
+        "background": {
+          "label": "Obraz tła",
+          "description": "Użyj własnego obrazu jako tła aplikacji.",
+          "choose": "Wybierz obraz",
+          "saved": "Zaktualizowano tło",
+          "cleared": "Usunięto tło",
+          "signatureThemeActive": "Obrazy tła są wyłączone, gdy aktywny jest motyw sygnaturowy."
+        },
+        "theme": {
+          "label": "Motyw",
+          "description": "Wybierz motyw kolorystyczny aplikacji.",
+          "saved": "Zaktualizowano motyw",
+          "names": {
+            "default": "Domyślny",
+            "blue": "Niebieski",
+            "red": "Czerwony",
+            "purple": "Fioletowy",
+            "pink": "Różowy",
+            "orange": "Pomarańczowy",
+            "black": "Czarny",
+            "white": "Biały",
+            "synthwave": "Synthwave",
+            "aurora": "Zorza polarna",
+            "nebula": "Mgławica",
+            "terminal": "Terminal",
+            "ember": "Żar",
+            "abyss": "Otchłań",
+            "sugarDay": "Słodki dzień",
+            "sugarNight": "Słodka noc",
+            "sakura": "Sakura",
+            "lofiRain": "Deszcz lo-fi",
+            "fireflies": "Świetliki",
+            "holo": "Holo",
+            "blackHole": "Czarna dziura",
+            "lavaLamp": "Lampa lawowa",
+            "circuit": "Obwód",
+            "luxe": "Luksus",
+            "arcade": "Salon gier"
+          }
+        },
+        "font": {
+          "label": "Czcionka",
+          "description": "Wybierz czcionkę aplikacji.",
+          "saved": "Zaktualizowano czcionkę"
+        },
+        "errors": {
+          "backgroundInvalid": "Nie można użyć tego obrazu — sprawdź format i rozmiar pliku, a następnie spróbuj ponownie.",
+          "generic": "Coś poszło nie tak podczas aktualizowania ustawień personalizacji. Spróbuj ponownie. ({{code}})"
+        }
+      },
+      "steamCredentials": {
+        "title": "Dane logowania Steam",
+        "description": "Dane logowania Steam są wymagane do korzystania z funkcji Farmienie kart i Zarządzanie ekwipunkiem.",
+        "agentModeNote": "Nie jest to wymagane. To konto loguje się przez Steam i automatycznie uzyskuje sesję Społeczności Steam.",
+        "automaticDescription": "Automatycznie loguje się do Społeczności Steam i zapisuje tutaj pliki cookie.",
+        "errors": {
+          "storeIoFailed": "Nie udało się odczytać ani zapisać zapisanych danych logowania Steam.",
+          "generic": "Coś poszło nie tak podczas aktualizowania danych logowania Steam. Spróbuj ponownie. ({{code}})"
+        }
+      },
+      "freeGames": {
+        "notifications": {
+          "label": "Powiadomienia o darmowych grach",
+          "description": "Otrzymuj powiadomienia, gdy na Steam pojawi się nowa darmowa gra."
+        },
+        "autoRedeem": {
+          "label": "Automatycznie odbieraj darmowe gry",
+          "description": "Automatycznie odbieraj nowo wykryte darmowe gry na tym koncie.",
+          "signIn": "Zaloguj się do Steam",
+          "reauthenticate": "Zaloguj się ponownie",
+          "sessionEstablished": "Zalogowano do Sklepu Steam",
+          "sessionCleared": "Wylogowano ze Sklepu Steam"
+        },
+        "errors": {
+          "ioFailed": "Nie udało się odczytać ani zapisać ustawień darmowych gier tego konta.",
+          "generic": "Coś poszło nie tak podczas aktualizowania ustawień darmowych gier. Spróbuj ponownie. ({{code}})"
+        }
+      },
+      "gameSettings": {
+        "title": "Ustawienia gier",
+        "maxPlaytimeSection": "Czas gry",
+        "maxPlaytimeScopeNote": "Dotyczy wszystkich miejsc, w których można nabijać czas gry — ręcznego i automatycznego nabijania, odblokowywania osiągnięć oraz farmienia kart.",
+        "idlingScopeNote": "Dotyczy wyłącznie gier uruchomionych ręcznie lub automatycznie w celu nabijania czasu gry — narzędzie do odblokowywania osiągnięć ma osobny limit poniżej.",
+        "globalMaxPlaytime": {
+          "label": "Maksymalny czas gry (wszystkie gry)",
+          "description": "Automatycznie zatrzymaj grę i usuń ją z kolejek, gdy łączny czas gry osiągnie tę liczbę minut."
+        },
+        "maxPlaytime": {
+          "label": "Maksymalny czas gry",
+          "description": "Automatycznie zatrzymaj tę grę i usuń ją z kolejek, gdy łączny czas gry osiągnie tę liczbę minut. Jeśli ustawiono tę wartość, zastępuje ona wartość powyżej."
+        },
+        "globalMaxIdleTime": {
+          "label": "Maksymalny czas nabijania (wszystkie gry)",
+          "description": "Automatycznie zatrzymaj nabijanie czasu gry po upływie określonej liczby minut."
+        },
+        "maxIdleTime": {
+          "label": "Maksymalny czas nabijania",
+          "description": "Automatycznie zatrzymaj nabijanie czasu gry w tej grze po upływie określonej liczby minut. Jeśli ustawiono tę wartość, zastępuje ona wartość powyżej."
+        },
+        "maxAchievementUnlocks": {
+          "label": "Maksymalna liczba odblokowanych osiągnięć",
+          "description": "Zatrzymaj narzędzie do odblokowywania osiągnięć w tej grze po odblokowaniu określonej liczby osiągnięć."
+        },
+        "errors": {
+          "generic": "Coś poszło nie tak podczas aktualizowania ustawień gier. Spróbuj ponownie. ({{code}})"
+        }
+      },
+      "keybinds": {
+        "title": "Skróty klawiszowe",
+        "zoom": "Powiększenie",
+        "zoomIn": "Powiększ",
+        "zoomOut": "Pomniejsz",
+        "resetZoom": "Resetuj powiększenie",
+        "scrollUp": "Przewiń w górę",
+        "scrollDown": "Przewiń w dół",
+        "navigation": "Nawigacja",
+        "nextPage": "Następna strona",
+        "prevPage": "Poprzednia strona",
+        "openSearch": "Otwórz wyszukiwanie",
+        "toggleSettings": "Przełącz ustawienia",
+        "toggleSidebar": "Pokaż/ukryj pasek boczny"
+      },
+      "help": {
+        "title": "Pomoc",
+        "troubleshooting": "Rozwiązywanie problemów"
+      },
+      "debug": {
+        "title": "Debugowanie",
+        "system": {
+          "os": "{{osVersion}} ({{arch}})",
+          "portable": "Wersja przenośna",
+          "installed": "Wersja instalacyjna"
+        },
+        "logs": {
+          "description": "Najnowsze wpisy w dzienniku aplikacji, automatycznie odświeżane.",
+          "viewFile": "Wyświetl plik dziennika",
+          "clear": "Wyczyść dzienniki",
+          "cleared": "Dzienniki zostały wyczyszczone",
+          "empty": "Brak wpisów w dzienniku"
+        },
+        "settingsFile": {
+          "viewFile": "Otwórz plik ustawień"
+        },
+        "exportSettings": {
+          "button": "Eksportuj ustawienia",
+          "success": "Skopiowano ustawienia do schowka",
+          "error": "Nie udało się wyeksportować ustawień"
+        },
+        "resetSettings": {
+          "button": "Resetuj ustawienia",
+          "success": "Przywrócono domyślne ustawienia",
+          "confirmTitle": "Przywrócić domyślne ustawienia?",
+          "confirmDescription": "Przywraca domyślny klucz Steam Web API i — jeśli jesteś zalogowany — domyślne ustawienia narzędzia do odblokowywania osiągnięć, zarządzania ekwipunkiem, farmienia kart oraz darmowych gier dla tego konta. Zalogowane konta pozostaną zalogowane."
+        },
+        "clearData": {
+          "button": "Wyczyść dane",
+          "confirmTitle": "Wyczyścić wszystkie dane lokalne?",
+          "confirmDescription": "Spowoduje to wylogowanie wszystkich kont, zatrzymanie wszystkich uruchomionych automatyzacji, wyczyszczenie dzienników i usunięcie danych aplikacji przechowywanych lokalnie na tym urządzeniu (ostatnich wyszukiwań, blokad przedmiotów w ekwipunku itp.). Tej operacji nie można cofnąć."
+        },
+        "lockAllAchievements": {
+          "button": "Zablokuj wszystkie osiągnięcia we wszystkich aplikacjach",
+          "confirmTitle": "Zablokować wszystkie osiągnięcia we wszystkich aplikacjach?",
+          "confirmDescription": "Spowoduje to zablokowanie wszystkich osiągnięć we wszystkich aplikacjach posiadanych przez to konto (grach, modach, narzędziach i nie tylko). Operacja może potrwać kilka minut, a w przypadku dużej biblioteki nawet kilka godzin. Nie można jej cofnąć.",
+          "success": "Zablokowano {{achievements}} osiągnięć w {{games}} aplikacjach",
+          "partial": "Zablokowano {{achievements}} osiągnięć w {{games}} aplikacjach. Nie udało się zaktualizować {{failed}} aplikacji — szczegóły znajdziesz w dzienniku."
+        },
+        "allAchievementsRun": {
+          "running": "Przetwarzanie biblioteki. Pozostaw aplikację otwartą do zakończenia operacji.",
+          "progress": "Ukończono {{completed}} z {{total}} aplikacji · Zmieniono {{achievements}} osiągnięć. Pozostaw aplikację otwartą do zakończenia operacji."
+        },
+        "unlockAllAchievements": {
+          "button": "Odblokuj wszystkie osiągnięcia we wszystkich aplikacjach",
+          "confirmTitle": "Odblokować wszystkie osiągnięcia we wszystkich aplikacjach?",
+          "confirmDescription": "Spowoduje to odblokowanie wszystkich osiągnięć we wszystkich aplikacjach posiadanych przez to konto (grach, modach, narzędziach i nie tylko). Operacja może potrwać kilka minut, a w przypadku dużej biblioteki nawet kilka godzin.",
+          "success": "Odblokowano {{achievements}} osiągnięć w {{games}} aplikacjach",
+          "partial": "Odblokowano {{achievements}} osiągnięć w {{games}} aplikacjach. Nie udało się zaktualizować {{failed}} aplikacji — szczegóły znajdziesz w dzienniku."
+        },
+        "errors": {
+          "logIoFailed": "Nie udało się odczytać ani zapisać pliku dziennika.",
+          "achievementUnlockerRunning": "Najpierw zatrzymaj narzędzie do odblokowywania osiągnięć — w przeciwnym razie mogłoby ono cofnąć zmiany lub powodować konflikty dotyczące tych samych osiągnięć.",
+          "libraryRunInProgress": "Osiągnięcia we wszystkich grach są już blokowane lub odblokowywane. Poczekaj na zakończenie tego procesu."
+        }
+      },
+      "footer": {
+        "version": "Steam Game Idler v{{version}}",
+        "github": "Wyświetl kod źródłowy na GitHubie"
+      },
+      "errors": {
+        "title": "Nie udało się wczytać ustawień",
+        "ioFailed": "Nie udało się odczytać ani zapisać pliku ustawień.",
+        "apiKeyInvalid": "Steam odrzucił ten klucz API. Sprawdź go dokładnie i spróbuj ponownie.",
+        "credentialStoreFailed": "Nie udało się uzyskać dostępu do Menedżera poświadczeń systemu Windows, aby zapisać klucz API.",
+        "generic": "Coś poszło nie tak podczas aktualizowania ustawień. Spróbuj ponownie. ({{code}})"
+      }
+    }
+  }
+}
