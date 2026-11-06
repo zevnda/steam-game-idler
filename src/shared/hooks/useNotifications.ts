@@ -1,8 +1,15 @@
 import { useEffect, useState } from 'react'
 import { openExternalLink } from '@/shared/utils/links'
 
+// Optional per-notification category in notifications.json, driving the popover's icon + label
+// (see Notifications.tsx's NOTIFICATION_TYPES). Optional and open-ended on purpose: the feed is
+// read by every installed version, so an entry without one, or with a type a given build doesn't
+// know yet, just falls back to the plain announcement look rather than breaking anything.
+export type NotificationType = 'update' | 'issue' | 'giveaway' | 'testing' | 'news'
+
 export interface AppNotification {
   id: string
+  type?: NotificationType | string
   title: string
   message: string
   timestamp: number | string | Date
@@ -103,7 +110,7 @@ export const useNotifications = () => {
     await openExternalLink(notification.url)
   }
 
-  return { notifications, unseen, markAllSeen, openNotification }
+  return { notifications, unseen, markSeen, markAllSeen, openNotification }
 }
 
 // `short` style + Intl.RelativeTimeFormat rather than hand-translated "m"/"h"/"d" units - CLDR
