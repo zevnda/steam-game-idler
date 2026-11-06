@@ -12,6 +12,7 @@ import {
   TbMoodSmile,
   TbPhoto,
   TbSparkles,
+  TbSquareCheck,
   TbTag,
   TbX,
 } from 'react-icons/tb'
@@ -47,6 +48,7 @@ export type FilterKey =
   | 'dupes'
   | 'badge'
   | 'locked'
+  | 'selected'
 
 interface InventoryFilterPanelProps {
   isDisabled: boolean
@@ -82,6 +84,7 @@ const FILTER_OPTIONS: FilterOption[] = [
   { key: 'dupes', labelKey: 'dashboard.inventoryManager.filter.dupes', icon: TbCopy },
   { key: 'badge', labelKey: 'dashboard.inventoryManager.filter.badge', icon: TbAward },
   { key: 'locked', labelKey: 'dashboard.inventoryManager.filter.locked', icon: TbLock },
+  { key: 'selected', labelKey: 'dashboard.inventoryManager.filter.selected', icon: TbSquareCheck },
 ]
 
 // Shared with InventorySkeleton, so the loading state's rail has the same width and spacing.

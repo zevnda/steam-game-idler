@@ -135,7 +135,9 @@ body {
 .auth-logo,
 .auth-logo-glow,
 .page-banner,
-.page-banner-glow {
+.page-banner-glow,
+.holo-card,
+.holo-glow {
   --go-pro-rainbow: conic-gradient(
     from var(--gradient-angle),
     hsl(0 36% 50%),
@@ -534,136 +536,46 @@ body {
   animation: pro-fade-in 150ms ease-out both;
 }
 
-/* Foil-item card background (InventoryItemCard, applied when `item.foil` is true) - `main` had an
-   equivalent `.holo-bg` effect, but built from hardcoded dark-gray hex values that only look right
-   against its one fixed theme. This app has multiple hue-shifted theme presets, so the shimmer is
-   rebuilt on this app's own elevation tokens (`--surface`/
-   `--border`/`--surface-tertiary`) instead - it now follows whichever preset is active rather than
-   reading as a flat mismatch under e.g. the `orange`/`purple` presets. Draws its own gradient ring
-   via `::after` (masked to a border-width strip, same trick `main` used), so a foil card should
-   drop the caller's flat `border-border` rather than layering both - see InventoryItemCard.tsx.
-   The rainbow layer below is a fixed-opacity (not blend-mode-derived) tint precisely so it reads
-   the same across both very light and very dark themes - blend modes like `overlay`/`color-dodge`
-   wash out or invert unpredictably depending on how light `--surface` is, which a flat alpha layer
-   doesn't. `holo-drift` slowly pans it for an idle color-shift; the `::before` shine sweep below
-   uses `color-dodge` (safe there since it's a short-lived bright pulse, not the base tint) so it
-   punches through the rainbow like real foil catching light at an angle. */
+/* Foil items (InventoryItemCard / InventoryEmptyBanner's preview, when `item.foil` is true): the
+   same slowly turning rainbow rim as the Go Pro card, sign-in logo and PageBanner (`--go-pro-rainbow`
+   + the `gradient-angle` turn, defined at the top of this file), so "special" reads the same way
+   everywhere in the app - same gradient-border trick, an opaque `padding-box` fill over a
+   `border-box` rainbow. A foil card drops the caller's flat `border-border`. The fill is the
+   theme's own `--surface`, like every other card. Stops under both reduced-motion mechanisms (the
+   OS setting, and `.force-reduced-motion` - see the Go Pro card's comment above). */
 .holo-card {
-  position: relative;
-  overflow: hidden;
+  border: 1px solid transparent;
   background:
-    linear-gradient(
-      115deg,
-      transparent 15%,
-      hsl(355 85% 65% / 22%) 27%,
-      hsl(45 85% 65% / 22%) 36%,
-      hsl(140 75% 55% / 22%) 45%,
-      hsl(195 85% 60% / 22%) 54%,
-      hsl(260 80% 68% / 22%) 63%,
-      hsl(320 80% 65% / 22%) 72%,
-      transparent 85%
-    ),
-    linear-gradient(
-      120deg,
-      color-mix(in oklch, var(--surface) 100%, white 6%) 0%,
-      var(--surface) 50%,
-      color-mix(in oklch, var(--surface) 100%, white 6%) 100%
-    );
-  background-size:
-    250% 250%,
-    100% 100%;
-  background-position:
-    0% 30%,
-    0 0;
-  animation: holo-drift 7s ease-in-out infinite;
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    var(--go-pro-rainbow) border-box;
+  animation: gradient-angle 8s linear infinite;
 }
 
-@keyframes holo-drift {
-  0%,
-  100% {
-    background-position:
-      0% 30%,
-      0 0;
-  }
-  50% {
-    background-position:
-      100% 70%,
-      0 0;
-  }
-}
-
-.holo-card::after {
-  content: '';
+/* A soft glow of the same turning rainbow behind the card - a sibling `<span>` placed under it
+   (InventoryItemCard / InventoryEmptyBanner), like `.go-pro-glow`/`.page-banner-glow`, since a
+   `z-index: -1` pseudo-element would sink behind whichever ancestor paints a background. Fainter
+   and tighter than those, since a grid can hold many foils a 16px gap apart. */
+.holo-glow {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(
-    120deg,
-    var(--border) 0%,
-    var(--surface-tertiary) 50%,
-    var(--border) 100%
-  );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
+  background: var(--go-pro-rainbow);
+  filter: blur(12px);
+  opacity: 0.45;
   pointer-events: none;
-}
-
-.holo-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(
-    115deg,
-    transparent 35%,
-    rgba(255, 255, 255, 0.45) 46%,
-    rgba(255, 255, 255, 0.85) 50%,
-    rgba(255, 255, 255, 0.45) 54%,
-    transparent 65%
-  );
-  mix-blend-mode: color-dodge;
-  filter: blur(22px);
-  opacity: 0.55;
-  transform: translateX(-100%) skewX(-16deg);
-  animation: holo-shine 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-@keyframes holo-shine {
-  0% {
-    transform: translateX(-160%) skewX(-16deg);
-    opacity: 0;
-  }
-  10% {
-    opacity: 0.3;
-  }
-  90% {
-    opacity: 0.3;
-  }
-  100% {
-    transform: translateX(250%) skewX(-16deg);
-    opacity: 0;
-  }
+  animation: gradient-angle 8s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .holo-card {
+  .holo-card,
+  .holo-glow {
     animation: none;
-    background-position:
-      20% 40%,
-      0 0;
   }
+}
 
-  .holo-card::before {
-    animation: none;
-    opacity: 0;
-  }
+.holo-card.force-reduced-motion,
+.holo-glow.force-reduced-motion {
+  animation: none;
 }
 
 /* Chatway - forces the widget's own popup frame to open on the right, under the titlebar's

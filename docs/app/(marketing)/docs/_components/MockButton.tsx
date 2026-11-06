@@ -16,7 +16,6 @@ import {
   TbLock,
   TbLockOpen,
   TbLogout2,
-  TbPackageExport,
   TbPlayerPlay,
   TbPlayerPlayFilled,
   TbPlayerStopFilled,
@@ -174,7 +173,7 @@ export default function MockButton({ type, content }: MockButtonProps) {
   } else if (type === 'list-card') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1 h-8'>
-        <TbPackageExport fontSize={16} className='inline' />
+        List
       </span>
     )
   } else if (type === 'list-selected') {

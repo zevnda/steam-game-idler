@@ -16,13 +16,16 @@ import { useResponsiveColumnCount } from '@/shared/hooks/useGameGridColumns'
 // Exported for InventorySkeleton, which lays its placeholder cards out on the same grid.
 export const GAP = 16
 export const PADDING = 24
-// Widened from 190 (one fewer column per row at most container widths) to give the price
-// NumberField's now-always-visible spin buttons (see InputField.tsx) room without the
-// card feeling cramped.
-export const CARD_TARGET_WIDTH = 230
+// Wide enough for InventoryItemCard's side-by-side image + name, and its footer's price field
+// (whose spin buttons are always visible, see InputField.tsx) next to a labelled List button.
+export const CARD_TARGET_WIDTH = 260
 // One frame's fallback before the hidden measurer below reports the card's real rendered height -
-// avoids a 0-height Grid flash on first paint. Not otherwise load-bearing.
-export const ESTIMATED_CARD_HEIGHT = 260
+// avoids a 0-height Grid flash on first paint. Also InventorySkeleton's row height. Roughly
+// InventoryItemCard's: action row + image + footer.
+export const ESTIMATED_CARD_HEIGHT = 250
+// Top/bottom padding on the scrollable grid - shared with InventorySkeleton so its first row lands
+// in the same place.
+export const INVENTORY_GRID_PADDING_CLASSNAME = 'pt-[calc(var(--page-toolbar-height)+0.75rem)] pb-6'
 
 interface CardCallbacks {
   currency: string
@@ -184,7 +187,10 @@ export const InventoryItemGrid = ({ items, ...callbacks }: InventoryItemGridProp
             defaultHeight={height}
             defaultWidth={width}
             cellProps={{ items, realColumnCount, rowCount, cardWidth, callbacks }}
-            className='page-toolbar-offset pb-6'
+            // The toolbar offset plus the filter rail's own 0.75rem (FILTER_PANEL_CLASSNAME), so
+            // the first row lines up with the search field beside it instead of sitting right
+            // under the toolbar - and leaves room for a foil card's glow above the first row.
+            className={INVENTORY_GRID_PADDING_CLASSNAME}
             columnCount={realColumnCount + 2}
             gridRef={setGridApi}
             columnWidth={index =>
