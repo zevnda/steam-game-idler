@@ -227,7 +227,8 @@ fn recenter_window(app_handle: &AppHandle) {
 /// Mirrors the frontend's `performUpdate` (`shared/utils/update.ts`) for the one path that bypasses
 /// it entirely - the tray runs on the Rust side with no React tree to drive
 /// `UpdateLoader`/`updateStore`, so it can't reuse that flow directly. Kills every live
-/// `SteamUtility.exe` first, same as the frontend does, so the installer can actually overwrite it
+/// `SteamUtility.exe` between the download and the install, same as the frontend does (see that
+/// function's comment for why not before the download), so the installer can actually overwrite it
 /// (see `updater::kill_all_steam_utility_processes`'s doc comment). Unlike the frontend flow -
 /// which defers a non-major update to `UpdateButton`'s opt-in prompt - this always installs
 /// immediately once found, since the tray has no UI to show that prompt in. The frontend still
@@ -246,6 +247,21 @@ async fn check_for_updates(app_handle: &AppHandle) -> tauri_plugin_updater::Resu
         return Ok(());
     };
 
+    tracing::info!(version = %update.version, "tray: installing update");
+    emit_update_event(app_handle, TRAY_UPDATE_STARTED_EVENT);
+    if let Err(err) = download_kill_and_install(app_handle, &update).await {
+        emit_update_event(app_handle, TRAY_UPDATE_FAILED_EVENT);
+        return Err(err);
+    }
+    app_handle.restart();
+}
+
+async fn download_kill_and_install(
+    app_handle: &AppHandle,
+    update: &tauri_plugin_updater::Update,
+) -> tauri_plugin_updater::Result<()> {
+    let bytes = update.download(|_downloaded, _total| {}, || {}).await?;
+
     if let Err(err) = crate::updater::kill_all_steam_utility_processes(
         app_handle.state(),
         app_handle.state(),
@@ -259,16 +275,7 @@ async fn check_for_updates(app_handle: &AppHandle) -> tauri_plugin_updater::Resu
         );
     }
 
-    tracing::info!(version = %update.version, "tray: installing update");
-    emit_update_event(app_handle, TRAY_UPDATE_STARTED_EVENT);
-    if let Err(err) = update
-        .download_and_install(|_downloaded, _total| {}, || {})
-        .await
-    {
-        emit_update_event(app_handle, TRAY_UPDATE_FAILED_EVENT);
-        return Err(err);
-    }
-    app_handle.restart();
+    update.install(bytes)
 }
 
 fn emit_update_event(app_handle: &AppHandle, event: &str) {

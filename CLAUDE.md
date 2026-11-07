@@ -385,7 +385,12 @@ autostart value) and never kills processes.
 `SteamUtility`/`SteamUtility.exe` process this app's process model can spawn (per-account agent
 sessions, plus any per-game CLI-mode `idle` processes on Windows) — matches by substring so it
 catches both the Windows and Linux binary names; extend it if the process model grows a new spawn
-shape.
+shape. Both update paths (`performUpdate` in `src/shared/utils/update.ts`, the tray's
+`check_for_updates`) run it *between* download and install, never before the download - automation
+keeps spawning SteamUtility during a download, and a respawn there locked `libs\SteamUtility.dll`
+mid-install for a user on 6.4.1. On Windows the installer also closes SteamUtility itself
+(`NSIS_HOOK_PREINSTALL` runs Tauri's Restart Manager `CheckIfAppIsRunning` on
+`libs\SteamUtility.exe`) as the backstop.
 `src-tauri/installer-hooks.nsh`'s `NSIS_HOOK_PREINSTALL` explicitly deletes known orphaned files
 from prior releases on upgrade (NSIS never deletes a file that existed in a prior install but isn't
 part of the current one) — extend this list if a future release drops a previously-shipped file.
