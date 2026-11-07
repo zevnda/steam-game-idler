@@ -1,5 +1,6 @@
 import type { TranslationKey } from '@/i18n'
 import type { ComponentType } from 'react'
+import { getCurrentWindow } from '@tauri-apps/api/window'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -133,7 +134,18 @@ export const Sidebar = () => {
     // Auto-collapse below the `lg` breakpoint - see sidebarStore's `setNarrow`/`toggle` for how
     // this interacts with the user's persisted preference.
     const query = window.matchMedia(NARROW_WINDOW_QUERY)
-    const onChange = (event: MediaQueryListEvent) => setNarrow(event.matches)
+    const appWindow = getCurrentWindow()
+    // Minimizing on Windows shrinks the webview's viewport to (near) zero, which crosses the
+    // breakpoint like a real narrow resize would - so the sidebar collapsed on minimize and then
+    // visibly re-expanded on restore. A minimized window's viewport isn't a size the user chose,
+    // so skip it: the restore's own change event then lands on the unchanged `narrow` and no-ops.
+    // Re-reads `query.matches` after the await rather than trusting the event's value, so a slow
+    // `isMinimized` reply for the minimize event can't apply a stale "narrow" after the restore.
+    const onChange = async () => {
+      const minimized = await appWindow.isMinimized().catch(() => false)
+      if (minimized) return
+      setNarrow(query.matches)
+    }
     query.addEventListener('change', onChange)
     return () => query.removeEventListener('change', onChange)
   }, [])
