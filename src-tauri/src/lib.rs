@@ -307,10 +307,10 @@ pub fn run() {
 /// denied. Only http(s) is forwarded, so a page in the webview can't use this to launch an
 /// arbitrary protocol handler.
 ///
-/// Plain anchor clicks inside the Chatway iframe (links in chat messages) never raise a
-/// new-window request at all, though `window.open` from the same iframe does.
-/// `chatway_link_bridge.js` rewrites those clicks into `window.open` calls so they reach this
-/// handler too; see that file for details.
+/// Plain anchor clicks inside a cross-origin iframe (links in Chatway chat messages, links in the
+/// `ChangelogModal` release notes) never raise a new-window request at all, though `window.open`
+/// from the same iframe does. `iframe_link_bridge.js` rewrites those clicks into `window.open`
+/// calls so they reach this handler too; see that file for details.
 fn build_main_window(app_handle: &tauri::AppHandle) -> tauri::Result<tauri::WebviewWindow> {
     use tauri::webview::NewWindowResponse;
     use tauri_plugin_opener::OpenerExt;
@@ -325,7 +325,7 @@ fn build_main_window(app_handle: &tauri::AppHandle) -> tauri::Result<tauri::Webv
 
     let opener_handle = app_handle.clone();
     tauri::WebviewWindowBuilder::from_config(app_handle, &config)?
-        .initialization_script_for_all_frames(include_str!("chatway_link_bridge.js"))
+        .initialization_script_for_all_frames(include_str!("iframe_link_bridge.js"))
         .on_new_window(move |url, _features| {
             if matches!(url.scheme(), "http" | "https") {
                 match opener_handle.opener().open_url(url.as_str(), None::<&str>) {
