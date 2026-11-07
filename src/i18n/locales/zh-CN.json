@@ -514,7 +514,7 @@
     "achievements": {
       "tabs": {
         "achievements": "成就",
-        "statistics": "统计数据"
+        "statistics": "数据"
       },
       "header": {
         "viewOnSteam": "在 Steam 上查看",
@@ -846,7 +846,7 @@
         "starting": "正在启动……",
         "waitingForSchedule": "等待计划解锁时段",
         "currentGame": "当前游戏",
-        "upNext": "下一项",
+        "upNext": "下一个",
         "completedCount": "已解锁 {{unlocked}}/{{total}}",
         "completedMaxUnlocksReached": "已解锁 {{unlocked}}/{{total}}（已达到最大解锁数）",
         "completedMaxPlaytimeWithCount": "已解锁 {{unlocked}}/{{total}}（已达到最大游戏时长）",
