@@ -24,7 +24,12 @@
       "startIdling": "Inizia idle",
       "stopIdling": "Ferma idle",
       "manageAchievements": "Gestisci obiettivi",
-      "viewOnSteam": "Visualizza su Steam"
+      "customOrder": "Ordine e ritardo di sblocco personalizzati",
+      "viewOnSteam": "Visualizza su Steam",
+      "copyAppId": "Copia App ID",
+      "appIdCopied": "App ID copiato",
+      "cardFarmingBlacklist": "Giochi esclusi da Raccolta carte",
+      "lists": "Liste"
     },
     "minutes": "minuti",
     "zeroUnlimitedHint": "0 = illimitato",
@@ -92,7 +97,9 @@
     },
     "tabs": {
       "allGames": "Tutti i giochi",
-      "queue": "Coda"
+      "queue": "Coda",
+      "overview": "Panoramica",
+      "details": "Dettagli"
     },
     "connect": {
       "automaticTab": "Automatico",
@@ -133,6 +140,21 @@
   },
   "notifications": {
     "markAllRead": "Segna tutte come lette",
+    "unread": "Da leggere",
+    "read": "Lette",
+    "open": "Apri",
+    "caughtUp": "Nessuna notifica da leggere",
+    "caughtUpDescription": "Nessuna novità. Trovi le notifiche precedenti nella scheda Lette.",
+    "noneRead": "Nessuna notifica letta",
+    "noneReadDescription": "Le notifiche che hai letto appariranno qui.",
+    "types": {
+      "update": "Aggiornamento",
+      "issue": "Problema noto",
+      "giveaway": "Giveaway",
+      "testing": "Test",
+      "news": "Novità",
+      "announcement": "Annuncio"
+    },
     "empty": "Nessuna notifica"
   },
   "menu": {
@@ -214,6 +236,7 @@
         "description": "Riscatta automaticamente i giochi gratuiti su Steam appena diventano disponibili: non perderti mai un titolo gratis."
       },
       "sellDupes": {
+        "title": "Vendi oggetti duplicati",
         "description": "Metti facilmente in vendita tutti gli oggetti duplicati dell'inventario con un solo clic."
       },
       "customPresence": {
@@ -238,6 +261,7 @@
       "gamer": {
         "name": "Gamer",
         "freeGames": "Riscatto automatico dei giochi gratuiti",
+        "sellDupes": "Vendi oggetti duplicati dell'inventario",
         "importTimings": "Importa tempistiche di sblocco obiettivi",
         "multipleUnlockerGames": "Sblocca 32 giochi contemporaneamente",
         "multiAccount": "10 account contemporanei"
@@ -376,7 +400,14 @@
           "modalDescription": "{{account}} ha effettuato l'accesso su un altro dispositivo, quindi la sua automazione è stata messa in pausa. Accedi di nuovo per continuare.",
           "reconnect": "Riconnetti",
           "sessionReplacedExplainer": "Di solito succede quando un'altra istanza di Steam Game Idler, o uno strumento simile, accede a questo account. Riconnettendoti qui, disconnetterai l'altra istanza.",
-          "useDifferentMethod": "Usa un metodo di accesso diverso"
+          "useDifferentMethod": "Usa un metodo di accesso diverso",
+          "sessionEnded": {
+            "badge": "Accesso richiesto",
+            "modalTitle": "Steam ha terminato questa sessione",
+            "modalDescription": "Steam ha disconnesso {{account}}, quindi tutte le attività in esecuzione su questo account sono state fermate. Accedi di nuovo per continuare.",
+            "explainer": "Può succedere dopo aver cambiato la password di Steam o aver effettuato la disconnessione da tutti i dispositivi.",
+            "signInAgain": "Accedi di nuovo"
+          }
         }
       }
     },
@@ -420,6 +451,12 @@
       "sections": {
         "manual": "Messi in idle manualmente",
         "other": "Altro"
+      },
+      "empty": {
+        "title": "Nessun gioco in idle al momento",
+        "description": "Vai alla pagina Giochi, passa il mouse su un gioco e premi il pulsante di avvio. Il gioco apparirà qui mentre è in idle.",
+        "browseGames": "Sfoglia i tuoi giochi",
+        "setUpAutoIdle": "Configura Idle automatico"
       },
       "errors": {
         "startFailed": "Impossibile avviare l'idle di questo gioco.",
@@ -598,20 +635,28 @@
         "stop": "Ferma raccolta"
       },
       "confirmClearWhitelist": {
-        "title": "Cancellare la lista bianca di Raccolta carte?",
-        "description": "Questo rimuoverà tutti i {{count}} giochi dalla lista bianca di Raccolta carte. La raccolta tornerà a considerare tutti i giochi posseduti con carte rimanenti."
+        "title": "Cancellare la lista dei giochi selezionati?",
+        "description": "Questo rimuoverà tutti i {{count}} giochi dalla lista dei giochi selezionati. La raccolta tornerà a considerare tutti i giochi non esclusi con carte rimanenti."
       },
       "multiGameNotice": {
         "title": "Raccogliere carte da più giochi contemporaneamente?",
         "description": "Raccogliere carte da più giochi contemporaneamente può rallentare la velocità con cui vengono ottenute per ciascun gioco. Se per un po' non ottieni carte, prova a disattivare questa opzione."
       },
+      "presenceNotice": {
+        "title": "Prima di iniziare",
+        "description": "Il tuo stato è impostato su Online: i tuoi amici potrebbero ricevere una notifica ogni volta che Raccolta carte avvia un gioco. Valuta se passare a Offline.",
+        "stayOnline": "Resta online e avvia",
+        "appearOffline": "Risulta offline e avvia",
+        "dontShowAgain": "Non mostrare più",
+        "offlineFailed": "Impossibile cambiare il tuo stato. La raccolta è stata avviata con lo stato attuale."
+      },
       "confirmClearBlacklist": {
-        "title": "Cancellare la lista nera di Raccolta carte?",
-        "description": "Questo rimuoverà tutti i {{count}} giochi dalla lista nera di Raccolta carte."
+        "title": "Cancellare la lista dei giochi esclusi?",
+        "description": "Questo rimuoverà tutti i {{count}} giochi dalla lista dei giochi esclusi."
       },
       "tabs": {
         "gamesWithDrops": "Giochi con carte",
-        "whitelisted": "In lista bianca",
+        "whitelisted": "Giochi selezionati",
         "blacklisted": "In lista nera"
       },
       "sort": {
@@ -622,8 +667,13 @@
         "title": "Nessuna carta rimanente",
         "description": "Le carte di tutti i giochi posseduti sono già state raccolte oppure non sono disponibili al momento."
       },
+      "whitelistEmpty": {
+        "title": "Nessun gioco selezionato",
+        "description": "Aggiungi giochi dalla scheda Giochi con carte per raccogliere carte solo da quelli selezionati. Lascia la lista vuota per considerare tutti i giochi non esclusi con carte rimanenti."
+      },
       "blacklistEmpty": {
-        "title": "Nessun gioco in lista nera"
+        "title": "Nessun gioco escluso",
+        "description": "Aggiungi giochi dalla scheda Giochi con carte per escluderli dalla raccolta. Lascia la lista vuota per non escludere nessun gioco."
       },
       "connect": {
         "automaticDescription": "Accede automaticamente a Steam Community per controllare le carte."
@@ -636,8 +686,12 @@
         "waitingTurn": "In attesa del turno",
         "completedNoDropsRemaining": "Niente più da raccogliere",
         "completedRefundWindow": "Ancora nel periodo di rimborso (raccoglibile di nuovo il {{date}})",
-        "completedSkippedUnplayed": "Rimosso dalla lista bianca: nessun tempo di gioco registrato",
-        "completedSkippedPlayed": "Rimosso dalla lista bianca: ha già tempo di gioco registrato",
+        "completedSkippedUnplayed": "Rimosso dai giochi selezionati: nessun tempo di gioco registrato",
+        "completedSkippedPlayed": "Rimosso dai giochi selezionati: ha già tempo di gioco registrato",
+        "droppedThisSession": "Ottenute in questa sessione",
+        "stillToDrop": "Ancora da ottenere",
+        "cardsProgress": "{{done}} carte su {{total}}",
+        "nextDropCheck": "Prossimo controllo carte",
         "dropsRemaining_one": "{{count}} carta rimanente",
         "dropsRemaining_other": "{{count}} carte rimanenti"
       },
@@ -663,6 +717,7 @@
           "description": "Non raccogliere carte da un gioco finché si trova ancora nel periodo di rimborso di Steam (acquistato negli ultimi 14 giorni con meno di 2 ore di gioco)."
         },
         "autoFarmCards": {
+          "title": "Monitora le carte disponibili",
           "description": "Controlla periodicamente i giochi posseduti con carte rimanenti e avvia automaticamente la raccolta."
         },
         "skipNoPlaytime": {
@@ -719,6 +774,42 @@
         }
       },
       "order": {
+        "unlocksAt": "Sblocco alle",
+        "rightAway": "Subito",
+        "timeRange": "{{from}} – {{to}}",
+        "timeline": {
+          "start": "Sblocco obiettivi avvia questo gioco",
+          "end": "Sblocco obiettivi ha terminato questo gioco"
+        },
+        "wait": {
+          "firstNone": "Sblocca subito dopo l'avvio del gioco",
+          "firstSet": "Attendi {{duration}} dopo l'avvio del gioco",
+          "random": "Attesa casuale",
+          "randomRange": "Attesa casuale · {{min}}–{{max}} min",
+          "none": "Nessuna attesa",
+          "set": "Attendi {{duration}}",
+          "firstHeading": "Attesa fino al primo sblocco",
+          "heading": "Attesa prima di sbloccare <name>{{name}}</name>",
+          "randomPreset": "Casuale",
+          "custom": "Personalizzata",
+          "hours": "Ore",
+          "hoursUnit": "h",
+          "minutesUnit": "m"
+        },
+        "duration": {
+          "days": "{{d}}g",
+          "daysHours": "{{d}}g {{h}}h",
+          "hours": "{{h}}h",
+          "hoursMinutes": "{{h}}h {{m}}m",
+          "minutes": "{{m}} min",
+          "minutesSeconds": "{{m}}m {{s}}s",
+          "seconds": "{{s}}s"
+        },
+        "summary": {
+          "unlocking": "Sblocco di {{included}} obiettivi su {{total}}",
+          "finishes": "termina tra circa <time>{{duration}}</time>",
+          "finishesRange": "termina tra <time>{{from}}</time> e <time>{{to}}</time>"
+        },
         "reset": "Ripristina",
         "skipped": "Saltato",
         "protectedSection": {
@@ -743,6 +834,8 @@
       },
       "importTimings": {
         "title": "Importa tempistiche",
+        "cardTitle": "Copia un altro giocatore",
+        "cardDescription": "Recupera e usa gli orari reali di sblocco degli obiettivi di un altro giocatore",
         "description": "Recupera gli orari reali di sblocco obiettivi di un altro giocatore e usali per ricavare ritardi realistici per ogni obiettivo.",
         "inputPlaceholder": "SteamID64, URL del profilo o vanity URL",
         "importButton": "Importa",
@@ -767,6 +860,10 @@
         "completedMaxPlaytimeWithCount": "{{unlocked}}/{{total}} sbloccati (tempo massimo di gioco raggiunto)",
         "completedMaxPlaytime": "Tempo massimo di gioco raggiunto",
         "completedNothingToUnlock": "Niente più da sbloccare",
+        "unlockedThisSession": "Sbloccati in questa sessione",
+        "stillToUnlock": "Ancora da sbloccare",
+        "achievementsProgress": "{{done}} obiettivi su {{total}}",
+        "nextAchievement": "Prossimo obiettivo",
         "remaining_one": "{{count}} obiettivo rimanente",
         "remaining_other": "{{count}} obiettivi rimanenti"
       },
@@ -793,7 +890,10 @@
       }
     },
     "inventoryManager": {
+      "fetchPrice": "Recupera prezzo",
       "fetchingPrice": "Recupero prezzo...",
+      "priceLabel": "Prezzo dell'oggetto",
+      "unlockHint": "Clicca per sbloccare e mettere in vendita",
       "badgeLevel": "Livello medaglia {{level}}",
       "noBadge": "Nessuna medaglia creata",
       "connect": {
@@ -801,13 +901,25 @@
       },
       "actions": {
         "listSelected": "Vendi selezionati ({{count}})",
+        "sellAll": "Vendi tutti ({{count}})",
+        "sellDupes": "Vendi duplicati",
         "removeListings": "Rimuovi inserzioni",
+        "lockItem": "Blocca vendita automatica",
+        "listOne": "Metti in vendita",
         "cardExchange": "Visualizza su SteamCardExchange"
       },
       "confirm": {
         "listSelected": {
           "title": "Vendere {{count}} oggetti selezionati?",
           "description": "Questo metterà in vendita ogni oggetto selezionato al prezzo inserito. Tempo stimato: {{time}}. Lascia l'app in esecuzione fino al completamento."
+        },
+        "sellAll": {
+          "title": "Vendere tutti gli oggetti visibili?",
+          "description": "Questo recupererà un prezzo di mercato e metterà in vendita fino a {{count}} oggetti attualmente mostrati, usando la preferenza di prezzo e i limiti di vendita delle impostazioni dell'inventario. Tempo stimato: {{time}}. Lascia l'app in esecuzione fino al completamento."
+        },
+        "sellDupes": {
+          "title": "Vendere gli oggetti duplicati?",
+          "description": "Questo recupererà un prezzo di mercato e metterà in vendita fino a {{count}} oggetti duplicati (conservando una copia di ciascuno), usando la preferenza di prezzo e i limiti di vendita delle impostazioni dell'inventario. Tempo stimato: {{time}}. Lascia l'app in esecuzione fino al completamento."
         },
         "removeListings": {
           "title": "Rimuovere tutte le inserzioni attive?",
@@ -824,7 +936,8 @@
         "sale": "In vendita",
         "dupes": "Duplicati",
         "badge": "Ha medaglia",
-        "locked": "Bloccati"
+        "locked": "Bloccati",
+        "selected": "Selezionati"
       },
       "sort": {
         "label": "Ordina per",
@@ -834,7 +947,8 @@
       },
       "empty": {
         "title": "Nessun oggetto trovato",
-        "description": "Nessun oggetto commerciabile corrisponde alla ricerca e ai filtri attuali."
+        "description": "Nessun oggetto commerciabile corrisponde alla ricerca e ai filtri attuali.",
+        "noItemsDescription": "Non hai ancora oggetti vendibili sul Mercato di Steam. Le carte raccolte appariranno qui."
       },
       "priceData": {
         "sellOrders": "Ordini di vendita",
@@ -847,6 +961,7 @@
         },
         "pricePreference": {
           "title": "Prezzo predefinito",
+          "description": "Quale prezzo usare durante la vendita in blocco degli oggetti.",
           "options": {
             "highestBuyOrder": "Ordine di acquisto più alto",
             "lowestSellOrder": "Ordine di vendita più basso"
@@ -857,9 +972,11 @@
           "description": "Aggiunge {{value}} al prezzo di ogni inserzione, sia compilato automaticamente che inserito manualmente."
         },
         "sellLimit": {
+          "title": "Limite di vendita",
           "description": "Metti in vendita solo oggetti con prezzo compreso tra {{min}} e {{max}}."
         },
         "sellDelay": {
+          "title": "Ritardo vendita",
           "description": "Attendi {{value}} secondi tra la messa in vendita di ogni oggetto per evitare limiti di frequenza."
         }
       },
@@ -867,14 +984,18 @@
         "noListings": "Non hai inserzioni di mercato attive.",
         "removedListings": "Rimosse {{count}} di {{total}} inserzioni",
         "removeFailed": "Impossibile rimuovere inserzioni.",
+        "noneEligible": "Nessun oggetto era idoneo alla vendita: controlla i limiti di vendita nelle impostazioni dell'inventario.",
         "priceFetchCooldown": "Attendi {{seconds}} secondi prima di recuperare altri prezzi",
         "itemLocked": "Questo oggetto è bloccato e non può essere messo in vendita.",
+        "priceOutOfRange": "{{price}} è fuori dal limite di vendita configurato ({{min}}-{{max}}).",
         "listed_one": "{{count}} oggetto messo in vendita",
         "listed_other": "{{count}} oggetti messi in vendita",
         "listFailed_one": "{{count}} oggetto non è stato messo in vendita",
         "listFailed_other": "{{count}} oggetti non sono stati messi in vendita",
         "skippedLocked_one": "{{count}} oggetto bloccato saltato",
-        "skippedLocked_other": "{{count}} oggetti bloccati saltati"
+        "skippedLocked_other": "{{count}} oggetti bloccati saltati",
+        "skippedOutOfRange_one": "{{count}} oggetto fuori dal limite di vendita saltato",
+        "skippedOutOfRange_other": "{{count}} oggetti fuori dal limite di vendita saltati"
       },
       "errors": {
         "title": "Impossibile aggiornare l'inventario",
@@ -983,12 +1104,19 @@
           "label": "Disabilita tooltip",
           "description": "Nascondi i tooltip al passaggio del mouse in tutta l'app."
         },
+        "gameCardStyle": {
+          "label": "Stile schede dei giochi",
+          "description": "Scegli la forma delle schede dei giochi nelle liste.",
+          "cover": "Copertina",
+          "banner": "Banner"
+        },
         "background": {
           "label": "Immagine di sfondo",
           "description": "Usa un'immagine personalizzata come sfondo dell'app.",
           "choose": "Scegli immagine",
           "saved": "Sfondo aggiornato",
-          "cleared": "Sfondo cancellato"
+          "cleared": "Sfondo cancellato",
+          "signatureThemeActive": "Le immagini di sfondo sono disattivate quando è attivo un tema animato originale."
         },
         "theme": {
           "label": "Tema",
@@ -1103,6 +1231,10 @@
         "openSearch": "Apri ricerca",
         "toggleSettings": "Apri/chiudi le impostazioni",
         "toggleSidebar": "Mostra/nascondi la barra laterale"
+      },
+      "help": {
+        "title": "Aiuto",
+        "troubleshooting": "Risoluzione dei problemi"
       },
       "debug": {
         "title": "Debug",
