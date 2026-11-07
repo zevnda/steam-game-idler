@@ -172,13 +172,18 @@ body {
 /* Both ambient loops stop under either reduced-motion mechanism (see the `.force-reduced-motion`
    comment further down for why that one exists alongside the OS setting). The card stays fully
    styled, just static - the hover glow is a transition, not a loop, so it's kept. */
-/* Entrance for each cycling perk name in the card's subtitle (GoPro.tsx keys the span by index,
-   so this replays on every swap). Under reduced motion the text still cycles, it just swaps
-   instantly instead of fading up. */
+/* Crossfade between cycling perk names in the card's subtitle (GoPro.tsx stacks the outgoing and
+   incoming perk in one grid cell, keyed by index, so this replays on every swap). The old one
+   drifts up and out, then the new one rises in from just below. Effectively sequential: the
+   incoming one starts only in the outgoing one's last ~20ms, when (on its ease-in curve) it's
+   already near-invisible. A real overlap of two half-transparent lines read as a glitch, while a
+   delay past the outgoing duration left a visibly empty beat between perks. Under reduced motion the text still cycles, it just swaps
+   instantly - which is why `--out`'s resting style is `opacity: 0` rather than relying on its
+   animation's end state. */
 @keyframes go-pro-perk-in {
   from {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -186,21 +191,39 @@ body {
   }
 }
 
-.go-pro-perk {
-  animation: go-pro-perk-in 300ms ease-out both;
+@keyframes go-pro-perk-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+.go-pro-perk--in {
+  animation: go-pro-perk-in 400ms cubic-bezier(0.22, 1, 0.36, 1) 160ms both;
+}
+
+.go-pro-perk--out {
+  opacity: 0;
+  animation: go-pro-perk-out 180ms cubic-bezier(0.4, 0, 1, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .go-pro-card,
   .go-pro-glow,
-  .go-pro-perk {
+  .go-pro-perk--in,
+  .go-pro-perk--out {
     animation: none;
   }
 }
 
 .go-pro-card.force-reduced-motion,
 .go-pro-glow.force-reduced-motion,
-.go-pro-card.force-reduced-motion .go-pro-perk {
+.go-pro-card.force-reduced-motion .go-pro-perk--in,
+.go-pro-card.force-reduced-motion .go-pro-perk--out {
   animation: none;
 }
 

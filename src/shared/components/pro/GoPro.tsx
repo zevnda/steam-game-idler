@@ -43,7 +43,13 @@ export const GoPro = ({ collapsed }: { collapsed: boolean }) => {
   const subscriptionTier = useSubscriptionStore(state => state.subscriptionTier)
   const openProModal = useProModalStore(state => state.open)
   const forceReducedMotion = usePlatformStore(state => state.forceReducedMotion) === true
-  const [perkIndex, setPerkIndex] = useState(0)
+  // `previous` is the perk currently fading out - kept mounted next to the incoming one so the
+  // two crossfade instead of the old text vanishing the instant the new one starts. Updated
+  // together so the outgoing/incoming pair can never be out of step for a render.
+  const [perk, setPerk] = useState<{ index: number; previous: number | null }>({
+    index: 0,
+    previous: null,
+  })
   // Paused while hovered/focused, so a user reading a perk doesn't have it swapped out from under
   // them right as they decide whether to click.
   const [isPaused, setIsPaused] = useState(false)
@@ -56,7 +62,7 @@ export const GoPro = ({ collapsed }: { collapsed: boolean }) => {
   useEffect(() => {
     if (!isCycling) return
     const id = window.setInterval(
-      () => setPerkIndex(index => (index + 1) % PERK_KEYS.length),
+      () => setPerk(({ index }) => ({ index: (index + 1) % PERK_KEYS.length, previous: index })),
       PERK_INTERVAL_MS,
     )
     return () => window.clearInterval(id)
@@ -72,7 +78,7 @@ export const GoPro = ({ collapsed }: { collapsed: boolean }) => {
     // the rim glow below.
     <div className='go-pro relative flex shrink-0 flex-col px-2 mb-2'>
       {/* The CTA rim's soft glow (globals.css `.go-pro-glow`) - a sibling behind the button, not
-          part of it: the card clips its own overflow (for the perk text's slide-in), which would
+          part of it: the card clips its own overflow (for the perk text's crossfade), which would
           cut a glow off.
           Earlier in the DOM, so the button paints over it. */}
       <span
@@ -152,14 +158,29 @@ export const GoPro = ({ collapsed }: { collapsed: boolean }) => {
             >
               {title}
             </span>
-            {/* Keyed by index so each swap remounts the span and replays `.go-pro-perk`'s entrance
-                animation (globals.css). */}
-            <span
-              key={perkIndex}
-              className='go-pro-perk truncate text-xs text-foreground/70'
-              onMouseEnter={revealTitleIfTruncated}
-            >
-              {t(PERK_KEYS[perkIndex])}
+            {/* Both perks share one grid cell so they overlap while crossfading (globals.css
+                `.go-pro-perk--in`/`--out`). Each is keyed by its index, so every swap remounts both
+                and replays their animations. The outgoing one is dropped once its fade-out ends;
+                under reduced motion it never animates, and its resting style is already
+                invisible. `min-w-0` lets the grid shrink so each line still truncates. */}
+            <span className='grid min-w-0 text-xs text-foreground/70'>
+              {perk.previous !== null && (
+                <span
+                  key={`out-${perk.previous}`}
+                  aria-hidden='true'
+                  className='go-pro-perk--out col-start-1 row-start-1 truncate'
+                  onAnimationEnd={() => setPerk(current => ({ ...current, previous: null }))}
+                >
+                  {t(PERK_KEYS[perk.previous])}
+                </span>
+              )}
+              <span
+                key={perk.index}
+                className='go-pro-perk--in col-start-1 row-start-1 truncate'
+                onMouseEnter={revealTitleIfTruncated}
+              >
+                {t(PERK_KEYS[perk.index])}
+              </span>
             </span>
           </span>
           <TbChevronRight
