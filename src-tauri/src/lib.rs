@@ -21,6 +21,7 @@ mod game_art;
 mod games;
 mod idling;
 mod inventory;
+mod legacy_install;
 mod legacy_migration;
 mod local_steam;
 mod logging;
@@ -35,6 +36,11 @@ mod subscription;
 mod tray;
 mod updater;
 mod zoom;
+
+/// The elevated old-install cleanup, dispatched by `main()` before Tauri starts - see
+/// `legacy_install::elevated`.
+#[cfg(windows)]
+pub use legacy_install::run_elevated_task_from_args;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -108,6 +114,7 @@ pub fn run() {
             // setup_window/tray so nothing else touches the cache directory first.
             let migrated = legacy_migration::run(app.handle());
             app.manage(legacy_migration::LegacyMigrationState(migrated));
+            legacy_install::commands::on_startup(app.handle());
             setup_window(app.handle())?;
             tray::setup(app.handle())?;
             tauri::async_runtime::spawn(max_playtime::enforcement::run(app.handle().clone()));
@@ -253,6 +260,9 @@ pub fn run() {
             debug::commands::get_system_info,
             debug::commands::reset_settings,
             legacy_migration::was_legacy_migration_performed,
+            legacy_install::commands::get_legacy_install_status,
+            legacy_install::commands::remove_legacy_install,
+            legacy_install::commands::dismiss_legacy_install_prompt,
             logging::log_frontend_event,
             zoom::set_zoom,
             tray::update_tray_menu,

@@ -46,7 +46,7 @@ This page covers common issues and their solutions when using Steam Game Idler.
 <Accordions type="multiple">
   <Accordion title="SGI won't install" id="install-fails">
     - Make sure you downloaded the installer from the official [GitHub releases page](https://github.com/zevnda/steam-game-idler/releases) or [steamgameidler.com](https://steamgameidler.com). Files from other sources may be incomplete or modified
-    - Right-click the installer and select **Run as administrator**
+    - Run the installer from your own Windows account, not as administrator. SGI installs just for your account, and if Windows asks for another account's password, SGI ends up installed for that account instead
     - Temporarily disable your antivirus/Windows Defender during installation (see below), then re-enable it afterwards
     - Make sure you have enough free disk space
     - If the installer hangs or crashes, restart your PC and try again
@@ -65,7 +65,7 @@ This page covers common issues and their solutions when using Steam Game Idler.
 
       <Step>
         ### If your antivirus quarantines or deletes a file
-        Restore the file from quarantine, then add an exclusion for SGI's install folder (default: `C:\Program Files\Steam Game Idler\`) and for `%appdata%\com.zevnda.steam-game-idler\`
+        Restore the file from quarantine, then add an exclusion for SGI's install folder (default: `%LOCALAPPDATA%\Steam Game Idler\`) and for `%appdata%\com.zevnda.steam-game-idler\`. Older versions installed to `C:\Program Files\Steam Game Idler\`, so an exclusion you added for that folder doesn't cover the current one
       </Step>
 
       <Step>
@@ -88,11 +88,21 @@ This page covers common issues and their solutions when using Steam Game Idler.
     This is also a common cause of **"The Steam agent process closed unexpectedly."** or **"Steam took too long to respond. Please try again."** — both mean `SteamUtility.exe` stopped responding, which a missing runtime causes just as often as the antivirus case above.
   </Accordion>
 
-  <Accordion title="I need admin rights to install or update SGI" id="admin-rights">
-    SGI installs per-machine by default (available to all Windows users on the PC), which requires administrator privileges. If you don't have admin rights:
+  <Accordion title="Do I need admin rights to install or update SGI?" id="admin-rights">
+    No. SGI installs just for your Windows account (in `%LOCALAPPDATA%\Steam Game Idler`), so installing and updating never ask for administrator approval. Each Windows account that uses SGI installs it separately.
 
-    - Ask an administrator to run the installer once
-    - Updates are installed silently in the background and also require the original install permissions. If updates consistently fail, reinstall with an administrator account
+    The one exception is a one-time cleanup after moving from an older version, which installed to `C:\Program Files\Steam Game Idler`. See [SGI asks to remove old files](#remove-old-files).
+  </Accordion>
+
+  <Accordion title="SGI asks to remove old files" id="remove-old-files">
+    Older versions installed SGI to `C:\Program Files\Steam Game Idler` for every Windows account on the PC, which is why each update needed administrator approval. When one of those versions updates, SGI moves to your account's folder and keeps your accounts, settings and license. The old files stay behind until they're removed, because only an administrator can change Program Files.
+
+    SGI asks **Remove old files?** once the update has finished. Click **Remove** and approve the Windows prompt. That's the last time SGI asks for administrator approval. It removes the previous version's files, its entry in Installed apps and its shortcuts, then gives your account its own Start menu shortcut (and a desktop one, if there was one before). Taskbar pins and **Run at startup** move over to your account's copy by themselves. Nothing that's running is stopped. Any file still in use is deleted the next time Windows restarts.
+
+    - **Remind me later** asks again the next time you open SGI
+    - If you can't approve the prompt (a standard account with no administrator password), tick **Don't show this again**. SGI works the same with the old files left in place, and adds a Start menu shortcut for your account
+    - Until the old files are removed, the old shortcuts still open the previous version, which updates itself into your account's copy each time. That works, but it's slower
+    - The previous version also served every other Windows account on the PC. Removing it means those accounts need to install SGI themselves; their accounts and settings are kept
   </Accordion>
 </Accordions>
 

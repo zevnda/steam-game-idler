@@ -59,6 +59,14 @@ export const faqData = [
       '> 7. Click "OK" to save the changes',
   },
   {
+    question: 'Do I need administrator rights to install or update SGI?',
+    markdown:
+      '**Do I need administrator rights to install or update SGI?**\n' +
+      '> No. On Windows, SGI installs just for your Windows account, in `%LOCALAPPDATA%\\Steam Game Idler`, so installing and updating never ask for administrator approval. Each Windows account that uses SGI installs it separately.\n' +
+      '>\n' +
+      '> Older versions installed to `C:\\Program Files\\Steam Game Idler`. After updating from one of those, SGI asks Windows once for permission to remove the old files. See [SGI asks to remove old files](/docs/troubleshooting#remove-old-files).',
+  },
+  {
     question: 'Can I get banned for using a Steam idler or achievement unlocker?',
     markdown:
       '**Can I get banned for using a Steam idler or achievement unlocker?**\n' +

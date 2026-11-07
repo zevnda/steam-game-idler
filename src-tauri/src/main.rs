@@ -1,6 +1,15 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
+    // Must stay the first thing main() does: the elevated cleanup of an old per-machine install
+    // (`--remove-legacy-install`, see `legacy_install::elevated`) has to run before Tauri - in
+    // particular before tauri-plugin-single-instance, which would see the running copy and hand
+    // this launch over to it instead of running it.
+    #[cfg(windows)]
+    if let Some(code) = steam_game_idler_lib::run_elevated_task_from_args() {
+        std::process::exit(code);
+    }
+
     // EXPERIMENTAL, untested on real hardware: try to let the AppImage run under native Wayland
     // instead of the XWayland compatibility layer linuxdeploy-plugin-gtk's bundled AppRun script
     // forces by default (the cause of the AppImage's known lag vs .deb/.rpm - see quirks.md and

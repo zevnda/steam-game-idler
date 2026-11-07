@@ -95,6 +95,13 @@ pub struct Settings {
     /// switching never needs a download. Defaults `"inter"`.
     #[serde(default = "default_font")]
     pub font: String,
+    /// The user ticked "Don't show this again" on the prompt to remove the old per-machine install
+    /// (`legacy_install`, `LegacyInstallPrompt.tsx`) - e.g. a standard user who can't approve the
+    /// UAC prompt. No "cleanup done" flag exists alongside it: the prompt only shows while the old
+    /// install is still registered, which the cleanup itself ends. Lives in settings.json, so the
+    /// Debug tab's "Clear Data" and "Reset settings" bring the prompt back. Defaults `false`.
+    #[serde(default)]
+    pub legacy_install_prompt_dismissed: bool,
 }
 
 fn default_close_to_tray() -> bool {
@@ -132,6 +139,7 @@ impl Default for Settings {
             custom_background: None,
             disable_tooltips: false,
             font: default_font(),
+            legacy_install_prompt_dismissed: false,
         }
     }
 }
@@ -302,6 +310,17 @@ pub fn set_disable_tooltips(
     enabled: bool,
 ) -> Result<Settings, String> {
     mutate(app_handle, |settings| settings.disable_tooltips = enabled)
+}
+
+/// Sets the "don't ask again" flag for the old-install cleanup prompt. See
+/// [`Settings::legacy_install_prompt_dismissed`].
+pub fn set_legacy_install_prompt_dismissed(
+    app_handle: &tauri::AppHandle,
+    dismissed: bool,
+) -> Result<Settings, String> {
+    mutate(app_handle, |settings| {
+        settings.legacy_install_prompt_dismissed = dismissed
+    })
 }
 
 /// Resets every app-wide preference back to its default, for `debug::commands::reset_settings`.

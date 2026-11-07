@@ -56,6 +56,25 @@ tauri-plugin-autostart = "2.7.0"
 tauri-plugin-notification = "2.6.0"
 tauri-plugin-clipboard-manager = "2.4.2"
 
+# Win32 access for `legacy_install` (registry, shell links, self-elevation). Both are the versions
+# tauri/wry (`windows`) and auto-launch (`windows-registry`) already pull in, so neither adds a
+# second copy of the crate to the build.
+[target.'cfg(windows)'.dependencies]
+windows-registry = "0.6"
+windows = { version = "0.62", features = [
+  "Win32_Foundation",
+  "Win32_Storage_EnhancedStorage",
+  "Win32_Storage_FileSystem",
+  "Win32_System_Com",
+  "Win32_System_Com_StructuredStorage",
+  "Win32_System_Registry",
+  "Win32_System_Threading",
+  "Win32_System_Variant",
+  "Win32_UI_Shell",
+  "Win32_UI_Shell_PropertiesSystem",
+  "Win32_UI_WindowsAndMessaging",
+] }
+
 # Pinned to the exact version wry/tauri already vendor for this target family (see `wry`'s own
 # Cargo.toml) so this doesn't pull in a second copy of the crate - only used directly by
 # `zoom.rs` for `WebViewExt::set_zoom_level`, WebKitGTK's equivalent of the WebView2

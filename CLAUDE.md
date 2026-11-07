@@ -183,8 +183,9 @@ the live user base, not just useful in local dev.
 **Windows and Linux desktop**, with different capability levels: Windows supports both sign-in
 methods (CLI mode + agent mode — see "Agent mode vs. CLI mode" below); Linux ships **agent-mode
 only** (no local-Steam-client integration at all — no Steamworks.NET/Win32 port exists or is
-planned). Packaging: Windows gets an NSIS installer + a portable zip; Linux gets an AppImage
-(primary, self-updating like the Windows portable zip) plus `.deb`/`.rpm`. All three are built on
+planned). Packaging: Windows gets a per-user NSIS installer (see "The updater" below) + a portable
+zip; Linux gets an AppImage (primary, self-updating like the Windows portable zip) plus
+`.deb`/`.rpm`. All three are built on
 `ubuntu-22.04` (glibc 2.35) so no 22.04-era distro is left behind; on a host with its own
 WebKitGTK the AppImage runs on it and performs the same as `.deb`/`.rpm` (see the AppImage
 host-libraries quirk below). Every Windows-specific integration (`Windows Credential Manager` via
@@ -362,6 +363,22 @@ would find nothing to install (it falls back to the latest GitHub release page, 
 blocked until a release exists). To test in dev, create the git-ignored
 `public/version-policy.dev.json` (same shape) - dev builds read it instead of the live file; never
 test by editing the real `version-policy.json`, since a forgotten revert on `main` blocks every user.
+
+**The Windows installer is per-user (`bundle.windows.nsis.installMode: "currentUser"`) - never
+switch it back to `perMachine`.** Up to 6.4.x it was `perMachine` (Program Files, HKLM), so every
+update needed a UAC prompt, which an autostarted, hidden SGI could only show as a flashing taskbar
+button (issue #2273). Per-user installs to `%LOCALAPPDATA%\Steam Game Idler` and never prompts. The
+switch is effectively one-way: going back would bring the UAC prompt back for everyone and strand
+their per-user copies. An old per-machine build updates to a per-user one without a prompt, but the
+new installer only reads HKCU, so the old copy stays behind. `src-tauri/src/legacy_install/` (see
+its `mod.rs` doc comment) deals with it: every startup re-points the user's autostart value and
+taskbar pins at the new exe, and `LegacyInstallPrompt.tsx` offers a one-time elevated cleanup
+(SGI relaunches itself with `runas` and `--remove-legacy-install`) that deletes only known files
+(`known_files.rs`, a closed list built from every release), the HKLM keys and the all-users
+shortcuts, then creates per-user shortcuts. **That flag must stay the first thing `main()` checks**
+- any later and tauri-plugin-single-instance forwards the elevated launch to the running copy
+instead of running it. The cleanup never runs the old `uninstall.exe` (it would delete the shared
+autostart value) and never kills processes.
 
 **Pre-install cleanup** (`updater.rs`'s `kill_all_steam_utility_processes`) is a cross-platform
 `sysinfo`-based implementation (not a Windows `taskkill` shell-out) that must keep killing every

@@ -23,7 +23,7 @@
       "timestampUrl": "",
       "nsis": {
         "installerIcon": "icons/icon.ico",
-        "installMode": "perMachine",
+        "installMode": "currentUser",
         "installerHooks": "./installer-hooks.nsh"
       }
     },

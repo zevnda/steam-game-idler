@@ -20,7 +20,7 @@ SGI supports **Windows** (10/11, 64-bit) and **Linux** (64-bit). Follow the step
 
   <Step>
     ### Install
-    Run the installer and follow the steps of the installation guide
+    Run the installer and follow the steps of the installation guide. SGI installs just for your Windows account, so neither installing nor updating needs administrator approval. Don't run the installer as administrator: if Windows asks for another account's password, SGI installs for that account instead of yours
   </Step>
 
   <Step>
@@ -28,10 +28,14 @@ SGI supports **Windows** (10/11, 64-bit) and **Linux** (64-bit). Follow the step
     After installation, you can launch SGI in a few different ways:
       * Select "Run Steam Game Idler" and click "Finish" when prompted
       * Run `Steam Game Idler.exe` from the installation directory
-        * Defaults to `C:/Program Files/Steam Game Idler`
+        * Defaults to `%LOCALAPPDATA%\Steam Game Idler`
       * Use the desktop shortcut created by the installer
   </Step>
 </Steps>
+
+<Callout type='info'>
+    Older versions installed to `C:\Program Files\Steam Game Idler` for every Windows account on the PC, which is why each update used to ask for administrator approval. When one of those updates itself, SGI moves to your account's folder and asks Windows once for permission to remove the old files (see [SGI asks to remove old files](/docs/troubleshooting#remove-old-files)). Each Windows account that uses SGI needs its own install
+</Callout>
 
 ## Windows Portable
 
