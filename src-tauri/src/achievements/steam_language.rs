@@ -28,6 +28,8 @@ pub fn steam_language_for_locale(locale: &str) -> &'static str {
         "ru-RU" => "russian",
         "tr-TR" => "turkish",
         "zh-CN" => "schinese",
+        // Includes bn-BD on purpose: Steam has no Bengali language at all, so achievement and
+        // game names stay English for Bengali users. Not a missing mapping.
         _ => "english",
     }
 }
