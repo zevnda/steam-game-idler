@@ -10,6 +10,7 @@ import { ContextMenu } from '@/shared/components/ContextMenu'
 import { DashboardShell } from '@/shared/components/dashboard/DashboardShell'
 import { ErrorBoundary } from '@/shared/components/ErrorBoundary'
 import { FullscreenLoader } from '@/shared/components/FullscreenLoader'
+import { LegacyInstallPrompt } from '@/shared/components/LegacyInstallPrompt'
 import { LinuxResizeHandles } from '@/shared/components/LinuxResizeHandles'
 import { GoProModal } from '@/shared/components/pro/GoProModal'
 import { SplashScreen } from '@/shared/components/SplashScreen'
@@ -202,6 +203,9 @@ const AppContent = ({ Component, pageProps, onBootstrapPhaseChange }: AppContent
       {bootstrapPhase !== 'checking' && <ChangelogModal />}
       <GoProModal />
       {showOutdatedPrompt && <VersionPolicyDialog variant='outdated' />}
+      {/* Waits its turn behind every dialog above, and for this launch's update check - see its
+          own doc comment. Not mounted at all while updating (the early return above). */}
+      {bootstrapPhase !== 'checking' && <LegacyInstallPrompt />}
       {/* The routed page (dashboard or pre-dashboard) is held back until useSessionBootstrap has
           re-validated any persisted session - see that hook's doc comment. App's FullscreenLoader
           covers the window meanwhile. Everything above this (Titlebar, toasts, the Chatway

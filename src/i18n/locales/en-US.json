@@ -129,6 +129,14 @@
   "update": {
     "downloading": "Downloading update..."
   },
+  "legacyInstall": {
+    "title": "Remove old files?",
+    "description": "Updates no longer need administrator permission. The previous version left some files behind, and Windows will ask for permission one last time to remove them. Nothing that's running will be stopped.",
+    "remove": "Remove",
+    "removed": "Old files removed",
+    "declined": "Old files weren't removed",
+    "failed": "Couldn't remove the old files"
+  },
   "toast": {
     "checkUpdate": {
       "none": "You're already on the latest version",

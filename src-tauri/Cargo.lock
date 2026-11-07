@@ -4589,6 +4589,8 @@ dependencies = [
  "tracing-subscriber",
  "urlencoding",
  "webkit2gtk",
+ "windows 0.62.2",
+ "windows-registry",
 ]
 
 [[package]]

@@ -1,10 +1,17 @@
 use tauri::menu::{Menu, MenuItem};
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
-use tauri::{image::Image, AppHandle, Manager};
+use tauri::{image::Image, AppHandle, Emitter, Manager};
 use tauri_plugin_notification::NotificationExt;
 use tauri_plugin_updater::UpdaterExt;
 
 use crate::platform;
+
+/// Emitted right before a tray-started update downloads and installs, and again if that then
+/// fails, so the frontend can mirror its own `performUpdate` flow (`useCheckForUpdates.ts`): show
+/// `UpdateLoader`, and keep the old-install prompt (`LegacyInstallPrompt.tsx`) from opening over an
+/// update that's about to restart the app.
+const TRAY_UPDATE_STARTED_EVENT: &str = "tray-update-started";
+const TRAY_UPDATE_FAILED_EVENT: &str = "tray-update-failed";
 
 /// The only way to recover the window once `close_to_tray`/`start_minimized` has hidden it (see
 /// `settings::Settings` and `lib.rs::setup_window`) - a frameless/custom-chrome window has no OS
@@ -223,7 +230,9 @@ fn recenter_window(app_handle: &AppHandle) {
 /// `SteamUtility.exe` first, same as the frontend does, so the installer can actually overwrite it
 /// (see `updater::kill_all_steam_utility_processes`'s doc comment). Unlike the frontend flow -
 /// which defers a non-major update to `UpdateButton`'s opt-in prompt - this always installs
-/// immediately once found, since the tray has no UI to show that prompt in.
+/// immediately once found, since the tray has no UI to show that prompt in. The frontend still
+/// hears about it ([`TRAY_UPDATE_STARTED_EVENT`]/[`TRAY_UPDATE_FAILED_EVENT`]) so it can treat it
+/// like one of its own installs.
 async fn check_for_updates(app_handle: &AppHandle) -> tauri_plugin_updater::Result<()> {
     let Some(update) = app_handle.updater()?.check().await? else {
         if let Err(err) = app_handle
@@ -251,8 +260,23 @@ async fn check_for_updates(app_handle: &AppHandle) -> tauri_plugin_updater::Resu
     }
 
     tracing::info!(version = %update.version, "tray: installing update");
-    update
+    emit_update_event(app_handle, TRAY_UPDATE_STARTED_EVENT);
+    if let Err(err) = update
         .download_and_install(|_downloaded, _total| {}, || {})
-        .await?;
+        .await
+    {
+        emit_update_event(app_handle, TRAY_UPDATE_FAILED_EVENT);
+        return Err(err);
+    }
     app_handle.restart();
+}
+
+fn emit_update_event(app_handle: &AppHandle, event: &str) {
+    if let Err(err) = app_handle.emit(event, ()) {
+        tracing::warn!(
+            ?err,
+            event,
+            "tray: failed to notify the frontend about the update"
+        );
+    }
 }

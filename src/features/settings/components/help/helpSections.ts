@@ -76,6 +76,13 @@ export const HELP_SECTIONS: HelpSection[] = [
           'Windows 10 and 11, and Linux. Steam Sign-in works on both. Local Sign-in is Windows-only.',
       },
       {
+        id: 'adminRights',
+        question: 'Do I need administrator rights to install or update?',
+        answer:
+          'No. On Windows the app installs just for your Windows account, so installing and updating never ask for administrator approval. If you updated from an older version that installed to Program Files, the app asks Windows once for permission to remove the old files. If you can\'t approve it, tick "Don\'t show this again" and the app keeps working with the old files in place.',
+        href: `${TROUBLESHOOTING_URL}#remove-old-files`,
+      },
+      {
         id: 'internet',
         question: 'Do I need an internet connection?',
         answer:

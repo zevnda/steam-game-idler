@@ -1,3 +1,4 @@
+import { listen } from '@tauri-apps/api/event'
 import { check } from '@tauri-apps/plugin-updater'
 import { useEffect, useRef } from 'react'
 import { useUpdateStore } from '@/shared/stores/updateStore'
@@ -5,6 +6,11 @@ import { logFrontendWarn } from '@/shared/utils/frontendLogging'
 import { canAutoUpdateCheck, fetchLatest, performUpdate } from '@/shared/utils/update'
 
 const CHECK_INTERVAL_MS = 5 * 60 * 1000
+
+// Match src-tauri/src/tray.rs's TRAY_UPDATE_STARTED_EVENT/TRAY_UPDATE_FAILED_EVENT - the tray's
+// "Check for updates.." installs from the Rust side, bypassing performUpdate.
+const TRAY_UPDATE_STARTED_EVENT = 'tray-update-started'
+const TRAY_UPDATE_FAILED_EVENT = 'tray-update-failed'
 
 /**
  * Periodically checks for updates and installs them per `latest.json`'s `major` flag:
@@ -20,7 +26,20 @@ export function useCheckForUpdates() {
   const setUpdateAvailable = useUpdateStore(state => state.setUpdateAvailable)
   const setIsUpdating = useUpdateStore(state => state.setIsUpdating)
   const setShowChangelog = useUpdateStore(state => state.setShowChangelog)
+  const setInitialCheckSettled = useUpdateStore(state => state.setInitialCheckSettled)
   const isInitialCheck = useRef(true)
+
+  // A tray-started install gets the same UpdateLoader (and the same "an update is installing"
+  // state for anything gating on isUpdating) as one performUpdate runs.
+  useEffect(() => {
+    const unlisten = Promise.all([
+      listen(TRAY_UPDATE_STARTED_EVENT, () => setIsUpdating(true)),
+      listen(TRAY_UPDATE_FAILED_EVENT, () => setIsUpdating(false)),
+    ])
+    return () => {
+      unlisten.then(fns => fns.forEach(fn => fn()))
+    }
+  }, [setIsUpdating])
 
   useEffect(() => {
     // `performUpdate` sets this flag right before relaunching (and it's in `KEYS_TO_PRESERVE`, so
@@ -64,6 +83,8 @@ export function useCheckForUpdates() {
         // successful relaunch - main had this same gap.
         setIsUpdating(false)
       } finally {
+        // An install never reaches this - downloadAndInstall exits the app first.
+        if (isInitialCheck.current) setInitialCheckSettled(true)
         isInitialCheck.current = false
       }
     }
@@ -71,5 +92,5 @@ export function useCheckForUpdates() {
     checkForUpdates()
     const intervalId = setInterval(checkForUpdates, CHECK_INTERVAL_MS)
     return () => clearInterval(intervalId)
-  }, [setUpdateAvailable, setIsUpdating])
+  }, [setUpdateAvailable, setIsUpdating, setInitialCheckSettled])
 }
