@@ -10,6 +10,7 @@ import { openExternalLink } from '@/shared/utils/links'
 // they're shown dimmed/non-selectable below rather than selectable-but-empty.
 const LANGUAGES = [
   { id: 'en-US', label: 'English' },
+  { id: 'bn-BD', label: 'বাংলা' },
   { id: 'de-DE', label: 'Deutsch' },
   { id: 'es-ES', label: 'Español' },
   { id: 'fr-FR', label: 'Français' },
@@ -25,6 +26,7 @@ const LANGUAGES = [
 // shown dimmed and routes to TRANSLATION_HELP_URL instead of switching.
 const ENABLED_LANGUAGES: ReadonlySet<string> = new Set([
   'en-US',
+  'bn-BD',
   'de-DE',
   'es-ES',
   'fr-FR',
