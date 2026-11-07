@@ -156,11 +156,15 @@ export async function performUpdate(
   logFrontendInfo('update', 'installing update', { version: update.version, major })
   setIsUpdating(true)
   localStorage.setItem('hasUpdated', 'true')
+  // Download first, kill, then install - not kill-then-downloadAndInstall. Automation keeps running
+  // during the download (session restore and auto-idle both start SteamUtility right at launch,
+  // exactly when the first update check installs silently), so a kill done before the download can
+  // be undone by a fresh spawn and the installer then hits a locked SteamUtility file. The
+  // installer also closes SteamUtility itself (installer-hooks.nsh) as the backstop for whatever
+  // still starts in the milliseconds between these two calls.
+  await Promise.all([update.download(), new Promise(resolve => setTimeout(resolve, 2500))])
   await invoke('kill_all_steam_utility_processes')
-  await Promise.all([
-    update.downloadAndInstall(),
-    new Promise(resolve => setTimeout(resolve, 2500)),
-  ])
+  await update.install()
   if (major) {
     await preserveKeysAndClearData()
   }
