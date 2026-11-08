@@ -259,7 +259,6 @@
   },
   "auth": {
     "landing": {
-      "title": "Melde dich bei Steam Game Idler an",
       "agentButton": "Steam Anmeldung",
       "localAlreadySignedIn": "Ein lokaler Steam-Client-Account ist bereits angemeldet – es kann immer nur einer gleichzeitig angemeldet sein.",
       "acknowledge": "Durch Klicken auf ‚Weiter‘ stimmst du den <0> Nutzungsbedingungen </0> zu und bestätigst, dass du unsere <1> Datenschutzerklärung </1> gelesen hast."
@@ -271,7 +270,6 @@
       "passwordPlaceholder": "Steam Passwort eingeben",
       "usernameRequired": "Steam Benutzername eingeben.",
       "passwordRequired": "Steam Passwort eingeben.",
-      "credentialsSectionLabel": "Mit dem Kontonamen anmelden",
       "guardCode": {
         "deviceTitle": "Überprüfe deine Steam Mobile App",
         "deviceDescription": "Geben Sie den Code aus der Steam Mobile App ein.",
@@ -284,7 +282,6 @@
         "submitButton": "Verifizieren"
       },
       "qrCode": {
-        "sectionLabel": "Oder melden Sie sich mit QR-Code an",
         "instructions": "Verwenden Sie die Steam Mobile App um sich über QR-Code anzumelden."
       },
       "errors": {
@@ -305,10 +302,6 @@
         "launchFailed": "Der Steam-Client konnte nicht gestartet werden.",
         "summaryUnavailable": "Die Kontodetails konnten momentan nicht geladen werden."
       }
-    },
-    "hero": {
-      "title": "Das einzige Steam-<1/> Automatisierungstool <1/>, das du jemals brauchen wirst",
-      "subtitle": "Sammle Sammelkarten, schalte Erfolge frei, verlängere deine Spielzeit und automatisiere dein Steam-Erlebnis – alles mit einem einzigen Tool."
     }
   },
   "dashboard": {

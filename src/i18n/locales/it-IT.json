@@ -314,7 +314,6 @@
   },
   "auth": {
     "landing": {
-      "title": "Accedi a Steam Game Idler",
       "agentButton": "Accesso con Steam",
       "localButton": "Accesso locale",
       "localAlreadySignedIn": "Un account del client Steam locale ha già effettuato l'accesso: può essercene solo uno alla volta.",
@@ -327,7 +326,6 @@
       "passwordPlaceholder": "Inserisci la tua password Steam",
       "usernameRequired": "Inserisci il tuo nome utente Steam.",
       "passwordRequired": "Inserisci la tua password Steam.",
-      "credentialsSectionLabel": "Accedi con il nome account",
       "guardCode": {
         "deviceTitle": "Controlla l'app Steam Mobile",
         "deviceDescription": "Inserisci il codice dall'app Steam Mobile.",
@@ -340,7 +338,6 @@
         "submitButton": "Verifica"
       },
       "qrCode": {
-        "sectionLabel": "Oppure accedi con QR",
         "instructions": "Usa l'app Steam Mobile per accedere tramite codice QR."
       },
       "errors": {
@@ -361,10 +358,6 @@
         "launchFailed": "Impossibile avviare il client Steam.",
         "summaryUnavailable": "Impossibile caricare i dettagli dell'account al momento."
       }
-    },
-    "hero": {
-      "title": "L'unico <1/>Strumento Steam<1/>di cui avrai mai bisogno",
-      "subtitle": "Ottieni carte, sblocca obiettivi, aumenta le ore di gioco e automatizza Steam, tutto in un solo strumento."
     }
   },
   "dashboard": {

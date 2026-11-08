@@ -262,7 +262,6 @@
   },
   "auth": {
     "landing": {
-      "title": "Entrar no Steam Game Idler",
       "agentButton": "Entrar na Steam",
       "localAlreadySignedIn": "Uma conta local do Steam já está conectada — só é possível estar conectado com uma por vez",
       "acknowledge": "Ao clicar em 'Continuar', você concorda com os <0>Termos de Serviço</0> e reconhece que leu nossa <1>Política de Privacidade</1>."
@@ -274,7 +273,6 @@
       "passwordPlaceholder": "Digite sua senha da Steam",
       "usernameRequired": "Digite seu nome de usuário da Steam.",
       "passwordRequired": "Digite sua senha da Steam.",
-      "credentialsSectionLabel": "Entrar com o nome da conta",
       "guardCode": {
         "deviceTitle": "Verifique seu aplicativo Steam Mobile",
         "deviceDescription": "Digite o código do app Steam Mobile.",
@@ -287,7 +285,6 @@
         "submitButton": "Verificar"
       },
       "qrCode": {
-        "sectionLabel": "Ou entrar com QR",
         "instructions": "Use o app Steam Mobile para entrar via código QR."
       },
       "errors": {
@@ -308,10 +305,6 @@
         "launchFailed": "Não foi possível iniciar o processo do agente Steam.",
         "summaryUnavailable": "Não deu para carregar os detalhes da conta agora."
       }
-    },
-    "hero": {
-      "title": "A única ferramenta de<1/>automação da Steam<1/>que você vai precisar",
-      "subtitle": "Farme cartas colecionáveis, desbloqueie conquistas, aumente o tempo de jogo e automatize sua experiência na Steam — tudo em uma única ferramenta."
     }
   },
   "dashboard": {
