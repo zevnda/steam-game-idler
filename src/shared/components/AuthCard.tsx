@@ -12,7 +12,7 @@ interface AuthCardProps {
 // SignIn.tsx has no panel around its sign-in content at all, just centered text/controls directly
 // on the page (see AuthLayout.tsx's port comment), and `Card` kept dragging in panel chrome
 // (padding, shadow, rounded corners) this screen never wanted.
-const AuthCard = ({ title, children, className = 'w-96' }: AuthCardProps) => {
+const AuthCard = ({ title, children, className = 'w-full max-w-96' }: AuthCardProps) => {
   return (
     <div className={`flex flex-col ${className}`}>
       <div className='flex flex-col items-center gap-1 text-center'>

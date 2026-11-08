@@ -16,7 +16,7 @@ export const checkedHeroArt = new Map<number, HeroArt | null>()
 
 export const headerImageUrl = (appId: number) => `${CDN_BASE}/${appId}/header.jpg`
 
-const imageLoads = (url: string) =>
+export const imageLoads = (url: string) =>
   new Promise<boolean>(resolve => {
     const image = new window.Image()
     image.onload = () => resolve(true)

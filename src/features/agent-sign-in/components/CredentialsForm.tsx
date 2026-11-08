@@ -9,8 +9,7 @@ interface CredentialsFormProps {
   onSubmit: (username: string, password: string) => void
 }
 
-// Bare fields only - the outer `AuthCard` title/description now lives in `SignInScreen.tsx`,
-// shared with `QrSignInPanel.tsx` as the two columns of one combined sign-in card.
+// Bare fields only - any heading around them belongs to the screen hosting this form.
 const CredentialsForm = ({ isSubmitting, errorCode, onSubmit }: CredentialsFormProps) => {
   const { t } = useTranslation()
 
@@ -23,11 +22,7 @@ const CredentialsForm = ({ isSubmitting, errorCode, onSubmit }: CredentialsFormP
   }
 
   return (
-    <div className='flex w-56 flex-col gap-3 lg:w-64'>
-      <p className='text-xs font-semibold uppercase tracking-wide text-primary'>
-        {t('auth.signIn.credentialsSectionLabel')}
-      </p>
-
+    <div className='flex w-full flex-col gap-3'>
       <Form className='flex flex-col gap-4' onSubmit={handleSubmit}>
         {errorCode ? (
           <Alert status='danger'>
@@ -57,7 +52,7 @@ const CredentialsForm = ({ isSubmitting, errorCode, onSubmit }: CredentialsFormP
           <FieldError>{t('auth.signIn.passwordRequired')}</FieldError>
         </TextField>
 
-        <Button isPending={isSubmitting} type='submit'>
+        <Button fullWidth isPending={isSubmitting} type='submit'>
           {t('common.actions.signIn')}
         </Button>
       </Form>

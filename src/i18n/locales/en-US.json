@@ -314,20 +314,21 @@
   },
   "auth": {
     "landing": {
-      "title": "Sign in to Steam Game Idler",
+      "heading": "Sign in",
+      "subtitle": "Pick how you want to connect. You can add more accounts later.",
       "agentButton": "Steam Sign-in",
       "localButton": "Local Sign-in",
       "localAlreadySignedIn": "A local Steam client account is already signed in — only one can be signed in at a time.",
       "acknowledge": "By continuing, you agree to the <0>Terms of Service</0> and acknowledge that you have read our <1>Privacy Policy</1>."
     },
     "signIn": {
+      "title": "Sign in with Steam",
       "usernameLabel": "Username",
       "usernamePlaceholder": "Enter your Steam username",
       "passwordLabel": "Password",
       "passwordPlaceholder": "Enter your Steam password",
       "usernameRequired": "Enter your Steam username.",
       "passwordRequired": "Enter your Steam password.",
-      "credentialsSectionLabel": "Sign in with account name",
       "guardCode": {
         "deviceTitle": "Check your Steam Mobile app",
         "deviceDescription": "Enter the code from the Steam Mobile app.",
@@ -340,8 +341,11 @@
         "submitButton": "Verify"
       },
       "qrCode": {
-        "sectionLabel": "Or sign in with QR",
-        "instructions": "Use the Steam Mobile app to sign in via QR code."
+        "scanLabel": "Or scan with your phone",
+        "instructions": "Use the Steam Mobile app to sign in via QR code.",
+        "scanned": "Approve it in the Steam Mobile app.",
+        "approved": "Approved. Signing you in...",
+        "newCode": "Use a new code"
       },
       "errors": {
         "title": "Couldn't sign in",
@@ -352,6 +356,10 @@
     },
     "localSignIn": {
       "title": "Choose an account",
+      "continueAs": "Continue as {{name}}",
+      "restartNotice": "Steam will restart and switch to {{name}}.",
+      "mostRecent": "Last signed in on this PC",
+      "lastUsed": "Last used {{when}}",
       "noAccounts": "No Steam accounts were found on this device. Sign into the Steam client at least once, then refresh.",
       "errors": {
         "steamNotFound": "Couldn't find a local Steam installation.",
@@ -363,8 +371,8 @@
       }
     },
     "hero": {
-      "title": "The Only Steam<1/>Automation Tool<1/>You Will Ever Need",
-      "subtitle": "Farm trading cards, unlock achievements, boost playtime, and automate your Steam experience — all in one tool."
+      "idle": "Idle",
+      "farm": "Farm"
     }
   },
   "dashboard": {

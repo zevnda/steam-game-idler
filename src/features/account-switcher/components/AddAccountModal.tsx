@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Modal, Spinner, toast } from '@heroui/react'
+import { cn, Modal, Spinner, toast } from '@heroui/react'
 import { useRouter } from 'next/router'
-import CredentialsForm from '@/features/agent-sign-in/components/CredentialsForm'
 import GuardCodeForm from '@/features/agent-sign-in/components/GuardCodeForm'
-import QrSignInPanel from '@/features/agent-sign-in/components/QrSignInPanel'
+import SteamSignInForm from '@/features/agent-sign-in/components/SteamSignInForm'
 import { useAgentQrSignIn } from '@/features/agent-sign-in/hooks/useAgentQrSignIn'
 import { useAgentSignIn } from '@/features/agent-sign-in/hooks/useAgentSignIn'
 import AccountPicker from '@/features/local-sign-in/components/AccountPicker'
 import { useLocalSignIn } from '@/features/local-sign-in/hooks/useLocalSignIn'
 import SignInLanding from '@/features/sign-in-landing/components/SignInLanding'
+import BackButton from '@/shared/components/BackButton'
 import { ModalDragRegion } from '@/shared/components/ModalDragRegion'
 import { useAddAccountModalStore } from '@/shared/stores/addAccountModalStore'
 import { useProModalStore } from '@/shared/stores/proModalStore'
@@ -24,9 +24,28 @@ interface AddAccountModalBodyProps {
   onClose: () => void
 }
 
-// Reuses the same building blocks the sign-in landing page uses (SignInLanding, CredentialsForm/
-// GuardCodeForm, AccountPicker, and the useAgentSignIn/useLocalSignIn hooks) completely unmodified
-// except for SignInLanding's new embedded/localDisabled props. On success
+interface StepHeaderProps {
+  title: string
+  onBack: () => void
+  // Keeps the button's space, so the title doesn't jump when it's hidden
+  isBackHidden?: boolean
+}
+
+// The back arrow and title share one row here, unlike the sign-in screen's separate rows, so the
+// Steam sign-in step fits at the window's minimum height without the modal having to scroll. The
+// right padding keeps a long translated title clear of the modal's close button.
+const StepHeader = ({ title, onBack, isBackHidden = false }: StepHeaderProps) => (
+  <div className='flex items-center gap-3 pr-8'>
+    <div className={cn('shrink-0', isBackHidden && 'invisible')}>
+      <BackButton inline onPress={onBack} />
+    </div>
+    <h2 className='min-w-0 text-[28px] font-bold tracking-tight text-foreground'>{title}</h2>
+  </div>
+)
+
+// Reuses the same building blocks the sign-in screen uses (SignInLanding, SteamSignInForm,
+// GuardCodeForm, AccountPicker, and the useAgentSignIn/useLocalSignIn hooks), so the two look the
+// same; SignInLanding's embedded prop only drops the parts that don't apply here. On success
 // this closes the modal and routes to /dashboard, mirroring AccountSwitcher's post-switch toast +
 // navigation - useAgentSignIn/useLocalSignIn's setAccount call already made the new account active
 // by the time that fires.
@@ -137,19 +156,17 @@ const AddAccountModalBody = ({ onClose }: AddAccountModalBodyProps) => {
         </div>
       )
     }
-    // Stacked rather than SignInScreen.tsx's side-by-side columns - the modal is a narrow, vertical
-    // context (unlike the full-width standalone sign-in page), so credentials sit above a divider
-    // above the QR panel instead of competing for horizontal space.
     return (
-      <div className='flex flex-col items-center gap-6'>
-        <CredentialsForm
-          errorCode={agent.errorCode}
-          isSubmitting={agent.phase.kind === 'submitting'}
-          onSubmit={agent.signIn}
-        />
-        <div className='h-px w-full bg-border' />
-        <QrSignInPanel errorCode={qr.errorCode} phase={qr.phase} onRetry={qr.start} />
-      </div>
+      <SteamSignInForm
+        errorCode={agent.errorCode}
+        header={<StepHeader title={t('auth.signIn.title')} onBack={() => setPhase('landing')} />}
+        isSubmitting={agent.phase.kind === 'submitting'}
+        qrErrorCode={qr.errorCode}
+        qrPhase={qr.phase}
+        onQrNewCode={qr.requestNewCode}
+        onQrRetry={qr.start}
+        onSubmit={agent.signIn}
+      />
     )
   }
 
@@ -162,17 +179,25 @@ const AddAccountModalBody = ({ onClose }: AddAccountModalBodyProps) => {
       )
     }
     return (
-      <AccountPicker
-        accounts={local.accounts}
-        actionErrorCode={local.actionErrorCode}
-        isContinuing={local.phase === 'continuing'}
-        isLoading={local.phase === 'loading'}
-        selectedSteamId={local.selectedSteamId}
-        summaryErrorCode={local.summaryErrorCode}
-        onContinue={local.continueSignIn}
-        onRefresh={local.refresh}
-        onSelect={local.selectAccount}
-      />
+      <div className='flex flex-col gap-4'>
+        <StepHeader
+          isBackHidden={local.phase === 'continuing'}
+          title={t('auth.localSignIn.title')}
+          onBack={() => setPhase('landing')}
+        />
+        <AccountPicker
+          embedded
+          accounts={local.accounts}
+          actionErrorCode={local.actionErrorCode}
+          isContinuing={local.phase === 'continuing'}
+          isLoading={local.phase === 'loading'}
+          selectedSteamId={local.selectedSteamId}
+          summaryErrorCode={local.summaryErrorCode}
+          onContinue={local.continueSignIn}
+          onRefresh={local.refresh}
+          onSelect={local.selectAccount}
+        />
+      </div>
     )
   }
 
@@ -215,9 +240,13 @@ export const AddAccountModal = () => {
 
   return (
     <Modal isOpen={isOpen} onOpenChange={open => !open && close()}>
-      <Modal.Backdrop>
+      <Modal.Backdrop className='add-account-backdrop'>
         <ModalDragRegion />
-        <Modal.Container size='md'>
+        {/* `outside` so a dialog too tall for the window scrolls with the backdrop. Scrolling inside
+            the body would clip the account list, whose scrollbar sits in the dialog's padding.
+            `sm:py-4` trims HeroUI's 40px above and below so the Steam sign-in step fits at the
+            window's minimum height. */}
+        <Modal.Container className='sm:py-4' scroll='outside' size='md'>
           <Modal.Dialog>
             <Modal.Header>
               <Modal.CloseTrigger />

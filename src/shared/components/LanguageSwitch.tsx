@@ -43,7 +43,7 @@ const ENABLED_LANGUAGES: ReadonlySet<string> = new Set([
 // half-English UI.
 const TRANSLATION_HELP_URL = 'https://github.com/zevnda/steam-game-idler/discussions/148'
 
-export const LanguageSwitch = () => {
+export const LanguageSwitch = ({ className = 'w-62.5' }: { className?: string }) => {
   const { t, i18n } = useTranslation()
   // `output: 'export'` (next.config.ts) means this always server-renders as if no language were
   // detected yet - gating the real value behind a mount effect avoids a hydration mismatch against
@@ -65,7 +65,7 @@ export const LanguageSwitch = () => {
   return (
     <Select.Root
       aria-label={t('dashboard.settings.general.language.label')}
-      className='w-62.5'
+      className={className}
       selectedKey={currentLanguage}
       onSelectionChange={key => {
         const id = String(key)

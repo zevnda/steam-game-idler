@@ -1,40 +1,61 @@
 import type { SteamAccount } from '../types'
-import { Avatar, Radio } from '@heroui/react'
+import { useTranslation } from 'react-i18next'
+import { TbCheck } from 'react-icons/tb'
+import { Avatar, Radio, Skeleton } from '@heroui/react'
+import { timeAgo } from '@/shared/hooks/useNotifications'
 
 interface AccountOptionProps {
   account: SteamAccount
 }
 
-// One selectable avatar card within the `RadioGroup` in `AccountPicker`. No separate radio
-// dot/control is rendered - a gradient-filled box behind the selected avatar is the selection
-// indicator, matching `main`'s actual avatar-picker UX (its
-// `bg-linear-to-tr from-cyan-500 via-blue-500 to-violet-700` selected-state style). `group` on
-// `Radio.Content` plus `group-data-selected:` on the inner wrapper is how the gradient reaches the
-// avatar specifically without also painting the persona-name text below it.
+// Matches a real row's size exactly, so swapping one for the other doesn't move anything
+export const AccountOptionSkeleton = () => (
+  <div className='flex w-full items-center gap-3 rounded-2xl bg-foreground/4 p-3 ring-1 ring-foreground/8'>
+    <Skeleton className='size-11 shrink-0 rounded-full' />
+    <div className='flex flex-1 flex-col gap-2'>
+      <Skeleton className='h-3.5 w-28 rounded-md' />
+      <Skeleton className='h-3 w-40 rounded-md' />
+    </div>
+  </div>
+)
+
+// One selectable row within the `RadioGroup` in `AccountPicker`. Uses plain elements rather than
+// `Typography` for the text, which throws ("A slot prop is required") when nested inside `Radio`,
+// and `group-data-selected:` to reach the tick, since `Radio.Content` is what carries the state.
+// `mt-0!` cancels the 16px HeroUI's vertical RadioGroup puts above every radio; `AccountPicker` sets
+// the spacing between rows itself.
 const AccountOption = ({ account }: AccountOptionProps) => {
+  const { t, i18n } = useTranslation()
   const initial = account.personaName.trim().charAt(0).toUpperCase() || '?'
 
   return (
-    <Radio value={account.steamId}>
-      <Radio.Content className='group flex w-24 cursor-pointer flex-col items-center gap-2 rounded-lg p-2 outline-none data-focus-visible:ring-2 data-focus-visible:ring-focus lg:w-36'>
-        <div className='rounded-lg p-1 group-data-selected:bg-linear-to-tr group-data-selected:from-cyan-500 group-data-selected:via-blue-500 group-data-selected:to-violet-700'>
-          {/* Square-rounded and large, not HeroUI's default small circular sizing - matches
-              main's 128x128 `rounded-md` avatar (its `UserSelectionArea`). tailwind-merge resolves the
-              `size-*`/`rounded-*` conflicts in favor of this className over Avatar's own slot
-              classes. Shrunk below `lg` (window width) so more accounts fit per row and per screen
-              before AccountPicker's scroll container kicks in - see its own doc comment. */}
-          <Avatar className='size-20 rounded-lg lg:size-32' size='lg'>
-            {account.avatarUrl ? (
-              <Avatar.Image alt={account.personaName} src={account.avatarUrl} />
-            ) : null}
-            <Avatar.Fallback className='rounded-lg text-lg lg:text-2xl'>{initial}</Avatar.Fallback>
-          </Avatar>
-        </div>
-        {/* Plain element, not `Typography` - `Typography` renders react-aria-components' `Text`,
-            which throws ("A slot prop is required") when nested inside `Radio`, since `Radio`
-            only publishes a "description" text slot and this is the option's label, not a
-            description. */}
-        <span className='w-full truncate text-center text-sm'>{account.personaName}</span>
+    <Radio className='mt-0! w-full' value={account.steamId}>
+      <Radio.Content className='group flex w-full cursor-pointer items-center gap-3 rounded-2xl bg-foreground/4 p-3 outline-none ring-1 ring-foreground/8 transition-colors hover:bg-foreground/7 data-focus-visible:ring-2 data-focus-visible:ring-focus data-selected:bg-accent/12 data-selected:ring-2 data-selected:ring-accent'>
+        <Avatar className='size-11 shrink-0'>
+          {account.avatarUrl ? (
+            <Avatar.Image alt={account.personaName} src={account.avatarUrl} />
+          ) : null}
+          <Avatar.Fallback>{initial}</Avatar.Fallback>
+        </Avatar>
+        <span className='flex min-w-0 flex-1 flex-col gap-0.5'>
+          <span className='truncate text-[15px] font-semibold'>{account.personaName}</span>
+          {account.mostRecent ? (
+            <span className='flex items-center gap-1.5 text-xs text-success'>
+              <span aria-hidden className='size-1.5 shrink-0 rounded-full bg-success' />
+              <span className='truncate'>{t('auth.localSignIn.mostRecent')}</span>
+            </span>
+          ) : account.lastUsed ? (
+            <span className='truncate text-xs text-muted'>
+              {t('auth.localSignIn.lastUsed', { when: timeAgo(account.lastUsed, i18n.language) })}
+            </span>
+          ) : null}
+        </span>
+        <span
+          aria-hidden
+          className='flex size-5 shrink-0 items-center justify-center rounded-full text-accent-foreground ring-1 ring-foreground/25 group-data-selected:bg-accent group-data-selected:ring-0'
+        >
+          <TbCheck className='hidden group-data-selected:block' fontSize={12} strokeWidth={3} />
+        </span>
       </Radio.Content>
     </Radio>
   )

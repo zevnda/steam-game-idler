@@ -152,27 +152,22 @@ namespace SteamUtility.Daemon.Bot
                     }
                 );
 
-                // Steam periodically rotates the embedded challenge URL until the code is
-                // scanned - each rotation must be re-rendered client-side or the previously
-                // displayed QR code goes stale before the user gets to it.
-                authSession.ChallengeURLChanged = () =>
-                    IpcServer.SendEvent(
-                        "qr_challenge_url",
-                        new { challengeUrl = authSession.ChallengeURL }
-                    );
-
                 RespondOnce(
                     true,
                     new { status = "qr_challenge", challengeUrl = authSession.ChallengeURL }
                 );
 
-                var pollResult = await authSession.PollingWaitForResultAsync();
+                var approval = await WaitForQrApprovalAsync(authSession);
+
+                // Logging on below takes a few seconds, and the app would otherwise look idle
+                // for all of it even though the user has already approved on their phone.
+                IpcServer.SendEvent("qr_approved", new { });
 
                 var logOnResult = await _bot.LogOnAsync(
                     new SteamUser.LogOnDetails
                     {
-                        Username = pollResult.AccountName,
-                        AccessToken = pollResult.RefreshToken,
+                        Username = approval.account_name,
+                        AccessToken = approval.refresh_token,
                         ShouldRememberPassword = true,
                     }
                 );
@@ -183,15 +178,15 @@ namespace SteamUtility.Daemon.Bot
                     return;
                 }
 
-                _bot.RefreshToken = pollResult.RefreshToken;
+                _bot.RefreshToken = approval.refresh_token;
 
                 IpcServer.SendEvent(
                     "refresh_token",
                     new
                     {
-                        username = pollResult.AccountName,
+                        username = approval.account_name,
                         tokenB64 = Convert.ToBase64String(
-                            Encoding.UTF8.GetBytes(pollResult.RefreshToken)
+                            Encoding.UTF8.GetBytes(approval.refresh_token)
                         ),
                     }
                 );
@@ -199,6 +194,70 @@ namespace SteamUtility.Daemon.Bot
             catch (Exception ex)
             {
                 RespondOnce(false, error: ex.Message);
+            }
+        }
+
+        // Replaces SteamKit2's QrAuthSession.PollingWaitForResultAsync, which is the same loop but
+        // keeps had_remote_interaction (set once the code has been scanned) to itself. Mirrors what
+        // that method does, including throwing the same AuthenticationException: the frontend tells
+        // an expired code from a denied one by that exception's message
+        // (useAgentQrSignIn.ts's isRecoverableQrTimeout, errorMessageKey.ts's isDenied).
+        private async Task<CAuthentication_PollAuthSessionStatus_Response> WaitForQrApprovalAsync(
+            QrAuthSession authSession
+        )
+        {
+            var service = _bot
+                .Client.GetHandler<SteamUnifiedMessages>()!
+                .CreateService<Authentication>();
+            var clientId = authSession.ClientID;
+            var isScanned = false;
+
+            while (true)
+            {
+                var message = await service.PollAuthSessionStatus(
+                    new CAuthentication_PollAuthSessionStatus_Request
+                    {
+                        client_id = clientId,
+                        request_id = authSession.RequestID,
+                    }
+                );
+
+                if (message.Result != EResult.OK)
+                {
+                    throw new AuthenticationException("Failed to poll status", message.Result);
+                }
+
+                var response = message.Body;
+
+                if (response.new_client_id != 0)
+                {
+                    clientId = response.new_client_id;
+                }
+
+                // Steam rotates the code until it's scanned, and each new one must be re-rendered
+                // or the code on screen goes stale. The frontend treats a new code as not scanned,
+                // so the flag resets to re-announce a scan that's still in place.
+                if (!string.IsNullOrEmpty(response.new_challenge_url))
+                {
+                    isScanned = false;
+                    IpcServer.SendEvent(
+                        "qr_challenge_url",
+                        new { challengeUrl = response.new_challenge_url }
+                    );
+                }
+
+                if (!string.IsNullOrEmpty(response.refresh_token))
+                {
+                    return response;
+                }
+
+                if (response.had_remote_interaction != isScanned)
+                {
+                    isScanned = response.had_remote_interaction;
+                    IpcServer.SendEvent("qr_scan_state", new { scanned = isScanned });
+                }
+
+                await Task.Delay(authSession.PollingInterval);
             }
         }
 

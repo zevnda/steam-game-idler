@@ -51,28 +51,56 @@ body {
   box-shadow: none !important;
 }
 
-/* SignInHero (src/shared/components/SignInHero.tsx) - ported verbatim from `main`. `.inner-glow`
-   is an inset vignette so the cover-art wall fades into the panel's edges instead of hard-cutting.
-   `.animate-skew-scroll` drives the continuous upward drift of that wall; the 3D transform reads
-   as a flat shear rather than true depth since no `perspective` is set on an ancestor (matches
-   `main`'s own rendering - not a regression). */
-.inner-glow {
-  box-shadow:
-    inset 0 0 60px 10px rgba(0, 0, 0, 1),
-    inset 0 0 120px 20px rgba(0, 0, 0, 1);
+/* SignInHero's words (src/shared/components/SignInHero.tsx): faint until lit. SignInHero lights the
+   next one as each image changes. Half the image's 1s crossfade, because the image's change reads as
+   done well before its fade ends and a word fading for the full second looked late. White, not theme
+   colours: these always sit on darkened game art. Where the images don't rotate, all four stay lit. */
+.signin-word {
+  color: rgb(255 255 255 / 0.16);
+  text-shadow: 0 2px 24px rgb(0 0 0 / 0.35);
+  transition: color 500ms ease;
 }
 
-@keyframes skew-scroll {
-  0% {
-    transform: rotateX(20deg) rotateZ(-20deg) skewX(20deg) translateZ(0) translateY(0);
-  }
-  100% {
-    transform: rotateX(20deg) rotateZ(-20deg) skewX(20deg) translateZ(0) translateY(-100%);
+.signin-word--lit,
+.signin-word.force-reduced-motion {
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signin-word {
+    transition: none;
   }
 }
 
-.animate-skew-scroll {
-  animation: skew-scroll 30s linear infinite;
+/* The window controls on the sign-in screen (Titlebar.tsx) sit directly on game art, where the usual
+   solid hover looks like a block cut out of the image, so they frost the art behind them instead.
+   Set through HeroUI's own button tokens, which its hover and pressed states read. White, not theme
+   colours: the art behind them is darkened on every theme. */
+.titlebar-frosted {
+  --button-fg: #fff;
+  --button-bg-hover: rgb(255 255 255 / 0.1);
+  --button-bg-pressed: rgb(255 255 255 / 0.16);
+}
+
+.titlebar-frosted--close {
+  --button-bg-hover: color-mix(in srgb, var(--danger) 60%, transparent);
+  --button-bg-pressed: color-mix(in srgb, var(--danger) 75%, transparent);
+}
+
+@media (hover: hover) {
+  .titlebar-frosted:hover {
+    backdrop-filter: blur(8px) saturate(1.2);
+  }
+
+  .titlebar-frosted--close:hover {
+    backdrop-filter: blur(16px) saturate(1.4);
+  }
+}
+
+/* AddAccountModal uses HeroUI's `scroll='outside'`, which makes the backdrop scrollable. The dialog's
+   open and close animations briefly overflow it, which flashed scrollbars on every open. */
+.add-account-backdrop:has([data-entering='true'], [data-exiting='true']) {
+  overflow: hidden;
 }
 
 /* Go Pro sidebar card (src/shared/components/pro/GoPro.tsx) - free-tier upsell. Styled as the
@@ -129,11 +157,9 @@ body {
 }
 
 /* The site CTA's rim colours, a conic turn of the muted rainbow - shared by the border and glow
-   (and by the sign-in screen's logo tile below) */
+   */
 .go-pro-card,
 .go-pro-glow,
-.auth-logo,
-.auth-logo-glow,
 .page-banner,
 .page-banner-glow,
 .holo-card,
@@ -224,40 +250,6 @@ body {
 .go-pro-glow.force-reduced-motion,
 .go-pro-card.force-reduced-motion .go-pro-perk--in,
 .go-pro-card.force-reduced-motion .go-pro-perk--out {
-  animation: none;
-}
-
-/* Sign-in screen logo (AuthLayout.tsx): the mark on a squircle tile with the Go Pro card's
-   turning rainbow rim and a blurred glow of the same hues behind it - the app's one "look here"
-   treatment, reused so the first screen a user sees carries the same brand moment. Same
-   gradient-border trick as `.go-pro-card` (opaque `padding-box` fill over a `border-box`
-   rainbow), just a thicker rim so it holds up at the tile's larger size. */
-.auth-logo {
-  border: 2px solid transparent;
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / 0.08), transparent 70%) padding-box,
-    linear-gradient(var(--background), var(--background)) padding-box,
-    var(--go-pro-rainbow) border-box;
-  animation: gradient-angle 8s linear infinite;
-}
-
-.auth-logo-glow {
-  background: var(--go-pro-rainbow);
-  filter: blur(18px);
-  opacity: 0.5;
-  pointer-events: none;
-  animation: gradient-angle 8s linear infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .auth-logo,
-  .auth-logo-glow {
-    animation: none;
-  }
-}
-
-.auth-logo.force-reduced-motion,
-.auth-logo-glow.force-reduced-motion {
   animation: none;
 }
 

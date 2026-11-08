@@ -35,6 +35,7 @@ export const mergeAccounts = (
       personaName: player?.personaname || user.personaName,
       avatarUrl: player?.avatar ? toFullResAvatar(player.avatar) : null,
       mostRecent: user.mostRecent,
+      lastUsed: user.lastUsed,
     }
   })
 
