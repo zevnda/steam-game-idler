@@ -262,7 +262,6 @@
   },
   "auth": {
     "landing": {
-      "title": "Steam Game Idler'da Oturum Aç",
       "agentButton": "Steam Girişi",
       "localAlreadySignedIn": "Yerel Steam istemcisinde zaten oturum açılmış bir hesap var — aynı anda yalnızca bir hesapta oturum açılabilir.",
       "acknowledge": "Devam ederek <0>Hizmet Şartları</0>'nı kabul etmiş ve <1>Gizlilik Politikamızı</1> okuduğunuzu onaylamış olursunuz."
@@ -274,7 +273,6 @@
       "passwordPlaceholder": "Steam şifrenizi giriniz",
       "usernameRequired": "Steam kullanıcı adınızı giriniz.",
       "passwordRequired": "Steam şifrenizi giriniz.",
-      "credentialsSectionLabel": "Hesap ismi ile giriş yap",
       "guardCode": {
         "deviceTitle": "Steam mobil uygulamanı kontrol et",
         "deviceDescription": "Steam mobil uygulamasındaki kodu gir.",
@@ -287,7 +285,6 @@
         "submitButton": "Doğrula"
       },
       "qrCode": {
-        "sectionLabel": "Ya da QR kod ile giriş yap",
         "instructions": "QR kod ile giriş yapmak için Steam mobil uygulamasını kullan."
       },
       "errors": {
@@ -308,10 +305,6 @@
         "launchFailed": "Steam istemcisi başlatılamıyor.",
         "summaryUnavailable": "Şuan hesap detayları yüklenemiyor."
       }
-    },
-    "hero": {
-      "title": "Tek ihtiyacınıza yarıycak Steam <1/>Otomasyon Aracı<1/>",
-      "subtitle": "Takas kartları kasın, başarımların kilidini açın, oyun sürenizi artırın ve Steam deneyiminizi tek bir araçla otomatikleştirin."
     }
   },
   "dashboard": {

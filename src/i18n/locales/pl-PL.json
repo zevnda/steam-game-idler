@@ -289,7 +289,6 @@
   },
   "auth": {
     "landing": {
-      "title": "Zaloguj się do Steam Game Idler",
       "agentButton": "Logowanie przez Steam",
       "localButton": "Logowanie lokalne",
       "localAlreadySignedIn": "Na tym urządzeniu jest już zalogowane konto w lokalnym kliencie Steam — jednocześnie można zalogować tylko jedno konto.",
@@ -302,7 +301,6 @@
       "passwordPlaceholder": "Wpisz hasło do Steam",
       "usernameRequired": "Wpisz nazwę użytkownika Steam.",
       "passwordRequired": "Wpisz hasło do Steam.",
-      "credentialsSectionLabel": "Zaloguj się, używając nazwy konta",
       "guardCode": {
         "deviceTitle": "Sprawdź aplikację Steam Mobile",
         "deviceDescription": "Wpisz kod z aplikacji Steam Mobile.",
@@ -315,7 +313,6 @@
         "submitButton": "Zweryfikuj"
       },
       "qrCode": {
-        "sectionLabel": "Możesz też zalogować się za pomocą kodu QR",
         "instructions": "Użyj aplikacji Steam Mobile, aby zalogować się za pomocą kodu QR."
       },
       "errors": {
@@ -336,10 +333,6 @@
         "launchFailed": "Nie udało się uruchomić klienta Steam.",
         "summaryUnavailable": "Nie można teraz wczytać szczegółów konta."
       }
-    },
-    "hero": {
-      "title": "Jedyne narzędzie do<1/>automatyzacji Steam,<1/>którego potrzebujesz",
-      "subtitle": "Zdobywaj karty kolekcjonerskie, odblokowuj osiągnięcia, nabijaj czas gry i automatyzuj korzystanie ze Steam — wszystko w jednym narzędziu."
     }
   },
   "dashboard": {

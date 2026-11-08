@@ -260,7 +260,6 @@
   },
   "auth": {
     "landing": {
-      "title": "Iniciar sesión en Steam Game Idler",
       "agentButton": "Iniciar sesión en Steam",
       "localAlreadySignedIn": "Ya hay una cuenta de cliente de Steam local iniciada; solo se puede iniciar sesión una cuenta a la vez.",
       "acknowledge": "Al hacer clic en \"Continuar\", aceptas los <0>Términos de Servicio</0> y reconoces que has leído nuestra <1>Política de privacidad</1>."
@@ -272,7 +271,6 @@
       "passwordPlaceholder": "Introduce tu contraseña de Steam",
       "usernameRequired": "Introduce tu nombre de usuario de Steam.",
       "passwordRequired": "Introduce tu contraseña de Steam.",
-      "credentialsSectionLabel": "Iniciar sesión con el nombre de la cuenta",
       "guardCode": {
         "deviceTitle": "Comprueba tu aplicación móvil de Steam",
         "deviceDescription": "Introduce el código desde la aplicación Steam App Móvil.",
@@ -285,7 +283,6 @@
         "submitButton": "Verificar"
       },
       "qrCode": {
-        "sectionLabel": "O inicia sesión con el código QR",
         "instructions": "Utiliza la aplicación Steam Móvil para iniciar sesión mediante código QR."
       },
       "errors": {
@@ -306,10 +303,6 @@
         "launchFailed": "No se pudo iniciar el cliente de Steam.",
         "summaryUnavailable": "No se pudieron cargar los detalles de la cuenta en este momento."
       }
-    },
-    "hero": {
-      "title": "La única <1/> herramienta de automatización<1/> de Steam que necesitarás",
-      "subtitle": "Cultiva cromos de Steam, desbloquea logros, acelera tu tiempo de juego y automatiza tu experiencia en Steam — todo con una sola herramienta."
     }
   },
   "dashboard": {

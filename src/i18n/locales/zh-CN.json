@@ -314,7 +314,6 @@
   },
   "auth": {
     "landing": {
-      "title": "登录 Steam Game Idler",
       "agentButton": "Steam 登录",
       "localButton": "本地登录",
       "localAlreadySignedIn": "已登录一个本地 Steam 客户端账号——单次仅能登录一个",
@@ -327,7 +326,6 @@
       "passwordPlaceholder": "输入您的 Steam 密码",
       "usernameRequired": "请输入您的 Steam 用户名",
       "passwordRequired": "请输入您的 Steam 密码",
-      "credentialsSectionLabel": "使用账号名登录",
       "guardCode": {
         "deviceTitle": "请查看您的 Steam 手机应用",
         "deviceDescription": "请输入 Steam 手机应用中的验证码",
@@ -340,7 +338,6 @@
         "submitButton": "验证"
       },
       "qrCode": {
-        "sectionLabel": "或通过二维码登录",
         "instructions": "使用 Steam 手机应用扫描二维码登录"
       },
       "errors": {
@@ -361,10 +358,6 @@
         "launchFailed": "无法启动 Steam 客户端",
         "summaryUnavailable": "当前无法加载账号详情"
       }
-    },
-    "hero": {
-      "title": "您唯一需要的<1/>Steam 自动化工具<1/>",
-      "subtitle": "集挂卡、成就解锁、时长累积于一体，一站式自动化您的 Steam 体验"
     }
   },
   "dashboard": {

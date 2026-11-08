@@ -260,7 +260,6 @@
   },
   "auth": {
     "landing": {
-      "title": "Se connecter à Steam Game Idler",
       "agentButton": "Connexion Steam",
       "localAlreadySignedIn": "Un compte Steam local est déjà connecté - un seul peut être connecté en même temps.",
       "acknowledge": "En continuant, vous acceptez les <0>Conditions d'Utilisations</0> et confirmez avoir lu notre <1>Politique de Confidentialité</1>."
@@ -272,7 +271,6 @@
       "passwordPlaceholder": "Entrez votre mot de passe Steam",
       "usernameRequired": "Entrez votre nom d'utilisateur Steam.",
       "passwordRequired": "Entrez votre mot de passe Steam.",
-      "credentialsSectionLabel": "Se connecter avec le nom de compte",
       "guardCode": {
         "deviceTitle": "Vérifiez votre application mobile Steam",
         "deviceDescription": "Entrez le code de l'application mobile Steam.",
@@ -285,7 +283,6 @@
         "submitButton": "Vérifier"
       },
       "qrCode": {
-        "sectionLabel": "Ou connectez-vous avec un QR",
         "instructions": "Utilisez l'application mobile Steam pour vous connecter avec un code QR."
       },
       "errors": {
@@ -306,10 +303,6 @@
         "launchFailed": "Impossible de lancer le client Steam.",
         "summaryUnavailable": "Impossible de chargement les informations du compte actuellement."
       }
-    },
-    "hero": {
-      "title": "Le Seul <1/>Outil d'Automatisation<1/> Steam Dont Vous Aurez Besoin",
-      "subtitle": "Farmez des cartes à échanger, débloquez des succès, améliorez votre temps de jeu, et automatisez votre expérience Steam - tout cela dans un seul outil."
     }
   },
   "dashboard": {
