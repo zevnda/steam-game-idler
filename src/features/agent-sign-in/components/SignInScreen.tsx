@@ -1,12 +1,10 @@
 import { useEffect } from 'react'
 import { useAgentQrSignIn } from '../hooks/useAgentQrSignIn'
 import { useAgentSignIn } from '../hooks/useAgentSignIn'
-import CredentialsForm from './CredentialsForm'
 import GuardCodeForm from './GuardCodeForm'
-import QrSignInPanel from './QrSignInPanel'
+import SteamSignInForm from './SteamSignInForm'
 import { Spinner } from '@heroui/react'
 import { useRouter } from 'next/router'
-import AuthCard from '@/shared/components/AuthCard'
 import BackButton from '@/shared/components/BackButton'
 
 interface SignInScreenProps {
@@ -66,26 +64,19 @@ const SignInScreen = ({ onBack }: SignInScreenProps) => {
           onSubmit={submitGuardCode}
         />
       ) : phase.kind === 'success' ? (
-        <Spinner size='lg' />
+        <div className='flex justify-center'>
+          <Spinner size='lg' />
+        </div>
       ) : (
-        <AuthCard className='w-auto'>
-          {/* `gap-6` (matched by CredentialsForm's own `w-64`) put this row's total width right at
-              the edge of what `AuthLayout`'s left column (a fixed 60% of the window, not itself
-              responsive) has to give at the window's minWidth - narrow enough to trigger an
-              x-scrollbar rather than actually clip anything. Both sides need to stay side by side
-              (QrSignInPanel can't shrink further - it's already at its QR-code-plus-padding floor),
-              so the fix is trimming the gap and CredentialsForm's width below `lg`, see its own
-              responsive class. */}
-          <div className='flex items-stretch gap-4 lg:gap-6'>
-            <CredentialsForm
-              errorCode={errorCode}
-              isSubmitting={phase.kind === 'submitting'}
-              onSubmit={signIn}
-            />
-            <div className='w-px self-stretch bg-border' />
-            <QrSignInPanel errorCode={qr.errorCode} phase={qr.phase} onRetry={qr.start} />
-          </div>
-        </AuthCard>
+        <SteamSignInForm
+          errorCode={errorCode}
+          isSubmitting={phase.kind === 'submitting'}
+          qrErrorCode={qr.errorCode}
+          qrPhase={qr.phase}
+          onQrNewCode={qr.requestNewCode}
+          onQrRetry={qr.start}
+          onSubmit={signIn}
+        />
       )}
     </>
   )

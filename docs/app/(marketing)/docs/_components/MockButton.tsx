@@ -331,7 +331,7 @@ export default function MockButton({ type, content }: MockButtonProps) {
   } else if (type === 'qr-sign-in') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        Or sign in with QR
+        Or scan with your phone
       </span>
     )
   } else if (type === 'continue') {

@@ -50,6 +50,9 @@ export const Titlebar = ({ minimal = false }: TitlebarProps) => {
   const { isMaximized, minimize, toggleMaximize, close } = useTitlebar()
   const router = useRouter()
   const isDashboard = router.pathname.startsWith('/dashboard')
+  // On the sign-in screen the window controls sit over SignInHero's darkened game art on every
+  // theme, including the light preset whose foreground colour would disappear there.
+  const overArt = !minimal && !isDashboard
   const collapsed = useSidebarStore(state => state.collapsed)
   const hydrated = useSidebarStore(state => state.hydrated)
   // A paying user's PRO pill beside the brand. `isSubscribed !== null` waits out the subscription
@@ -92,7 +95,12 @@ export const Titlebar = ({ minimal = false }: TitlebarProps) => {
       // strip instead of being covered by it.
       className={cn(
         'fixed left-0 top-0 h-14 w-screen select-none',
-        minimal ? 'z-9999 bg-transparent' : 'z-50 border-b border-border bg-(--app-chrome)',
+        minimal
+          ? 'z-9999 bg-transparent'
+          : isDashboard
+            ? 'z-50 border-b border-border bg-(--app-chrome)'
+            : // The sign-in screen: AuthLayout's panel and SignInHero's art run up behind this bar
+              'z-50',
       )}
       data-tauri-drag-region
     >
@@ -163,21 +171,30 @@ export const Titlebar = ({ minimal = false }: TitlebarProps) => {
           {!minimal && (
             <>
               {updateAvailable && <UpdateButton />}
-              <HelpDesk />
-              <Notifications />
-              <Menu />
+              {isDashboard && (
+                <>
+                  <HelpDesk />
+                  <Notifications />
+                  <Menu />
+                </>
+              )}
 
-              <Separator orientation='vertical' />
+              {(isDashboard || updateAvailable) && <Separator orientation='vertical' />}
             </>
           )}
 
-          <Button isIconOnly className='h-14 w-12 rounded-none' variant='ghost' onPress={minimize}>
+          <Button
+            isIconOnly
+            className={cn('h-14 w-12 rounded-none', overArt && 'titlebar-frosted')}
+            variant='ghost'
+            onPress={minimize}
+          >
             <VscChromeMinimize fontSize={16} />
           </Button>
           <Button
             isIconOnly
             aria-label={isMaximized ? 'Restore' : 'Maximize'}
-            className='h-14 w-12 rounded-none'
+            className={cn('h-14 w-12 rounded-none', overArt && 'titlebar-frosted')}
             variant='ghost'
             onPress={toggleMaximize}
           >
@@ -185,7 +202,10 @@ export const Titlebar = ({ minimal = false }: TitlebarProps) => {
           </Button>
           <Button
             isIconOnly
-            className='h-14 w-12 rounded-none hover:bg-danger'
+            className={cn(
+              'h-14 w-12 rounded-none',
+              overArt ? 'titlebar-frosted titlebar-frosted--close' : 'hover:bg-danger',
+            )}
             variant='ghost'
             onPress={close}
           >

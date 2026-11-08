@@ -6,9 +6,12 @@ import { useSessionStore } from '@/shared/stores/sessionStore'
 import { logFrontendInfo } from '@/shared/utils/frontendLogging'
 import { invoke } from '@/shared/utils/invoke'
 
+// Where the code on screen has got to on the user's phone
+export type QrScanState = 'waiting' | 'scanned' | 'approved'
+
 export type QrSignInPhase =
   | { kind: 'starting' }
-  | { kind: 'challenge'; challengeUrl: string }
+  | { kind: 'challenge'; challengeUrl: string; scanState: QrScanState }
   | { kind: 'success' }
   | { kind: 'error' }
 
@@ -70,13 +73,27 @@ export const useAgentQrSignIn = () => {
     try {
       const challenge = await invoke<QrChallenge>('agent_begin_qr_login')
       sessionKeyRef.current = challenge.sessionKey
-      setPhase({ kind: 'challenge', challengeUrl: challenge.challengeUrl })
+      setPhase({ kind: 'challenge', challengeUrl: challenge.challengeUrl, scanState: 'waiting' })
     } catch (error) {
       sessionKeyRef.current = null
       setErrorCode(String(error))
       setPhase({ kind: 'error' })
     }
   }, [])
+
+  // The way out once a code has been scanned. Steam never says when someone scans and then simply
+  // doesn't respond on their phone, so without this they'd be left waiting until the code expired.
+  const requestNewCode = useCallback(async () => {
+    if (retryTimeoutRef.current) {
+      clearTimeout(retryTimeoutRef.current)
+      retryTimeoutRef.current = null
+    }
+    autoRetryCountRef.current = 0
+    logFrontendInfo('useAgentQrSignIn', 'new QR code requested after a scan')
+    setPhase({ kind: 'starting' })
+    await cancel()
+    await start()
+  }, [cancel, start])
 
   useEffect(() => {
     const unlisten = listen<AgentEventPayload>(AGENT_EVENT_NAME, ({ payload }) => {
@@ -92,8 +109,17 @@ export const useAgentQrSignIn = () => {
           // A live challenge actually rendered, so a subsequent timeout starts a fresh retry
           // budget rather than counting against whatever budget an earlier session used up.
           autoRetryCountRef.current = 0
-          setPhase({ kind: 'challenge', challengeUrl })
+          setPhase({ kind: 'challenge', challengeUrl, scanState: 'waiting' })
         }
+      } else if (payload.event === 'qr_scan_state') {
+        const scanState = payload.payload.scanned === true ? 'scanned' : 'waiting'
+        setPhase(previous =>
+          previous.kind === 'challenge' ? { ...previous, scanState } : previous,
+        )
+      } else if (payload.event === 'qr_approved') {
+        setPhase(previous =>
+          previous.kind === 'challenge' ? { ...previous, scanState: 'approved' } : previous,
+        )
       } else if (payload.event === 'refresh_token') {
         const username = payload.payload.username
         if (typeof username === 'string') {
@@ -141,5 +167,5 @@ export const useAgentQrSignIn = () => {
     }
   }, [cancel, start])
 
-  return { phase, errorCode, start, cancel }
+  return { phase, errorCode, start, cancel, requestNewCode }
 }

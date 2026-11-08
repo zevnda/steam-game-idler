@@ -15,6 +15,8 @@ pub struct LocalSteamUser {
     pub steam_id: String,
     pub persona_name: String,
     pub most_recent: bool,
+    /// Unix seconds, from the account block's `Timestamp` key. `None` if the key is missing or `0`.
+    pub last_used: Option<u64>,
 }
 
 /// Parses every account block out of `loginusers.vdf`. Ported from `main`'s `parse_login_users` -
@@ -35,7 +37,7 @@ pub fn parse_login_users(path: &Path) -> AppResult<Vec<LocalSteamUser>> {
     let content = std::fs::read_to_string(path).map_err(|e| AppError::LoginVdfIo(e.to_string()))?;
 
     let user_regex = Regex::new(
-        r#""(\d{17})"\s*\{[^}]*"(?i)PersonaName"\s*"([^"]*)"|"(?i)MostRecent"\s*"(\d+)"|"(?i)AutoLogin"\s*"(\d+)""#,
+        r#""(\d{17})"\s*\{[^}]*"(?i)PersonaName"\s*"([^"]*)"|"(?i)MostRecent"\s*"(\d+)"|"(?i)AutoLogin"\s*"(\d+)"|"(?i)Timestamp"\s*"(\d+)""#,
     )
     .map_err(|e| AppError::LoginVdfParse(e.to_string()))?;
 
@@ -43,6 +45,7 @@ pub fn parse_login_users(path: &Path) -> AppResult<Vec<LocalSteamUser>> {
     let mut current: Option<(String, String)> = None;
     let mut most_recent_flag = 0u32;
     let mut auto_login_flag = 0u32;
+    let mut timestamp = 0u64;
 
     for cap in user_regex.captures_iter(&content) {
         if let Some(steam_id) = cap.get(1) {
@@ -51,6 +54,7 @@ pub fn parse_login_users(path: &Path) -> AppResult<Vec<LocalSteamUser>> {
                     steam_id,
                     persona_name,
                     most_recent: most_recent_flag != 0 || auto_login_flag != 0,
+                    last_used: (timestamp != 0).then_some(timestamp),
                 });
             }
             current = Some((
@@ -61,10 +65,13 @@ pub fn parse_login_users(path: &Path) -> AppResult<Vec<LocalSteamUser>> {
             ));
             most_recent_flag = 0;
             auto_login_flag = 0;
+            timestamp = 0;
         } else if let Some(value) = cap.get(3) {
             most_recent_flag = value.as_str().parse().unwrap_or(0);
         } else if let Some(value) = cap.get(4) {
             auto_login_flag = value.as_str().parse().unwrap_or(0);
+        } else if let Some(value) = cap.get(5) {
+            timestamp = value.as_str().parse().unwrap_or(0);
         }
     }
 
@@ -73,6 +80,7 @@ pub fn parse_login_users(path: &Path) -> AppResult<Vec<LocalSteamUser>> {
             steam_id,
             persona_name,
             most_recent: most_recent_flag != 0 || auto_login_flag != 0,
+            last_used: (timestamp != 0).then_some(timestamp),
         });
     }
 
@@ -318,6 +326,43 @@ mod tests {
             .unwrap();
         assert!(!inactive.most_recent);
         assert!(active.most_recent);
+    }
+
+    #[test]
+    fn reads_each_accounts_timestamp_and_treats_zero_as_unknown() {
+        let dir =
+            std::env::temp_dir().join(format!("sgi-vdf-timestamp-test-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("loginusers.vdf");
+        std::fs::write(
+            &path,
+            r#""users"
+{
+    "76561198000000001"
+    {
+        "PersonaName"    "One"
+        "MostRecent"     "1"
+        "Timestamp"      "1700000000"
+    }
+    "76561198000000002"
+    {
+        "PersonaName"    "Two"
+        "Timestamp"      "0"
+    }
+    "76561198000000003"
+    {
+        "PersonaName"    "Three"
+    }
+}
+"#,
+        )
+        .unwrap();
+
+        let users = parse_login_users(&path).unwrap();
+        std::fs::remove_dir_all(&dir).ok();
+
+        let last_used: Vec<_> = users.iter().map(|user| user.last_used).collect();
+        assert_eq!(last_used, vec![Some(1_700_000_000), None, None]);
     }
 
     #[test]

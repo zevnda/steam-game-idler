@@ -1,6 +1,5 @@
 import { Trans, useTranslation } from 'react-i18next'
-import { Button, Typography } from '@heroui/react'
-import AuthCard from '@/shared/components/AuthCard'
+import { Button, cn, Typography } from '@heroui/react'
 import { TierBadge } from '@/shared/components/TierBadge'
 import { usePlatformStore } from '@/shared/stores/platformStore'
 import { openExternalLink } from '@/shared/utils/links'
@@ -61,69 +60,86 @@ const SignInLanding = ({
   // every consumer fails open onto pre-existing Windows-only behavior rather than hiding the
   // button for one frame on every platform while the check is in flight.
   const isLinux = usePlatformStore(state => state.currentOs) === 'linux'
+  const buttonClassName = 'h-12 text-[15px]'
+
+  const buttons = (
+    <div className='flex flex-col gap-3'>
+      <Button
+        fullWidth
+        className={cn(buttonClassName, agentUpsell && 'opacity-50')}
+        isDisabled={agentDisabled}
+        onPress={agentUpsell ? onAgentUpsell : onSelectAgent}
+      >
+        {t('auth.landing.agentButton')}
+        {agentUpsell && <TierBadge tier='gamer' />}
+      </Button>
+      {(agentDisabled || agentUpsell) && agentDisabledReason && (
+        <Typography align='center' color='muted' type='body-xs'>
+          {agentDisabledReason}
+        </Typography>
+      )}
+      {isLinux ? null : (
+        <>
+          <Button
+            fullWidth
+            className={buttonClassName}
+            isDisabled={localDisabled}
+            variant='secondary'
+            onPress={onSelectLocal}
+          >
+            {t('auth.landing.localButton')}
+          </Button>
+          {localDisabled ? (
+            <Typography align='center' color='muted' type='body-xs'>
+              {t('auth.landing.localAlreadySignedIn')}
+            </Typography>
+          ) : null}
+        </>
+      )}
+    </div>
+  )
 
   return (
-    <AuthCard title={t('auth.landing.title')}>
-      <div className='flex flex-col gap-4'>
-        <Button
-          fullWidth
-          className={agentUpsell ? 'opacity-50' : undefined}
-          isDisabled={agentDisabled}
-          onPress={agentUpsell ? onAgentUpsell : onSelectAgent}
-        >
-          {t('auth.landing.agentButton')}
-          {agentUpsell && <TierBadge tier='gamer' />}
-        </Button>
-        {(agentDisabled || agentUpsell) && agentDisabledReason && (
-          <Typography align='center' color='muted' type='body-xs'>
-            {agentDisabledReason}
-          </Typography>
-        )}
-        {isLinux ? null : (
-          <>
-            <Button
-              fullWidth
-              isDisabled={localDisabled}
-              variant='secondary'
-              onPress={onSelectLocal}
-            >
-              {t('auth.landing.localButton')}
-            </Button>
-            {localDisabled ? (
-              <Typography align='center' color='muted' type='body-xs'>
-                {t('auth.landing.localAlreadySignedIn')}
-              </Typography>
-            ) : null}
-          </>
-        )}
-
+    <div className='flex flex-col gap-7'>
+      <div className='flex flex-col gap-2.5 text-center'>
+        <h2 className='text-[34px] font-bold leading-tight tracking-tight text-foreground'>
+          {embedded
+            ? t('dashboard.sidebar.accountSwitcher.addAccount.trigger')
+            : t('auth.landing.heading')}
+        </h2>
+        {/* Not in AddAccountModal: "you can add more accounts later" is what it's already doing */}
         {embedded ? null : (
-          <Typography align='center' className='mt-4' color='muted' type='body-xs'>
-            <Trans
-              components={[
-                <button
-                  key='tos'
-                  className='font-semibold text-accent hover:opacity-90 cursor-pointer'
-                  type='button'
-                  onClick={() => openExternalLink('https://steamgameidler.com/tos')}
-                >
-                  Terms of Service
-                </button>,
-                <button
-                  key='privacy'
-                  className='font-semibold text-accent hover:opacity-90 cursor-pointer'
-                  type='button'
-                  onClick={() => openExternalLink('https://steamgameidler.com/privacy')}
-                >
-                  Privacy Policy
-                </button>,
-              ]}
-              i18nKey='auth.landing.acknowledge'
-            />
-          </Typography>
+          <p className='text-[15px] leading-relaxed text-muted'>{t('auth.landing.subtitle')}</p>
         )}
       </div>
-    </AuthCard>
+      {buttons}
+      {/* Off in AddAccountModal: anyone adding an account has already agreed to these */}
+      {embedded ? null : (
+        <Typography align='center' color='muted' type='body-xs'>
+          <Trans
+            components={[
+              <button
+                key='tos'
+                className='font-semibold text-accent hover:opacity-90 cursor-pointer'
+                type='button'
+                onClick={() => openExternalLink('https://steamgameidler.com/tos')}
+              >
+                Terms of Service
+              </button>,
+              <button
+                key='privacy'
+                className='font-semibold text-accent hover:opacity-90 cursor-pointer'
+                type='button'
+                onClick={() => openExternalLink('https://steamgameidler.com/privacy')}
+              >
+                Privacy Policy
+              </button>,
+            ]}
+            i18nKey='auth.landing.acknowledge'
+          />
+        </Typography>
+      )}
+    </div>
   )
 }
 

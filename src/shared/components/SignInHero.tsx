@@ -1,70 +1,150 @@
-import { Trans, useTranslation } from 'react-i18next'
+import type { TranslationKey } from '@/i18n'
+import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { cn } from '@heroui/react'
+import { Unbounded } from 'next/font/google'
 import Image from 'next/image'
 import { CDN_BASE_URL } from '@/shared/constants'
+import { usePlatformStore } from '@/shared/stores/platformStore'
+import { imageLoads } from '@/shared/utils/heroArt'
 
-// Same curated AppID list as main's SignInHero.tsx - real games' cover art, not placeholder
-// content, doubled below so the scroll loop has no visible seam.
-const COVER_ARTS = [
-  1091500, 1174180, 381210, 1623730, 1938090, 271590, 413150, 230410, 2767030, 3564740, 252490,
-  1172470, 2507950, 1808500, 578080, 221100, 322170, 1030300, 1172710, 1449110, 1771300, 2001120,
-  2246340, 2322010, 2531310, 2592160, 2651280, 3008130, 3241660,
-].map(id => `${CDN_BASE_URL}/cover-art/${id}.webp`)
+const ART_BASE = `${CDN_BASE_URL}/cover-art`
 
-// Marketing panel that fills the right column of AuthLayout - ported from main's SignInHero.tsx.
-// A continuously scrolling wall of game cover art behind a headline/subtitle/product mockup.
+// Hand-picked for bright colour and a subject that survives the crop, in the order they play (so
+// neighbouring slides differ in colour). Each is a 3:2 crop: wider than this panel at the default
+// window size so it still covers a maximised window, with the subject in the middle. `focusX` is the
+// CSS object-position, off-centre only where the subject sits against the edge of the source art.
+//
+// Served with an immutable one-year cache. To replace an image, upload it under a new filename and
+// change it here: overwriting a file wouldn't reach anyone who already has it cached.
+const HERO_ART = [
+  { src: `${ART_BASE}/gta-vi.webp`, focusX: 50 },
+  { src: `${ART_BASE}/blood-of-dawnwalker.webp`, focusX: 50 },
+  { src: `${ART_BASE}/nba-2k27.webp`, focusX: 50 },
+  { src: `${ART_BASE}/ac-shadows.webp`, focusX: 50 },
+  { src: `${ART_BASE}/no-mans-sky.webp`, focusX: 50 },
+  { src: `${ART_BASE}/cyberpunk-2077.webp`, focusX: 50 },
+  { src: `${ART_BASE}/marvel-rivals.webp`, focusX: 50 },
+  { src: `${ART_BASE}/red-dead-redemption-2.webp`, focusX: 50 },
+  { src: `${ART_BASE}/aion-2.webp`, focusX: 100 },
+  { src: `${ART_BASE}/dying-light-the-beast.webp`, focusX: 50 },
+  { src: `${ART_BASE}/lost-ark.webp`, focusX: 50 },
+  { src: `${ART_BASE}/borderlands-4.webp`, focusX: 50 },
+  { src: `${ART_BASE}/ac-black-flag-resynced.webp`, focusX: 50 },
+  { src: `${ART_BASE}/dragons-dogma-2.webp`, focusX: 50 },
+  { src: `${ART_BASE}/baldurs-gate-3.webp`, focusX: 25 },
+  { src: `${ART_BASE}/gta-v.webp`, focusX: 50 },
+  { src: `${ART_BASE}/battlefield-6.webp`, focusX: 50 },
+  { src: `${ART_BASE}/elden-ring.webp`, focusX: 50 },
+  { src: `${ART_BASE}/arc-raiders.webp`, focusX: 50 },
+  { src: `${ART_BASE}/sonic-racing-crossworlds.webp`, focusX: 50 },
+]
+const SLIDE_MS = 6000
+
+const WORD_KEYS = [
+  'auth.hero.idle',
+  'auth.hero.farm',
+  'dashboard.achievements.actions.unlock',
+  'dashboard.freeGames.actions.claim',
+] as const satisfies readonly TranslationKey[]
+const MAX_WORD_PX = 84
+// Unbounded is a very wide face: its capitals average about 0.9em, this leaves a little spare.
+const WORD_EM_PER_CHAR = 0.95
+
+// Includes latin-ext and cyrillic, unlike the Titlebar's wordmark, because this text is translated
+const unbounded = Unbounded({
+  subsets: ['latin', 'latin-ext', 'cyrillic'],
+  variable: '--font-unbounded',
+})
+
+// The sign-in screen's right side: game art crossfading behind four words that light up in turn.
+// Each image is only shown once it has fully loaded, and one that fails is left out, so with no
+// network the words simply sit on the plain background. Loaded one at a time to keep HERO_ART's order.
 export const SignInHero = () => {
   const { t } = useTranslation()
+  const forceReducedMotion = usePlatformStore(state => state.forceReducedMotion) === true
+  const [heroes, setHeroes] = useState<typeof HERO_ART>([])
+  const [activeHero, setActiveHero] = useState(0)
+  const [litWord, setLitWord] = useState(0)
+  const loadedCount = useRef(0)
 
-  const items = Array.from({ length: 2 }).flatMap((_, repeat) =>
-    COVER_ARTS.map((src, idx) => ({ src, key: `${idx}-${repeat}` })),
-  )
+  useEffect(() => {
+    let isCancelled = false
+    const loadInOrder = async () => {
+      for (const art of HERO_ART) {
+        const hasLoaded = await imageLoads(art.src)
+        if (isCancelled) return
+        if (hasLoaded) {
+          loadedCount.current += 1
+          setHeroes(previous => [...previous, art])
+        }
+      }
+    }
+    void loadInOrder()
+    return () => {
+      isCancelled = true
+    }
+  }, [])
+
+  // One timer so the next word lights as the next image fades in. It runs even with no art, so the
+  // words still cycle offline. The image index wraps at however many have loaded by that tick, so
+  // one arriving later never changes which image is currently showing.
+  useEffect(() => {
+    if (forceReducedMotion) return
+    const interval = setInterval(() => {
+      setLitWord(previous => (previous + 1) % WORD_KEYS.length)
+      setActiveHero(previous => (previous + 1) % Math.max(loadedCount.current, 1))
+    }, SLIDE_MS)
+    return () => clearInterval(interval)
+  }, [forceReducedMotion])
+
+  const words = WORD_KEYS.map(key => t(key))
+  // Sized from the longest word so every locale fits on one line per word: some of these run twice
+  // as long as English. `cqw` is the width of the `@container` wrapper below.
+  const longestWord = Math.max(...words.map(word => word.length))
+  const fontSize = `min(${MAX_WORD_PX}px, calc(100cqw / ${(longestWord * WORD_EM_PER_CHAR).toFixed(2)}))`
 
   return (
-    <div className='inner-glow relative flex h-[75vh] w-full items-center justify-center overflow-hidden rounded-3xl'>
-      <div className='pointer-events-none absolute z-10 flex h-[90%] w-[90%] flex-col items-center justify-between'>
-        {/* This panel is a fixed 40% of the window (AuthLayout's `w-3/5`/`flex-1` split isn't
-            itself responsive), so at the window's minWidth its available width is a fraction of
-            what the original fixed `text-[52px]`/730px-wide mockup assumed - both scale down here
-            instead of overflowing/clipping against `overflow-hidden` above. Breakpoints are window
-            width (this column is a constant 40% of it): `lg` (1024px window ~= 370px column) and
-            `xl` (1280px window ~= 470px column, close to this app's `tauri.conf.json` default
-            width) restore the size step by step, landing back at the original 52px/730px only
-            once the window's actually wide enough for it. */}
-        <p className='text-center text-[26px] font-black leading-8 lg:text-[36px] lg:leading-10 xl:text-[52px] xl:leading-14'>
-          <Trans components={{ 1: <br /> }} i18nKey='auth.hero.title' />
-        </p>
-
-        <p className='mt-2 text-center text-sm lg:mt-3 lg:text-base xl:mt-4 xl:text-lg'>
-          {t('auth.hero.subtitle')}
-        </p>
-
+    <div className='relative min-w-0 flex-1 overflow-hidden'>
+      {heroes.map((hero, index) => (
         <Image
-          alt='App screenshot'
-          className='-translate-x-3 mt-4 h-auto w-full max-w-182.5 lg:mt-6 xl:mt-10'
-          height={380}
+          fill
+          key={hero.src}
+          alt=''
+          className={cn(
+            'object-cover transition-opacity duration-1000 ease-smooth',
+            index === activeHero ? 'opacity-100' : 'opacity-0',
+          )}
           loading='eager'
-          src={`${CDN_BASE_URL}/mock.webp`}
-          width={730}
+          src={hero.src}
+          style={{ objectPosition: `${hero.focusX}% 50%` }}
         />
-      </div>
+      ))}
 
-      <div className='relative h-full w-full opacity-15'>
-        <div className='animate-skew-scroll mx-auto grid h-full w-[170%] -translate-x-72 -translate-y-18 grid-cols-8 gap-3'>
-          {items.map((item, idx) => (
-            <div
-              key={item.key}
-              className={idx % 2 === 1 ? '-translate-y-16 relative' : 'relative'}
-              style={{ breakInside: 'avoid' }}
+      {/* Keeps the words and the window controls readable over bright art */}
+      <div className='pointer-events-none absolute inset-0 bg-linear-to-t from-black/80 to-transparent to-60%' />
+      <div className='pointer-events-none absolute inset-x-0 top-0 h-24 bg-linear-to-b from-black/50 to-transparent' />
+
+      <div className='@container absolute inset-x-14 bottom-16'>
+        <div
+          aria-hidden
+          className={cn(
+            unbounded.className,
+            'flex flex-col select-none font-extrabold uppercase leading-[0.92] tracking-[-0.02em] whitespace-nowrap',
+          )}
+          style={{ fontSize }}
+        >
+          {words.map((word, index) => (
+            <span
+              key={WORD_KEYS[index]}
+              className={cn(
+                'signin-word',
+                index === litWord && 'signin-word--lit',
+                forceReducedMotion && 'force-reduced-motion',
+              )}
             >
-              <Image
-                alt=''
-                className='h-full w-full rounded-lg object-cover duration-150 hover:scale-105'
-                height={130}
-                loading='lazy'
-                src={item.src}
-                width={130}
-              />
-            </div>
+              {word}
+            </span>
           ))}
         </div>
       </div>

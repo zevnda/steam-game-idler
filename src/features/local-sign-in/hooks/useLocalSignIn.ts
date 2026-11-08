@@ -91,22 +91,6 @@ export const useLocalSignIn = () => {
     await loadAccounts()
   }, [loadAccounts])
 
-  // `loginusers.vdf`/the `AutoLoginUser` registry value are rewritten as soon as a non-active
-  // account is selected (matching `main`'s real behavior), not deferred until Continue is
-  // pressed - Continue only decides whether Steam itself needs killing/relaunching or launching.
-  const selectAccount = useCallback(
-    (steamId: string) => {
-      setSelectedSteamId(steamId)
-      const account = accounts.find(a => a.steamId === steamId)
-      if (account && !account.mostRecent) {
-        invoke('prepare_steam_account_switch', { steamId }).catch(error => {
-          console.error('Error in (prepare_steam_account_switch):', error)
-        })
-      }
-    },
-    [accounts],
-  )
-
   const continueSignIn = useCallback(async () => {
     const account = accounts.find(a => a.steamId === selectedSteamId)
     if (!account) {
@@ -118,8 +102,12 @@ export const useLocalSignIn = () => {
 
     try {
       if (!account.mostRecent) {
-        // VDF + registry were already rewritten in `selectAccount` - just restart Steam so it
-        // picks up the change.
+        // `loginusers.vdf` and the `AutoLoginUser` registry value are only rewritten here, never
+        // when a row is merely clicked. Writing on click marked that account as Steam's most
+        // recent, so a Refresh then made this branch skip restarting Steam and sign the app in
+        // against whichever account Steam was really on, and it changed who Steam would auto-login
+        // as for someone who never pressed Continue.
+        await invoke('prepare_steam_account_switch', { steamId: account.steamId })
         await invoke('switch_steam_account')
       } else {
         const isRunning = await invoke<boolean>('is_steam_running')
@@ -144,7 +132,7 @@ export const useLocalSignIn = () => {
     loadErrorCode,
     summaryErrorCode,
     actionErrorCode,
-    selectAccount,
+    selectAccount: setSelectedSteamId,
     continueSignIn,
     refresh,
   }

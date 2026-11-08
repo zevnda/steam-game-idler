@@ -3,6 +3,8 @@ export interface LocalSteamUser {
   steamId: string
   personaName: string
   mostRecent: boolean
+  // Unix seconds
+  lastUsed: number | null
 }
 
 // One player entry from the Steam Web API's `ISteamUser/GetPlayerSummaries` response - both
@@ -28,4 +30,5 @@ export interface SteamAccount {
   personaName: string
   avatarUrl: string | null
   mostRecent: boolean
+  lastUsed: number | null
 }

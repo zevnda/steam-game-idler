@@ -19,7 +19,7 @@ const isInvalidCredentials = (code: string) =>
   code === 'logon_failed:InvalidPassword' || code === 'logon_failed:AccountLogonDenied'
 
 // Both `LoginWithQrAsync` (QR scan) and `LoginWithCredentialsAsync` (device/email 2FA
-// confirmation) resolve through the same `AuthSession.PollingWaitForResultAsync` - when the user
+// confirmation) wait on the same Steam poll - when the user
 // taps "Deny" in the Steam Mobile app for either one, SteamKit2 surfaces it as an
 // `AuthenticationException` with `EResult.FileNotFound` (a real Steam CM quirk, not a mismapped
 // SteamKit2 detail - confirmed against real logs, see `useAgentQrSignIn.ts`'s
