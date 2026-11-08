@@ -129,6 +129,14 @@
   "update": {
     "downloading": "正在下载更新……"
   },
+  "legacyInstall": {
+    "title": "删除旧用文件？",
+    "description": "版本更新已经不再需要管理员权限，上个版本遗留了一些文件，将最后一次请求 Windows 的权限以删除它们，正在运行的内容不会受到影响",
+    "remove": "删除",
+    "removed": "旧用文件已删除",
+    "declined": "旧用文件未能删除",
+    "failed": "无法删除旧用文件"
+  },
   "toast": {
     "checkUpdate": {
       "none": "您已使用最新版本",

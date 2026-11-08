@@ -129,6 +129,14 @@
   "update": {
     "downloading": "Download dell'aggiornamento..."
   },
+  "legacyInstall": {
+    "title": "Rimuovere i vecchi file?",
+    "description": "Gli aggiornamenti non richiedono più i permessi di amministratore. La versione precedente ha lasciato alcuni file: Windows chiederà il permesso un'ultima volta per rimuoverli. Le attività in esecuzione non verranno interrotte.",
+    "remove": "Rimuovi",
+    "removed": "Vecchi file rimossi",
+    "declined": "I vecchi file non sono stati rimossi",
+    "failed": "Impossibile rimuovere i vecchi file"
+  },
   "toast": {
     "checkUpdate": {
       "none": "Hai già la versione più recente",
