@@ -30,7 +30,7 @@ export const PageBannerArea = ({ hasToolbar, children }: PageBannerAreaProps) =>
   <div
     className={cn(
       'min-h-0 flex-1 overflow-y-auto',
-      hasToolbar ? 'page-banner-area-below-toolbar' : 'px-6 pb-6 pt-8',
+      hasToolbar ? 'page-banner-area-below-toolbar' : 'p-6',
     )}
   >
     {children}
@@ -51,7 +51,7 @@ interface PageBannerPreviewProps {
 // so nothing in here can be reached or clicked.
 export const PageBannerPreview = ({ title, count, action, children }: PageBannerPreviewProps) => (
   <div className='perspective-[1400px]'>
-    <div className='page-banner-float relative w-112'>
+    <div className='page-banner-float relative w-md'>
       <div className='relative flex transform-[rotateY(-14deg)_rotateX(5deg)] flex-col gap-3 rounded-2xl border border-white/15 bg-background/85 p-4 shadow-[0_24px_60px_-20px_rgb(0_0_0/0.85)] backdrop-blur-md'>
         <div className='flex min-h-8 items-center justify-between gap-3'>
           <div className='flex items-center gap-2 text-sm font-semibold'>
@@ -87,10 +87,10 @@ export const PageBanner = ({ title, description, actions, art, children }: PageB
       )}
     >
       {/* A sibling behind the card, since the card clips its own overflow and would cut it off. */}
-      <span aria-hidden='true' className={cn('page-banner-glow rounded-[22px]', motionClassName)} />
+      <span aria-hidden='true' className={cn('page-banner-glow rounded-2xl', motionClassName)} />
       <div
         className={cn(
-          'page-banner relative flex flex-1 flex-col justify-center overflow-hidden rounded-[22px] p-10',
+          'page-banner relative flex flex-1 flex-col justify-center overflow-hidden rounded-2xl p-10',
           motionClassName,
         )}
       >

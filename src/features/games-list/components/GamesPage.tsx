@@ -201,7 +201,7 @@ export const GamesPage = () => {
             the page moving. On a refresh the games are already known, so a library with nothing to
             recommend doesn't flash a banner it will never show. */}
         {showSkeleton && (games.length === 0 || recommendedGames.length > 0) && (
-          <div className='shrink-0 pl-6 pr-[calc(1.5rem+var(--scrollbar-size))] pt-3.5'>
+          <div className='shrink-0 pl-6 pr-[calc(1.5rem+var(--scrollbar-size))] pt-6'>
             <Skeleton className='aspect-1920/620 max-h-105 min-h-85 w-full rounded-2xl' />
           </div>
         )}

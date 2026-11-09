@@ -71,7 +71,7 @@ Refer to the **[documentation](https://steamgameidler.com/docs/)** for a detaile
   * **[Auto-redeem](https://steamgameidler.com/docs/features/free-games#automated-redemption)**: Automatically claim free games for any signed-in account
 * **[Favorites](https://steamgameidler.com/docs/features/favorites)**: Save your favorite games for quick access
 * **[Manually Add Games](https://steamgameidler.com/docs/features/manual-add)**: Add any games you own that have since been removed from the Steam store
-* **[Customization](https://steamgameidler.com/docs/settings/customization)**: Customize the app with 8 built-in themes, 10+ unique fonts, and custom background images
+* **[Customization](https://steamgameidler.com/docs/settings/customization)**: Customize the app with 25 built-in themes, 10+ unique fonts, and custom background images
   * **[Custom idling status](https://steamgameidler.com/docs/settings/general#custom-status-while-idling-steam-sign-in-only--pro-gamer-tier)**: Replace the default "Playing game" status with your own custom text while idling
   * **[Per-account online status](https://steamgameidler.com/docs/settings/general#online-status-steam-sign-in-only)**: Set your Steam status to Online, Away, Invisible, and more, per account
 * **[Multiple Sign-In Methods](https://steamgameidler.com/docs/get-started/how-to-sign-in)**: Choose exactly how you want to sign in
