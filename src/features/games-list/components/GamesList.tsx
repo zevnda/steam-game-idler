@@ -16,13 +16,15 @@ import { useGameCardMetrics } from '@/shared/stores/gameCardStyleStore'
 // Steam's `library_hero` art is 1920x620. The banner keeps that shape until the limits below, then
 // crops, so it never gets too short to fit its contents or tall enough to fill an ultrawide window.
 const BANNER_ASPECT_RATIO = 1920 / 620
-// GamesPage's loading skeleton repeats these limits and the aspect ratio in Tailwind classes.
+// GamesPage's loading skeleton repeats these limits, the aspect ratio and BANNER_TOP_GAP in Tailwind
+// classes.
 const BANNER_MIN_HEIGHT = 340
 const BANNER_MAX_HEIGHT = 420
 // The list has no top padding of its own, so whichever row comes first sets the gap under the
 // titlebar: this for the banner, and the toolbar's own top padding when there's no banner. That same
-// toolbar padding is also the gap beneath the banner, so the banner needs none of its own.
-const BANNER_TOP_GAP = 14
+// toolbar padding is also the gap beneath the banner, so the banner needs none of its own. Matches
+// PageBannerArea's `p-6`, so this banner starts at the same height as an empty page's banner.
+const BANNER_TOP_GAP = 24
 // Must match `--page-toolbar-height` in globals.css.
 const TOOLBAR_HEIGHT = 68
 
