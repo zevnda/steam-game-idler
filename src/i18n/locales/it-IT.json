@@ -28,7 +28,7 @@
       "viewOnSteam": "Visualizza su Steam",
       "copyAppId": "Copia App ID",
       "appIdCopied": "App ID copiato",
-      "cardFarmingBlacklist": "Giochi esclusi da Raccolta carte",
+      "cardFarmingBlacklist": "Esclusi da Raccolta carte",
       "lists": "Liste"
     },
     "minutes": "minuti",
@@ -314,12 +314,15 @@
   },
   "auth": {
     "landing": {
+      "heading": "Accedi",
+      "subtitle": "Scegli come accedere. Potrai aggiungere altri account in seguito.",
       "agentButton": "Accesso con Steam",
       "localButton": "Accesso locale",
       "localAlreadySignedIn": "Un account del client Steam locale ha già effettuato l'accesso: può essercene solo uno alla volta.",
       "acknowledge": "Continuando, accetti i <0>Termini di servizio</0> e confermi di aver letto la nostra <1>Informativa sulla privacy</1>."
     },
     "signIn": {
+      "title": "Accedi con Steam",
       "usernameLabel": "Nome utente",
       "usernamePlaceholder": "Inserisci il tuo nome utente Steam",
       "passwordLabel": "Password",
@@ -338,7 +341,11 @@
         "submitButton": "Verifica"
       },
       "qrCode": {
-        "instructions": "Usa l'app Steam Mobile per accedere tramite codice QR."
+        "scanLabel": "Oppure scansiona con il telefono",
+        "instructions": "Usa l'app Steam Mobile per accedere tramite codice QR.",
+        "scanned": "Approva l'accesso nell'app Steam Mobile.",
+        "approved": "Accesso approvato. Connessione in corso...",
+        "newCode": "Usa un nuovo codice"
       },
       "errors": {
         "title": "Impossibile accedere",
@@ -349,6 +356,10 @@
     },
     "localSignIn": {
       "title": "Scegli un account",
+      "continueAs": "Continua come {{name}}",
+      "restartNotice": "Steam si riavvierà e passerà all'account {{name}}.",
+      "mostRecent": "Ultimo accesso su questo PC",
+      "lastUsed": "Ultimo utilizzo: {{when}}",
       "noAccounts": "Nessun account Steam trovato su questo dispositivo. Accedi al client Steam almeno una volta, poi aggiorna.",
       "errors": {
         "steamNotFound": "Impossibile trovare un'installazione locale di Steam.",
@@ -358,6 +369,10 @@
         "launchFailed": "Impossibile avviare il client Steam.",
         "summaryUnavailable": "Impossibile caricare i dettagli dell'account al momento."
       }
+    },
+    "hero": {
+      "idle": "Idle",
+      "farm": "Raccogli"
     }
   },
   "dashboard": {
@@ -420,8 +435,8 @@
       "sort": {
         "playtimeDesc": "Tempo di gioco (decrescente)",
         "playtimeAsc": "Tempo di gioco (crescente)",
-        "recentlyPlayedDesc": "Recenti prima",
-        "recentlyPlayedAsc": "Meno recenti prima",
+        "recentlyPlayedDesc": "Giocati di recente",
+        "recentlyPlayedAsc": "Giocati meno di recente",
         "achievementsDesc": "Completamento (maggiore)",
         "achievementsAsc": "Completamento (minore)"
       },
@@ -657,8 +672,8 @@
       },
       "tabs": {
         "gamesWithDrops": "Giochi con carte",
-        "whitelisted": "Giochi selezionati",
-        "blacklisted": "In lista nera"
+        "whitelisted": "Selezionati",
+        "blacklisted": "Esclusi"
       },
       "sort": {
         "dropsDesc": "Carte rimanenti (decrescente)",
@@ -670,7 +685,7 @@
       },
       "whitelistEmpty": {
         "title": "Nessun gioco selezionato",
-        "description": "Aggiungi giochi dalla scheda Giochi con carte per raccogliere carte solo da quelli selezionati. Lascia la lista vuota per considerare tutti i giochi non esclusi con carte rimanenti."
+        "description": "Aggiungi giochi dalla scheda Giochi con carte per raccogliere carte solo da quelli selezionati. Lascia la lista vuota per considerare selezionati tutti i giochi non esclusi con carte rimanenti."
       },
       "blacklistEmpty": {
         "title": "Nessun gioco escluso",
@@ -1190,7 +1205,7 @@
         }
       },
       "gameSettings": {
-        "title": "Impostazioni gioco",
+        "title": "Impostazioni dei giochi",
         "maxPlaytimeSection": "Tempo di gioco",
         "maxPlaytimeScopeNote": "Si applica ovunque un gioco possa essere messo in idle: idle manuale e automatico, Sblocco obiettivi e Raccolta carte.",
         "idlingScopeNote": "Si applica solo ai giochi messi in idle manualmente e automaticamente: Sblocco obiettivi ha un limite separato qui sotto.",
@@ -1215,7 +1230,7 @@
           "description": "Ferma Sblocco obiettivi su questo gioco dopo aver sbloccato questo numero di obiettivi."
         },
         "errors": {
-          "generic": "Qualcosa è andato storto durante l'aggiornamento delle impostazioni gioco. Riprova. ({{code}})"
+          "generic": "Qualcosa è andato storto durante l'aggiornamento delle impostazioni dei giochi. Riprova. ({{code}})"
         }
       },
       "keybinds": {
