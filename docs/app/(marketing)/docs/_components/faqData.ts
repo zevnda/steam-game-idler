@@ -187,7 +187,17 @@ export const faqData = [
       '**Can I use SGI and play Steam games at the same time?**\n' +
       '> Yes. You can idle games with SGI while playing others.\n' +
       '>\n' +
-      "> Keep in mind that Steam only allows a maximum of 32 simultaneous game instances across all of SGI's features combined (and the Steam client, if you're also playing a game through it). So, just make sure that the total number of games being idled by SGI and the game you are playing does not exceed this limit, and that you are not trying to idle the same game you are trying to play.",
+      "> Keep in mind that Steam only allows a maximum of 32 simultaneous game instances across all of SGI's features combined (and the Steam client, if you're also playing a game through it). So, just make sure that the total number of games being idled by SGI and the game you are playing does not exceed this limit, and that you are not trying to idle the same game you are trying to play.\n" +
+      '>\n' +
+      '> Start games with **Play** in your Steam library while idling. See [Steam signed me out while SGI was idling](/docs/troubleshooting#steam-signed-out-while-idling) for why.',
+  },
+  {
+    question: 'Why did Steam sign me out while SGI was idling?',
+    markdown:
+      '**Why did Steam sign me out while SGI was idling?**\n' +
+      '> Steam only lets one session on your account count as playing at a time, and SGI holds that spot while it idles. If another app, such as Wallpaper Engine, starts without going through **Play** in your Steam library, Steam may sign out the Steam client on that PC and show "This account logged in on another computer".\n' +
+      '>\n' +
+      '> Stop idling before you start that app, or start it with **Play** in your Steam library and choose to continue when Steam warns you. See [Steam signed me out while SGI was idling](/docs/troubleshooting#steam-signed-out-while-idling) for more detail, including a warning for Local Sign-in.',
   },
   {
     question: 'How many games can SGI idle simultaneously?',

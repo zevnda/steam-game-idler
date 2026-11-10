@@ -132,6 +132,13 @@ export const HELP_SECTIONS: HelpSection[] = [
           "Yes, as long as you aren't playing a game that's being idled and your total stays within Steam's limit of 32 games.",
       },
       {
+        id: 'signedOutWhileIdling',
+        question: 'Why did Steam sign me out while idling?',
+        answer:
+          'Steam only lets one session on your account count as playing at a time. If an app such as Wallpaper Engine starts without using Play in your Steam library while SGI is idling, Steam may sign out the Steam client on that PC. Stop idling first, or start the app with Play and continue when Steam warns you.',
+        href: `${TROUBLESHOOTING_URL}#steam-signed-out-while-idling`,
+      },
+      {
         id: 'cantIdle',
         question: "Why can't I idle some games?",
         answer:

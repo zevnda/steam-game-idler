@@ -243,6 +243,20 @@ This page covers common issues and their solutions when using Steam Game Idler.
     - Check the log file for errors around the time idling stopped
   </Accordion>
 
+  <Accordion title="Steam signed me out while SGI was idling" id="steam-signed-out-while-idling">
+    Steam only lets one session on your account count as playing at a time, and SGI holds that spot while it idles. Pressing **Play** in your Steam library is safe, because Steam warns you first and SGI pauses if you choose to continue. An app that starts another way, such as from its own exe, its tray icon or with Windows, can skip that warning. Steam may then sign out the Steam client on that PC and show **Refresh sign in** with "This account logged in on another computer". Wallpaper Engine is one app reported to cause this.
+
+    To avoid it:
+
+    - Stop idling in SGI before you start that app
+    - Or start it with **Play** in your Steam library and choose to continue when Steam says the account is already playing. SGI resumes idling about a minute after you stop
+    - If the app starts with Windows, turn that off while you use SGI to idle
+
+    If it has already happened, sign back in to Steam. Your library and SGI's data aren't affected.
+
+    With **Local Sign-in**, SGI starts idling through your Steam client in the same no-warning way. Don't idle with Local Sign-in while the same account is playing a game on another PC, or Steam may sign out this PC's client.
+  </Accordion>
+
   <Accordion title="Leftover SteamUtility.exe processes after closing SGI or a crash" id="leftover-processes">
     If SGI is force-closed (e.g. via Task Manager, or a crash) before it can clean up, helper processes can be left running.
 
