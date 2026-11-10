@@ -314,12 +314,15 @@
   },
   "auth": {
     "landing": {
+      "heading": "登录",
+      "subtitle": "请选择您喜欢的连接方式，之后可再添加更多账号",
       "agentButton": "Steam 登录",
       "localButton": "本地登录",
       "localAlreadySignedIn": "已登录一个本地 Steam 客户端账号——单次仅能登录一个",
       "acknowledge": "继续即表示您同意 <0>服务条款</0>，并确认您已阅读我们的 <1>隐私政策</1>"
     },
     "signIn": {
+      "title": "使用 Steam 登录",
       "usernameLabel": "用户名",
       "usernamePlaceholder": "输入您的 Steam 用户名",
       "passwordLabel": "密码",
@@ -338,7 +341,11 @@
         "submitButton": "验证"
       },
       "qrCode": {
-        "instructions": "使用 Steam 手机应用扫描二维码登录"
+        "scanLabel": "或使用手机扫码",
+        "instructions": "使用 Steam 手机应用扫描二维码登录",
+        "scanned": "请在 Steam 手机应用中确认",
+        "approved": "已确认，正在为您登录……",
+        "newCode": "使用新的验证码"
       },
       "errors": {
         "title": "登录失败",
@@ -349,6 +356,10 @@
     },
     "localSignIn": {
       "title": "选择一个账号",
+      "continueAs": "以 {{name}} 的身份继续",
+      "restartNotice": "Steam 将重启并切换至 {{name}}",
+      "mostRecent": "上次在此电脑上登录",
+      "lastUsed": "上次使用：{{when}}",
       "noAccounts": "此设备上未找到 Steam 账号，请至少登录一次 Steam 客户端，然后刷新",
       "errors": {
         "steamNotFound": "未找到本地安装的 Steam 客户端",
@@ -358,6 +369,10 @@
         "launchFailed": "无法启动 Steam 客户端",
         "summaryUnavailable": "当前无法加载账号详情"
       }
+    },
+    "hero": {
+      "idle": "挂机",
+      "farm": "挂卡"
     }
   },
   "dashboard": {

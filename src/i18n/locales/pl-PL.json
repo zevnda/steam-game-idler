@@ -140,6 +140,7 @@
   },
   "notifications": {
     "markAllRead": "Oznacz wszystkie jako przeczytane",
+    "read": "Odczytane",
     "empty": "Nie masz jeszcze żadnych powiadomień"
   },
   "menu": {

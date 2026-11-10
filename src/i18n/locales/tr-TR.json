@@ -23,7 +23,12 @@
       "startIdling": "Süre Kasmayı başlat",
       "stopIdling": "Süre Kasmayı durdur",
       "manageAchievements": "Başarımları Yönet",
-      "viewOnSteam": "Steam'de Görüntüle"
+      "customOrder": "Özel Sıralama ve Kilit Açma Gecikmesi",
+      "viewOnSteam": "Steam'de Görüntüle",
+      "copyAppId": "Uygulama Kimliğini Kopyala",
+      "appIdCopied": "Uygulama Kimliğini Kopyalandı",
+      "cardFarmingBlacklist": "Kart Düşürme Kara Listesi",
+      "lists": "Listeler"
     },
     "minutes": "dakika",
     "zeroUnlimitedHint": "0 = sınırsız",
@@ -35,6 +40,7 @@
       "slsLabel": "steamLoginSecure",
       "smaLabel": "steamMachineAuth",
       "smaDescription": "İsteğe bağlı. Sadece hesabınızda bekleyen bir Steam Guard cihaz onayı varsa gereklidir.",
+      "getCookiesNote": "Çerezlerinizi şuradan almalısınız",
       "savedFromSettingsNote": "Ayarlarda kayıtlı Steam kimlik bilgilerinden yüklendi.",
       "savedToast": "Kimlik bilgileri kaydedildi",
       "clearedToast": "Kimlik bilgileri temizlendi",
@@ -73,7 +79,9 @@
     "learnMore": "Daha fazla bilgi edinin",
     "status": {
       "saved": "Kaydedildi",
-      "cleared": "Temizlendi"
+      "cleared": "Temizlendi",
+      "paused": "Duraklatıldı",
+      "running": "Çalışıyor"
     },
     "steamWarning": {
       "title": "Uyarı",
@@ -88,7 +96,9 @@
     },
     "tabs": {
       "allGames": "Tüm Oyunlar",
-      "queue": "Kuyruk"
+      "queue": "Kuyruk",
+      "overview": "Genel Bakış",
+      "details": "Detaylar"
     },
     "connect": {
       "automaticTab": "Otomatik",
@@ -101,8 +111,28 @@
     "noGamesQueued": "Sıraya alınmış oyun yok",
     "completedThisSessionCount": "Bu oturumda tamamlanan ({{count}})"
   },
+  "versionPolicy": {
+    "outdated": {
+      "title": "Güncelleme öneriliyor",
+      "description": "Steam Game Idler'ın bu sürümü yakında çalışmayacak. Kesintisiz kullanmaya devam etmek için şimdi güncelle."
+    },
+    "unsupported": {
+      "title": "Güncelleme Gerekiyor",
+      "description": "Steam Game Idler'ın bu sürümü artık desteklenmiyor. Uygulamayı kullanmaya devam etmek için en son sürüme güncelle"
+    },
+    "currentVersion": "Sürümünüz: {{version}}",
+    "installUpdate": "Güncellemeyi yükle",
+    "downloadUpdate": "Güncellemeyi indir",
+    "remindLater": "Daha sonra hatırlat"
+  },
   "update": {
     "downloading": "Güncelleme yükleniyor..."
+  },
+  "legacyInstall": {
+    "title": "Eski dosyalar silinsin mi?",
+    "description": "Güncellemeler artık yönetici izni gerektirmiyor. Önceki sürüm geride bazı dosyalar bıraktı ve Windows bunları silmek için son bir kez izin isteyecek. Çalışan hiçbir işlem durdurulmayacak.",
+    "remove": "Kaldır",
+    "removed": "Eski dosyalar silindi"
   },
   "toast": {
     "checkUpdate": {
