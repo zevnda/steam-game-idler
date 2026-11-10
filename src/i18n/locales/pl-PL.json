@@ -1184,7 +1184,6 @@
           "installed": "Wersja instalacyjna"
         },
         "logs": {
-          "description": "Najnowsze wpisy w dzienniku aplikacji, automatycznie odświeżane.",
           "viewFile": "Wyświetl plik dziennika",
           "clear": "Wyczyść dzienniki",
           "cleared": "Dzienniki zostały wyczyszczone",

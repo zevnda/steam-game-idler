@@ -1260,7 +1260,6 @@
           "installed": "Build installata"
         },
         "logs": {
-          "description": "Le righe di log più recenti dell'app, aggiornate automaticamente.",
           "viewFile": "Visualizza file di log",
           "clear": "Cancella log",
           "cleared": "Log cancellati",

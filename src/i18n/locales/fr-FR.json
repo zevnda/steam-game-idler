@@ -1019,7 +1019,6 @@
           "installed": "Version installée"
         },
         "logs": {
-          "description": "Les dernières lignes de log, rafraichies automatiquement.",
           "viewFile": "Voir le fichier de log",
           "clear": "Effacer les logs",
           "cleared": "Logs effacés",
