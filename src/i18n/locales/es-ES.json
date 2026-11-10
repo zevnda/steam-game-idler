@@ -1018,7 +1018,6 @@
           "installed": "Compilación instalada"
         },
         "logs": {
-          "description": "Las líneas de registro más recientes de la aplicación, actualizadas automáticamente.",
           "viewFile": "Ver archivo de registro",
           "clear": "Borrar registros",
           "cleared": "Registros borrados",
