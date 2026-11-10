@@ -19,7 +19,7 @@ export default function PrivacyPolicy() {
         <div className='space-y-10'>
           <section>
             <p className='text-sm text-text-muted mb-6'>
-              <span className='text-text-primary font-semibold'>Last Updated:</span> October 24,
+              <span className='text-text-primary font-semibold'>Last Updated:</span> November 11,
               2026
             </p>
             <p className='text-text-muted leading-relaxed'>
@@ -147,6 +147,12 @@ export default function PrivacyPolicy() {
               rather than a license key. A license key is active on one device at a time and can be
               transferred to a new device through the application&apos;s settings.
             </p>
+            <p className='text-text-muted leading-relaxed mt-4'>
+              We also use it to count how many devices use SGI each day and month, so we can see how
+              the app is growing. It&apos;s scrambled before it&apos;s saved so it can&apos;t be
+              traced back to you, and these records are cleared after about 40 days. After that,
+              only the overall totals remain.
+            </p>
           </section>
 
           <section>
@@ -230,6 +236,11 @@ export default function PrivacyPolicy() {
               an additional period after cancellation as required for billing records, dispute
               resolution, and legal compliance (typically 7 years). You may request deletion of your
               data by contacting us, subject to our legal obligations.
+            </p>
+            <p className='text-text-muted leading-relaxed mb-6'>
+              <span className='text-text-primary font-medium'>Usage Counts:</span> Scrambled device
+              records used for daily and monthly counts are cleared after about 40 days. The overall
+              totals are kept indefinitely and contain no information about individual users.
             </p>
 
             <h3 className='text-base font-medium text-text-primary mb-3'>
@@ -351,11 +362,12 @@ export default function PrivacyPolicy() {
               4.3 Analytics and Advertising
             </h3>
             <p className='text-text-muted leading-relaxed'>
-              <span className='text-text-primary font-medium'>Desktop Application:</span> SGI does
-              not collect telemetry or usage statistics. Non-PRO users see a promotional image in
-              the application&apos;s sidebar, loaded from our own content delivery network. No
-              third-party advertising network is involved and no advertising cookies are set;
-              clicking an image simply opens its link in your browser.
+              <span className='text-text-primary font-medium'>Desktop Application:</span> SGI
+              doesn&apos;t track how you use the app. The only thing we count is how many devices
+              open it each day and month, which is described in section 1.5. Non-PRO users see a
+              promotional image in the application&apos;s sidebar, loaded from our own content
+              delivery network. No third-party advertising network is involved and no advertising
+              cookies are set; clicking an image simply opens its link in your browser.
               <br />
               <br />
               <span className='text-text-primary font-medium'>Website:</span> Our website does not

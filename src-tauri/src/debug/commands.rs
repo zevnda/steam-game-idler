@@ -59,9 +59,9 @@ pub fn get_settings_file_path(app_handle: AppHandle) -> AppResult<String> {
 }
 
 /// The current log file's most recent lines, newest first (matching `main`'s log viewer order),
-/// capped at `limit`. Raw formatted `tracing` lines, not split into a timestamp/message pair the
-/// way `main`'s hand-rolled `log.txt` was - `tracing`'s own line format isn't a simple " + "
-/// delimiter, so the frontend renders each line as-is instead of forcing a re-parse.
+/// capped at `limit`. Raw formatted `tracing` lines - the frontend splits each into time/level/
+/// source/message columns itself (`src/features/settings/utils/parseLogLine.ts`, which depends on
+/// `logging::init`'s fmt layer config), falling back to the raw line for anything it can't parse.
 #[tauri::command]
 pub fn get_log_lines(app_handle: AppHandle, limit: usize) -> AppResult<Vec<String>> {
     let path = current_log_file(&app_handle)?;

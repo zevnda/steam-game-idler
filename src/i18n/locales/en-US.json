@@ -1260,7 +1260,6 @@
           "installed": "Installed build"
         },
         "logs": {
-          "description": "The app's most recent log lines, refreshed automatically.",
           "viewFile": "View log file",
           "clear": "Clear logs",
           "cleared": "Logs cleared",
