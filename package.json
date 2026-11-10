@@ -59,7 +59,7 @@
     "react-aria": "~3.52.1",
     "react-aria-components": "~1.21.1",
     "react-dom": "19.2.7",
-    "react-i18next": "^17.0.9",
+    "react-i18next": "^17.1.13",
     "react-icons": "^5.7.0",
     "react-window": "^2.3.4",
     "zustand": "^5.0.16"
