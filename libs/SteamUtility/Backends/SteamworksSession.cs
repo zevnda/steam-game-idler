@@ -21,12 +21,7 @@ namespace SteamUtility.Backends
 
         public static SteamworksSession Open(uint appId, CancellationToken ct = default)
         {
-            Environment.SetEnvironmentVariable("SteamAppId", appId.ToString());
-
-            if (!SteamAPI.Init())
-            {
-                throw new SteamNotRunningException();
-            }
+            SteamworksInit.InitOrThrow(appId);
 
             var session = new SteamworksSession { _initialized = true };
             try

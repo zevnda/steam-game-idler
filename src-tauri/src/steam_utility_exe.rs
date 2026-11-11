@@ -20,23 +20,106 @@ use crate::error::{AppError, AppResult};
 #[cfg(windows)]
 const CREATE_NO_WINDOW: u32 = 0x08000000;
 
-/// `SteamworksLocalBackend.cs`/`Client.cs` error codes that mean "the local Steam client process
-/// exists but hasn't finished starting up yet" - races commonly hit right after
-/// `local_steam::commands::launch_steam`/`switch_steam_account` spawn `steam.exe`, since
-/// `is_steam_running` only checks for the process existing, not its IPC pipe being up. Distinct
-/// from genuine non-transient failures like `steam_install_not_found`. Retrying here fixes the
-/// race for every CLI-mode command through [`run_and_parse`], not just the games list.
+/// SteamUtility error codes that mean "the local Steam client process exists but hasn't finished
+/// starting up yet" - races commonly hit right after `local_steam::commands::launch_steam`/
+/// `switch_steam_account` spawn `steam.exe` (or Steam and this app autostarting together at
+/// sign-in), since `is_steam_running` only checks for the process existing, not for Steam being
+/// usable. Measured on a real cold start (2026-11): `steam_not_running` for the first ~4s,
+/// then `steam_not_ready` (signed in, licenses not loaded) for another ~4s. `steam_not_ready`
+/// is also what a Steam left at its sign-in screen reports for good - the two are identical to
+/// SteamUtility - so it's retried like a startup race and only surfaces once that runs out.
+/// Distinct from genuine non-transient failures like `steam_install_not_found`.
 const TRANSIENT_STARTUP_ERROR_CODES: &[&str] = &[
     "steam_not_running",
+    "steam_not_ready",
     "steam_pipe_creation_failed",
     "steam_client_creation_failed",
 ];
 
-const STARTUP_RETRY_INTERVAL: Duration = Duration::from_secs(1);
+/// Owned game that Steam still wouldn't start (see `SteamworksInit.cs`). Retried briefly, not
+/// for the full startup budget: right after Steam loads an account's licenses, an owned game
+/// fails this way for about half a second, but the other cause - a Steam Families lock while the
+/// owner plays - lasts as long as they keep playing, so waiting the full 20s helps nobody.
+const GAME_UNAVAILABLE_ERROR_CODE: &str = "steam_game_unavailable";
+
+/// Codes that mean the local Steam client as a whole can't serve any game right now - not one
+/// game's problem. A batch caller (several games to idle or scan) stops at the first one rather
+/// than paying the full retry budget again for every remaining game.
+const STEAM_UNAVAILABLE_ERROR_CODES: &[&str] = &[
+    "steam_not_running",
+    "steam_not_ready",
+    "steam_client_outdated",
+    "steam_pipe_creation_failed",
+    "steam_client_creation_failed",
+];
+
+pub(crate) const STARTUP_RETRY_INTERVAL: Duration = Duration::from_secs(1);
 /// Upper bound on how long to keep retrying a transient startup error before giving up and
 /// surfacing it for real - generous because a cold Steam launch (as opposed to one already warm
 /// in the background) can legitimately take this long to finish reaching its main UI.
 const STARTUP_RETRY_ATTEMPTS: u32 = 20;
+/// See [`GAME_UNAVAILABLE_ERROR_CODE`].
+const GAME_UNAVAILABLE_RETRY_ATTEMPTS: u32 = 3;
+/// Hard ceiling across every code, in case Steam flips between two retryable codes - each code's
+/// own budget restarts when the code changes (see [`StartupRetry`]), so without this a flapping
+/// client could be retried forever.
+const MAX_TOTAL_ATTEMPTS: u32 = STARTUP_RETRY_ATTEMPTS + GAME_UNAVAILABLE_RETRY_ATTEMPTS;
+
+/// Whether `code` means the local Steam client can't serve any game right now - see
+/// [`STEAM_UNAVAILABLE_ERROR_CODES`].
+pub(crate) fn is_steam_unavailable(code: &str) -> bool {
+    STEAM_UNAVAILABLE_ERROR_CODES.contains(&code)
+}
+
+/// Whether `code` is a local-Steam failure that clears on its own - the client wide ones above,
+/// plus one game being locked by Steam Families. An automation loop should keep that game
+/// queued and try again later rather than treating it as done.
+pub(crate) fn is_temporary_failure(code: &str) -> bool {
+    is_steam_unavailable(code) || code == GAME_UNAVAILABLE_ERROR_CODE
+}
+
+/// How many times in a row a command that keeps failing with `code` is run before giving up.
+fn attempts_for(code: &str) -> u32 {
+    if TRANSIENT_STARTUP_ERROR_CODES.contains(&code) {
+        STARTUP_RETRY_ATTEMPTS
+    } else if code == GAME_UNAVAILABLE_ERROR_CODE {
+        GAME_UNAVAILABLE_RETRY_ATTEMPTS
+    } else {
+        1
+    }
+}
+
+/// Retry bookkeeping for one SteamUtility CLI call, shared by [`run_and_parse`] and CLI-mode
+/// idling's spawn (`idling::manager`), which can't go through `run_and_parse` since `idle` stays
+/// resident. Each code gets its own budget, restarted whenever the code changes: a cold Steam
+/// start walks through `steam_not_running` -> `steam_not_ready` -> `steam_game_unavailable` in
+/// order, and a shared counter would leave the last step no retries at all.
+#[derive(Debug, Default)]
+pub(crate) struct StartupRetry {
+    total: u32,
+    same_code: u32,
+    last_code: Option<String>,
+}
+
+impl StartupRetry {
+    /// Records a failed attempt with `code` and returns whether to try again (after
+    /// [`STARTUP_RETRY_INTERVAL`]).
+    pub(crate) fn should_retry(&mut self, code: &str) -> bool {
+        self.total += 1;
+        if self.last_code.as_deref() == Some(code) {
+            self.same_code += 1;
+        } else {
+            self.last_code = Some(code.to_string());
+            self.same_code = 1;
+        }
+        self.same_code < attempts_for(code) && self.total < MAX_TOTAL_ATTEMPTS
+    }
+
+    /// Attempts made so far - for log lines.
+    pub(crate) fn attempts(&self) -> u32 {
+        self.total
+    }
+}
 
 /// Appends `libs/SteamUtility[.exe]` to `base_dir` and confirms it actually exists there - the
 /// part [`locate`] and [`locate_for_agent`] share, differing only in how each resolves `base_dir`.
@@ -111,26 +194,33 @@ struct Envelope<T> {
 /// envelope line (`Core/Json/JsonEnvelope.cs`'s `{ok, result|error}` shape) into `T`. On `!ok`,
 /// surfaces SteamUtility's domain error code verbatim via `AppError::SteamUtility` so callers can
 /// distinguish specific codes like `achievement_protected`. Transparently retries
-/// [`TRANSIENT_STARTUP_ERROR_CODES`] so a caller doesn't need its own readiness-polling logic.
+/// [`TRANSIENT_STARTUP_ERROR_CODES`] and [`GAME_UNAVAILABLE_ERROR_CODE`] (see [`StartupRetry`])
+/// so a caller doesn't need its own readiness-polling logic.
 pub async fn run_and_parse<T: DeserializeOwned>(args: &[&str]) -> AppResult<T> {
-    for attempt in 1..=STARTUP_RETRY_ATTEMPTS {
-        match run_once(args).await? {
+    let mut retry = StartupRetry::default();
+    loop {
+        let code = match run_once(args).await? {
             Ok(value) => return Ok(value),
-            Err(code) if TRANSIENT_STARTUP_ERROR_CODES.contains(&code.as_str()) => {
-                if attempt == STARTUP_RETRY_ATTEMPTS {
-                    return Err(AppError::SteamUtility(code));
-                }
-                tracing::info!(
+            Err(code) => code,
+        };
+        if !retry.should_retry(&code) {
+            if retry.attempts() > 1 {
+                tracing::warn!(
                     error_code = %code,
-                    attempt,
-                    "local Steam client not ready yet, retrying"
+                    attempts = retry.attempts(),
+                    command = args.first().copied().unwrap_or_default(),
+                    "local Steam client still unavailable, giving up"
                 );
-                tokio::time::sleep(STARTUP_RETRY_INTERVAL).await;
             }
-            Err(code) => return Err(AppError::SteamUtility(code)),
+            return Err(AppError::SteamUtility(code));
         }
+        tracing::info!(
+            error_code = %code,
+            attempt = retry.attempts(),
+            "local Steam client couldn't serve the request yet, retrying"
+        );
+        tokio::time::sleep(STARTUP_RETRY_INTERVAL).await;
     }
-    unreachable!("loop always returns by its final iteration")
 }
 
 /// Single `SteamUtility.exe <args>` invocation, without the retry wrapper - `Ok(Err(code))` for a
@@ -247,5 +337,69 @@ mod tests {
     #[tokio::test]
     async fn forwards_a_final_line_without_a_trailing_newline_and_skips_blank_ones() {
         assert_eq!(collect(b"first\n\r\n\nlast").await, ["first", "last"]);
+    }
+
+    /// How many attempts in total a run of identical failures gets.
+    fn attempts_until_give_up(code: &str) -> u32 {
+        let mut retry = StartupRetry::default();
+        while retry.should_retry(code) {}
+        retry.attempts()
+    }
+
+    #[test]
+    fn retries_each_code_for_its_own_budget() {
+        assert_eq!(attempts_until_give_up("steam_not_running"), 20);
+        assert_eq!(attempts_until_give_up("steam_not_ready"), 20);
+        assert_eq!(attempts_until_give_up("steam_game_unavailable"), 3);
+        assert_eq!(attempts_until_give_up("game_not_owned"), 1);
+        assert_eq!(attempts_until_give_up("achievement_protected"), 1);
+    }
+
+    #[test]
+    fn a_cold_steam_start_still_gets_the_short_retry_at_the_end() {
+        // The order measured on a real cold start: pipe down, then licenses not loaded, then
+        // an owned game failing for a moment. The last step must not inherit the earlier
+        // attempts.
+        let mut retry = StartupRetry::default();
+        for _ in 0..4 {
+            assert!(retry.should_retry("steam_not_running"));
+        }
+        for _ in 0..4 {
+            assert!(retry.should_retry("steam_not_ready"));
+        }
+        assert!(retry.should_retry("steam_game_unavailable"));
+        assert!(retry.should_retry("steam_game_unavailable"));
+        assert!(!retry.should_retry("steam_game_unavailable"));
+    }
+
+    #[test]
+    fn a_flapping_client_still_gives_up() {
+        let mut retry = StartupRetry::default();
+        let mut attempts = 0;
+        while retry.should_retry(if attempts % 2 == 0 {
+            "steam_not_ready"
+        } else {
+            "steam_not_running"
+        }) {
+            attempts += 1;
+        }
+        assert_eq!(retry.attempts(), MAX_TOTAL_ATTEMPTS);
+    }
+
+    #[test]
+    fn only_client_wide_codes_stop_a_batch() {
+        assert!(is_steam_unavailable("steam_not_running"));
+        assert!(is_steam_unavailable("steam_not_ready"));
+        assert!(is_steam_unavailable("steam_client_outdated"));
+        assert!(!is_steam_unavailable("steam_game_unavailable"));
+        assert!(!is_steam_unavailable("game_not_owned"));
+    }
+
+    #[test]
+    fn a_family_lock_is_temporary_but_not_owning_the_game_is_not() {
+        assert!(is_temporary_failure("steam_game_unavailable"));
+        assert!(is_temporary_failure("steam_not_ready"));
+        assert!(!is_temporary_failure("game_not_owned"));
+        assert!(!is_temporary_failure("achievement_protected"));
     }
 }

@@ -1,4 +1,5 @@
 import type { TranslationKey } from '@/i18n'
+import { LOCAL_STEAM_ERROR_KEYS } from '@/shared/utils/localSteamErrorKeys'
 
 // Maps a stable error code (see src-tauri/src/error.rs::AppError::code) to a translation key -
 // mirrors src/features/favorites/utils/errorMessageKey.ts, covering the codes reachable from
@@ -11,7 +12,7 @@ const KNOWN_ERROR_KEYS: Record<string, TranslationKey> = {
   agent_request_timeout: 'common.errors.timeout',
   agent_process_exited: 'common.errors.processExited',
   auto_idle_cache_io_failed: 'dashboard.autoIdle.errors.cacheIoFailed',
-  steam_not_running: 'common.errors.steamNotRunning',
+  ...LOCAL_STEAM_ERROR_KEYS,
 }
 
 // A separate typed constant, not an inline literal - an explicit return-type annotation on an

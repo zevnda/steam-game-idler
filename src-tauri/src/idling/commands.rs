@@ -95,6 +95,22 @@ pub async fn get_idle_state(
     }
 }
 
+/// The account's idled games Steam Families is holding back because someone else in the family
+/// is playing them - the event carries this too (`IDLE_STATE_EVENT`'s `familyLockedAppIds`), this
+/// is for a page that mounts while a lock is already in place. Always empty for CLI mode: there
+/// the local Steam client refuses to start a locked game at all, so it never reaches the idling
+/// set and is reported as a `steam_game_unavailable` start failure instead.
+#[tauri::command]
+pub async fn get_family_locked_games(
+    agent_manager: State<'_, AgentManager>,
+    account: GamesAccount,
+) -> AppResult<Vec<u32>> {
+    match account {
+        GamesAccount::Agent { username } => agent_manager.family_locked_games(&username).await,
+        GamesAccount::Local { .. } => Ok(Vec::new()),
+    }
+}
+
 /// The Games/Idling pages' per-card start/stop toggle. Whether this is a "start" or "stop" is
 /// decided by whether *any* owner currently claims `app_id` - not just the `"manual"` owner -
 /// otherwise clicking a card that's idling because achievement-unlocker/card-farming/auto-idle

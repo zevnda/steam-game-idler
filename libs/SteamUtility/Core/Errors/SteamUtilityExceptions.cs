@@ -42,6 +42,52 @@ namespace SteamUtility.Core.Errors
             ) { }
     }
 
+    // The four exceptions below split what used to be one catch-all SteamNotRunningException for
+    // any failed SteamAPI_Init(). Steam returns the same generic init failure for every one of
+    // them, so Backends/SteamworksInit.cs tells them apart with a follow-up ownership check - see
+    // its doc comment for the evidence behind each mapping.
+
+    // Steam is running but hasn't loaded the signed-in account's licenses: it's still starting,
+    // or it's sitting at its sign-in screen. The two look identical to SteamAPI, so they share one
+    // code; the caller retries it the same way as steam_not_running.
+    public sealed class SteamNotReadyException : SteamUtilityException
+    {
+        public SteamNotReadyException()
+            : base(
+                "steam_not_ready",
+                "Steam is running but isn't signed in or hasn't finished starting"
+            ) { }
+    }
+
+    public sealed class SteamClientOutdatedException : SteamUtilityException
+    {
+        public SteamClientOutdatedException()
+            : base("steam_client_outdated", "The Steam client is older than the Steamworks SDK") { }
+    }
+
+    // The account signed in to the local Steam client doesn't own the game. Covers a wrong or
+    // removed app id too, since Steam reports those the same way.
+    public sealed class GameNotOwnedException : SteamUtilityException
+    {
+        public GameNotOwnedException()
+            : base(
+                "game_not_owned",
+                "The account signed in to Steam doesn't own this game"
+            ) { }
+    }
+
+    // Owned (or family-shared) and Steam is ready, but Steam still refused to start a session for
+    // the game. The one cause seen in testing is Steam Families: a borrowed game is locked while
+    // its owner plays it, and unlocks the moment they stop.
+    public sealed class SteamGameUnavailableException : SteamUtilityException
+    {
+        public SteamGameUnavailableException()
+            : base(
+                "steam_game_unavailable",
+                "Steam is ready and the game is owned, but Steam wouldn't start a session for it"
+            ) { }
+    }
+
     // Steam stopped responding partway through a multi-part response, or answered without the details
     // it was asked for. Same code as a request that never got any response (see ExceptionMapper), since
     // all of them mean the same thing to a caller: nothing usable came back, so try again.

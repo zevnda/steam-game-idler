@@ -1,0 +1,19 @@
+---
+title: 6.5.2
+date: 2026-11-11
+tags: ['Improved', 'Fixed']
+---
+
+### Improved 🚀
+- **Local Sign-in** now tells you the real reason Steam won't load a game, instead of always saying Steam isn't running, and shows it in a few seconds instead of after a long wait. Each message has a **Learn more** link
+  - Steam is open but isn't signed in yet, or is still starting up
+  - The Steam account signed in on your PC doesn't own the game
+  - The game is shared with you through **Steam Families** and someone else is playing it
+  - Your Steam client is out of date
+- With **Local Sign-in**, idling now waits for Steam to finish starting instead of failing straight away, for example when SGI and Steam both open when you turn on your PC
+- When Steam can't load any queued game, the **Achievement Unlocker** now shows **Waiting for Steam** with the reason and a countdown, and checks again every minute
+
+### Fixed 🐛
+- Fixed the **Achievement Unlocker** removing games from its queue as **Nothing left to unlock** when using **Local Sign-in** and Steam was closed, signed out, or a family-shared game was in use. Those games now stay in the queue
+- Fixed **Steam Sign-in** accounts being signed out every few minutes, with every feature paused behind a **Paused while you play** message, when someone in your Steam family was playing one of the games being idled. Now only that game pauses, and it resumes by itself when they stop
+- Fixed the **Games** page sometimes showing no games with **Local Sign-in** when Steam hadn't finished signing in

@@ -159,7 +159,7 @@ export const HELP_SECTIONS: HelpSection[] = [
         id: 'familyShared',
         question: 'Can I idle family-shared games?',
         answer:
-          "Yes. Games shared with you through Steam Families appear in your games list alongside your own. Only one person can play a shared copy at a time, so a shared game can't be idled while someone else in your family is playing it. Shared games don't drop trading cards.",
+          "Yes. Games shared with you through Steam Families appear in your games list alongside your own. Only one person can play a shared copy at a time, and whoever started first keeps it, even for games you own. With Steam Sign-in, just that game pauses while they play and resumes when they stop. With Local Sign-in, it won't start idling and the app tells you why. Shared games don't drop trading cards.",
       },
     ],
   },
@@ -309,6 +309,33 @@ export const HELP_SECTIONS: HelpSection[] = [
         question: "Couldn't find a local Steam installation.",
         answer:
           "This only affects Local Sign-in. Install the Steam client, then sign in to at least one account. If it's already installed, try reinstalling it in its default location, or use Steam Sign-in, which doesn't need the client.",
+      },
+      {
+        id: 'steamNotReady',
+        question:
+          "Steam is open but isn't signed in yet. Sign in to Steam, or wait for it to finish starting, then try again.",
+        answer:
+          "This only affects Local Sign-in. Steam is still starting up or is on its sign-in screen. Make sure it's signed in to the same account you use here and its library has loaded, then try again.",
+      },
+      {
+        id: 'gameNotOwned',
+        question: "The Steam account signed in on this PC doesn't own this game.",
+        answer:
+          'This only affects Local Sign-in. The Steam client is usually signed in to a different account than the one you use here, so switch Steam to the right account. Otherwise the game was refunded or is no longer shared with you.',
+      },
+      {
+        id: 'steamGameUnavailable',
+        question:
+          "Steam wouldn't load this game right now. If it's shared through Steam Families, another user may be playing it. Try again once they've stopped.",
+        answer:
+          'This only affects Local Sign-in. A family-shared game is locked while someone else in your family is playing it, and unlocks as soon as they stop. The Achievement Unlocker keeps a locked game queued and tries again every minute.',
+      },
+      {
+        id: 'steamClientOutdated',
+        question:
+          'Your Steam client is out of date. Restart Steam so it can update, then try again.',
+        answer:
+          'This only affects Local Sign-in. Fully exit Steam from its tray icon and start it again so it installs its pending update.',
       },
       {
         id: 'sessionFailed',

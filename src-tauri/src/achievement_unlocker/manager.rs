@@ -43,12 +43,13 @@ use crate::error::AppResult;
 use crate::games::commands::GamesAccount;
 use crate::idling::{self, IdleTarget, IdlingManager};
 use crate::steam_agent::{self, AgentManager};
+use crate::steam_utility_exe;
 
 use super::settings::ScheduleTime;
 use super::{
     cache, order, settings, AchievementUnlockerEntry, AchievementUnlockerState, ActiveGameProgress,
     CompletedUnlock, CompletedUnlockReason, QueuedUnlock, RecentUnlock, ScanProgress,
-    UpcomingAchievement, ACHIEVEMENT_UNLOCKER_STATE_EVENT,
+    UpcomingAchievement, WaitingForSteam, WaitingGame, ACHIEVEMENT_UNLOCKER_STATE_EVENT,
 };
 
 /// Mirrors `idling`'s own concurrent-games cap (see `card_farming::manager`'s identical constant
@@ -74,6 +75,11 @@ const RETRY_BACKOFF: [Duration; MAX_UNLOCK_ATTEMPTS - 1] =
 /// How many of the soonest-upcoming achievements to project in [`ActiveGameProgress::upcoming`] -
 /// matches `main`'s `buildUpcomingQueue` default `limit`.
 const UPCOMING_LIMIT: usize = 5;
+
+/// How long to wait before re-scanning when a pass found nothing to unlock only because Steam
+/// couldn't serve the queued games right now (see [`ScanOutcome`]) - without a wait, the loop
+/// would immediately re-scan and spin for as long as Steam stays closed or a game stays locked.
+const DEFERRED_RESCAN_DELAY: Duration = Duration::from_secs(60);
 
 /// How many of this session's unlocks [`AchievementUnlockerState::recent`] keeps, newest first.
 pub const RECENT_LIMIT: usize = 10;
@@ -320,6 +326,53 @@ struct ScannedAchievement {
     delay_next_unlock_ms: Option<u64>,
 }
 
+/// What [`scan_game`] found for one queued game.
+enum ScanOutcome {
+    /// Read successfully (or failed in a way that drops the game) - an empty `achievements`
+    /// list means "nothing to unlock, remove it from the queue".
+    Scanned(ScannedGame),
+    /// Steam won't load this one game right now (a Steam Families lock) - stays queued for the
+    /// next pass. Carries the error code, for [`WaitingForSteam::reason`].
+    Deferred(String),
+    /// The local Steam client can't serve any game right now - stays queued, and the rest of
+    /// this pass's scan stops too, since every remaining game would fail the same way.
+    SteamUnavailable(String),
+}
+
+/// A game a scan pass left queued (see [`ScanOutcome`]), with the code that held it back.
+struct DeferredGame {
+    app_id: u32,
+    name: String,
+    code: String,
+    /// The whole client was unavailable, not just this game - see [`ScanOutcome::SteamUnavailable`].
+    client_wide: bool,
+}
+
+/// Builds the running screen's "waiting for Steam" notice from a pass's deferred games. A
+/// client-wide reason wins over a per-game one, since it's what's actually blocking everything,
+/// and lists no games because it holds back the whole queue alike.
+fn waiting_for_steam(deferred: &[DeferredGame], retry_at_ms: i64) -> Option<WaitingForSteam> {
+    if let Some(client_wide) = deferred.iter().find(|g| g.client_wide) {
+        return Some(WaitingForSteam {
+            reason: client_wide.code.clone(),
+            games: Vec::new(),
+            retry_at_ms,
+        });
+    }
+    let first = deferred.first()?;
+    Some(WaitingForSteam {
+        reason: first.code.clone(),
+        games: deferred
+            .iter()
+            .map(|g| WaitingGame {
+                app_id: g.app_id,
+                name: g.name.clone(),
+            })
+            .collect(),
+        retry_at_ms,
+    })
+}
+
 struct ScannedGame {
     app_id: u32,
     name: String,
@@ -547,20 +600,29 @@ async fn set_game_idling(
 /// same "can't safely automate this game" treatment). Never hard-errors - any failure (fetch,
 /// settings, order) also resolves to "nothing to unlock", matching `main`'s catch-all behavior of
 /// removing a game from the queue on any non-actionable scan result, not just a clean empty list.
+///
+/// The one exception is a fetch failure that clears on its own (see
+/// `steam_utility_exe::is_temporary_failure`): CLI mode's local Steam client being closed,
+/// signed out or still starting, or a family-shared game locked while its owner plays it. Those
+/// return [`ScanOutcome::Deferred`]/[`ScanOutcome::SteamUnavailable`] instead, keeping the game
+/// queued - dropping it as "nothing to unlock" would silently empty the user's queue just
+/// because Steam was briefly unavailable.
 async fn scan_game(
     app_handle: &AppHandle,
     account: &GamesAccount,
     steam_id: &str,
     entry: &AchievementUnlockerEntry,
-) -> ScannedGame {
-    let empty = |achievement_count| ScannedGame {
-        app_id: entry.app_id,
-        name: entry.name.clone(),
-        achievements: Vec::new(),
-        delay_before_first_unlock_ms: 0,
-        achievement_count,
-        already_unlocked: 0,
-        schema_total: 0,
+) -> ScanOutcome {
+    let empty = |achievement_count| {
+        ScanOutcome::Scanned(ScannedGame {
+            app_id: entry.app_id,
+            name: entry.name.clone(),
+            achievements: Vec::new(),
+            delay_before_first_unlock_ms: 0,
+            achievement_count,
+            already_unlocked: 0,
+            schema_total: 0,
+        })
     };
 
     let unlocker_settings = match settings::get(app_handle, steam_id).await {
@@ -587,7 +649,16 @@ async fn scan_game(
     {
         Ok(d) => d,
         Err(e) => {
-            tracing::warn!(app_id = entry.app_id, name = %entry.name, error = %e.code(), "achievement unlocker: failed to fetch achievement data, removing from queue");
+            let code = e.code();
+            if steam_utility_exe::is_steam_unavailable(&code) {
+                tracing::warn!(app_id = entry.app_id, name = %entry.name, error = %code, "achievement unlocker: local Steam client unavailable, keeping the queue for the next pass");
+                return ScanOutcome::SteamUnavailable(code);
+            }
+            if steam_utility_exe::is_temporary_failure(&code) {
+                tracing::warn!(app_id = entry.app_id, name = %entry.name, error = %code, "achievement unlocker: Steam won't load this game right now, keeping it queued for the next pass");
+                return ScanOutcome::Deferred(code);
+            }
+            tracing::warn!(app_id = entry.app_id, name = %entry.name, error = %code, "achievement unlocker: failed to fetch achievement data, removing from queue");
             return empty(0);
         }
     };
@@ -723,7 +794,7 @@ async fn scan_game(
         .unwrap_or(achievements.len() as u32)
         .min(achievements.len() as u32);
 
-    ScannedGame {
+    ScanOutcome::Scanned(ScannedGame {
         app_id: entry.app_id,
         name: entry.name.clone(),
         achievements,
@@ -731,7 +802,7 @@ async fn scan_game(
         achievement_count,
         already_unlocked: data.achievements.iter().filter(|a| a.achieved).count() as u32,
         schema_total: data.achievements.len() as u32,
-    }
+    })
 }
 
 /// Phase 1 of one pass: scans every game in `backlog` concurrently across `worker_count` workers,
@@ -757,7 +828,7 @@ async fn run_scan_phase(
     state: &Arc<Mutex<AchievementUnlockerState>>,
     excluded_app_ids: &Arc<Mutex<HashSet<u32>>>,
     stopped: &Arc<AtomicBool>,
-) -> Vec<ScannedGame> {
+) -> ScanPhaseResult {
     let total = backlog.len() as u32;
     {
         let mut s = state.lock().await;
@@ -783,6 +854,10 @@ async fn run_scan_phase(
         backlog.into_iter().enumerate(),
     )));
     let checked = Arc::new(std::sync::atomic::AtomicU32::new(0));
+    // See `ScanOutcome` - `deferred` holds every game left queued because Steam couldn't serve it,
+    // `steam_unavailable` additionally stops every worker from scanning further.
+    let deferred: Arc<Mutex<Vec<DeferredGame>>> = Arc::new(Mutex::new(Vec::new()));
+    let steam_unavailable = Arc::new(AtomicBool::new(false));
     let mut handles = Vec::new();
 
     for _ in 0..worker_count {
@@ -795,11 +870,13 @@ async fn run_scan_phase(
         let stopped = stopped.clone();
         let playtime_by_app_id = playtime_by_app_id.clone();
         let excluded_app_ids = excluded_app_ids.clone();
+        let deferred = deferred.clone();
+        let steam_unavailable = steam_unavailable.clone();
 
         handles.push(tokio::spawn(async move {
             let mut ready = Vec::new();
             loop {
-                if stopped.load(Ordering::SeqCst) {
+                if stopped.load(Ordering::SeqCst) || steam_unavailable.load(Ordering::SeqCst) {
                     break;
                 }
                 let entry = { queue.lock().await.pop_front() };
@@ -830,49 +907,47 @@ async fn run_scan_phase(
                         CompletedUnlockReason::MaxPlaytime,
                     )
                     .await;
-                    let n = checked.fetch_add(1, Ordering::SeqCst) + 1;
-                    {
-                        let mut s = state.lock().await;
-                        s.scan_progress = if n < total {
-                            Some(ScanProgress { checked: n, total })
-                        } else {
-                            None
-                        };
-                    }
-                    emit_state(&app_handle, &steam_id, &state).await;
+                    bump_scan_progress(&app_handle, &steam_id, &state, &checked, total).await;
                     continue;
                 }
 
-                let scanned = scan_game(&app_handle, &account, &steam_id, &entry).await;
+                let outcome = scan_game(&app_handle, &account, &steam_id, &entry).await;
+                bump_scan_progress(&app_handle, &steam_id, &state, &checked, total).await;
 
-                let n = checked.fetch_add(1, Ordering::SeqCst) + 1;
-                {
-                    let mut s = state.lock().await;
-                    s.scan_progress = if n < total {
-                        Some(ScanProgress { checked: n, total })
-                    } else {
-                        None
-                    };
-                }
-                emit_state(&app_handle, &steam_id, &state).await;
-
-                if scanned.achievements.is_empty() {
-                    if let Err(e) = cache::remove(&app_handle, &steam_id, entry.app_id).await {
-                        tracing::warn!(app_id = entry.app_id, error = %e.code(), "achievement unlocker: failed to remove exhausted game from queue");
+                let (code, client_wide) = match outcome {
+                    ScanOutcome::Scanned(scanned) => {
+                        if scanned.achievements.is_empty() {
+                            if let Err(e) = cache::remove(&app_handle, &steam_id, entry.app_id).await
+                            {
+                                tracing::warn!(app_id = entry.app_id, error = %e.code(), "achievement unlocker: failed to remove exhausted game from queue");
+                            }
+                            add_completed(
+                                &state,
+                                entry.app_id,
+                                &entry.name,
+                                0,
+                                0,
+                                CompletedUnlockReason::NothingToUnlock,
+                            )
+                            .await;
+                            emit_state(&app_handle, &steam_id, &state).await;
+                        } else {
+                            ready.push((queue_index, scanned));
+                        }
+                        continue;
                     }
-                    add_completed(
-                        &state,
-                        entry.app_id,
-                        &entry.name,
-                        0,
-                        0,
-                        CompletedUnlockReason::NothingToUnlock,
-                    )
-                    .await;
-                    emit_state(&app_handle, &steam_id, &state).await;
-                } else {
-                    ready.push((queue_index, scanned));
-                }
+                    ScanOutcome::Deferred(code) => (code, false),
+                    ScanOutcome::SteamUnavailable(code) => {
+                        steam_unavailable.store(true, Ordering::SeqCst);
+                        (code, true)
+                    }
+                };
+                deferred.lock().await.push(DeferredGame {
+                    app_id: entry.app_id,
+                    name: entry.name.clone(),
+                    code,
+                    client_wide,
+                });
             }
             ready
         }));
@@ -892,7 +967,42 @@ async fn run_scan_phase(
     }
     emit_state(app_handle, steam_id, state).await;
 
-    ready.into_iter().map(|(_, scanned)| scanned).collect()
+    let deferred = std::mem::take(&mut *deferred.lock().await);
+    ScanPhaseResult {
+        ready: ready.into_iter().map(|(_, scanned)| scanned).collect(),
+        deferred,
+    }
+}
+
+/// What [`run_scan_phase`] hands back to the run loop.
+struct ScanPhaseResult {
+    /// Games with achievements left to unlock, in queue order.
+    ready: Vec<ScannedGame>,
+    /// Games left queued because Steam couldn't serve them right now (see [`ScanOutcome`]) -
+    /// tells the run loop to wait before re-scanning instead of looping straight back into the
+    /// same failure, and what to tell the user while it does.
+    deferred: Vec<DeferredGame>,
+}
+
+/// Counts one more game as scanned and publishes the new progress - clears it once every game in
+/// the pass has been counted.
+async fn bump_scan_progress(
+    app_handle: &AppHandle,
+    steam_id: &str,
+    state: &Mutex<AchievementUnlockerState>,
+    checked: &AtomicU32,
+    total: u32,
+) {
+    let n = checked.fetch_add(1, Ordering::SeqCst) + 1;
+    {
+        let mut s = state.lock().await;
+        s.scan_progress = if n < total {
+            Some(ScanProgress { checked: n, total })
+        } else {
+            None
+        };
+    }
+    emit_state(app_handle, steam_id, state).await;
 }
 
 /// Unlocks every achievement in `game`, one at a time, in order - schedule-waiting, idling, retrying
@@ -1105,12 +1215,13 @@ async fn unlock_game(
         }
 
         let mut succeeded = false;
+        let mut temporary_failure = None;
         for attempt in 0..MAX_UNLOCK_ATTEMPTS {
             if stopped.load(Ordering::SeqCst) {
                 break;
             }
             let agent_manager = app_handle.state::<AgentManager>();
-            succeeded = achievements::commands::set_achievement(
+            match achievements::commands::set_achievement(
                 app_handle.clone(),
                 agent_manager,
                 account.clone(),
@@ -1119,9 +1230,21 @@ async fn unlock_game(
                 true,
             )
             .await
-            .is_ok();
-            if succeeded {
-                break;
+            {
+                Ok(_) => {
+                    succeeded = true;
+                    break;
+                }
+                Err(e) => {
+                    let code = e.code();
+                    // The CLI runner already retried these for as long as they're worth waiting
+                    // (see steam_utility_exe::StartupRetry), so another attempt seconds later
+                    // would only fail the same way.
+                    if steam_utility_exe::is_temporary_failure(&code) {
+                        temporary_failure = Some(code);
+                        break;
+                    }
+                }
             }
             // `None` after the final attempt (see RETRY_BACKOFF's length), so no pointless wait.
             if let Some(&backoff) = RETRY_BACKOFF.get(attempt) {
@@ -1132,6 +1255,16 @@ async fn unlock_game(
         }
 
         if stopped.load(Ordering::SeqCst) {
+            break;
+        }
+
+        // Steam stopped serving this game mid-run (closed, signed out, or the owner of a
+        // family-shared game started playing). Carrying on would only walk the rest of this game's
+        // schedule failing one achievement at a time, so end its run here instead. It stays queued
+        // (only a finished game is removed), and the next scan pass either picks it back up or shows
+        // the "Waiting for Steam" notice - see `ScanOutcome`.
+        if let Some(code) = temporary_failure {
+            tracing::warn!(app_id, name = %game.name, error = %code, "achievement unlocker: Steam stopped serving this game, pausing it until the next scan pass");
             break;
         }
 
@@ -1462,7 +1595,7 @@ async fn run_loop(
             .load(Ordering::SeqCst)
             .clamp(1, MAX_CONCURRENT_GAMES);
 
-        let ready = run_scan_phase(
+        let ScanPhaseResult { ready, deferred } = run_scan_phase(
             &app_handle,
             &account,
             &steam_id,
@@ -1478,6 +1611,25 @@ async fn run_loop(
             break;
         }
         if ready.is_empty() {
+            let retry_at_ms =
+                chrono::Utc::now().timestamp_millis() + DEFERRED_RESCAN_DELAY.as_millis() as i64;
+            if let Some(waiting) = waiting_for_steam(&deferred, retry_at_ms) {
+                tracing::info!(
+                    steam_id,
+                    reason = %waiting.reason,
+                    wait_secs = DEFERRED_RESCAN_DELAY.as_secs(),
+                    "achievement unlocker: Steam can't load any queued game right now, waiting before the next pass"
+                );
+                state.lock().await.waiting = Some(waiting);
+                emit_state(&app_handle, &steam_id, &state).await;
+                let was_stopped = wait_ticking(DEFERRED_RESCAN_DELAY, &stopped).await;
+                state.lock().await.waiting = None;
+                emit_state(&app_handle, &steam_id, &state).await;
+                if was_stopped {
+                    end_reason = EndReason::Stopped;
+                    break;
+                }
+            }
             continue;
         }
 
@@ -1526,6 +1678,7 @@ async fn run_loop(
         s.active.clear();
         s.scan_progress = None;
         s.queued.clear();
+        s.waiting = None;
     }
     emit_state(&app_handle, &steam_id, &state).await;
 
@@ -1550,6 +1703,49 @@ mod tests {
         assert!(max_playtime_applies(true, &excluded, 570).await);
         assert!(!max_playtime_applies(false, &excluded, 570).await);
         assert!(!max_playtime_applies(true, &excluded, 440).await);
+    }
+
+    fn deferred(app_id: u32, code: &str, client_wide: bool) -> DeferredGame {
+        DeferredGame {
+            app_id,
+            name: format!("Game {app_id}"),
+            code: code.to_string(),
+            client_wide,
+        }
+    }
+
+    #[test]
+    fn nothing_deferred_means_no_waiting_notice() {
+        assert!(waiting_for_steam(&[], 0).is_none());
+    }
+
+    #[test]
+    fn a_family_lock_lists_the_locked_games() {
+        let waiting = waiting_for_steam(
+            &[
+                deferred(1, "steam_game_unavailable", false),
+                deferred(2, "steam_game_unavailable", false),
+            ],
+            42,
+        )
+        .expect("deferred games produce a notice");
+        assert_eq!(waiting.reason, "steam_game_unavailable");
+        assert_eq!(waiting.games.len(), 2);
+        assert_eq!(waiting.retry_at_ms, 42);
+    }
+
+    #[test]
+    fn a_client_wide_failure_wins_and_lists_no_games() {
+        let waiting = waiting_for_steam(
+            &[
+                deferred(1, "steam_game_unavailable", false),
+                deferred(2, "steam_not_ready", true),
+            ],
+            0,
+        )
+        .expect("deferred games produce a notice");
+        assert_eq!(waiting.reason, "steam_not_ready");
+        assert!(waiting.games.is_empty());
     }
 
     #[test]

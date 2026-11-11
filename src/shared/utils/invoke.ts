@@ -29,6 +29,12 @@ const EXPECTED_ERROR_CODES = new Set([
   // CLI-mode pre-flight rejection (`require_steam_running`) - Rust already logs the warn itself,
   // and every call site surfaces this via a toast, so it's an expected/user-caused outcome too.
   'steam_not_running',
+  // The rest of the local Steam client's states (see `LOCAL_STEAM_ERROR_KEYS`) - SteamUtility logs
+  // each one with Steam's own message, forwarded into the app log, before it gets here.
+  'steam_not_ready',
+  'steam_client_outdated',
+  'game_not_owned',
+  'steam_game_unavailable',
 ])
 
 // Thin wrapper around `@tauri-apps/api/core`'s `invoke` that logs unexpected command failures to

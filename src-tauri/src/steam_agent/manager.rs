@@ -653,6 +653,13 @@ impl AgentManager {
         Ok(self.existing(&key).await?.idle_app_ids())
     }
 
+    /// The idled games Steam Families is holding back on this account because someone else in the
+    /// family is playing them (see `AgentProcess::family_locked_app_ids`).
+    pub async fn family_locked_games(&self, username: &str) -> AppResult<Vec<u32>> {
+        let key = Self::key_for(username);
+        Ok(self.existing(&key).await?.family_locked_app_ids())
+    }
+
     /// This account's last-reported playing-session state (see [`PlayingSession`]) - the default
     /// (not blocked) when no session exists for it, since a missing session has nothing to pause.
     pub async fn playing_session(&self, username: &str) -> PlayingSession {

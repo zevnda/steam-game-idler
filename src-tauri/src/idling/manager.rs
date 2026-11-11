@@ -15,6 +15,7 @@ use tokio::process::{Child, ChildStderr, ChildStdout, Command};
 use tokio::sync::Mutex;
 
 use crate::error::{AppError, AppResult};
+use crate::steam_utility_exe::{is_steam_unavailable, StartupRetry, STARTUP_RETRY_INTERVAL};
 
 use super::{cap_targets, IdleFailure, IdleSetResult, IdleTarget, IDLE_STATE_EVENT};
 
@@ -90,8 +91,19 @@ impl IdlingManager {
         }
 
         let mut failures = Vec::new();
+        // Set once a spawn fails because Steam itself can't serve any game (see
+        // `steam_utility_exe::is_steam_unavailable`) - every remaining target would only wait out
+        // the same ~20s startup retry and fail the same way, so they get that code straight away.
+        let mut steam_unavailable: Option<String> = None;
         for target in &targets {
             if processes.contains_key(&target.app_id) {
+                continue;
+            }
+            if let Some(code) = &steam_unavailable {
+                failures.push(IdleFailure {
+                    app_id: target.app_id,
+                    error: code.clone(),
+                });
                 continue;
             }
             match spawn_idle_process(target).await {
@@ -101,9 +113,13 @@ impl IdlingManager {
                 }
                 Err(e) => {
                     tracing::warn!(app_id = target.app_id, error = %e, "failed to start idling");
+                    let code = e.code();
+                    if is_steam_unavailable(&code) {
+                        steam_unavailable = Some(code.clone());
+                    }
                     failures.push(IdleFailure {
                         app_id: target.app_id,
-                        error: e.code(),
+                        error: code,
                     });
                 }
             }
@@ -186,7 +202,37 @@ async fn run_poller(app_handle: AppHandle) {
     }
 }
 
+/// Spawns `idle` for `target`, retrying a Steam that's still starting the same way every other
+/// CLI-mode command does through `steam_utility_exe::run_and_parse` (see [`StartupRetry`]) - this
+/// path can't use `run_and_parse` itself because `idle` stays resident instead of exiting. Matters
+/// most at Windows sign-in, when Steam and this app autostart together and auto-idle fires
+/// before Steam has finished loading. A code SteamUtility reported comes back as
+/// `AppError::SteamUtility(code)`, so the Idling page can say why (e.g. `game_not_owned`) instead
+/// of a generic "couldn't start idling".
 async fn spawn_idle_process(target: &IdleTarget) -> AppResult<Child> {
+    let mut retry = StartupRetry::default();
+    loop {
+        let code = match try_spawn_idle_process(target).await? {
+            Ok(child) => return Ok(child),
+            Err(code) => code,
+        };
+        if !retry.should_retry(&code) {
+            return Err(AppError::SteamUtility(code));
+        }
+        tracing::info!(
+            app_id = target.app_id,
+            error_code = %code,
+            attempt = retry.attempts(),
+            "local Steam client couldn't start idling yet, retrying"
+        );
+        tokio::time::sleep(STARTUP_RETRY_INTERVAL).await;
+    }
+}
+
+/// One `idle` spawn attempt - `Ok(Err(code))` when SteamUtility reported a failure code (which
+/// [`spawn_idle_process`] may retry), `Err` for anything it can't (the spawn itself failing, or
+/// the process dying without saying why).
+async fn try_spawn_idle_process(target: &IdleTarget) -> AppResult<Result<Child, String>> {
     let exe_path = crate::steam_utility_exe::locate()?;
 
     let mut command = Command::new(&exe_path);
@@ -206,20 +252,32 @@ async fn spawn_idle_process(target: &IdleTarget) -> AppResult<Child> {
     let stderr = child.stderr.take().expect("stderr was piped at spawn");
     forward_idle_stderr(stderr, target.app_id);
 
-    if let Err(reason) = await_startup_line(stdout, &mut child).await {
-        let _ = child.kill().await;
-        return Err(AppError::IdleProcessStartFailed {
-            app_id: target.app_id,
-            reason,
-        });
+    match await_startup_line(stdout, &mut child).await {
+        Ok(()) => Ok(Ok(child)),
+        Err(failure) => {
+            let _ = child.kill().await;
+            match failure {
+                StartupFailure::Reported(code) => Ok(Err(code)),
+                StartupFailure::Exited => Err(AppError::IdleProcessStartFailed {
+                    app_id: target.app_id,
+                    reason: "process exited before reporting status".to_string(),
+                }),
+            }
+        }
     }
+}
 
-    Ok(child)
+/// Why `idle` didn't start - see [`await_startup_line`].
+enum StartupFailure {
+    /// SteamUtility printed `{"ok":false,"error":code}` - a code worth retrying or showing.
+    Reported(String),
+    /// The process exited without printing anything - no code to go on.
+    Exited,
 }
 
 /// Waits (briefly) for `idle`'s one possible startup line and interprets it - see
 /// `STARTUP_TIMEOUT`'s doc comment for why a timeout isn't itself treated as failure.
-async fn await_startup_line(stdout: ChildStdout, child: &mut Child) -> Result<(), String> {
+async fn await_startup_line(stdout: ChildStdout, child: &mut Child) -> Result<(), StartupFailure> {
     let mut lines = BufReader::new(stdout).lines();
     match tokio::time::timeout(STARTUP_TIMEOUT, lines.next_line()).await {
         Ok(Ok(Some(line))) => {
@@ -228,9 +286,11 @@ async fn await_startup_line(stdout: ChildStdout, child: &mut Child) -> Result<()
             // at most one line, ever.
             if let Ok(envelope) = serde_json::from_str::<IdleStartEnvelope>(&line) {
                 if !envelope.ok {
-                    return Err(envelope
-                        .error
-                        .unwrap_or_else(|| "unknown_error".to_string()));
+                    return Err(StartupFailure::Reported(
+                        envelope
+                            .error
+                            .unwrap_or_else(|| "unknown_error".to_string()),
+                    ));
                 }
             }
             Ok(())
@@ -239,7 +299,7 @@ async fn await_startup_line(stdout: ChildStdout, child: &mut Child) -> Result<()
         // failure if the process has actually exited; a live process that's merely slow to print
         // is still worth tracking.
         _ => match child.try_wait() {
-            Ok(Some(_status)) => Err("process exited before reporting status".to_string()),
+            Ok(Some(_status)) => Err(StartupFailure::Exited),
             _ => Ok(()),
         },
     }

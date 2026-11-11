@@ -72,7 +72,11 @@
       "timeout": "Steam took too long to respond. Please try again.",
       "sessionNotFound": "Your Steam session isn't active anymore. Please sign in again.",
       "steamIdUnknown": "Your Steam ID hasn't been resolved yet. Please try again in a moment.",
-      "steamNotRunning": "Steam isn't running. Please start Steam and try again."
+      "steamNotRunning": "Steam isn't running. Please start Steam and try again.",
+      "steamNotReady": "Steam is open but isn't signed in yet. Sign in to Steam, or wait for it to finish starting, then try again.",
+      "steamClientOutdated": "Your Steam client is out of date. Restart Steam so it can update, then try again.",
+      "gameNotOwned": "The Steam account signed in on this PC doesn't own this game.",
+      "steamGameUnavailable": "Steam wouldn't load this game right now. If it's shared through Steam Families, another user may be playing it. Try again once they've stopped."
     },
     "notifications": "Notifications",
     "menu": "Menu",
@@ -871,6 +875,10 @@
         "remaining_other": "{{count}} achievements remaining",
         "starting": "Starting…",
         "waitingForSchedule": "Waiting for the scheduled unlock window",
+        "waitingForSteam": "Waiting for Steam",
+        "waitingGames_one": "{{games}} is still in the queue and will be checked again.",
+        "waitingGames_other": "{{games}} are still in the queue and will be checked again.",
+        "retryingIn": "Checking again in {{time}}",
         "currentGame": "Current game",
         "upNext": "Up next",
         "completedCount": "{{unlocked}}/{{total}} unlocked",

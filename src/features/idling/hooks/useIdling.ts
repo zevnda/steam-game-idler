@@ -5,12 +5,12 @@ import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { errorMessageKey } from '../utils/errorMessageKey'
 import { syncClaims } from './useIdlingSync'
-import { toast } from '@heroui/react'
 import { useCardFarmingStore } from '@/shared/stores/cardFarmingStore'
 import { useIdlingStore } from '@/shared/stores/idlingStore'
 import { getAccountKey, useSessionStore } from '@/shared/stores/sessionStore'
 import { logFrontendInfo } from '@/shared/utils/frontendLogging'
 import { invoke } from '@/shared/utils/invoke'
+import { showErrorToast } from '@/shared/utils/showErrorToast'
 
 // The command each owner's per-section "Stop" needs to call. Card-farming/achievement-unlocker
 // have a real per-account session loop that would just re-claim their games on its next tick if
@@ -99,7 +99,7 @@ export const useIdling = (games: OwnedGame[]) => {
   // CLAUDE.md's "use toasts for one-off action feedback" frontend convention).
   const reportFailure = useCallback(
     (code: string) => {
-      toast.danger(t(errorMessageKey(code), { code }))
+      showErrorToast(t(errorMessageKey(code), { code }), code, t('common.learnMore'))
     },
     [t],
   )

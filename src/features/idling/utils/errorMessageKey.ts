@@ -1,4 +1,5 @@
 import type { TranslationKey } from '@/i18n'
+import { LOCAL_STEAM_ERROR_KEYS } from '@/shared/utils/localSteamErrorKeys'
 
 // Maps a stable error code (see src-tauri/src/error.rs::AppError::code) to a translation key -
 // covers both the top-level errors `set_idle_games`/`get_idle_state` can throw (agent mode only -
@@ -13,7 +14,7 @@ const KNOWN_ERROR_KEYS: Record<string, TranslationKey> = {
   steam_utility_exe_not_found: 'common.errors.steamUtilityMissing',
   agent_process_spawn_failed: 'common.errors.processSpawnFailed',
   idle_process_start_failed: 'dashboard.idling.errors.startFailed',
-  steam_not_running: 'common.errors.steamNotRunning',
+  ...LOCAL_STEAM_ERROR_KEYS,
   max_playtime_cap_reached: 'dashboard.idling.errors.maxPlaytimeCapReached',
 }
 

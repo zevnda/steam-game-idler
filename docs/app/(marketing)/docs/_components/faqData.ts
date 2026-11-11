@@ -142,7 +142,7 @@ export const faqData = [
       '**Can I idle family shared games?**\n' +
       '> Yes. Games shared with you through Steam Families appear in your games list alongside your own, so you can idle them, add them to Favorites and Auto-Idle, and manage their achievements.\n' +
       '>\n' +
-      "> Only one person can play a shared copy at a time, so a shared game can't be idled while someone else in your family is playing it. Shared games also don't drop trading cards, because cards only drop for the account that owns the game.",
+      "> Only one person can play a shared copy at a time, and whoever started first keeps it. That includes games you own that someone in your family is borrowing. With Steam Sign-in, SGI pauses idling just that game while they play (its timer shows a pause icon) and picks it back up a few seconds after they stop, while your other games keep idling. With Local Sign-in, the game won't start idling and SGI tells you why. Shared games also don't drop trading cards, because cards only drop for the account that owns the game.",
   },
   {
     question: 'Why am I unable to idle some games?',
@@ -253,9 +253,43 @@ export const faqData = [
     question: "Steam isn't running. Please start Steam and try again.",
     markdown:
       "**Steam isn't running. Please start Steam and try again.**\n" +
-      '> This only affects accounts using [Local Sign-in](/docs/get-started/how-to-sign-in#local-sign-in) — this method requires the Steam client to be running, and you must be signed in to the same account you are currently signed in to SGI with.\n' +
+      '> This only affects accounts using [Local Sign-in](/docs/get-started/how-to-sign-in#local-sign-in), which needs the Steam client running. Start Steam, sign in to the same account you use in SGI, then try again.\n' +
       '>\n' +
       "> If you'd rather not depend on the Steam client at all, switch to [Steam Sign-in](/docs/get-started/how-to-sign-in#steam-sign-in) instead.",
+  },
+  {
+    question:
+      "Steam is open but isn't signed in yet. Sign in to Steam, or wait for it to finish starting, then try again.",
+    markdown:
+      "**Steam is open but isn't signed in yet. Sign in to Steam, or wait for it to finish starting, then try again.**\n" +
+      "> This only affects [Local Sign-in](/docs/get-started/how-to-sign-in#local-sign-in). The Steam client is running, but it hasn't finished loading your account. Either it's still starting up, or it's sitting on its sign-in screen.\n" +
+      '>\n' +
+      '> SGI already waits about 20 seconds for Steam to finish starting before showing this. If you see it, make sure Steam is signed in to the same account you use in SGI and that its library has loaded, then try again.',
+  },
+  {
+    question: "The Steam account signed in on this PC doesn't own this game.",
+    markdown:
+      "**The Steam account signed in on this PC doesn't own this game.**\n" +
+      "> This only affects [Local Sign-in](/docs/get-started/how-to-sign-in#local-sign-in). The Steam client told SGI that the account it is signed in to doesn't own the game. The usual causes are:\n" +
+      '> * The Steam client is signed in to a different account than the one you use in SGI. Switch Steam to the right account\n' +
+      '> * The game was refunded, removed from your library, or is no longer shared with you through Steam Families\n' +
+      '>\n' +
+      '> Refresh your games list to remove games you no longer have access to.',
+  },
+  {
+    question:
+      "Steam wouldn't load this game right now. If it's shared through Steam Families, another user may be playing it. Try again once they've stopped.",
+    markdown:
+      "**Steam wouldn't load this game right now. If it's shared through Steam Families, another user may be playing it. Try again once they've stopped.**\n" +
+      '> This only affects [Local Sign-in](/docs/get-started/how-to-sign-in#local-sign-in). Your account has access to the game, but Steam refused to start it.\n' +
+      '>\n' +
+      '> The usual cause is Steam Families: only one person can play a shared copy at a time, so a shared game is locked while someone else in your family is playing it. It becomes available again as soon as they stop. The [Achievement Unlocker](/docs/features/achievement-unlocker) keeps a locked game in its queue and tries it again every minute, rather than removing it.',
+  },
+  {
+    question: 'Your Steam client is out of date. Restart Steam so it can update, then try again.',
+    markdown:
+      '**Your Steam client is out of date. Restart Steam so it can update, then try again.**\n' +
+      '> This only affects [Local Sign-in](/docs/get-started/how-to-sign-in#local-sign-in). Your Steam client is older than the version SGI was built for. Fully exit Steam (right-click its tray icon, then **Exit**) and start it again so it installs its pending update.',
   },
   {
     question: "Couldn't find a local Steam installation.",

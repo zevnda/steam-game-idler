@@ -153,6 +153,7 @@ pub fn run() {
             games::commands::delete_owned_games_cache,
             games::commands::resolve_account_steam_id,
             idling::commands::get_idle_state,
+            idling::commands::get_family_locked_games,
             idling::commands::toggle_manual_idle,
             idling::commands::stop_all_idling,
             idling::commands::get_idle_claims,

@@ -1,5 +1,7 @@
 using System;
 using System.Threading;
+using SteamUtility.Backends;
+using SteamUtility.Core.Errors;
 using SteamUtility.Core.Json;
 using Steamworks;
 
@@ -30,13 +32,16 @@ namespace SteamUtility.Cli.Commands
 
             var appName = args.Length >= 3 ? args[2] : "Idling";
 
-            Environment.SetEnvironmentVariable("SteamAppId", appId.ToString());
-
-            if (!SteamAPI.Init())
+            try
             {
-                Console.WriteLine(
-                    JsonEnvelope.SerializeResponse(null, false, error: "steam_not_running")
-                );
+                SteamworksInit.InitOrThrow(appId);
+            }
+            catch (SteamUtilityException ex)
+            {
+                // Same specific codes every other CLI command reports (see SteamworksInit), so the
+                // Idling page can say why a game won't idle instead of "Steam isn't running".
+                var (code, _) = ExceptionMapper.Map(ex, "Cli.idle");
+                Console.WriteLine(JsonEnvelope.SerializeResponse(null, false, error: code));
                 return 1;
             }
 

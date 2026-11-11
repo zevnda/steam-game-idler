@@ -88,6 +88,11 @@ pub struct AgentProcess {
     /// reads this directly; `AgentManager::set_idle_games` doesn't wait for it (see that method's
     /// doc comment for why).
     idle_app_ids: Arc<StdMutex<Vec<u32>>>,
+    /// The subset of `idle_app_ids` Steam Families is holding back because someone else in the
+    /// family is playing it - still wanted, just not announced until it frees up (see
+    /// `libs/SteamUtility/Daemon/Bot/IdlingManager.cs`). Learned from the same `idle_state` events;
+    /// `idling::commands::get_family_locked_games` reads it for a page that mounts mid-lock.
+    family_locked_app_ids: Arc<StdMutex<Vec<u32>>>,
     /// Last-reported playing-session state - see [`PlayingSession`].
     playing_session: Arc<StdMutex<PlayingSession>>,
 }
@@ -128,6 +133,7 @@ impl AgentProcess {
         let account_key: Arc<StdMutex<String>> = Arc::new(StdMutex::new(account_key));
         let steam_id: Arc<StdMutex<Option<String>>> = Arc::new(StdMutex::new(None));
         let idle_app_ids: Arc<StdMutex<Vec<u32>>> = Arc::new(StdMutex::new(Vec::new()));
+        let family_locked_app_ids: Arc<StdMutex<Vec<u32>>> = Arc::new(StdMutex::new(Vec::new()));
         let playing_session: Arc<StdMutex<PlayingSession>> =
             Arc::new(StdMutex::new(PlayingSession::default()));
 
@@ -139,6 +145,7 @@ impl AgentProcess {
             ProcessState {
                 steam_id: steam_id.clone(),
                 idle_app_ids: idle_app_ids.clone(),
+                family_locked_app_ids: family_locked_app_ids.clone(),
                 playing_session: playing_session.clone(),
             },
         );
@@ -155,6 +162,7 @@ impl AgentProcess {
             account_key,
             steam_id,
             idle_app_ids,
+            family_locked_app_ids,
             playing_session,
         })
     }
@@ -168,6 +176,12 @@ impl AgentProcess {
     /// The daemon's last-reported idling set - see the `idle_app_ids` field doc comment.
     pub fn idle_app_ids(&self) -> Vec<u32> {
         self.idle_app_ids.lock().unwrap().clone()
+    }
+
+    /// The idled games Steam Families is holding back - see the `family_locked_app_ids` field doc
+    /// comment.
+    pub fn family_locked_app_ids(&self) -> Vec<u32> {
+        self.family_locked_app_ids.lock().unwrap().clone()
     }
 
     /// The daemon's last-reported playing-session state - see [`PlayingSession`].
@@ -235,11 +249,26 @@ impl AgentProcess {
     }
 }
 
+/// Reads an event payload field holding a list of app ids - missing or malformed reads as empty,
+/// since an older daemon simply doesn't send newer fields (e.g. `familyLockedAppIds`).
+fn app_id_list(payload: &HashMap<String, serde_json::Value>, field: &str) -> Vec<u32> {
+    payload
+        .get(field)
+        .and_then(|v| v.as_array())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|v| v.as_u64().map(|n| n as u32))
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
 /// The event-derived caches `handle_line` keeps current for one `AgentProcess` - bundled so each
 /// new cache doesn't widen every reader-side function signature by one more parameter.
 struct ProcessState {
     steam_id: Arc<StdMutex<Option<String>>>,
     idle_app_ids: Arc<StdMutex<Vec<u32>>>,
+    family_locked_app_ids: Arc<StdMutex<Vec<u32>>>,
     playing_session: Arc<StdMutex<PlayingSession>>,
 }
 
@@ -299,6 +328,7 @@ async fn handle_line(
     let ProcessState {
         steam_id,
         idle_app_ids,
+        family_locked_app_ids,
         playing_session,
     } = process_state;
     let message: IpcMessage = match serde_json::from_str(line) {
@@ -467,19 +497,37 @@ async fn handle_line(
             // gets its own unified event rather than requiring the frontend to filter/branch on
             // `steam-agent-event` by sign-in mode.
             if name == "idle_state" {
-                let ids: Vec<u32> = payload
-                    .get("appIds")
-                    .and_then(|v| v.as_array())
-                    .map(|arr| {
-                        arr.iter()
-                            .filter_map(|v| v.as_u64().map(|n| n as u32))
-                            .collect()
-                    })
-                    .unwrap_or_default();
+                let ids = app_id_list(&payload, "appIds");
+                let family_locked = app_id_list(&payload, "familyLockedAppIds");
                 *idle_app_ids.lock().unwrap() = ids.clone();
+                let previously_locked = std::mem::replace(
+                    &mut *family_locked_app_ids.lock().unwrap(),
+                    family_locked.clone(),
+                );
+                // Unlike the routine `idle_state` echo above, a Steam Families lock changing is a
+                // real lifecycle event ("why did this one game stop idling?"), so it's logged at
+                // info - the daemon's own line says who holds the game.
+                if previously_locked != family_locked {
+                    if family_locked.is_empty() {
+                        tracing::info!(
+                            account = %key,
+                            "idling: no games held back by Steam Families anymore"
+                        );
+                    } else {
+                        tracing::info!(
+                            account = %key,
+                            family_locked_app_ids = ?family_locked,
+                            "idling: games held back because someone else in the Steam family is playing them"
+                        );
+                    }
+                }
                 let _ = app_handle.emit(
                     crate::idling::IDLE_STATE_EVENT,
-                    serde_json::json!({ "account": key, "appIds": ids }),
+                    serde_json::json!({
+                        "account": key,
+                        "appIds": ids,
+                        "familyLockedAppIds": family_locked,
+                    }),
                 );
             }
 
