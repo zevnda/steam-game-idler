@@ -1,4 +1,5 @@
 import type { TranslationKey } from '@/i18n'
+import { LOCAL_STEAM_ERROR_KEYS } from '@/shared/utils/localSteamErrorKeys'
 
 // Maps a stable error code (see src-tauri/src/error.rs::AppError::code) to a translation key,
 // covering the codes reachable from get_owned_games/get_owned_games_cache. Unrecognized codes
@@ -10,7 +11,9 @@ import type { TranslationKey } from '@/i18n'
 // `ownership_check_failed` no longer exists (Step 14 removed `AppError::OwnershipCheckFailed` once
 // `local_steam::ownership` switched to `steam_utility_exe::run_and_parse`, which forwards
 // SteamUtility's real domain code instead of always wrapping failures in one generic code) - CLI-mode
-// ownership failures now fall through to the generic message below with the real code attached.
+// ownership failures caused by the local Steam client itself (closed, signed out, still starting)
+// get LOCAL_STEAM_ERROR_KEYS' messages; anything else falls through to the generic message below
+// with the real code attached.
 // Typed as `Record<string, TranslationKey>` (see src/i18n/index.ts's `TranslationKey` doc comment).
 const KNOWN_ERROR_KEYS: Record<string, TranslationKey> = {
   agent_session_not_found: 'common.errors.sessionNotFound',
@@ -22,6 +25,7 @@ const KNOWN_ERROR_KEYS: Record<string, TranslationKey> = {
   steam_api_response_invalid: 'dashboard.games.errors.webApiUnavailable',
   steam_api_key_missing: 'dashboard.games.errors.webApiUnavailable',
   games_cache_io_failed: 'dashboard.games.errors.cacheIoFailed',
+  ...LOCAL_STEAM_ERROR_KEYS,
 }
 
 // A separate typed constant, not an inline literal - an explicit return-type annotation on an

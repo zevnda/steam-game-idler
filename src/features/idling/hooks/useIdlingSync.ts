@@ -13,6 +13,9 @@ interface IdleStateEventPayload {
   // this field always means "the one signed-in CLI-mode account, whichever that is."
   account?: string
   appIds: number[]
+  // Agent mode only - the subset Steam Families is holding back (see idlingStore's
+  // familyLockedSince). Absent for CLI mode, where a locked game never starts idling at all.
+  familyLockedAppIds?: number[]
 }
 
 // Matches src-tauri/src/idling/mod.rs's IDLE_STATE_EVENT constant.
@@ -66,6 +69,7 @@ export const useIdlingSync = () => {
   const setActiveAccount = useIdlingStore(state => state.setActiveAccount)
   const setAppIds = useIdlingStore(state => state.setAppIds)
   const setClaimsByOwner = useIdlingStore(state => state.setClaimsByOwner)
+  const setFamilyLocked = useIdlingStore(state => state.setFamilyLocked)
 
   useEffect(() => {
     if (!account) return
@@ -84,6 +88,14 @@ export const useIdlingSync = () => {
         console.error('Error in (get_idle_state):', error)
       })
 
+    invoke<number[]>('get_family_locked_games', { account })
+      .then(appIds => {
+        if (!cancelled) setFamilyLocked(key, appIds)
+      })
+      .catch(error => {
+        console.error('Error in (get_family_locked_games):', error)
+      })
+
     const unlisten = listen<IdleStateEventPayload>(IDLE_STATE_EVENT, event => {
       const eventKey = event.payload.account
         ? getAccountKey({ mode: 'agent', username: event.payload.account })
@@ -91,6 +103,7 @@ export const useIdlingSync = () => {
       const eventAccount = eventKey ? useSessionStore.getState().accounts[eventKey] : undefined
       if (eventKey && eventAccount) {
         setAppIds(eventKey, event.payload.appIds)
+        setFamilyLocked(eventKey, event.payload.familyLockedAppIds ?? [])
         syncClaims(eventKey, eventAccount, setClaimsByOwner)
       }
     })
@@ -99,5 +112,5 @@ export const useIdlingSync = () => {
       cancelled = true
       unlisten.then(fn => fn())
     }
-  }, [account, setActiveAccount, setAppIds, setClaimsByOwner])
+  }, [account, setActiveAccount, setAppIds, setClaimsByOwner, setFamilyLocked])
 }

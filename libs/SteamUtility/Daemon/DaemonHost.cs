@@ -34,6 +34,21 @@ namespace SteamUtility.Daemon
         private FreeLicenseManager _freeLicenseManager = null!;
         private AchievementProgressManager _achievementProgressManager = null!;
 
+        // `appIds` is everything the host asked to idle; `familyLockedAppIds` the subset Steam
+        // Families is holding back because someone else in the family is playing it (see
+        // IdlingManager) - still wanted, just not announced until it's free.
+        private void SendIdleState()
+        {
+            IpcServer.SendEvent(
+                "idle_state",
+                new
+                {
+                    appIds = _idlingManager.CurrentAppIds,
+                    familyLockedAppIds = _idlingManager.FamilyLockedAppIds,
+                }
+            );
+        }
+
         public int Run(string[] args)
         {
             Log.Info("Daemon", "Starting daemon (agent) mode");
@@ -92,7 +107,7 @@ namespace SteamUtility.Daemon
                 // desired set across any disconnect so it can re-announce after a normal reconnect.
                 // Empty it and report that, or the host would keep showing these games as idling.
                 _idlingManager.SetGames(new List<uint>());
-                IpcServer.SendEvent("idle_state", new { appIds = _idlingManager.CurrentAppIds });
+                SendIdleState();
                 // Sent ahead of the status_changed pair that follows this rejection: the first of
                 // those clears the Rust host's cached SteamID64, which it needs to find and stop
                 // this account's automation - see steam_agent/process.rs's handle_line.
@@ -108,6 +123,10 @@ namespace SteamUtility.Daemon
                     new { blocked, appId = appId == 0 ? (uint?)null : appId }
                 );
             };
+
+            // A Steam Families lock changes which games are actually being played without any
+            // idle_set from the host - see IdlingManager's class comment.
+            _idlingManager.FamilyLockChanged += SendIdleState;
 
             _bot.Start();
 
@@ -220,10 +239,7 @@ namespace SteamUtility.Daemon
                         var appIds = request.AppIds ?? new List<uint>();
                         _idlingManager.SetGames(appIds, request.GameExtraInfo);
                         IpcServer.SendResponse(request.Id, true);
-                        IpcServer.SendEvent(
-                            "idle_state",
-                            new { appIds = _idlingManager.CurrentAppIds }
-                        );
+                        SendIdleState();
                         break;
                     }
 

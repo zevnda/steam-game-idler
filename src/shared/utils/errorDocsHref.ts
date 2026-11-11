@@ -12,6 +12,18 @@ const ERROR_DOCS_HREFS: Record<string, string> = {
     'https://steamgameidler.com/docs/faq#error-messages:~:text=Steam%20is%20rate%2Dlimiting%20price%20lookups',
   family_view_restricted:
     'https://steamgameidler.com/docs/faq#error-messages:~:text=Family%20View%20is%20enabled%20on%20your%20Steam%20account',
+  // Local Sign-in's local Steam client states - see LOCAL_STEAM_ERROR_KEYS. Each fragment is the
+  // start of the matching FAQ entry's title, which is the app's exact message.
+  steam_not_running:
+    'https://steamgameidler.com/docs/faq#error-messages:~:text=Steam%20isn%27t%20running',
+  steam_not_ready:
+    'https://steamgameidler.com/docs/faq#error-messages:~:text=Steam%20is%20open%20but%20isn%27t%20signed%20in%20yet',
+  steam_client_outdated:
+    'https://steamgameidler.com/docs/faq#error-messages:~:text=Your%20Steam%20client%20is%20out%20of%20date',
+  game_not_owned:
+    'https://steamgameidler.com/docs/faq#error-messages:~:text=The%20Steam%20account%20signed%20in%20on%20this%20PC%20doesn%27t%20own%20this%20game',
+  steam_game_unavailable:
+    'https://steamgameidler.com/docs/faq#error-messages:~:text=Steam%20wouldn%27t%20load%20this%20game%20right%20now',
 }
 
 export const errorDocsHref = (code: string) => ERROR_DOCS_HREFS[code]

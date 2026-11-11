@@ -208,7 +208,7 @@ This page covers common issues and their solutions when using Steam Game Idler.
     - Reopen the Steam client and make sure you're signed in to the same account
     - This doesn't affect [Steam Sign-in](/docs/get-started/how-to-sign-in#steam-sign-in) accounts, since they don't need a local Steam client at all
 
-    You may also see this as **"Steam isn't running. Please start Steam and try again."** on a specific action (starting idling, unlocking an achievement, etc.) rather than as a standing banner — same cause, same fix.
+    You may also see this as **"Steam isn't running. Please start Steam and try again."** on a specific action (starting idling, unlocking an achievement, etc.) rather than as a standing banner — same cause, same fix. If Steam is open but you see **"Steam is open but isn't signed in yet. Sign in to Steam, or wait for it to finish starting, then try again."**, Steam is still starting up or is on its sign-in screen — sign in, wait for your library to load, then try again.
   </Accordion>
 
   <Accordion title="Signed in, but my games list is empty or incomplete" id="empty-games-list">
@@ -228,7 +228,13 @@ This page covers common issues and their solutions when using Steam Game Idler.
     - If you recently reinstalled SGI, make sure `SteamUtility.exe` wasn't removed by your antivirus (see [Antivirus or Windows Defender is blocking SGI](#antivirus-blocking))
     - Close and reopen SGI, then try idling the game again
 
-    If you see **"Couldn't start idling this game."**, this is the generic idle-start failure above — check the log file for the specific underlying reason (it's usually one of the causes listed here).
+    With **Local Sign-in**, SGI tells you the specific reason when Steam itself refuses the game:
+
+    - **"The Steam account signed in on this PC doesn't own this game."** — the Steam client is signed in to a different account than the one you use in SGI, or the game is no longer in your library
+    - **"Steam wouldn't load this game right now. If it's shared through Steam Families, another user may be playing it. Try again once they've stopped."** — a family-shared game is locked while someone else in your family is playing it. It becomes available again as soon as they stop
+    - **"Your Steam client is out of date. Restart Steam so it can update, then try again."** — fully exit Steam from its tray icon and start it again
+
+    If you see **"Couldn't start idling this game."**, the idle process closed without saying why — check the log file for the underlying reason (it's usually one of the causes listed here).
   </Accordion>
 
   <Accordion title="A game shows as idling in SGI but Steam doesn't show it as 'Currently in game'" id="idle-not-reflected">

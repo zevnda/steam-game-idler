@@ -1,10 +1,12 @@
 import type { TranslationKey } from '@/i18n'
 import type { CurrentOs } from '@/shared/stores/platformStore'
+import { LOCAL_STEAM_ERROR_KEYS } from '@/shared/utils/localSteamErrorKeys'
 
 // Maps a stable error code (see src-tauri/src/error.rs::AppError::code) to a translation key -
 // covers the codes reachable from get_achievement_data/set_achievement/unlock_all_achievements/
-// lock_all_achievements/update_stats/reset_all_stats. The SteamUtility-native domain codes
-// (steam_not_running, invalid_app_id, achievement_not_found, achievement_protected, stat_not_found,
+// lock_all_achievements/update_stats/reset_all_stats. The local Steam client's codes come from the
+// shared LOCAL_STEAM_ERROR_KEYS. The SteamUtility-native domain codes
+// (invalid_app_id, achievement_not_found, achievement_protected, stat_not_found,
 // stat_protected, unsupported_game_coordinator) are forwarded verbatim through AppError::SteamUtility
 // (CLI mode) or AppError::Agent (agent mode, where applicable) - see
 // libs/SteamUtility/Core/Errors/SteamUtilityExceptions.cs for where they originate. Typed as
@@ -14,7 +16,7 @@ const KNOWN_ERROR_KEYS: Record<string, TranslationKey> = {
   agent_steam_id_unknown: 'common.errors.steamIdUnknown',
   agent_request_timeout: 'common.errors.timeout',
   agent_process_exited: 'common.errors.processExited',
-  steam_not_running: 'common.errors.steamNotRunning',
+  ...LOCAL_STEAM_ERROR_KEYS,
   invalid_app_id: 'dashboard.achievements.errors.invalidApp',
   achievement_not_found: 'dashboard.achievements.errors.achievementNotFound',
   achievement_protected: 'dashboard.achievements.errors.protected',

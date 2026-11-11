@@ -1,4 +1,5 @@
 import type { TranslationKey } from '@/i18n'
+import { LOCAL_STEAM_ERROR_KEYS } from '@/shared/utils/localSteamErrorKeys'
 
 // Maps a stable error code (see src-tauri/src/error.rs::AppError::code) to a translation key -
 // covers what `get_games_with_drops`/`start_farming`/`stop_farming`/`get_farming_state` can throw
@@ -13,7 +14,7 @@ const KNOWN_ERROR_KEYS: Record<string, TranslationKey> = {
   steam_utility_exe_not_found: 'common.errors.steamUtilityMissing',
   agent_process_spawn_failed: 'common.errors.processSpawnFailed',
   agent_steam_id_unknown: 'common.errors.steamIdUnknown',
-  steam_not_running: 'common.errors.steamNotRunning',
+  ...LOCAL_STEAM_ERROR_KEYS,
   // Renamed from `card_farming_session_failed` when the underlying logic moved into the shared
   // `steam_community` module (inventory-manager surfaces this same code too).
   steam_community_session_failed: 'dashboard.cardFarming.errors.sessionFailed',

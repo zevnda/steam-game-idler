@@ -15,6 +15,7 @@ import { AchievementsViewSkeleton, StatisticsViewSkeleton } from './AchievementM
 import { AchievementsView } from './AchievementsView'
 import { StatisticsView } from './StatisticsView'
 import { Alert, AlertDialog, Button, Modal } from '@heroui/react'
+import { ErrorDocsLink } from '@/shared/components/ErrorDocsLink'
 import { useAchievementManagerStore } from '@/shared/stores/achievementManagerStore'
 import { usePlatformStore } from '@/shared/stores/platformStore'
 import { switchViewWithTransition } from '@/shared/utils/pageTransition'
@@ -143,6 +144,7 @@ export const AchievementManagerOverlay = () => {
                       <Alert.Description>
                         {t(errorMessageKey(loadErrorCode, currentOs), { code: loadErrorCode })}
                       </Alert.Description>
+                      <ErrorDocsLink code={loadErrorCode} />
                     </Alert.Content>
                   </Alert>
                   <Button variant='secondary' onPress={refresh}>

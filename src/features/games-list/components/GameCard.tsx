@@ -51,7 +51,10 @@ export const GameCard = ({
         </>
       }
       appId={game.appId}
-      badge={isIdling && idleStartTime !== undefined && <IdleTimer startTime={idleStartTime} />}
+      badge={
+        isIdling &&
+        idleStartTime !== undefined && <IdleTimer appId={game.appId} startTime={idleStartTime} />
+      }
       name={displayName}
     />
   )

@@ -135,7 +135,9 @@ pub enum CompletedUnlockReason {
     /// Scanned but had nothing eligible to unlock - already fully achieved, every remaining
     /// achievement is hidden with "skip hidden" on, the schema has a protected achievement (see
     /// `scan_game`'s doc comment), or the scan itself failed (settings/achievement-data read error,
-    /// already logged separately as a `tracing::warn!` at the failure site).
+    /// already logged separately as a `tracing::warn!` at the failure site). Not used when the
+    /// failure is a local Steam client that's temporarily unavailable - that game stays queued
+    /// instead (see `manager::ScanOutcome`).
     NothingToUnlock,
 }
 
@@ -180,4 +182,31 @@ pub struct AchievementUnlockerState {
     pub recent: Vec<RecentUnlock>,
     /// Games scanned this pass and waiting for a free worker, in run order - see [`QueuedUnlock`].
     pub queued: Vec<QueuedUnlock>,
+    /// Set only while the session sits between passes because CLI mode's local Steam client
+    /// couldn't serve any queued game - see [`WaitingForSteam`].
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub waiting: Option<WaitingForSteam>,
+}
+
+/// Why a running session has nothing to unlock right now and when it tries again - the games are
+/// still queued, not finished (see `manager::ScanOutcome`). Without this the running screen showed
+/// an unexplained empty "0 of 0" for as long as Steam stayed unavailable.
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct WaitingForSteam {
+    /// The SteamUtility error code that held the games back (e.g. `steam_game_unavailable`) - the
+    /// frontend shows the same message it shows for that code anywhere else.
+    pub reason: String,
+    /// The games held back for a reason specific to them (a Steam Families lock). Empty when the
+    /// whole client is unavailable, since that holds back every queued game alike.
+    pub games: Vec<WaitingGame>,
+    /// Unix millis of the next scan pass.
+    pub retry_at_ms: i64,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct WaitingGame {
+    pub app_id: u32,
+    pub name: String,
 }

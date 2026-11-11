@@ -9,9 +9,18 @@ interface IdlingEntry {
   // alongside appIds rather than derived from it since it comes from a separate backend command
   // (get_idle_claims) - see useIdlingSync's doc comment for why.
   claimsByOwner: Record<string, number[]>
+  // Agent mode only: idled app ids Steam Families is holding back because someone else in the
+  // family is playing them (see libs/SteamUtility/Daemon/Bot/IdlingManager.cs), mapped to when this
+  // session first saw each one locked - still in appIds, just not actually idling until it frees up.
+  familyLockedSince: Record<number, number>
 }
 
-const EMPTY_ENTRY: IdlingEntry = { appIds: [], startTimes: {}, claimsByOwner: {} }
+const EMPTY_ENTRY: IdlingEntry = {
+  appIds: [],
+  startTimes: {},
+  claimsByOwner: {},
+  familyLockedSince: {},
+}
 
 interface IdlingStore {
   // Which entry the denormalized appIds/startTimes below currently mirror - mirrors
@@ -24,6 +33,7 @@ interface IdlingStore {
   appIds: number[]
   startTimes: Record<number, number>
   claimsByOwner: Record<string, number[]>
+  familyLockedSince: Record<number, number>
   // Makes `key` the active account, seeding an empty entry the first time it's seen and pointing
   // the denormalized view at whatever it already has cached otherwise - never touches any other
   // account's entry. Called from useIdlingSync only, same as gamesListStore's setActiveAccount.
@@ -36,6 +46,10 @@ interface IdlingStore {
   // Replaces `key`'s owner-claims breakdown wholesale - fetched separately from appIds (see
   // useIdlingSync), so it has its own setter rather than being folded into setAppIds.
   setClaimsByOwner: (key: AccountKey, claimsByOwner: Record<string, number[]>) => void
+  // Replaces `key`'s family-locked app ids. A game whose lock just lifted has its start timestamp
+  // moved forward by however long it was locked, so its elapsed-time badge only counts time it
+  // actually spent idling.
+  setFamilyLocked: (key: AccountKey, appIds: number[]) => void
   // Drops one account's entry entirely (sign-out) - mirrors gamesListStore's clearEntry.
   clearEntry: (key: AccountKey) => void
 }
@@ -53,6 +67,7 @@ export const useIdlingStore = create<IdlingStore>((set, get) => ({
   appIds: [],
   startTimes: {},
   claimsByOwner: {},
+  familyLockedSince: {},
   setActiveAccount: key => {
     const { entries } = get()
     const entry = entries[key] ?? EMPTY_ENTRY
@@ -75,6 +90,7 @@ export const useIdlingStore = create<IdlingStore>((set, get) => ({
       appIds,
       startTimes,
       claimsByOwner: prevEntry?.claimsByOwner ?? {},
+      familyLockedSince: prevEntry?.familyLockedSince ?? {},
     }
     set({
       entries: { ...state.entries, [key]: entry },
@@ -85,6 +101,27 @@ export const useIdlingStore = create<IdlingStore>((set, get) => ({
     const state = get()
     const prevEntry = state.entries[key] ?? EMPTY_ENTRY
     const entry: IdlingEntry = { ...prevEntry, claimsByOwner }
+    set({
+      entries: { ...state.entries, [key]: entry },
+      ...(state.accountKey === key ? entry : {}),
+    })
+  },
+  setFamilyLocked: (key, appIds) => {
+    const state = get()
+    const prevEntry = state.entries[key] ?? EMPTY_ENTRY
+    const now = Date.now()
+    const familyLockedSince: Record<number, number> = {}
+    for (const appId of appIds) {
+      familyLockedSince[appId] = prevEntry.familyLockedSince[appId] ?? now
+    }
+    const startTimes = { ...prevEntry.startTimes }
+    for (const [appId, since] of Object.entries(prevEntry.familyLockedSince)) {
+      const id = Number(appId)
+      if (!(id in familyLockedSince) && startTimes[id] !== undefined) {
+        startTimes[id] += now - since
+      }
+    }
+    const entry: IdlingEntry = { ...prevEntry, startTimes, familyLockedSince }
     set({
       entries: { ...state.entries, [key]: entry },
       ...(state.accountKey === key ? entry : {}),

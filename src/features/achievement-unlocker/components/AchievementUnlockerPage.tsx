@@ -13,6 +13,7 @@ import {
   AchievementUnlockerOverview,
 } from './AchievementUnlockerRunView'
 import { AchievementUnlockerScanProgressCard } from './AchievementUnlockerScanProgressCard'
+import { AchievementUnlockerWaitingCard } from './AchievementUnlockerWaitingCard'
 import {
   Alert,
   AlertDialog,
@@ -242,8 +243,10 @@ export const AchievementUnlockerPage = () => {
           <RunScreen
             actions={pageActions}
             banner={
-              runState.scanProgress && (
+              runState.scanProgress ? (
                 <AchievementUnlockerScanProgressCard progress={runState.scanProgress} />
+              ) : (
+                runState.waiting && <AchievementUnlockerWaitingCard waiting={runState.waiting} />
               )
             }
             feature='achievementUnlocker'

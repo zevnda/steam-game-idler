@@ -117,6 +117,16 @@ export interface CompletedUnlock {
   reason: CompletedUnlockReason
 }
 
+// Mirrors src-tauri/src/achievement_unlocker/mod.rs::WaitingForSteam - set while a running session
+// is holding its queue because CLI mode's local Steam client couldn't serve any queued game.
+export interface AchievementUnlockerWaiting {
+  // A local-Steam error code (see LOCAL_STEAM_ERROR_KEYS), e.g. `steam_game_unavailable`
+  reason: string
+  // The games held back for a reason specific to them; empty when the whole client is unavailable
+  games: { appId: number; name: string }[]
+  retryAtMs: number
+}
+
 // Mirrors src-tauri/src/achievement_unlocker/mod.rs::AchievementUnlockerState.
 export interface AchievementUnlockerState {
   isRunning: boolean
@@ -128,6 +138,8 @@ export interface AchievementUnlockerState {
   unlockedThisSession: number
   recent: RecentUnlock[]
   queued: QueuedUnlock[]
+  // Omitted by the backend while not waiting
+  waiting?: AchievementUnlockerWaiting | null
 }
 
 export const DEFAULT_ACHIEVEMENT_UNLOCKER_STATE: AchievementUnlockerState = {

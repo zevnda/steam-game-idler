@@ -1,4 +1,5 @@
 import type { TranslationKey } from '@/i18n'
+import { LOCAL_STEAM_ERROR_KEYS } from '@/shared/utils/localSteamErrorKeys'
 
 // Maps a stable error code (see src-tauri/src/error.rs::AppError::code) to a translation key,
 // covering the codes reachable from the queue/settings/order commands
@@ -17,7 +18,7 @@ const KNOWN_ERROR_KEYS: Record<string, TranslationKey> = {
   achievement_order_io_failed: 'dashboard.achievementUnlocker.errors.orderIoFailed',
   // start_achievement_unlocker refuses while the Debug tab's library-wide lock/unlock is running.
   library_achievement_run_in_progress: 'dashboard.achievementUnlocker.errors.libraryRunInProgress',
-  steam_not_running: 'common.errors.steamNotRunning',
+  ...LOCAL_STEAM_ERROR_KEYS,
 }
 
 // A separate typed constant, not an inline literal - an explicit return-type annotation on an

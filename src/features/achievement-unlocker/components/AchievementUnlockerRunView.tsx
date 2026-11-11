@@ -88,10 +88,11 @@ const mergedPlan = (active: ActiveGameProgress[]) =>
     )
     .sort((a, b) => a.unlockAtMs - b.unlockAtMs)
 
-// While the queue is first being checked nothing is running yet, so every figure would read zero -
-// the scan card (RunScreen's banner) stands alone until a game starts.
+// While the queue is first being checked, or while the session waits for Steam (see
+// AchievementUnlockerWaitingCard), nothing is running, so every figure would read zero - the scan or
+// waiting card (RunScreen's banner) stands alone until a game starts.
 const isOnlyScanning = (state: AchievementUnlockerState) =>
-  state.scanProgress !== null && state.scanProgress !== undefined && state.active.length === 0
+  (Boolean(state.scanProgress) || Boolean(state.waiting)) && state.active.length === 0
 
 const stillToUnlock = (state: AchievementUnlockerState) =>
   state.active.reduce((sum, game) => sum + game.achievementCount, 0) +
@@ -424,7 +425,7 @@ const Timeline = ({ plan, showGame }: { plan: PlannedUnlock[]; showGame: boolean
           end at 46px, the line is 56-60px, dots are centred on it, labels start at 70px. */}
       <div className='relative mx-12 h-30'>
         <div className='absolute -inset-x-12 top-14 h-1 rounded-full bg-default' />
-        <span className='absolute left-0 top-[51px] size-3.5 -translate-x-1/2 rounded-full bg-accent shadow-[0_0_0_6px_color-mix(in_oklab,var(--accent)_25%,transparent)]' />
+        <span className='absolute left-0 top-12.75 size-3.5 -translate-x-1/2 rounded-full bg-accent shadow-[0_0_0_6px_color-mix(in_oklab,var(--accent)_25%,transparent)]' />
         {items.map((item, index) =>
           positions[index] > 100 ? null : (
             <div
@@ -440,7 +441,7 @@ const Timeline = ({ plan, showGame }: { plan: PlannedUnlock[]; showGame: boolean
                 />
               </div>
               <span
-                className='absolute left-1/2 top-[53px] size-2.5 -translate-x-1/2 rounded-full border-2 border-surface'
+                className='absolute left-1/2 top-13.25 size-2.5 -translate-x-1/2 rounded-full border-2 border-surface'
                 style={{
                   background: showGame
                     ? item.color
@@ -449,7 +450,7 @@ const Timeline = ({ plan, showGame }: { plan: PlannedUnlock[]; showGame: boolean
                       : 'var(--surface-tertiary)',
                 }}
               />
-              <div className='absolute inset-x-0 top-[70px] flex flex-col items-center gap-1 text-center'>
+              <div className='absolute inset-x-0 top-17.5 flex flex-col items-center gap-1 text-center'>
                 <span className={cn('font-mono text-xs font-bold', index === 0 && 'text-accent')}>
                   {index === 0
                     ? formatDuration((item.unlockAtMs - now) / 1000)

@@ -1,4 +1,5 @@
 import type { TranslationKey } from '@/i18n'
+import { LOCAL_STEAM_ERROR_KEYS } from '@/shared/utils/localSteamErrorKeys'
 
 // Maps a stable error code (see src-tauri/src/error.rs::AppError::code) to a translation key -
 // covers the codes reachable from get_settings/set_steam_web_api_key. Typed as
@@ -27,7 +28,7 @@ const DEBUG_ERROR_KEYS: Record<string, TranslationKey> = {
   // From set_all_owned_games_achievements - see src-tauri/src/achievements/library_run.rs.
   achievement_unlocker_running: 'dashboard.settings.debug.errors.achievementUnlockerRunning',
   library_achievement_run_in_progress: 'dashboard.settings.debug.errors.libraryRunInProgress',
-  steam_not_running: 'common.errors.steamNotRunning',
+  ...LOCAL_STEAM_ERROR_KEYS,
 }
 const DEBUG_GENERIC_KEY: TranslationKey = 'common.errors.generic'
 

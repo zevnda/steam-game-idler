@@ -29,6 +29,7 @@ import { useIdlingStore } from '@/shared/stores/idlingStore'
 import { emitGameListChange } from '@/shared/utils/gameListsBus'
 import { invoke } from '@/shared/utils/invoke'
 import { openExternalLink } from '@/shared/utils/links'
+import { showErrorToast } from '@/shared/utils/showErrorToast'
 
 interface BuildGameCardMenuArgs {
   appId: number
@@ -38,7 +39,7 @@ interface BuildGameCardMenuArgs {
 }
 
 function reportFailure(t: TFunction, code: string) {
-  toast.danger(t(errorMessageKey(code), { code }))
+  showErrorToast(t(errorMessageKey(code), { code }), code, t('common.learnMore'))
 }
 
 async function toggleIdling(appId: number, name: string, account: SignedInAccount, t: TFunction) {

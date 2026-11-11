@@ -396,6 +396,16 @@ namespace SteamUtility.Backends
                 }
             }
 
+            // While Steam is still starting or sits at its sign-in screen, the interop connects
+            // fine but reports nothing owned - an empty library that looks like a real answer.
+            // App 7 ("Steam Client", owned by every account) tells the two apart; see
+            // SteamworksInit's doc comment. Only checked when nothing else was owned, so an
+            // account that somehow lacks app 7 still gets its real library.
+            if (ownedAppIds.Count == 0 && !client.SteamApps008.IsSubscribedApp(7))
+            {
+                throw new SteamNotReadyException();
+            }
+
             // One appinfo.vdf pass covering every owned app, in the client's own configured
             // language, instead of the previous flat/unlocalized GetAppData("name") call - see
             // AppInfoReader's doc comment for why GetAppData has no localized-name equivalent.

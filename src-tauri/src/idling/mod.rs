@@ -52,7 +52,8 @@ pub struct IdleFailure {
 /// Tauri event both backends emit into so the frontend needs exactly one `listen()` call for
 /// "what's currently idling changed," regardless of sign-in mode - mirrors what `GamesAccount`
 /// already does for commands, extended to events. Payload is `{"appIds": [u32, ...]}` plus, for
-/// agent mode only, an `"account"` field carrying the username (see
+/// agent mode only, `"familyLockedAppIds"` (the subset Steam Families is holding back, see
+/// `commands::get_family_locked_games`) and an `"account"` field carrying the username (see
 /// `steam_agent::process::handle_line`'s `idle_state` handling) so the frontend can distinguish
 /// which of several concurrently-signed-in agent accounts an event belongs to.
 /// **Deliberately still omitted for CLI mode**: the real local Steam client can only ever be
