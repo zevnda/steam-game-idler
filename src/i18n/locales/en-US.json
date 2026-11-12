@@ -189,7 +189,8 @@
     "show": "Show",
     "recenter": "Reset Window Position",
     "update": "Check for updates..",
-    "quit": "Quit"
+    "quit": "Quit",
+    "noUpdates": "No updates available"
   },
   "proMode": {
     "hero": {
