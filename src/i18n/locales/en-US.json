@@ -376,7 +376,9 @@
     },
     "hero": {
       "idle": "Idle",
-      "farm": "Farm"
+      "farm": "Farm",
+      "unlock": "Unlock",
+      "claim": "Claim"
     }
   },
   "dashboard": {

@@ -34,6 +34,13 @@ const ALLOWLIST = new Set([
   // today, unrelated meanings that many languages translate differently.
   'dashboard.inventoryManager.filter.locked',
   'dashboard.achievements.filters.locked',
+  // "Unlock" / "Claim" - auth.hero.* are the sign-in screen's big rotating headline words; the
+  // dashboard.* keys are action buttons. Translators asked for them split (Crowdin, Russian), since
+  // a button label and a headline word often take different grammatical forms.
+  'auth.hero.unlock',
+  'dashboard.achievements.actions.unlock',
+  'auth.hero.claim',
+  'dashboard.freeGames.actions.claim',
 ])
 
 const collectLeaves = (node, path, valuesOut, pathsOut) => {
