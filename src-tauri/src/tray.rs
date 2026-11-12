@@ -1,6 +1,8 @@
+use std::sync::Mutex;
+
 use tauri::menu::{Menu, MenuItem};
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
-use tauri::{image::Image, AppHandle, Emitter, Manager};
+use tauri::{image::Image, AppHandle, Emitter, Manager, State};
 use tauri_plugin_notification::NotificationExt;
 use tauri_plugin_updater::UpdaterExt;
 
@@ -12,6 +14,25 @@ use crate::platform;
 /// update that's about to restart the app.
 const TRAY_UPDATE_STARTED_EVENT: &str = "tray-update-started";
 const TRAY_UPDATE_FAILED_EVENT: &str = "tray-update-failed";
+
+/// English fallback for the "no updates" notification, used until the frontend has pushed the
+/// translated text (`update_tray_menu`). Matches `tray.noUpdates` in `en-US.json`.
+const DEFAULT_NO_UPDATES_TEXT: &str = "No updates available";
+
+/// Translated text for the tray's own native notifications. Rust has no access to i18next, so
+/// the frontend pushes these down with the menu labels (`useTraySync.ts`), and the tray's
+/// update check reads them from here.
+pub struct TrayStrings {
+    no_updates: Mutex<String>,
+}
+
+impl Default for TrayStrings {
+    fn default() -> Self {
+        Self {
+            no_updates: Mutex::new(DEFAULT_NO_UPDATES_TEXT.to_string()),
+        }
+    }
+}
 
 /// The only way to recover the window once `close_to_tray`/`start_minimized` has hidden it (see
 /// `settings::Settings` and `lib.rs::setup_window`) - a frameless/custom-chrome window has no OS
@@ -89,11 +110,19 @@ pub fn setup(app_handle: &AppHandle) -> tauri::Result<()> {
 #[tauri::command]
 pub fn update_tray_menu(
     app_handle: AppHandle,
+    strings: State<'_, TrayStrings>,
     show: String,
     recenter: String,
     update: String,
     quit: String,
+    no_updates: String,
 ) -> Result<(), String> {
+    // A poisoned lock only means a panic mid-write of a plain String; the value is still usable.
+    *strings
+        .no_updates
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner()) = no_updates;
+
     let show_item = MenuItem::with_id(&app_handle, "show", &show, true, None::<&str>)
         .map_err(|err| err.to_string())?;
     let recenter_item = MenuItem::with_id(&app_handle, "recenter", &recenter, true, None::<&str>)
@@ -236,12 +265,13 @@ fn recenter_window(app_handle: &AppHandle) {
 /// like one of its own installs.
 async fn check_for_updates(app_handle: &AppHandle) -> tauri_plugin_updater::Result<()> {
     let Some(update) = app_handle.updater()?.check().await? else {
-        if let Err(err) = app_handle
-            .notification()
-            .builder()
-            .title("No updates available")
-            .show()
-        {
+        let title = app_handle
+            .state::<TrayStrings>()
+            .no_updates
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner())
+            .clone();
+        if let Err(err) = app_handle.notification().builder().title(title).show() {
             tracing::warn!(?err, "tray: failed to show no-update notification");
         }
         return Ok(());

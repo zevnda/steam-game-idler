@@ -105,6 +105,7 @@ pub fn run() {
         .manage(achievement_unlocker::AchievementUnlockerManager::new())
         .manage(achievements::library_run::LibraryRunRegistry::new())
         .manage(local_steam::commands::SteamStatusMonitor::new())
+        .manage(tray::TrayStrings::default())
         .setup(|app| {
             let log_guard = logging::init(app.handle())?;
             app.manage(log_guard);
