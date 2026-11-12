@@ -44,8 +44,8 @@ const SLIDE_MS = 6000
 const WORD_KEYS = [
   'auth.hero.idle',
   'auth.hero.farm',
-  'dashboard.achievements.actions.unlock',
-  'dashboard.freeGames.actions.claim',
+  'auth.hero.unlock',
+  'auth.hero.claim',
 ] as const satisfies readonly TranslationKey[]
 const MAX_WORD_PX = 84
 // Unbounded is a very wide face: its capitals average about 0.9em, this leaves a little spare.
