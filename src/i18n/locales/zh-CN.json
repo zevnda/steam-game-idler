@@ -72,7 +72,11 @@
       "timeout": "Steam 响应超时，请重试",
       "sessionNotFound": "您的 Steam 会话已失效，请重新登录",
       "steamIdUnknown": "您的 Steam ID 尚未解析，请稍后重试",
-      "steamNotRunning": "Steam 未运行，请启动 Steam 后重试"
+      "steamNotRunning": "Steam 未运行，请启动 Steam 后重试",
+      "steamNotReady": "Steam 已打开，但尚未登录，请登录 Steam，或等待其启动完成后再试",
+      "steamClientOutdated": "您的 Steam 客户端版本过旧，请重启 Steam 完成更新，然后再试",
+      "gameNotOwned": "此电脑上登录的 Steam 账号并未拥有此游戏",
+      "steamGameUnavailable": "Steam 目前无法加载此游戏，如果该游戏是通过 Steam 家庭共享的，可能有其他用户正在游玩，请待对方停止游玩后再试"
     },
     "notifications": "通知",
     "menu": "菜单",
@@ -861,6 +865,8 @@
         "scanningCount": "已检查 {{checked}} / {{total}}",
         "starting": "正在启动……",
         "waitingForSchedule": "等待计划解锁时段",
+        "waitingForSteam": "正在等待 Steam",
+        "retryingIn": "将在 {{time}} 后再次检查",
         "currentGame": "当前游戏",
         "upNext": "下一个",
         "completedCount": "已解锁 {{unlocked}}/{{total}}",
@@ -872,7 +878,8 @@
         "stillToUnlock": "仍待解锁",
         "achievementsProgress": "{{done}} / {{total}} 项成就",
         "nextAchievement": "下一项成就",
-        "remaining_other": "剩余 {{count}} 项成就"
+        "remaining_other": "剩余 {{count}} 项成就",
+        "waitingGames_other": "{{games}} 仍在队列中，将再次进行检查"
       },
       "errors": {
         "title": "无法更新成就解锁器",
