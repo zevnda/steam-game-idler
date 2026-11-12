@@ -72,7 +72,11 @@
       "timeout": "Steam ha impiegato troppo tempo per rispondere. Riprova.",
       "sessionNotFound": "La tua sessione di Steam non è più attiva. Accedi di nuovo.",
       "steamIdUnknown": "Il tuo Steam ID non è ancora stato risolto. Riprova tra qualche istante.",
-      "steamNotRunning": "Steam non è in esecuzione. Avvia Steam e riprova."
+      "steamNotRunning": "Steam non è in esecuzione. Avvia Steam e riprova.",
+      "steamNotReady": "Steam è aperto, ma non hai ancora effettuato l'accesso. Accedi a Steam oppure attendi il completamento dell'avvio, poi riprova.",
+      "steamClientOutdated": "Il client Steam non è aggiornato. Riavvia Steam per aggiornarlo, poi riprova.",
+      "gameNotOwned": "L'account Steam connesso su questo PC non possiede questo gioco.",
+      "steamGameUnavailable": "Al momento Steam non riesce a caricare questo gioco. Se fa parte della condivisione familiare, è possibile che un altro utente ci stia giocando. Riprova quando avrà finito."
     },
     "notifications": "Notifiche",
     "menu": "Menu",
@@ -869,6 +873,8 @@
         "scanningCount": "{{checked}} di {{total}} controllati",
         "starting": "Avvio...",
         "waitingForSchedule": "In attesa della finestra di sblocco programmata",
+        "waitingForSteam": "In attesa di Steam",
+        "retryingIn": "Prossimo controllo tra {{time}}",
         "currentGame": "Gioco attuale",
         "upNext": "Prossimo",
         "completedCount": "{{unlocked}}/{{total}} sbloccati",
@@ -881,7 +887,9 @@
         "achievementsProgress": "{{done}} obiettivi su {{total}}",
         "nextAchievement": "Prossimo obiettivo",
         "remaining_one": "{{count}} obiettivo rimanente",
-        "remaining_other": "{{count}} obiettivi rimanenti"
+        "remaining_other": "{{count}} obiettivi rimanenti",
+        "waitingGames_one": "{{games}} è ancora in coda e verrà controllato di nuovo.",
+        "waitingGames_other": "{{games}} sono ancora in coda e verranno controllati di nuovo."
       },
       "errors": {
         "title": "Impossibile aggiornare Sblocco obiettivi",
