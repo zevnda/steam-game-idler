@@ -189,7 +189,8 @@
     "show": "显示",
     "recenter": "重置窗口位置",
     "update": "检查更新……",
-    "quit": "退出"
+    "quit": "退出",
+    "noUpdates": "暂无可用更新"
   },
   "proMode": {
     "hero": {
@@ -376,7 +377,9 @@
     },
     "hero": {
       "idle": "挂机",
-      "farm": "挂卡"
+      "farm": "挂卡",
+      "unlock": "解锁",
+      "claim": "领取"
     }
   },
   "dashboard": {
