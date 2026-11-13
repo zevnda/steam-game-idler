@@ -12,9 +12,8 @@ fn main() {
 
     // EXPERIMENTAL, untested on real hardware: try to let the AppImage run under native Wayland
     // instead of the XWayland compatibility layer linuxdeploy-plugin-gtk's bundled AppRun script
-    // forces by default (the cause of the AppImage's known lag vs .deb/.rpm - see quirks.md and
-    // .claude/cross-platform/appimage-egl-wayland-research.md, the koala73/worldmonitor#395
-    // reference implementation this is adapted from).
+    // forces by default (the cause of the AppImage's known lag vs .deb/.rpm) - adapted from the
+    // koala73/worldmonitor#395 reference implementation.
     //
     // AppRun already sets GDK_BACKEND=x11 unconditionally before exec'ing this binary (confirmed
     // in quirks.md), so unlike the upstream reference implementation - which only fills in an

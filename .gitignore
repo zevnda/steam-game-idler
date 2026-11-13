@@ -26,14 +26,9 @@ Thumbs.db
 desktop.ini
 *.pem
 
-# claude code runtime state (skills are tracked, everything else isn't)
-/.claude/*
-/.claude/skills/threejs-*
-!/.claude/skills/
+# agents
+/.claude/
 /.agents/
-seo-*.md
-# Blog research logs and briefs (/create-blog-post, /find-blog-topics) - local working notes
-.claude/skills/blog-shared/research/
 
 # debug
 npm-debug.log*

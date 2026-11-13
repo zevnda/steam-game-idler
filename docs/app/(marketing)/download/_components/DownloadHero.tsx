@@ -8,7 +8,7 @@ import { OLDER_VERSIONS_ID } from '@/app/(marketing)/download/_components/Previo
 import { useGlobalStore } from '@/app/lib/globalStore'
 import { useSwapKey } from '@/app/lib/useSwapKey'
 
-// The home page hero's flat snapshot of the mock app (see docs/CLAUDE.md, 'Hero placeholder'):
+// The home page hero's flat snapshot of the mock app:
 // the real UI, but filled with the landing page's fictional games - never real capsule art, which
 // is third-party branding. Regenerated along with the home hero whenever the mock changes.
 const SCREENSHOT = '/landing/sgi-mock-hero.webp'

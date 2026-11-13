@@ -11,7 +11,7 @@ import { headerImageUrl } from '@/shared/utils/heroArt'
 // blurred to fill the much wider space (the same trick GamePosterArt uses for a game with no
 // portrait art), with a sharp copy beside the name; a small card is close enough to the header's
 // own shape to show it sharp, as is. `blur` on an image is fine on WebKitGTK; only a filtered
-// <video> breaks there (see CLAUDE.md).
+// <video> breaks there.
 const HeroBackdrop = ({
   appId,
   art,

@@ -9,8 +9,8 @@ import { usePlatformStore } from '@/shared/stores/platformStore'
 // indicator is one of several, picked at random each time a splash appears.
 //
 // Kept cheap enough for the slow WebKitGTK builds: every moving part animates `translate`,
-// `rotate`, `scale` or `opacity` only (composited, no repaint), and nothing uses CSS `filter`
-// (see CLAUDE.md's WebKitGTK notes). Glow comes from static gradients and box-shadows instead.
+// `rotate`, `scale` or `opacity` only (composited, no repaint), and nothing uses CSS `filter`.
+// Glow comes from static gradients and box-shadows instead.
 // `forceReducedMotion` freezes it into a still frame apart from the orbiting ring, which is always
 // the indicator shown there (see globals.css).
 // The OS reduced-motion setting is deliberately ignored, as the old video always did: this is the

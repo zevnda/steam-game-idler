@@ -28,7 +28,7 @@ const TAURI_CONF_PATH = fileURLToPath(new URL('../src-tauri/tauri.conf.json', im
 // Deliberately hardcoded rather than only read from tauri.conf.json: every installed copy has these
 // values baked in, so a regenerated key or changed endpoint would sign and verify cleanly against
 // itself while silently breaking updates for every existing user. Never change these to make this
-// check pass - see CLAUDE.md's "The updater - do not break the update path"
+// check pass.
 const PINNED_PUBKEY =
   'dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQyMTE5REMyMUFGRUYyQzcKUldUSDh2NGF3cDBSMGh6UVk2a1NKNFV0d1BBcnZsRnFFdDkvTTR0KzJQN0hjOTJzSWFpMFhGaysK'
 const R2_BASE_URL = 'https://cdn-steamgameidler.com/updater'

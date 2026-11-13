@@ -5,7 +5,7 @@
  * Fast, staged-files-only checks run by the husky pre-commit hook. The full-repo checks
  * (typecheck, clippy, whole-tree format/lint) live in .github/workflows/checks.yml instead - too
  * slow for every commit, and cargo here would also fight `pnpm tauri dev`'s watcher over the same
- * target dir (see CLAUDE.md's tooling gotchas).
+ * target dir.
  *
  * lint-staged runs different globs' tasks concurrently, so the globs must not overlap: two tasks
  * writing the same file at once can corrupt it.

@@ -95,8 +95,7 @@ export const useIdling = (games: OwnedGame[]) => {
   const [pendingOwners, setPendingOwners] = useState<Set<IdleOwner>>(new Set())
 
   // One-off action feedback, not persistent page state - a failed toggle/stop shouldn't leave a
-  // banner sitting in the page header until the next action happens to clear it (see
-  // CLAUDE.md's "use toasts for one-off action feedback" frontend convention).
+  // banner sitting in the page header until the next action happens to clear it.
   const reportFailure = useCallback(
     (code: string) => {
       showErrorToast(t(errorMessageKey(code), { code }), code, t('common.learnMore'))

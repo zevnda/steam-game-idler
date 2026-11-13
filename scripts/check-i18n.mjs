@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Flags exact-duplicate leaf string values in en-US.json (waste against Crowdin's free-tier word
-// cap - see CLAUDE.md's i18n section) and leaf keys with no reference anywhere in src/ (dead
+// cap) and leaf keys with no reference anywhere in src/ (dead
 // weight carried forward from a removed/refactored feature).
 //
 // Run: node scripts/check-i18n.mjs
@@ -13,7 +13,7 @@ const LOCALE_PATH = fileURLToPath(new URL('../src/i18n/locales/en-US.json', impo
 const SRC_DIR = fileURLToPath(new URL('../src', import.meta.url))
 
 // Key paths intentionally left duplicated after the 2026-07 dedup audit - each is a deliberate
-// judgement call (see CLAUDE.md), not an oversight. Add a new entry here only with the same level
+// judgement call, not an oversight. Add a new entry here only with the same level
 // of scrutiny: prefer reusing/promoting to a shared key over allowlisting a new duplicate.
 const ALLOWLIST = new Set([
   // "Settings" - common.actions.settings is an icon-button label; dashboard.settings.title is the

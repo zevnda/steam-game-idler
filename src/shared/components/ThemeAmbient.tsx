@@ -17,7 +17,7 @@ const TIME_WRAP_SECONDS = 3600
 // shader pass - it's composited on the GPU, but re-blurs every drawn frame, so it does add some
 // cost on top of the shader itself.
 // TODO: decide keep/drop after trying it in the real app, and verify on WebKitGTK before shipping
-// - a CSS `filter` on a <video> is known to break rendering there (see CLAUDE.md), and a
+// - a CSS `filter` on a <video> is known to break rendering there, and a
 // canvas hasn't been checked.
 const SIGNATURE_BACKDROP_BLUR_PX = 8
 // Slow-device watchdog: after a warm-up, if the average gap between *drawn* frames over a sample

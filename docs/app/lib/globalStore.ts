@@ -17,7 +17,7 @@ interface globalStore {
   setTotalGames: (value: number | ((prev: number) => number)) => void
   // Linux release assets - all default to '' until a real Linux release exists (the CI pipeline
   // only started publishing these alongside the Windows installer once Linux support shipped).
-  // .deb is the primary/recommended Linux format (see CLAUDE.md's Platform scope) - .rpm and
+  // .deb is the primary/recommended Linux format - .rpm and
   // AppImage are offered as secondary links wherever a Linux download is shown.
   linuxDownloadUrl: string
   setLinuxDownloadUrl: (value: string | ((prev: string) => string)) => void
