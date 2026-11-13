@@ -3,6 +3,7 @@
     "actions": {
       "submit": "Enviar",
       "cancel": "Cancelar",
+      "close": "Fechar",
       "tryAgain": "Tente novamente",
       "continue": "Continuar",
       "refresh": "Atualizar",
@@ -16,13 +17,17 @@
       "done": "Feito",
       "copy": "Cópia",
       "paste": "Colar",
-      "add": "Adicionar"
+      "add": "Adicionar",
+      "ok": "OK"
     },
     "gameCardMenu": {
       "startIdling": "Iniciar idle",
       "stopIdling": "Parar idle",
       "manageAchievements": "Gerenciar Conquistas",
-      "viewOnSteam": "Ver na Steam"
+      "viewOnSteam": "Ver na Steam",
+      "copyAppId": "Copiar ID do App",
+      "appIdCopied": "ID do App copiada",
+      "cardFarmingBlacklist": "Lista negra de Farming de Cartas"
     },
     "minutes": "minutos",
     "zeroUnlimitedHint": "0 = ilimitado",
@@ -65,7 +70,10 @@
       "timeout": "O Steam demorou muito para responder. Tente novamente.",
       "sessionNotFound": "Sua sessão Steam não está mais ativa. Por favor, faça login novamente.",
       "steamIdUnknown": "Seu ID Steam ainda não foi resolvido. Tente novamente em instantes.",
-      "steamNotRunning": "O Steam não está funcionando. Por favor, abra o Steam e tente novamente."
+      "steamNotRunning": "O Steam não está funcionando. Por favor, abra o Steam e tente novamente.",
+      "steamNotReady": "A Steam está aberta, mas nenhuma sessão foi iniciada. Inicie sua sessão Steam, ou aguarde ela iniciar e tente novamente.",
+      "steamClientOutdated": "Seu cliente Steam está desatualizado. Reinicie a Steam para realizar a atualização, e depois tente novamente.",
+      "gameNotOwned": "A conta Steam iniciada neste computador não possui este jogo."
     },
     "notifications": "Notificações",
     "menu": "Menu",
@@ -73,7 +81,9 @@
     "learnMore": "Saiba mais",
     "status": {
       "saved": "Salvo",
-      "cleared": "Limpo"
+      "cleared": "Limpo",
+      "paused": "Pausado",
+      "running": "Em execução"
     },
     "steamWarning": {
       "title": "Aviso",
@@ -88,7 +98,9 @@
     },
     "tabs": {
       "allGames": "Todos os jogos",
-      "queue": "Fila"
+      "queue": "Fila",
+      "overview": "Visão geral",
+      "details": "Detalhes"
     },
     "connect": {
       "automaticTab": "Automático",
@@ -100,6 +112,12 @@
     },
     "noGamesQueued": "Nenhum jogo na fila",
     "completedThisSessionCount": "Completos nessa sessão ({{count}})"
+  },
+  "versionPolicy": {
+    "outdated": {
+      "title": "Atualização recomendada",
+      "description": "Esta versão do Steam Game Idler irá parar de funcionar em breve. Atualize agora para continuar usando sem interrupções."
+    }
   },
   "update": {
     "downloading": "Baixando a atualização..."
