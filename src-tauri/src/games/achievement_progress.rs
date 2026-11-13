@@ -106,7 +106,8 @@ fn pending_key(account: &GamesAccount) -> String {
 
 /// Queues `app_ids` for a coalesced re-fetch of their achievement counts (see
 /// [`COALESCE_WINDOW`]). Safe to call from any thread, sync or async - the flush runs on
-/// `tauri::async_runtime`, never a bare `tokio::spawn` (see CLAUDE.md's no-reactor trap).
+/// `tauri::async_runtime`, never a bare `tokio::spawn` (which panics with no reactor
+/// when the caller is a plain sync command's blocking-pool thread).
 pub fn schedule_refresh(
     app_handle: &AppHandle,
     account: &GamesAccount,

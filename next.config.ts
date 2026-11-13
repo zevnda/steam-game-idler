@@ -3,6 +3,8 @@ import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   output: 'export',
   devIndicators: false,
+  // Stops `next dev` from generating an AGENTS.md file in the repo root.
+  agentRules: false,
   images: {
     unoptimized: true,
     remotePatterns: [

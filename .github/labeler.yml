@@ -65,7 +65,7 @@ docs:assets:
 # (src/features/<x>) and its Tauri backend module (src-tauri/src/<x>), so a
 # PR touching one conceptual feature gets one label instead of two disjoint
 # ui:/tauri: ones. Backends with no single owning feature (steam_community,
-# local_steam — shared across multiple areas per CLAUDE.md) stay as
+# local_steam — shared across multiple areas) stay as
 # tauri:* infra labels below instead of being forced into an area.
 area:sign-in:
 - all:
@@ -254,8 +254,8 @@ tauri:updater:
   - changed-files:
     - any-glob-to-any-file: "src-tauri/src/updater.rs"
 
-# Shared backends used by more than one area (see CLAUDE.md: "card farming /
-# inventory-manager / trading cards are separate infrastructure")
+# Shared backends used by more than one area (card farming, inventory manager and
+# trading cards are separate infrastructure)
 tauri:local-steam:
 - all:
   - changed-files:

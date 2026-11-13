@@ -9,6 +9,8 @@ export default withMDX({
     unoptimized: true,
   },
   reactStrictMode: true,
+  // Stops `next dev` from generating an AGENTS.md file in this package.
+  agentRules: false,
   experimental: {
     agentUpgrade: 'security',
   },

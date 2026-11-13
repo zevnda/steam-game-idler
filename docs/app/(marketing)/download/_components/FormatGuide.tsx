@@ -2,7 +2,7 @@ import Link from 'next/link'
 import SectionHeading from '@/app/(marketing)/(home)/_components/landing/SectionHeading'
 import { StaggerGroup, StaggerItem } from '@/app/lib/animations'
 
-// Mirrors docs/_content/get-started/install.mdx (and the root CLAUDE.md's "Platform scope"): the
+// Mirrors docs/_content/get-started/install.mdx: the
 // installer and the AppImage update themselves; the portable .zip and .deb/.rpm don't. Keep the
 // two in step if a format's update behaviour changes. `accent` is each card's glow hue, taken from
 // the home bento's palette (landing/features.ts).

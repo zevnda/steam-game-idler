@@ -11,7 +11,7 @@ const GITHUB_URL = 'https://github.com/zevnda/steam-game-idler'
 // Maps each settings tab to its docs slug, mirroring `docs/app/(marketing)/docs/_content/settings/`'s
 // file layout - `steamCredentials` is the one exception, living at the content tree's top level
 // (`_content/steam-credentials.mdx`) rather than under `settings/`, since it covers Steam Community
-// cookies rather than an in-app settings category (see docs/CLAUDE.md's content rewrite tracker).
+// cookies rather than an in-app settings category.
 const DOCS_SLUG_BY_TAB: Record<SettingsTab, string> = {
   general: 'settings/general',
   subscription: 'pro',

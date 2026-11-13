@@ -50,10 +50,8 @@ export const changelog = defineCollections({
   async: true,
 })
 
-// Blog posts (`blog/{slug}.mdx`, served at `/blog/{slug}`). Written by the `/create-blog-post`
-// skill (`.claude/skills/create-blog-post/`), which documents what each field is for - keep the
-// two in sync. Not `async`: there are few posts, and the listing page needs every post's text up
-// front for reading time.
+// Blog posts (`blog/{slug}.mdx`, served at `/blog/{slug}`). Not `async`: there are few posts, and
+// the listing page needs every post's text up front for reading time.
 export const posts = defineCollections({
   type: 'doc',
   dir: 'blog',

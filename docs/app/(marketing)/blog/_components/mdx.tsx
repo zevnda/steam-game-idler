@@ -67,8 +67,7 @@ function KeyTakeaways({
   )
 }
 
-// Everything a post can use without an import. The create-blog-post skill documents these in
-// `.claude/skills/create-blog-post/references/post-format.md` - keep that table in sync.
+// Everything a post can use without an import.
 export function getBlogMDXComponents() {
   return getMDXComponents({ Figure, KeyTakeaways, YouTube, Steps, Step, Tabs, Tab })
 }

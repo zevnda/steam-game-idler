@@ -150,8 +150,7 @@
   </ItemGroup>
 
   <!-- Linux publish (RuntimeIdentifier != win-x64) is agent (daemon) mode only. These files all sit
-       behind CLI mode / the local Steam client, which has no Linux equivalent (see the root
-       CLAUDE.md's "Agent mode vs. CLI mode" section):
+       behind CLI mode / the local Steam client, which has no Linux equivalent:
          - Cli/**            - the entire one-shot CLI dispatch surface, Steamworks.NET-backed.
          - Interop/**         - the raw steamclient64.dll P/Invoke layer, only ever consumed by
                                  Backends/SteamworksLocalBackend.cs below.

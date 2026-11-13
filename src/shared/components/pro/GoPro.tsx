@@ -17,8 +17,7 @@ import { revealTitleIfTruncated } from '@/shared/utils/revealTitleIfTruncated'
 // pre-check default) - `useCheckSubscription` (mounted in `DashboardShell`) needs a moment on first
 // mount, and rendering before then would flash the upsell for a paying user who should never see
 // it. Visuals live in globals.css (`.go-pro-card`); the ambient animation is
-// gated on `forceReducedMotion` like every other expensive animation (see CLAUDE.md's platform
-// gating notes).
+// gated on `forceReducedMotion` like every other expensive animation.
 
 // Perk names the subtitle cycles through - the GoProModal's own feature titles (see
 // GoProModal/data.ts), reused rather than duplicated so they stay identical to what the modal
@@ -107,8 +106,8 @@ export const GoPro = ({ collapsed }: { collapsed: boolean }) => {
               onClick={() => openProModal()}
             >
               {/* The word rather than the logo: on its own among the sidebar's icons, the logo
-                  didn't say what the button was. A brand word, so not translated (CLAUDE.md's i18n
-                  exceptions); the button's accessible name and tooltip stay the translated title.
+                  didn't say what the button was. A brand word, so not translated;
+                  the button's accessible name and tooltip stay the translated title.
                   aria-hidden so screen readers get that name, not "PRO" read out as well. */}
               <span aria-hidden='true' className='text-xs leading-4.5 font-bold tracking-[0.06em]'>
                 PRO
