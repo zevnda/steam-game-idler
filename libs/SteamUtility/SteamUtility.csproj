@@ -154,8 +154,10 @@
          - Cli/**            - the entire one-shot CLI dispatch surface, Steamworks.NET-backed.
          - Interop/**         - the raw steamclient64.dll P/Invoke layer, only ever consumed by
                                  Backends/SteamworksLocalBackend.cs below.
-         - Backends/SteamworksLocalBackend.cs, Backends/SteamworksSession.cs - the Steamworks.NET
-                                 backend implementation and its init/shutdown session wrapper.
+         - Backends/SteamworksLocalBackend.cs, Backends/SteamworksSession.cs,
+           Backends/SteamworksInit.cs - the Steamworks.NET backend implementation, its
+                                 init/shutdown session wrapper, and the shared SteamAPI init +
+                                 failure classification both of those (and Cli/'s idle) go through.
          - Core/Services/SteamPathHelper.cs, Core/Services/SteamLanguageHelper.cs - Win32 registry
                                  reads, reachable only from SteamworksLocalBackend above, nothing in
                                  the daemon (SteamKit2) path.
@@ -171,6 +173,7 @@
     <Compile Remove="Interop\**\*.cs" />
     <Compile Remove="Backends\SteamworksLocalBackend.cs" />
     <Compile Remove="Backends\SteamworksSession.cs" />
+    <Compile Remove="Backends\SteamworksInit.cs" />
     <Compile Remove="Core\Services\SteamPathHelper.cs" />
     <Compile Remove="Core\Services\SteamLanguageHelper.cs" />
     <Compile Remove="Core\AppInfoParsing\**\*.cs" />
