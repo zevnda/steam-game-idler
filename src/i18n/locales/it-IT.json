@@ -174,7 +174,7 @@
     "issue": "Segnala un problema",
     "feature": "Richiedi una funzionalità",
     "joinDiscord": "Unisciti al nostro Discord",
-    "changelog": "Changelog",
+    "changelog": "Registro delle modifiche",
     "update": "Controlla aggiornamenti"
   },
   "changelog": {
@@ -189,7 +189,8 @@
     "show": "Mostra",
     "recenter": "Ripristina posizione finestra",
     "update": "Controlla aggiornamenti..",
-    "quit": "Esci"
+    "quit": "Esci",
+    "noUpdates": "Nessun aggiornamento disponibile"
   },
   "proMode": {
     "hero": {
@@ -376,7 +377,9 @@
     },
     "hero": {
       "idle": "Idle",
-      "farm": "Raccogli"
+      "farm": "Raccogli",
+      "unlock": "Sblocca",
+      "claim": "Riscatta"
     }
   },
   "dashboard": {
