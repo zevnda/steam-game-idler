@@ -11,11 +11,7 @@ import { DlcBadge } from './DlcBadge'
 import { Button, cn, Typography } from '@heroui/react'
 import Image from 'next/image'
 import { AppTooltip } from '@/shared/components/AppTooltip'
-
-// Steam only ever gives achievement icons as a bare filename (see
-// libs/SteamUtility/Core/SchemaParsing/SchemaWalker.cs's `icon`/`icon_gray` fields) - this base URL
-// is the CDN path that resolves one into a real image.
-const ICON_BASE_URL = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/'
+import { achievementIconUrl } from '@/shared/utils/achievementIconUrl'
 
 interface AchievementListItemProps {
   achievement: AchievementDto
@@ -117,7 +113,7 @@ export const AchievementListItem = ({
             isUnlockBlocked && 'grayscale',
           )}
           height={44}
-          src={`${ICON_BASE_URL}${appId}/${icon}`}
+          src={achievementIconUrl(appId, icon)}
           width={44}
         />
         {achievement.achieved && (
