@@ -22,6 +22,7 @@ import {
 import { useNow } from '@/shared/hooks/useNow'
 import { usePlayingSessionStore } from '@/shared/stores/playingSessionStore'
 import { useSessionStore } from '@/shared/stores/sessionStore'
+import { achievementIconUrl } from '@/shared/utils/achievementIconUrl'
 import { formatDuration } from '@/shared/utils/formatDuration'
 
 // The Achievement Unlocker's running screen content - the Overview and Details tabs RunScreen
@@ -31,9 +32,6 @@ import { formatDuration } from '@/shared/utils/formatDuration'
 // One game at a time gets a single banner; several at once (Casual/Gamer tier's concurrent mode) get
 // a card each, and their upcoming unlocks merge into one time-ordered list tagged with each game's
 // colour.
-
-const ACHIEVEMENT_ICON_BASE_URL =
-  'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/'
 
 // Mirrors src-tauri/src/achievement_unlocker/manager.rs::INITIAL_DELAY (a fixed 10s) - not sent
 // over the wire since it never changes. Only a fallback: the backend sends the delay's end time.
@@ -59,7 +57,7 @@ const AchievementIcon = ({ appId, icon, size }: { appId: number; icon: string; s
     alt=''
     className='shrink-0 rounded-lg'
     height={size}
-    src={`${ACHIEVEMENT_ICON_BASE_URL}${appId}/${icon}`}
+    src={achievementIconUrl(appId, icon)}
     width={size}
   />
 )

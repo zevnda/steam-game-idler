@@ -12,8 +12,7 @@ import {
   RARITY_TIER_LABEL_KEYS,
 } from '@/features/achievement-manager/utils/achievementRarity'
 import { AppTooltip } from '@/shared/components/AppTooltip'
-
-const ICON_BASE_URL = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/'
+import { achievementIconUrl } from '@/shared/utils/achievementIconUrl'
 
 // Card treatment mirrors AchievementRow.tsx's row shape (see that file's doc comment for why) -
 // the rarity pill even reuses the exact same util, since this editor's rows are still real
@@ -82,7 +81,7 @@ export const AchievementOrderRow = ({
 }: AchievementOrderRowProps) => {
   const { t } = useTranslation()
   const isReadOnly = readOnlyReason !== undefined
-  const icon = `${ICON_BASE_URL}${appId}/${achievement.iconLocked}`
+  const icon = achievementIconUrl(appId, achievement.iconLocked)
   const rarityTier =
     achievement.percent !== undefined ? getAchievementRarityTier(achievement.percent) : null
 
