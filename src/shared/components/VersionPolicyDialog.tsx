@@ -1,13 +1,16 @@
-import { check } from '@tauri-apps/plugin-updater'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AlertDialog, Button } from '@heroui/react'
-import { useUpdateStore } from '@/shared/stores/updateStore'
 import { useVersionPolicyStore } from '@/shared/stores/versionPolicyStore'
 import { logFrontendInfo, logFrontendWarn } from '@/shared/utils/frontendLogging'
 import { invoke } from '@/shared/utils/invoke'
 import { openExternalLink } from '@/shared/utils/links'
-import { canAutoUpdateCheck, fetchLatest, performUpdate } from '@/shared/utils/update'
+import {
+  canAutoUpdateCheck,
+  checkForUpdate,
+  fetchLatest,
+  performUpdate,
+} from '@/shared/utils/update'
 
 // GitHub's always-current redirect to the newest release's assets, so a portable/deb/rpm user can
 // grab the matching file directly
@@ -24,12 +27,12 @@ interface VersionPolicyDialogProps {
  * The update prompt for a build the remote version policy has flagged (see `useVersionPolicy`).
  * "Install update" reuses the normal in-app update flow (`performUpdate`, which swaps in
  * `UpdateLoader` and relaunches). Builds that can't self-update (portable zip, Linux deb/rpm, dev)
- * get "Download update" instead, opening the latest GitHub release - as does any in-app update
- * attempt that fails or finds nothing to install, so the button never dead-ends.
+ * get "Download update" instead, opening the latest GitHub release - as does an in-app update check
+ * that fails or finds nothing to install, so the button never dead-ends. A failed download/install
+ * shows UpdateLoader's retry/continue error state instead, and "continue" returns here.
  */
 export const VersionPolicyDialog = ({ variant }: VersionPolicyDialogProps) => {
   const { t } = useTranslation()
-  const setIsUpdating = useUpdateStore(state => state.setIsUpdating)
   const currentVersion = useVersionPolicyStore(state => state.currentVersion)
   const dismissOutdated = useVersionPolicyStore(state => state.dismissOutdated)
   const [canAutoUpdate, setCanAutoUpdate] = useState<boolean | null>(null)
@@ -51,10 +54,13 @@ export const VersionPolicyDialog = ({ variant }: VersionPolicyDialogProps) => {
       // Re-resolved if the mount-time check hasn't landed yet, so an early click on an installed
       // build doesn't fall through to the download page
       if (canAutoUpdate ?? (await canAutoUpdateCheck())) {
-        const update = await check()
+        const update = await checkForUpdate()
         if (update) {
           const latest = await fetchLatest()
-          await performUpdate(update, { major: !!latest?.major, setIsUpdating })
+          // Only returns if the attempt failed. UpdateLoader then shows its error state, and its
+          // "Continue without updating" brings the user back to this dialog to try again.
+          await performUpdate(update, { major: !!latest?.major })
+          setIsBusy(false)
           return
         }
         logFrontendWarn(
@@ -66,7 +72,6 @@ export const VersionPolicyDialog = ({ variant }: VersionPolicyDialogProps) => {
         )
       }
     } catch (error) {
-      setIsUpdating(false)
       logFrontendWarn(
         'VersionPolicyDialog',
         'in-app update failed, opening download page instead',

@@ -1,11 +1,9 @@
-import { check } from '@tauri-apps/plugin-updater'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbCircleArrowDown } from 'react-icons/tb'
 import { AppTooltip } from '@/shared/components/AppTooltip'
-import { useUpdateStore } from '@/shared/stores/updateStore'
 import { logFrontendWarn } from '@/shared/utils/frontendLogging'
-import { fetchLatest, performUpdate } from '@/shared/utils/update'
+import { checkForUpdate, fetchLatest, performUpdate } from '@/shared/utils/update'
 
 /**
  * Opt-in update button for the non-major/non-first-check case (see `useCheckForUpdates`) - the
@@ -20,7 +18,6 @@ import { fetchLatest, performUpdate } from '@/shared/utils/update'
  */
 export const UpdateButton = () => {
   const { t } = useTranslation()
-  const setIsUpdating = useUpdateStore(state => state.setIsUpdating)
   // Local, not the store's `isUpdating` - covers only the brief `check()` round trip below.
   // `performUpdate` takes over from there, flipping the store's `isUpdating` to show
   // `UpdateLoader`, which unmounts this button almost immediately anyway.
@@ -29,17 +26,18 @@ export const UpdateButton = () => {
   const handleUpdate = async () => {
     try {
       setIsChecking(true)
-      const update = await check()
+      const update = await checkForUpdate()
       if (!update) {
         setIsChecking(false)
         return
       }
 
       const latest = await fetchLatest()
-      await performUpdate(update, { major: !!latest?.major, setIsUpdating })
+      // Only returns if the attempt failed, after which UpdateLoader shows its error state
+      await performUpdate(update, { major: !!latest?.major })
+      setIsChecking(false)
     } catch (error) {
       setIsChecking(false)
-      setIsUpdating(false)
       console.error('Error in (handleUpdate):', error)
       logFrontendWarn('UpdateButton', 'manual update check failed', { error: String(error) })
     }

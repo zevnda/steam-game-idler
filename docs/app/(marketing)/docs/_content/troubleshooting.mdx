@@ -462,6 +462,13 @@ This page covers common issues and their solutions when using Steam Game Idler.
     - **Portable** builds don't support automatic updates. Download and replace the executable manually
   </Accordion>
 
+  <Accordion title="The update screen says the update couldn't be completed" id="update-failed">
+    - SGI shows this when an update can't be downloaded or installed, most often because your internet connection dropped or GitHub couldn't be reached. A download that stops receiving data for 30 seconds is treated as failed instead of waiting forever
+    - Click **Try again** once your connection is back. The download starts over from the beginning
+    - Click **Continue without updating** to keep using your current version. The update button stays in the titlebar so you can install it later
+    - If it keeps failing, download the latest release manually from the [GitHub releases page](https://github.com/zevnda/steam-game-idler/releases)
+  </Accordion>
+
   <Accordion title="Update downloads but SGI doesn't restart, or restarts into the old version" id="update-stuck">
     - Manually close SGI completely (including from the system tray and Task Manager), then reopen it
     - If the version number still hasn't changed, uninstall and reinstall using the latest installer from GitHub

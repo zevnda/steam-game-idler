@@ -1,4 +1,3 @@
-import { check } from '@tauri-apps/plugin-updater'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FaDiscord } from 'react-icons/fa6'
@@ -15,7 +14,12 @@ import { AppTooltip } from '@/shared/components/AppTooltip'
 import { useUpdateStore } from '@/shared/stores/updateStore'
 import { logFrontendWarn } from '@/shared/utils/frontendLogging'
 import { DISCORD_URL, openExternalLink } from '@/shared/utils/links'
-import { canAutoUpdateCheck, fetchLatest, performUpdate } from '@/shared/utils/update'
+import {
+  canAutoUpdateCheck,
+  checkForUpdate,
+  fetchLatest,
+  performUpdate,
+} from '@/shared/utils/update'
 
 const GITHUB_ISSUE_URL =
   'https://github.com/zevnda/steam-game-idler/issues/new?assignees=zevnda&labels='
@@ -29,7 +33,6 @@ type MenuAction = 'guide' | 'report' | 'feature' | 'discord' | 'changelog' | 'ch
 export const Menu = () => {
   const { t } = useTranslation()
   const setShowChangelog = useUpdateStore(state => state.setShowChangelog)
-  const setIsUpdating = useUpdateStore(state => state.setIsUpdating)
   const [canAutoUpdate, setCanAutoUpdate] = useState(false)
   const [isChecking, setIsChecking] = useState(false)
 
@@ -40,13 +43,14 @@ export const Menu = () => {
   const handleCheckForUpdates = async () => {
     try {
       setIsChecking(true)
-      const update = await check()
+      const update = await checkForUpdate()
       if (!update) {
         toast.info(t('toast.checkUpdate.none'))
         return
       }
       const latest = await fetchLatest()
-      await performUpdate(update, { major: !!latest?.major, setIsUpdating })
+      // Never throws - a failed install shows UpdateLoader's error state instead
+      await performUpdate(update, { major: !!latest?.major })
     } catch (error) {
       toast.danger(t('toast.checkUpdate.error'))
       console.error('Error in (handleCheckForUpdates):', error)

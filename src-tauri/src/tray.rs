@@ -1,4 +1,5 @@
 use std::sync::Mutex;
+use std::time::Duration;
 
 use tauri::menu::{Menu, MenuItem};
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
@@ -14,6 +15,11 @@ use crate::platform;
 /// update that's about to restart the app.
 const TRAY_UPDATE_STARTED_EVENT: &str = "tray-update-started";
 const TRAY_UPDATE_FAILED_EVENT: &str = "tray-update-failed";
+
+// See `check_for_updates`'s doc comment. Same values as the frontend's `UPDATE_CHECK_TIMEOUT_MS`/
+// `DOWNLOAD_STALL_TIMEOUT_MS` (shared/utils/update.ts), so both update paths give up alike.
+const UPDATE_CONNECT_TIMEOUT: Duration = Duration::from_secs(15);
+const UPDATE_READ_TIMEOUT: Duration = Duration::from_secs(30);
 
 /// English fallback for the "no updates" notification, used until the frontend has pushed the
 /// translated text (`update_tray_menu`). Matches `tray.noUpdates` in `en-US.json`.
@@ -263,8 +269,23 @@ fn recenter_window(app_handle: &AppHandle) {
 /// immediately once found, since the tray has no UI to show that prompt in. The frontend still
 /// hears about it ([`TRAY_UPDATE_STARTED_EVENT`]/[`TRAY_UPDATE_FAILED_EVENT`]) so it can treat it
 /// like one of its own installs.
+///
+/// The updater plugin's HTTP client has no timeouts by default, so a connection that silently
+/// dropped mid-download (Wi-Fi blip, router reconnect) would leave the update screen up forever. A
+/// read timeout fails a request that stops receiving data, and unlike the plugin's own `timeout`
+/// (a cap on the whole request) never cuts off a download that's merely slow. Mirrors the
+/// frontend's stall detection in `shared/utils/update.ts`, which can't use this hook - it's only
+/// exposed to Rust.
 async fn check_for_updates(app_handle: &AppHandle) -> tauri_plugin_updater::Result<()> {
-    let Some(update) = app_handle.updater()?.check().await? else {
+    let updater = app_handle
+        .updater_builder()
+        .configure_client(|client| {
+            client
+                .connect_timeout(UPDATE_CONNECT_TIMEOUT)
+                .read_timeout(UPDATE_READ_TIMEOUT)
+        })
+        .build()?;
+    let Some(update) = updater.check().await? else {
         let title = app_handle
             .state::<TrayStrings>()
             .no_updates

@@ -292,6 +292,14 @@ export const faqData = [
       '> This only affects [Local Sign-in](/docs/get-started/how-to-sign-in#local-sign-in). Your Steam client is older than the version SGI was built for. Fully exit Steam (right-click its tray icon, then **Exit**) and start it again so it installs its pending update.',
   },
   {
+    question: "The update couldn't be completed. Check your internet connection and try again.",
+    markdown:
+      "**The update couldn't be completed. Check your internet connection and try again.**\n" +
+      "> SGI couldn't download or install an update, usually because your internet connection dropped or GitHub couldn't be reached. A download that stops receiving data for 30 seconds is treated as failed rather than left running.\n" +
+      '>\n' +
+      '> Click **Try again** once your connection is back, or **Continue without updating** to keep using your current version. The update button stays in the titlebar so you can install it later. If it keeps failing, download the latest release from the [GitHub releases page](https://github.com/zevnda/steam-game-idler/releases).',
+  },
+  {
     question: "Couldn't find a local Steam installation.",
     markdown:
       "**Couldn't find a local Steam installation.**\n" +

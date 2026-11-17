@@ -1,9 +1,13 @@
 import { listen } from '@tauri-apps/api/event'
-import { check } from '@tauri-apps/plugin-updater'
 import { useEffect, useRef } from 'react'
 import { useUpdateStore } from '@/shared/stores/updateStore'
 import { logFrontendWarn } from '@/shared/utils/frontendLogging'
-import { canAutoUpdateCheck, fetchLatest, performUpdate } from '@/shared/utils/update'
+import {
+  canAutoUpdateCheck,
+  checkForUpdate,
+  fetchLatest,
+  performUpdate,
+} from '@/shared/utils/update'
 
 const CHECK_INTERVAL_MS = 5 * 60 * 1000
 
@@ -25,21 +29,26 @@ const TRAY_UPDATE_FAILED_EVENT = 'tray-update-failed'
 export function useCheckForUpdates() {
   const setUpdateAvailable = useUpdateStore(state => state.setUpdateAvailable)
   const setIsUpdating = useUpdateStore(state => state.setIsUpdating)
+  const setUpdateFailed = useUpdateStore(state => state.setUpdateFailed)
   const setShowChangelog = useUpdateStore(state => state.setShowChangelog)
   const setInitialCheckSettled = useUpdateStore(state => state.setInitialCheckSettled)
   const isInitialCheck = useRef(true)
 
   // A tray-started install gets the same UpdateLoader (and the same "an update is installing"
-  // state for anything gating on isUpdating) as one performUpdate runs.
+  // state for anything gating on isUpdating) as one performUpdate runs, including its error state
+  // on failure - whose "Try again" then retries through the frontend flow.
   useEffect(() => {
     const unlisten = Promise.all([
-      listen(TRAY_UPDATE_STARTED_EVENT, () => setIsUpdating(true)),
-      listen(TRAY_UPDATE_FAILED_EVENT, () => setIsUpdating(false)),
+      listen(TRAY_UPDATE_STARTED_EVENT, () => {
+        setUpdateFailed(false)
+        setIsUpdating(true)
+      }),
+      listen(TRAY_UPDATE_FAILED_EVENT, () => setUpdateFailed(true)),
     ])
     return () => {
       unlisten.then(fns => fns.forEach(fn => fn()))
     }
-  }, [setIsUpdating])
+  }, [setIsUpdating, setUpdateFailed])
 
   useEffect(() => {
     // `performUpdate` sets this flag right before relaunching (and it's in `KEYS_TO_PRESERVE`, so
@@ -53,16 +62,21 @@ export function useCheckForUpdates() {
 
   useEffect(() => {
     const checkForUpdates = async () => {
+      // The update screen is already up (an install in progress, or a failed one waiting on the
+      // user's retry/continue) - a second check would only race it
+      if (useUpdateStore.getState().isUpdating) return
+
       try {
         if (!(await canAutoUpdateCheck())) return
 
-        const update = await check()
+        const update = await checkForUpdate()
         if (!update) return
 
         const latest = await fetchLatest()
 
         if (latest?.major || isInitialCheck.current) {
-          await performUpdate(update, { major: !!latest?.major, setIsUpdating })
+          // Never throws - a failure leaves UpdateLoader up in its error state
+          await performUpdate(update, { major: !!latest?.major })
         } else {
           setUpdateAvailable(true)
         }
@@ -78,12 +92,8 @@ export function useCheckForUpdates() {
         logFrontendWarn('useCheckForUpdates', 'update check failed on every configured endpoint', {
           error: String(error),
         })
-        // A failure partway through performUpdate (e.g. downloadAndInstall rejecting) would
-        // otherwise strand the user on UpdateLoader forever, since it only ever unmounts via a
-        // successful relaunch - main had this same gap.
-        setIsUpdating(false)
       } finally {
-        // An install never reaches this - downloadAndInstall exits the app first.
+        // A successful install never reaches this - it relaunches the app first.
         if (isInitialCheck.current) setInitialCheckSettled(true)
         isInitialCheck.current = false
       }
@@ -92,5 +102,5 @@ export function useCheckForUpdates() {
     checkForUpdates()
     const intervalId = setInterval(checkForUpdates, CHECK_INTERVAL_MS)
     return () => clearInterval(intervalId)
-  }, [setUpdateAvailable, setIsUpdating, setInitialCheckSettled])
+  }, [setUpdateAvailable, setInitialCheckSettled])
 }
