@@ -338,6 +338,12 @@ export const HELP_SECTIONS: HelpSection[] = [
           'This only affects Local Sign-in. Fully exit Steam from its tray icon and start it again so it installs its pending update.',
       },
       {
+        id: 'updateFailed',
+        question: "The update couldn't be completed. Check your internet connection and try again.",
+        answer:
+          'Your connection dropped or GitHub could not be reached during the update. Click Try again once you are back online, or Continue without updating and install it later from the titlebar update button.',
+      },
+      {
         id: 'sessionFailed',
         question: "Couldn't sign in to Steam Community. Check your cookies and try again.",
         answer:

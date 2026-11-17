@@ -131,7 +131,9 @@
     "remindLater": "Remind me later"
   },
   "update": {
-    "downloading": "Downloading update..."
+    "downloading": "Downloading update...",
+    "failed": "The update couldn't be completed. Check your internet connection and try again.",
+    "continueWithoutUpdating": "Continue without updating"
   },
   "legacyInstall": {
     "title": "Remove old files?",

@@ -1,6 +1,8 @@
-﻿import type { Update } from '@tauri-apps/plugin-updater'
+﻿import type { DownloadEvent, Update } from '@tauri-apps/plugin-updater'
 import { relaunch } from '@tauri-apps/plugin-process'
+import { check } from '@tauri-apps/plugin-updater'
 import { CDN_BASE_URL } from '@/shared/constants'
+import { useUpdateStore } from '@/shared/stores/updateStore'
 import { logFrontendInfo, logFrontendWarn } from '@/shared/utils/frontendLogging'
 import { invoke } from '@/shared/utils/invoke'
 
@@ -143,30 +145,142 @@ export async function clearLegacyMigrationData() {
   return true
 }
 
-// The actual download/install/relaunch sequence, shared by both `useCheckForUpdates`'s silent path
-// (major update, or the very first check since app start) and `UpdateButton`'s opt-in path - `main`
-// duplicated this between the two, and the rewrite's own copy started the same way before
-// `UpdateLoader` needed both paths to converge on one `updateStore.isUpdating` flag to actually show
-// it. `setIsUpdating` is passed in rather than read from the store directly so this stays a plain,
-// store-agnostic util like the rest of this file.
-export async function performUpdate(
-  update: Update,
-  { major, setIsUpdating }: { major: boolean; setIsUpdating: (value: boolean) => void },
-) {
+// The updater plugin sets no timeout of its own, so without one a request on a connection that
+// silently dropped (Wi-Fi blip, router reconnect, IP change) never errors and waits forever.
+const UPDATE_CHECK_TIMEOUT_MS = 15_000
+
+// How long a download may go without receiving any data before it counts as stalled. Deliberately
+// not the plugin's own `download({ timeout })`: that caps the whole request, so it would have to be
+// long enough for a slow connection to finish the installer, and would then take just as long to
+// notice a dead one.
+const DOWNLOAD_STALL_TIMEOUT_MS = 30_000
+
+// `check()` with a timeout. Every update entry point uses this rather than calling `check()`
+// directly, so none of them can hang on a dead connection.
+export function checkForUpdate() {
+  return check({ timeout: UPDATE_CHECK_TIMEOUT_MS })
+}
+
+// Downloads the update, rejecting once no data has arrived for DOWNLOAD_STALL_TIMEOUT_MS. The
+// stalled request itself can't be cancelled from here and is simply abandoned - a retry starts a
+// fresh `check()` (and so a fresh `Update` and connection) rather than reusing this one.
+function downloadWithStallDetection(update: Update, onProgress: (value: number) => void) {
+  return new Promise<void>((resolve, reject) => {
+    let total: number | undefined
+    let received = 0
+    let lastActivity = Date.now()
+
+    const watchdog = setInterval(() => {
+      if (Date.now() - lastActivity < DOWNLOAD_STALL_TIMEOUT_MS) return
+      clearInterval(watchdog)
+      reject(new Error(`no data received for ${DOWNLOAD_STALL_TIMEOUT_MS / 1000}s`))
+    }, 1000)
+
+    const onEvent = (event: DownloadEvent) => {
+      lastActivity = Date.now()
+      if (event.event === 'Started') {
+        total = event.data.contentLength
+      } else if (event.event === 'Progress') {
+        received += event.data.chunkLength
+        if (total) onProgress(Math.min(received / total, 1))
+      }
+    }
+
+    update.download(onEvent).then(
+      () => {
+        clearInterval(watchdog)
+        resolve()
+      },
+      error => {
+        clearInterval(watchdog)
+        reject(error)
+      },
+    )
+  })
+}
+
+// Guards against a second performUpdate starting while one is already running (e.g. the periodic
+// check firing while the first install's download is still in progress).
+let updateInFlight = false
+
+// The actual download/install/relaunch sequence, shared by every update entry point
+// (`useCheckForUpdates`'s silent path, `UpdateButton`, the titlebar menu, `VersionPolicyDialog`, and
+// UpdateLoader's retry). Never throws: a failure leaves `UpdateLoader` up in its error state (see
+// `updateStore.updateFailed`), where the user can retry or continue without updating. Returning at
+// all means the attempt failed or was skipped - a successful install ends in a relaunch.
+export async function performUpdate(update: Update, { major }: { major: boolean }) {
+  if (updateInFlight) return
+  updateInFlight = true
+
+  const store = useUpdateStore.getState()
   logFrontendInfo('update', 'installing update', { version: update.version, major })
-  setIsUpdating(true)
-  localStorage.setItem('hasUpdated', 'true')
-  // Download first, kill, then install - not kill-then-downloadAndInstall. Automation keeps running
-  // during the download (session restore and auto-idle both start SteamUtility right at launch,
-  // exactly when the first update check installs silently), so a kill done before the download can
-  // be undone by a fresh spawn and the installer then hits a locked SteamUtility file. The
-  // installer also closes SteamUtility itself (installer-hooks.nsh) as the backstop for whatever
-  // still starts in the milliseconds between these two calls.
-  await Promise.all([update.download(), new Promise(resolve => setTimeout(resolve, 2500))])
-  await invoke('kill_all_steam_utility_processes')
-  await update.install()
-  if (major) {
-    await preserveKeysAndClearData()
+  store.setUpdateFailed(false)
+  store.setDownloadProgress(null)
+  store.setIsUpdating(true)
+
+  try {
+    // Download first, kill, then install - not kill-then-downloadAndInstall. Automation keeps
+    // running during the download (session restore and auto-idle both start SteamUtility right at
+    // launch, exactly when the first update check installs silently), so a kill done before the
+    // download can be undone by a fresh spawn and the installer then hits a locked SteamUtility
+    // file. The installer also closes SteamUtility itself (installer-hooks.nsh) as the backstop for
+    // whatever still starts in the milliseconds between these two calls.
+    await Promise.all([
+      downloadWithStallDetection(update, store.setDownloadProgress),
+      new Promise(resolve => setTimeout(resolve, 2500)),
+    ])
+    await invoke('kill_all_steam_utility_processes')
+    // Set right before install, not at the start: on Windows `install()` hands off to the installer
+    // and exits the app, so nothing after it runs - but a failed download must not leave this set,
+    // or the next launch would show the changelog for a version that never installed.
+    localStorage.setItem('hasUpdated', 'true')
+    await update.install()
+    if (major) {
+      await preserveKeysAndClearData()
+    }
+    await relaunch()
+  } catch (error) {
+    localStorage.removeItem('hasUpdated')
+    logFrontendWarn('update', 'update failed', { version: update.version, error: String(error) })
+    store.setUpdateFailed(true)
+    // So "continue without updating" still leaves the titlebar's update button to try again later
+    store.setUpdateAvailable(true)
+  } finally {
+    updateInFlight = false
   }
-  await relaunch()
+}
+
+// UpdateLoader's "Try again". Starts over with a fresh `check()` instead of reusing the failed
+// `Update`, whose stalled download may still be holding a dead connection open.
+export async function retryUpdate() {
+  if (updateInFlight) return
+  const store = useUpdateStore.getState()
+  logFrontendInfo('update', 'retrying update')
+  store.setUpdateFailed(false)
+  store.setDownloadProgress(null)
+
+  try {
+    const update = await checkForUpdate()
+    if (!update) {
+      // Nothing to install anymore (e.g. the release was pulled) - just go back to the app
+      logFrontendInfo('update', 'retry found no update to install')
+      store.setIsUpdating(false)
+      return
+    }
+    const latest = await fetchLatest()
+    await performUpdate(update, { major: !!latest?.major })
+  } catch (error) {
+    logFrontendWarn('update', 'update retry check failed', { error: String(error) })
+    store.setUpdateFailed(true)
+  }
+}
+
+// UpdateLoader's "Continue without updating" - closes the update screen and returns to the app.
+// The titlebar's update button stays available (performUpdate's failure path sets it).
+export function dismissFailedUpdate() {
+  logFrontendInfo('update', 'user continued without updating')
+  const store = useUpdateStore.getState()
+  store.setUpdateFailed(false)
+  store.setDownloadProgress(null)
+  store.setIsUpdating(false)
 }
