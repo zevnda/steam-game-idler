@@ -137,16 +137,22 @@ export const GoProModal = () => {
 
             <Modal.Body className='select-none overflow-x-hidden overflow-y-auto p-0'>
               <div className={`relative ${forceReducedMotion ? 'force-reduced-motion' : ''}`}>
-                <div
-                  className='pointer-events-none absolute inset-0'
-                  style={{
-                    backgroundImage: STARFIELD_BACKGROUND,
-                    backgroundRepeat: 'no-repeat',
-                    maskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)',
-                    WebkitMaskImage:
-                      'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)',
-                  }}
-                />
+                {/* Skipped on older WebKitGTK even though it never moves: 260 full-size gradient
+                    layers under a mask get repainted on every scroll/hover frame, and on those
+                    builds that alone pegged several CPU cores and made the modal unscrollable. */}
+                {!forceReducedMotion && (
+                  <div
+                    className='pointer-events-none absolute inset-0'
+                    style={{
+                      backgroundImage: STARFIELD_BACKGROUND,
+                      backgroundRepeat: 'no-repeat',
+                      maskImage:
+                        'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)',
+                      WebkitMaskImage:
+                        'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)',
+                    }}
+                  />
+                )}
 
                 <div className='pointer-events-none absolute inset-0 overflow-hidden'>
                   {SHOOTING_STARS.map(star => (
@@ -184,8 +190,13 @@ export const GoProModal = () => {
                           'radial-gradient(ellipse 53% 43% at 68% 58%, rgba(217, 70, 239, 0.19) 0%, rgba(217, 70, 239, 0.07) 55%, transparent 75%)',
                           'radial-gradient(ellipse 48% 43% at 52% 30%, rgba(56, 189, 248, 0.19) 0%, rgba(56, 189, 248, 0.07) 58%, transparent 77%)',
                         ].join(', '),
-                        maskImage: 'linear-gradient(to bottom, black 0%, transparent 100%)',
-                        WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 100%)',
+                        // The mask costs an extra offscreen pass per repaint on older WebKitGTK
+                        // (same reason the starfield is skipped above). Without it the glow's
+                        // own transparent falloff still carries the fade, just less evenly.
+                        ...(!forceReducedMotion && {
+                          maskImage: 'linear-gradient(to bottom, black 0%, transparent 100%)',
+                          WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 100%)',
+                        }),
                       }}
                     />
 

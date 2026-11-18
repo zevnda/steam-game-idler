@@ -499,7 +499,7 @@ This page covers common issues and their solutions when using Steam Game Idler.
   </Accordion>
 
   <Accordion title="SGI feels slow, or some animations are turned off" id="linux-appimage-lag">
-    SGI draws its interface with WebKitGTK, and how smooth it feels depends on which version is running. WebKitGTK 2.52 or newer runs smoothly. Older versions — for example on Ubuntu 22.04, Linux Mint 21 or Debian 12 — are noticeably slower, so SGI automatically turns off some decorative animations there to keep it usable. There's nothing to change in SGI's settings.
+    SGI draws its interface with WebKitGTK, and how smooth it feels depends on which version is running. WebKitGTK 2.52 or newer runs smoothly. Older versions — for example on Ubuntu 22.04, Linux Mint 21 or Debian 12 — are noticeably slower, so SGI automatically turns off some decorative animations and background effects there to keep it usable. There's nothing to change in SGI's settings.
 
     `.deb`/`.rpm` installs always use your system's WebKitGTK. The AppImage (v6.2.9 and later) uses it too when it's installed, and otherwise falls back to an older built-in copy. AppImages before v6.2.9 always used the built-in copy, so update SGI first.
 
@@ -520,6 +520,19 @@ This page covers common issues and their solutions when using Steam Game Idler.
     If your distro's newest version is still below 2.52 (Ubuntu 22.04, Linux Mint 21 and Debian 12 don't offer 2.52), SGI keeps working normally with reduced animations. Upgrading to a newer release of your distro is the only way to get 2.52 there; we don't recommend installing WebKitGTK from third-party sources.
 
     To confirm which version SGI is actually using, look for the `platform: linux webview runtime` line near the start of each session in the log file ([Debug Settings](/docs/settings/debug)).
+  </Accordion>
+
+  <Accordion title="SGI crashes or freezes my desktop on an NVIDIA GPU (Wayland)" id="linux-nvidia-wayland">
+    On some systems with an NVIDIA GPU (including laptops with both NVIDIA and AMD/Intel graphics) running a Wayland session, SGI's window can crash or freeze, and other parts of the desktop such as the panel or Steam may crash with it. This comes from how NVIDIA's driver and WebKitGTK work together on Wayland, so it can't be fixed from SGI's side.
+
+    The workaround is to run SGI through X11 compatibility (XWayland) instead, by putting `env -u WAYLAND_DISPLAY GDK_BACKEND=x11` in front of the command you launch it with:
+
+    - **From a terminal**: `env -u WAYLAND_DISPLAY GDK_BACKEND=x11 ./Steam-Game-Idler.AppImage` (use your AppImage's actual file name, or `steam-game-idler` for a `.deb`/`.rpm` install)
+    - **From your app launcher**: edit SGI's launcher entry (or its `.desktop` file) the same way, for example `env -u WAYLAND_DISPLAY GDK_BACKEND=x11 /path/to/Steam-Game-Idler.AppImage`. If you manage the AppImage with Gear Lever, edit the launch command there
+
+    Both parts are needed: on a Wayland session SGI switches itself back to Wayland unless `WAYLAND_DISPLAY` is removed too.
+
+    SGI may feel a little less smooth this way, but it runs stably.
   </Accordion>
 
   <Accordion title="A few visual quirks on Linux" id="linux-visual-quirks">
