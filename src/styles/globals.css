@@ -542,6 +542,20 @@ body {
   animation: none;
 }
 
+/* Not motion, and deliberately absent from the OS prefers-reduced-motion block above: a static
+   effect that's only too expensive to repaint on those same older WebKitGTK builds. A live
+   backdrop blur re-samples everything behind each of FeatureCard's nine buttons on every scroll
+   frame. A darker solid fill reads almost the same. The rest of the modal's heavy static layers
+   (starfield, masks) are dropped in GoProModal/index.tsx, since they're inline styles. */
+.force-reduced-motion .pro-card-button {
+  backdrop-filter: none;
+  background-color: rgb(0 0 0 / 0.5);
+}
+
+.force-reduced-motion .pro-card-button:hover {
+  background-color: rgb(0 0 0 / 0.65);
+}
+
 /* Generic overlay backdrop fade (HelpDesk's dim backdrop, and any future plain-div overlay that
    isn't HeroUI's own Modal/AlertDialog) - reuses `pro-fade-in`'s keyframe but at HeroUI's own real
    Modal backdrop entrance duration (150ms ease-out, see `.modal__backdrop[data-entering=true]` in

@@ -34,7 +34,7 @@ export function FeatureCard({
         <p className='flex-1 text-sm font-semibold leading-relaxed'>{card.description}</p>
 
         <button
-          className='mt-3 flex cursor-pointer items-center gap-1.5 self-start rounded-full bg-black/30 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-white backdrop-blur-sm duration-150 hover:bg-black/50'
+          className='pro-card-button mt-3 flex cursor-pointer items-center gap-1.5 self-start rounded-full bg-black/30 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-white backdrop-blur-sm duration-150 hover:bg-black/50'
           type='button'
           onClick={() => openExternalLink(card.learnMoreUrl)}
         >
