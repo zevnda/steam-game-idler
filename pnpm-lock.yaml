@@ -175,8 +175,8 @@ importers:
         specifier: ^15.2.2
         version: 15.2.2(@types/mdast@4.0.4)(@types/mdx@2.0.14)(@types/react@19.2.17)(fumadocs-core@16.18.0(@mdx-js/mdx@3.1.1(supports-color@10.2.2))(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.17)(lucide-react@0.563.0(react@19.2.4))(next@16.4.3(@babel/core@7.29.7(supports-color@10.2.2))(@playwright/test@1.61.1)(@types/node@26.6.5)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(supports-color@10.2.2)(zod@4.6.7))(next@16.4.3(@babel/core@7.29.7(supports-color@10.2.2))(@playwright/test@1.61.1)(@types/node@26.6.5)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(supports-color@10.2.2)
       fumadocs-ui:
-        specifier: ^16.18.0
-        version: 16.18.0(@types/mdx@2.0.14)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(fumadocs-core@16.18.0(@mdx-js/mdx@3.1.1(supports-color@10.2.2))(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.17)(lucide-react@0.563.0(react@19.2.4))(next@16.4.3(@babel/core@7.29.7(supports-color@10.2.2))(@playwright/test@1.61.1)(@types/node@26.6.5)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(supports-color@10.2.2)(zod@4.6.7))(next@16.4.3(@babel/core@7.29.7(supports-color@10.2.2))(@playwright/test@1.61.1)(@types/node@26.6.5)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.3.3)
+        specifier: ^16.18.1
+        version: 16.18.1(@types/mdx@2.0.14)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(fumadocs-core@16.18.0(@mdx-js/mdx@3.1.1(supports-color@10.2.2))(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.17)(lucide-react@0.563.0(react@19.2.4))(next@16.4.3(@babel/core@7.29.7(supports-color@10.2.2))(@playwright/test@1.61.1)(@types/node@26.6.5)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(supports-color@10.2.2)(zod@4.6.7))(next@16.4.3(@babel/core@7.29.7(supports-color@10.2.2))(@playwright/test@1.61.1)(@types/node@26.6.5)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.3.3)
       lucide-react:
         specifier: ^0.563.0
         version: 0.563.0(react@19.2.4)
@@ -2463,12 +2463,12 @@ packages:
       vite:
         optional: true
 
-  fumadocs-ui@16.18.0:
-    resolution: {integrity: sha512-VecAJGSs/YSxQjrROeoYtWxQ3cU36c8IVIwNw87gdTVuMDESMexspiFaJjYuYGNT3nAvjouPycLfIJD+aiV7Xg==}
+  fumadocs-ui@16.18.1:
+    resolution: {integrity: sha512-LC30BDg6dzlSOWDzs55673tdsP9Ja0NFVTPOXEoUKCHQdqV8x/FvSmmdLuEga3a5QHLJfJsCT3fa4dquQwX4zA==}
     peerDependencies:
       '@types/mdx': '*'
       '@types/react': '*'
-      fumadocs-core: 16.18.0
+      fumadocs-core: 16.18.1
       next: 16.x.x
       react: ^19.2.0
       react-dom: ^19.2.0
@@ -6197,7 +6197,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  fumadocs-ui@16.18.0(@types/mdx@2.0.14)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(fumadocs-core@16.18.0(@mdx-js/mdx@3.1.1(supports-color@10.2.2))(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.17)(lucide-react@0.563.0(react@19.2.4))(next@16.4.3(@babel/core@7.29.7(supports-color@10.2.2))(@playwright/test@1.61.1)(@types/node@26.6.5)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(supports-color@10.2.2)(zod@4.6.7))(next@16.4.3(@babel/core@7.29.7(supports-color@10.2.2))(@playwright/test@1.61.1)(@types/node@26.6.5)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.3.3):
+  fumadocs-ui@16.18.1(@types/mdx@2.0.14)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(fumadocs-core@16.18.0(@mdx-js/mdx@3.1.1(supports-color@10.2.2))(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.17)(lucide-react@0.563.0(react@19.2.4))(next@16.4.3(@babel/core@7.29.7(supports-color@10.2.2))(@playwright/test@1.61.1)(@types/node@26.6.5)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(supports-color@10.2.2)(zod@4.6.7))(next@16.4.3(@babel/core@7.29.7(supports-color@10.2.2))(@playwright/test@1.61.1)(@types/node@26.6.5)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.3.3):
     dependencies:
       '@fuma-translate/react': 1.0.2(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@fumadocs/tailwind': 0.1.5(tailwindcss@4.3.3)
