@@ -258,6 +258,10 @@ export default function PrivacyPolicy() {
                 <span className='text-text-primary font-medium'>Linux:</span>{' '}
                 ~/.local/share/com.zevnda.steam-game-idler
               </li>
+              <li>
+                <span className='text-text-primary font-medium'>macOS:</span> ~/Library/Application
+                Support/com.zevnda.steam-game-idler
+              </li>
             </ul>
           </section>
 

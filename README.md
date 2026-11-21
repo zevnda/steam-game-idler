@@ -5,7 +5,7 @@
 
 Steam Game Idler (SGI) is a Steam automation tool for farming trading cards, managing achievements, and boosting playtime across all games in your Steam library.
 
-Full **Windows** and **Linux** support. No local Steam client required.
+Full **Windows**, **Linux** and **macOS** (Apple Silicon) support. No local Steam client required.
 
 See how it stacks up against other software, such as **[ArchiSteamFarm](https://steamgameidler.com/alternatives/archisteamfarm)**, **[Steam Achievement Manager](https://steamgameidler.com/alternatives/steam-achievement-manager)**, and **[Idle Master](https://steamgameidler.com/alternatives/idle-master)**.
 
@@ -16,6 +16,7 @@ See how it stacks up against other software, such as **[ArchiSteamFarm](https://
 
 [![Windows][windows]](https://github.com/zevnda/steam-game-idler/releases/latest)
 [![Linux][linux]](https://github.com/zevnda/steam-game-idler/releases/latest)
+[![macOS][macos]](https://github.com/zevnda/steam-game-idler/releases/latest)
 
 <img src="./public/example.webp" width="700" alt="example image"><br />
 
@@ -32,6 +33,7 @@ See how it stacks up against other software, such as **[ArchiSteamFarm](https://
     * **Windows (installer)**: Run the installer and follow the steps
     * **Windows (portable)**: Extract the contents of the `.zip` file and run `Steam Game Idler.exe`
     * **Linux**: See the **[Linux install guide](https://steamgameidler.com/docs/get-started/install#linux)** for the full steps
+    * **macOS**: See the **[macOS install guide](https://steamgameidler.com/docs/get-started/install#macos)** for the full steps, including allowing SGI past Gatekeeper on first launch
 2. Choose between **[Steam Sign-in](https://steamgameidler.com/docs/get-started/how-to-sign-in#steam-sign-in)** or **[Local Sign-in](https://steamgameidler.com/docs/get-started/how-to-sign-in#local-sign-in)** mode
 3. Start idling!
 
@@ -100,3 +102,4 @@ Copyright © 2024-2026 zevnda — **[Elastic-2.0 License](./LICENSE)**
 [discord]: https://img.shields.io/discord/1445588897076871277?label=Discord&style=flat-square&color=%236577e6
 [windows]: https://custom-icon-badges.demolab.com/badge/Windows-0078D6?logo=windows11&logoColor=white&style=flat-square
 [linux]: https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=black&style=flat-square
+[macos]: https://img.shields.io/badge/macOS-000000?logo=apple&logoColor=white&style=flat-square

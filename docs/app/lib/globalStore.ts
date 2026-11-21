@@ -1,5 +1,7 @@
 import { create } from 'zustand'
 
+export type SiteOS = 'windows' | 'linux' | 'macos'
+
 interface globalStore {
   downloadUrl: string
   setDownloadUrl: (value: string | ((prev: string) => string)) => void
@@ -32,15 +34,35 @@ interface globalStore {
   // asset is fetched (see StoreLoader.tsx).
   windowsPortableUrl: string
   setWindowsPortableUrl: (value: string | ((prev: string) => string)) => void
+  // The macOS (Apple Silicon) .dmg - '' until a release that ships one is fetched, same "not
+  // available yet" rule as the Linux assets above.
+  macDownloadUrl: string
+  setMacDownloadUrl: (value: string | ((prev: string) => string)) => void
+  macDownloadSize: string
+  setMacDownloadSize: (value: string | ((prev: string) => string)) => void
   // Which platform's download CTA to show, site-wide. Defaults to 'windows' (matches the
   // historical, pre-Linux-support behavior and is SSR-safe) until either a one-time client-side
   // OS sniff (see detectOS.ts, run once from OSDetector.tsx) or a manual toggle says otherwise.
-  selectedOS: 'windows' | 'linux'
-  setSelectedOS: (value: 'windows' | 'linux') => void
+  selectedOS: SiteOS
+  setSelectedOS: (value: SiteOS) => void
   // True once the user has manually picked a platform via a toggle - stops OSDetector's one-time
   // auto-detect effect from ever overwriting their explicit choice.
   osOverridden: boolean
-  overrideOS: (value: 'windows' | 'linux') => void
+  overrideOS: (value: SiteOS) => void
+}
+
+/**
+ * The platform whose download to actually offer: the selected one once a release with its assets
+ * exists, otherwise Windows - so no CTA ever points at a missing file (see StoreLoader.tsx).
+ */
+export function offeredOS({
+  selectedOS,
+  linuxDownloadUrl,
+  macDownloadUrl,
+}: Pick<globalStore, 'selectedOS' | 'linuxDownloadUrl' | 'macDownloadUrl'>) {
+  if (selectedOS === 'linux' && linuxDownloadUrl) return 'linux'
+  if (selectedOS === 'macos' && macDownloadUrl) return 'macos'
+  return 'windows' as const
 }
 
 export const useGlobalStore = create<globalStore>(set => ({
@@ -103,6 +125,16 @@ export const useGlobalStore = create<globalStore>(set => ({
   setWindowsPortableUrl: value =>
     set(state => ({
       windowsPortableUrl: typeof value === 'function' ? value(state.windowsPortableUrl) : value,
+    })),
+  macDownloadUrl: '',
+  setMacDownloadUrl: value =>
+    set(state => ({
+      macDownloadUrl: typeof value === 'function' ? value(state.macDownloadUrl) : value,
+    })),
+  macDownloadSize: '',
+  setMacDownloadSize: value =>
+    set(state => ({
+      macDownloadSize: typeof value === 'function' ? value(state.macDownloadSize) : value,
     })),
   selectedOS: 'windows',
   setSelectedOS: value => set({ selectedOS: value }),
