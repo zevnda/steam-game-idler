@@ -21,9 +21,9 @@ This page covers common issues and their solutions when using Steam Game Idler.
 <Steps>
   <Step>
     ### Check System Requirements
-    - Windows 10/11 or Linux (64-bit)
+    - Windows 10/11, Linux (64-bit) or macOS 12+ (Apple Silicon)
     - Internet connection
-    - Steam client installed and running (only required if you use [Local Sign-in](/docs/get-started/how-to-sign-in#local-sign-in), which is Windows-only — Linux supports Steam Sign-in only)
+    - Steam client installed and running (only required if you use [Local Sign-in](/docs/get-started/how-to-sign-in#local-sign-in), which is Windows-only — Linux and macOS support Steam Sign-in only)
   </Step>
 
   <Step>
@@ -374,7 +374,7 @@ This page covers common issues and their solutions when using Steam Game Idler.
     This is expected, not a bug. A small set of games (Team Fortress 2, Dota 2, CS2, Left 4 Dead 2, Portal 2) use Valve's Game Coordinator system for stats, which isn't reachable through **Steam Sign-in**'s architecture at all.
 
     - **On Windows**: switch to [Local Sign-in](/docs/get-started/how-to-sign-in#local-sign-in) for these specific games, which has no such restriction
-    - **On Linux**: there's no local-client fallback (Local Sign-in doesn't exist on Linux), so these games can't be managed at all — this is a Steam architecture limitation, not something SGI can work around
+    - **On Linux and macOS**: there's no local-client fallback (Local Sign-in is Windows-only), so these games can't be managed at all — this is a Steam architecture limitation, not something SGI can work around
   </Accordion>
 
   <Accordion title="Achievement Unlocker isn't progressing" id="achievement-unlocker-stuck">
@@ -572,6 +572,34 @@ This page covers common issues and their solutions when using Steam Game Idler.
 
   <Accordion title="Where does SGI store its data on Linux?" id="linux-data-location">
     `~/.local/share/com.zevnda.steam-game-idler` — the equivalent of Windows' `%appdata%\com.zevnda.steam-game-idler\` referenced elsewhere on this page. The log file and settings file live there too, same structure as Windows.
+  </Accordion>
+</Accordions>
+
+## macOS-Specific Notes
+
+<Accordions type="multiple">
+  <Accordion title="macOS says SGI can't be opened, or can't verify it" id="macos-gatekeeper">
+    SGI isn't notarized by Apple, so macOS blocks the first launch after you download it. This is expected. Open **System Settings** → **Privacy & Security**, scroll down to the message about Steam Game Idler and click **Open Anyway** (on macOS 12 Monterey: **System Preferences** → **Security & Privacy** → **General**), or remove the quarantine flag in Terminal:
+
+    ```bash
+    xattr -dr com.apple.quarantine "/Applications/Steam Game Idler.app"
+    ```
+
+    The Terminal command also fixes a "Steam Game Idler is damaged and can't be opened" message. See [Install](/docs/get-started/install#macos) for the full steps.
+  </Accordion>
+
+  <Accordion title="macOS asks for my password to let SGI use the keychain" id="macos-keychain-prompt">
+    SGI keeps your Steam session in the macOS Keychain. Because SGI isn't signed with an Apple Developer certificate, macOS treats each new version as a different app, so the first launch after an update can ask whether **Steam Game Idler** may use its saved keychain item. Enter your Mac password and click **Always Allow**. You won't be asked again until the next update.
+
+    If you click **Deny**, SGI can't read your saved session. Quit SGI and open it again to get the prompt back.
+  </Accordion>
+
+  <Accordion title="Does SGI run on Intel Macs?" id="macos-intel">
+    No. The macOS build is for Apple Silicon Macs (M1 or newer) only, running macOS 12 or later.
+  </Accordion>
+
+  <Accordion title="Where does SGI store its data on macOS?" id="macos-data-location">
+    `~/Library/Application Support/com.zevnda.steam-game-idler` — the equivalent of Windows' `%appdata%\com.zevnda.steam-game-idler\` referenced elsewhere on this page. The log file and settings file live there too. Your Steam session is stored in the macOS Keychain, so there's no keyring to set up like on Linux.
   </Accordion>
 </Accordions>
 

@@ -22,7 +22,10 @@ by a human before it is committed or merged.
   local Steam client, Windows-only) and a persistent agent daemon (SteamKit2, no client needed).
 - `docs/` - separate Next.js/Fumadocs docs + marketing site, deployed independently to Vercel.
 
-Platforms: Windows (CLI + agent sign-in) and Linux (agent mode only).
+Platforms: Windows (CLI + agent sign-in), Linux and macOS (Apple Silicon) (agent mode only). On
+macOS the native traffic lights sit over the window's top-left corner, above all web content: any
+UI that can cover the titlebar must keep that corner clear via `--traffic-lights-width`
+(`src/styles/globals.css`).
 
 ## Commands
 

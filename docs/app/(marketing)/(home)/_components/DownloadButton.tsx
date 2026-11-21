@@ -1,7 +1,7 @@
 'use client'
 
 import type { CSSProperties } from 'react'
-import { FaLinux, FaWindows } from 'react-icons/fa6'
+import { FaApple, FaLinux, FaWindows } from 'react-icons/fa6'
 import Link from 'next/link'
 import { useGlobalStore } from '@/app/lib/globalStore'
 
@@ -38,6 +38,8 @@ export default function DownloadButton({
     >
       {selectedOS === 'linux' ? (
         <FaLinux className={iconClassName} />
+      ) : selectedOS === 'macos' ? (
+        <FaApple className={iconClassName} />
       ) : (
         <FaWindows className={iconClassName} />
       )}

@@ -1,6 +1,6 @@
 // Publishes `libs/SteamUtility` for whichever platform this script is running on - win-x64
-// (full CLI + agent build) on Windows, linux-x64 (daemon-only build, per the csproj's RID
-// conditions) everywhere else. Keeps `pnpm build:libs` a single cross-platform entry point instead
+// (full CLI + agent build) on Windows, osx-arm64 on macOS and linux-x64 everywhere else (both
+// daemon-only builds, per the csproj's RID conditions). Keeps `pnpm build:libs` a single cross-platform entry point instead
 // of two separate scripts the two dev flows would have to remember to call correctly.
 //
 // PublishSingleFile=false, matching both release.yml CI jobs (#1953 for Windows, mirrored for
@@ -11,7 +11,7 @@ import { execSync } from 'node:child_process'
 import { rmSync } from 'node:fs'
 import { join } from 'node:path'
 
-const rid = process.platform === 'win32' ? 'win-x64' : 'linux-x64'
+const rid = { win32: 'win-x64', darwin: 'osx-arm64' }[process.platform] ?? 'linux-x64'
 
 // Always publish from clean Release intermediates. An incremental trimmed publish can reuse the
 // previous run's SteamUtility.deps.json even when the new code needs a framework assembly the old

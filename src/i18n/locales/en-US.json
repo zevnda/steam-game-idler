@@ -1057,15 +1057,15 @@
         },
         "runAtStartup": {
           "label": "Run at startup",
-          "description": "Automatically launch Steam Game Idler when you sign in to Windows."
+          "description": "Automatically launch Steam Game Idler when you sign in to your computer."
         },
         "startMinimized": {
           "label": "Start minimized",
-          "description": "Launch Steam Game Idler hidden in the system tray instead of showing the window."
+          "description": "Launch Steam Game Idler hidden in the system tray (menu bar on macOS) instead of showing the window."
         },
         "closeToTray": {
           "label": "Close to tray",
-          "description": "Keep Steam Game Idler running in the system tray when you close the window."
+          "description": "Keep Steam Game Idler running in the system tray (menu bar on macOS) when you close the window."
         },
         "autoUpdateGamesList": {
           "label": "Automatically update games list",
@@ -1329,7 +1329,7 @@
         "title": "Couldn't load settings",
         "ioFailed": "Couldn't read or write your settings file.",
         "apiKeyInvalid": "Steam rejected that API key. Double-check it and try again.",
-        "credentialStoreFailed": "Couldn't access the Windows Credential Manager to store your API key.",
+        "credentialStoreFailed": "Couldn't access your system's secure credential storage to store your API key.",
         "generic": "Something went wrong updating settings. Please try again. ({{code}})"
       }
     }

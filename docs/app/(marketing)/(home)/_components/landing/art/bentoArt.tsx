@@ -7,7 +7,7 @@
 //
 // Same honesty rules as the 3D demo: fictional games, the desktop app's real UI wording.
 import type { ThemeId } from '../showcase/engine/palette'
-import { FaLinux, FaWindows } from 'react-icons/fa6'
+import { FaApple, FaLinux, FaWindows } from 'react-icons/fa6'
 import {
   TbBell,
   TbCheck,
@@ -605,14 +605,20 @@ export function AccountsArt({ t }: { t: number }) {
 
 export const PLATFORMS_LOOP = 4
 
-/** Windows & Linux: the two platform marks coin-flip in 3D, then their packages appear and fade. */
+/** Windows, Linux & macOS: the three platform marks coin-flip in 3D, then their packages appear and fade. */
 export function PlatformsArt({ t }: { t: number }) {
   return (
     <div className='flex flex-col items-end gap-2 w-29.5'>
       <div className='flex gap-2' style={{ perspective: 300 }}>
-        {[FaWindows, FaLinux].map((Icon, i) => (
+        {(
+          [
+            ['win', FaWindows],
+            ['linux', FaLinux],
+            ['mac', FaApple],
+          ] as const
+        ).map(([key, Icon], i) => (
           <span
-            key={Icon === FaWindows ? 'win' : 'linux'}
+            key={key}
             className='mini-coin'
             style={{
               transform: `rotateY(${t > 0 ? 360 * easeInOut(prog(t, i * 0.25, 0.9)) : 0}deg)`,
@@ -623,7 +629,7 @@ export function PlatformsArt({ t }: { t: number }) {
         ))}
       </div>
       <div className='flex flex-wrap justify-end gap-1'>
-        {['.exe', '.zip', '.deb', '.rpm', 'AppImage'].map((f, i) => (
+        {['.exe', '.zip', '.deb', '.rpm', 'AppImage', '.dmg'].map((f, i) => (
           <span
             key={f}
             className='mini-tag'

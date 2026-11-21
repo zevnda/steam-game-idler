@@ -75,6 +75,18 @@ windows = { version = "0.62", features = [
   "Win32_UI_WindowsAndMessaging",
 ] }
 
+# AppKit access for `macos_titlebar` (traffic light placement). Same version tao/wry already pull
+# in, so it adds no second copy of the crate to the build.
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2-app-kit = { version = "0.3.2", default-features = false, features = [
+  "std",
+  "NSButton",
+  "NSControl",
+  "NSResponder",
+  "NSView",
+  "NSWindow",
+] }
+
 # Pinned to the exact version wry/tauri already vendor for this target family (see `wry`'s own
 # Cargo.toml) so this doesn't pull in a second copy of the crate - only used directly by
 # `zoom.rs` for `WebViewExt::set_zoom_level`, WebKitGTK's equivalent of the WebView2

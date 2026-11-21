@@ -8,7 +8,7 @@ import { Step, Steps } from 'fumadocs-ui/components/steps';
 
 # Install
 
-SGI supports **Windows** (10/11, 64-bit) and **Linux** (64-bit). Follow the steps below for your OS and install method.
+SGI supports **Windows** (10/11, 64-bit), **Linux** (64-bit) and **macOS** (12 or later, Apple Silicon only). Follow the steps below for your OS and install method.
 
 ## Windows Installer
 
@@ -103,5 +103,47 @@ SGI supports **Windows** (10/11, 64-bit) and **Linux** (64-bit). Follow the step
       chmod +x Steam.Game.Idler_X.X.X_amd64.AppImage
       ./Steam.Game.Idler_X.X.X_amd64.AppImage
       ```
+  </Step>
+</Steps>
+
+## macOS
+
+<Callout type='info'>
+    macOS supports [Steam Sign-in](/docs/get-started/how-to-sign-in#steam-sign-in) only, and needs an Apple Silicon Mac (M1 or newer) running macOS 12 or later. Intel Macs aren't supported
+</Callout>
+
+<Callout type='info'>
+    Unlike on Linux, there's no keyring to set up: SGI stores your session in the macOS Keychain
+</Callout>
+
+<Steps>
+  <Step>
+    ### Download
+    Download `Steam.Game.Idler_X.X.X_aarch64.dmg` from the [latest release](https://github.com/zevnda/steam-game-idler/releases/latest/) page on GitHub
+  </Step>
+
+  <Step>
+    ### Install
+    Open the `.dmg` and drag **Steam Game Idler** into your **Applications** folder
+  </Step>
+
+  <Step>
+    ### Allow it to open
+    SGI isn't notarized by Apple, so macOS blocks it the first time you open it, saying it can't verify the app. Allow it once:
+    1. Open SGI from your Applications folder and close the warning
+    2. Open **System Settings** → **Privacy & Security**, scroll down to the message about Steam Game Idler, and click **Open Anyway** (on macOS 12 Monterey: **System Preferences** → **Security & Privacy** → **General**)
+    3. Confirm when macOS asks again (it may ask for your password or Touch ID)
+
+    Alternatively, remove the quarantine flag in Terminal:
+    ```bash
+    xattr -dr com.apple.quarantine "/Applications/Steam Game Idler.app"
+    ```
+
+    You only need to do this the first time you open SGI. After an update, macOS may also ask for your password so SGI can use its keychain item; click **Always Allow** (see [Troubleshooting](/docs/troubleshooting#macos-keychain-prompt))
+  </Step>
+
+  <Step>
+    ### Run
+    Launch SGI from your Applications folder, Launchpad or Spotlight
   </Step>
 </Steps>

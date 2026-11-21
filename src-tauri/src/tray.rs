@@ -69,10 +69,15 @@ pub fn setup(app_handle: &AppHandle) -> tauri::Result<()> {
         Menu::with_items(app_handle, &[&show, &recenter, &update, &quit])?
     };
 
+    // macOS menu bar icons are monochrome templates the system tints for light/dark menu bars.
+    #[cfg(target_os = "macos")]
+    let icon = Image::from_bytes(include_bytes!("../icons/tray-template.png"))?;
+    #[cfg(not(target_os = "macos"))]
     let icon = Image::from_bytes(include_bytes!("../icons/32x32.png"))?;
 
     TrayIconBuilder::with_id("main")
         .icon(icon)
+        .icon_as_template(cfg!(target_os = "macos"))
         .tooltip("Steam Game Idler")
         .menu(&menu)
         .show_menu_on_left_click(false)
@@ -154,7 +159,7 @@ pub fn update_tray_menu(
     tray.set_menu(Some(menu)).map_err(|err| err.to_string())
 }
 
-fn show_main_window(app_handle: &AppHandle) {
+pub(crate) fn show_main_window(app_handle: &AppHandle) {
     let Some(window) = app_handle.get_webview_window("main") else {
         tracing::warn!("tray: show requested but the main window handle is missing");
         return;

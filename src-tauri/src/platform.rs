@@ -66,16 +66,28 @@ pub fn can_auto_update() -> bool {
         !is_portable()
     }
 
-    #[cfg(not(windows))]
+    // A macOS `.app` bundle self-updates in place (Tauri swaps the whole bundle) - except when it
+    // runs from the mounted DMG or from Gatekeeper's read-only App Translocation copy (opened
+    // without first being moved out of Downloads), where the bundle can't be replaced.
+    #[cfg(target_os = "macos")]
+    {
+        tauri::utils::platform::current_exe().is_ok_and(|exe| {
+            let exe = exe.to_string_lossy();
+            !exe.starts_with("/Volumes/") && !exe.contains("/AppTranslocation/")
+        })
+    }
+
+    #[cfg(not(any(windows, target_os = "macos")))]
     {
         std::env::var_os("APPIMAGE").is_some()
     }
 }
 
-/// The running OS, as `"windows"`/`"linux"` (i.e. `std::env::consts::OS` verbatim) - lets the
-/// frontend gate CLI-mode sign-in (Windows-only; requires a real local Steam client) and the 5
-/// Game Coordinator titles (unsupported via the daemon path on both OSes, but Windows has CLI
-/// mode as a fallback and Linux doesn't) without a separate capability-flag command per feature.
+/// The running OS, as `"windows"`/`"linux"`/`"macos"` (i.e. `std::env::consts::OS` verbatim) -
+/// lets the frontend gate CLI-mode sign-in (Windows-only; requires a real local Steam client), the
+/// 5 Game Coordinator titles (unsupported via the daemon path everywhere, but only Windows has CLI
+/// mode as a fallback) and the macOS-native window chrome without a separate capability-flag
+/// command per feature.
 #[tauri::command]
 pub fn current_os() -> &'static str {
     std::env::consts::OS

@@ -89,7 +89,7 @@ export default function OpenSource() {
             </div>
             <p className='mt-5 text-base text-text-muted leading-relaxed'>
               Automate your Steam library: farm trading cards, manage achievements, boost playtime
-              and manage your inventory - from one desktop app for Windows and Linux.
+              and manage your inventory - from one desktop app for Windows, Linux and macOS.
             </p>
             <div className='mt-6 flex flex-wrap gap-2'>
               {LANGUAGES.map(([name, color]) => (

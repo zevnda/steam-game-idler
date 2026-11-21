@@ -1,11 +1,12 @@
 'use client'
 
-import { FaLinux, FaWindows } from 'react-icons/fa6'
+import type { SiteOS } from '@/app/lib/globalStore'
+import { FaApple, FaLinux, FaWindows } from 'react-icons/fa6'
 import { TbArrowDown } from 'react-icons/tb'
 import Link from 'next/link'
 import { scrollBehavior } from '@/app/(marketing)/(home)/_components/landing/demoStore'
 import { OLDER_VERSIONS_ID } from '@/app/(marketing)/download/_components/PreviousVersionsSection'
-import { useGlobalStore } from '@/app/lib/globalStore'
+import { offeredOS, useGlobalStore } from '@/app/lib/globalStore'
 import { useSwapKey } from '@/app/lib/useSwapKey'
 
 // The home page hero's flat snapshot of the mock app:
@@ -18,7 +19,14 @@ const LATEST_RELEASE = 'https://github.com/zevnda/steam-game-idler/releases/late
 // The home hero's secondary-button look (ShowcaseHero.tsx's "Try the live demo")
 const secondaryLinkClass = 'btn-ghost px-4 py-2 text-sm rounded-full'
 
+const PLATFORMS = {
+  windows: { label: 'Windows', Icon: FaWindows, requirement: 'Windows 10 / 11' },
+  linux: { label: 'Linux', Icon: FaLinux, requirement: 'Most 64-bit distros' },
+  macos: { label: 'macOS', Icon: FaApple, requirement: 'macOS 12+ on Apple Silicon' },
+} as const
+
 export default function DownloadHero() {
+  const store = useGlobalStore(state => state)
   const {
     downloadUrl,
     latestVersion,
@@ -29,21 +37,27 @@ export default function DownloadHero() {
     linuxRpmUrl,
     linuxAppImageUrl,
     windowsPortableUrl,
-    selectedOS,
+    macDownloadUrl,
+    macDownloadSize,
     overrideOS,
-  } = useGlobalStore(state => state)
+  } = store
 
-  // A Linux release only actually exists once the CI pipeline has published one - fall back to
-  // Windows regardless of detection/a prior manual override until then, so this page never
-  // offers a dead link. Resolves itself automatically the moment a real Linux release ships, no
-  // redeploy needed (see StoreLoader.tsx).
-  const linuxAvailable = Boolean(linuxDownloadUrl)
-  const isLinux = selectedOS === 'linux' && linuxAvailable
-  const primaryUrl = isLinux ? linuxDownloadUrl : downloadUrl
-  const primarySize = (isLinux ? linuxDownloadSize : downloadSize) || '~7 MB'
+  // A Linux/macOS release only actually exists once the CI pipeline has published one -
+  // offeredOS falls back to Windows regardless of detection/a prior manual override until then,
+  // so this page never offers a dead link. Resolves itself automatically the moment a real
+  // release ships, no redeploy needed (see StoreLoader.tsx).
+  const os = offeredOS(store)
+  const isLinux = os === 'linux'
+  const platform = PLATFORMS[os]
+  const primaryUrl = { windows: downloadUrl, linux: linuxDownloadUrl, macos: macDownloadUrl }[os]
+  const primarySize =
+    { windows: downloadSize, linux: linuxDownloadSize, macos: macDownloadSize }[os] || '~7 MB'
+  const otherOSes = (['windows', 'linux', 'macos'] as SiteOS[]).filter(
+    o => o !== os && offeredOS({ ...store, selectedOS: o }) === o,
+  )
   const hasVersion = Boolean(latestVersion) && latestVersion !== '0.0.0'
   // everything below that changes with the platform crossfades when it's switched
-  const swap = useSwapKey(isLinux)
+  const swap = useSwapKey(os)
 
   const scrollToOlder = (e: React.MouseEvent) => {
     const el = document.getElementById(OLDER_VERSIONS_ID)
@@ -72,8 +86,8 @@ export default function DownloadHero() {
           >
             <Link prefetch={false} href={primaryUrl} className='btn-download justify-center'>
               <span key={swap.key} className={`inline-flex items-center gap-2 ${swap.className}`}>
-                {isLinux ? <FaLinux className='w-4 h-4' /> : <FaWindows className='w-4 h-4' />}
-                Download for {isLinux ? 'Linux' : 'Windows'}
+                <platform.Icon className='w-4 h-4' />
+                Download for {platform.label}
               </span>
             </Link>
             {/* a real #anchor link, so it still jumps there before hydration */}
@@ -104,8 +118,8 @@ export default function DownloadHero() {
             ) : (
               'Latest release'
             )}{' '}
-            &middot; {isLinux ? 'Most 64-bit distros' : 'Windows 10 / 11'} &middot; {primarySize}{' '}
-            &middot; {totalDownloads || '100K+'} downloads
+            &middot; {platform.requirement} &middot; {primarySize} &middot;{' '}
+            {totalDownloads || '100K+'} downloads
           </p>
 
           {/* Always rendered, never added once the release data arrives: appearing ~1s after load,
@@ -136,6 +150,17 @@ export default function DownloadHero() {
                   Download .AppImage
                 </Link>
               </>
+            ) : os === 'macos' ? (
+              // no second macOS format - point at the Gatekeeper "Open Anyway" steps instead,
+              // which every first launch of the ad-hoc signed app needs
+              <Link
+                prefetch={false}
+                href='/docs/get-started/install#macos'
+                className={secondaryLinkClass}
+              >
+                <FaApple className='w-3.5 h-3.5' />
+                First launch on macOS
+              </Link>
             ) : (
               <Link
                 prefetch={false}
@@ -150,17 +175,25 @@ export default function DownloadHero() {
 
           {/* Manual override - the platform above is only ever a best-effort default (client-side
               OS sniff, or a prior visit's choice), never a hard gate. Only offered once a real
-              Linux build actually exists to switch to; until then it holds its space invisibly
-              (`invisible` also takes it out of the tab order and the accessibility tree). */}
-          <button
-            type='button'
-            onClick={() => overrideOS(isLinux ? 'windows' : 'linux')}
-            className={`mt-6 block mx-auto lg:mx-0 text-sm text-text-muted underline underline-offset-4 hover:text-text-primary transition-colors duration-150 cursor-pointer ${linuxAvailable ? '' : 'invisible'}`}
-          >
+              Linux/macOS build actually exists to switch to; until then it holds its space
+              invisibly (`invisible` also takes it out of the tab order and the accessibility tree). */}
+          <p className={`mt-6 text-sm text-text-muted ${otherOSes.length > 0 ? '' : 'invisible'}`}>
             <span key={swap.key} className={`inline-block ${swap.className}`}>
-              Not on {isLinux ? 'Linux' : 'Windows'}? Get it for {isLinux ? 'Windows' : 'Linux'}
+              Not on {platform.label}? Get it for{' '}
+              {otherOSes.map((o, i) => (
+                <span key={o}>
+                  {i > 0 && ' or '}
+                  <button
+                    type='button'
+                    onClick={() => overrideOS(o)}
+                    className='underline underline-offset-4 hover:text-text-primary transition-colors duration-150 cursor-pointer'
+                  >
+                    {PLATFORMS[o].label}
+                  </button>
+                </span>
+              ))}
             </span>
-          </button>
+          </p>
         </div>
 
         <div className='download-shot-glow'>

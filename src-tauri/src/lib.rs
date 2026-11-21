@@ -25,6 +25,8 @@ mod legacy_install;
 mod legacy_migration;
 mod local_steam;
 mod logging;
+#[cfg(target_os = "macos")]
+mod macos_titlebar;
 mod max_playtime;
 mod platform;
 mod settings;
@@ -78,13 +80,20 @@ pub fn run() {
         }))
         .plugin(
             tauri_plugin_window_state::Builder::new()
-                .with_state_flags(
-                    StateFlags::SIZE
+                .with_state_flags({
+                    let flags = StateFlags::SIZE
                         | StateFlags::POSITION
                         | StateFlags::MAXIMIZED
                         | StateFlags::DECORATIONS
-                        | StateFlags::FULLSCREEN,
-                )
+                        | StateFlags::FULLSCREEN;
+                    // macOS always forces native decorations (`build_main_window`), and re-applying
+                    // them rebuilds the title bar, resetting the traffic lights' custom inset.
+                    if cfg!(target_os = "macos") {
+                        flags - StateFlags::DECORATIONS
+                    } else {
+                        flags
+                    }
+                })
                 .build(),
         )
         .plugin(tauri_plugin_updater::Builder::new().build())
@@ -272,6 +281,17 @@ pub fn run() {
         .build(context)
         .expect("error while building tauri application")
         .run(|app_handle, event| {
+            // Clicking the Dock icon while the window is hidden (close-to-tray) brings it back.
+            #[cfg(target_os = "macos")]
+            if let tauri::RunEvent::Reopen {
+                has_visible_windows: false,
+                ..
+            } = event
+            {
+                tray::show_main_window(app_handle);
+                return;
+            }
+
             // Without this, quitting the app (tray Quit, titlebar close with close-to-tray off, or
             // a forced quit on subscription revocation) leaves CLI-mode `SteamUtility.exe idle`
             // children and agent-mode daemon sessions running as orphans: `AppHandle::exit` tears
@@ -326,7 +346,21 @@ fn build_main_window(app_handle: &tauri::AppHandle) -> tauri::Result<tauri::Webv
         .expect("tauri.conf.json must define the main window");
 
     let opener_handle = app_handle.clone();
-    tauri::WebviewWindowBuilder::from_config(app_handle, &config)?
+    let builder = tauri::WebviewWindowBuilder::from_config(app_handle, &config)?;
+    // macOS gets the native window chrome instead of the frameless one: real traffic lights laid
+    // over the custom titlebar (which leaves room for them, see Titlebar.tsx), native rounded
+    // corners/shadow/resize, and no transparency (that would need `macOSPrivateApi`).
+    #[cfg(target_os = "macos")]
+    let builder = builder
+        .decorations(true)
+        .transparent(false)
+        // Created visible rather than shown later - see `setup_window`'s macOS branch for why.
+        .visible(true)
+        // Matches SplashScreen's black, so the instant before first paint isn't a white flash.
+        .background_color(tauri::window::Color(0, 0, 0, 255))
+        .title_bar_style(tauri::TitleBarStyle::Overlay)
+        .hidden_title(true);
+    builder
         .initialization_script_for_all_frames(include_str!("iframe_link_bridge.js"))
         .on_new_window(move |url, _features| {
             if matches!(url.scheme(), "http" | "https") {
@@ -362,9 +396,50 @@ fn build_main_window(app_handle: &tauri::AppHandle) -> tauri::Result<tauri::Webv
 fn setup_window(app_handle: &tauri::AppHandle) -> tauri::Result<()> {
     let window = build_main_window(app_handle)?;
 
+    // The native red close button (and Cmd+W) would otherwise close the only window, quitting the
+    // app. Hand it to the frontend's own titlebar close instead (`useTitlebar.ts`), so
+    // `close_to_tray` decides between hiding and quitting exactly like on the other platforms.
+    #[cfg(target_os = "macos")]
+    {
+        macos_titlebar::apply(&window);
+        let window_for_events = window.clone();
+        window.on_window_event(move |event| match event {
+            tauri::WindowEvent::CloseRequested { api, .. } => {
+                api.prevent_close();
+                use tauri::Emitter;
+                if let Err(err) = window_for_events.emit("close-requested", ()) {
+                    tracing::warn!(?err, "setup_window: failed to forward close request");
+                }
+            }
+            // AppKit re-lays out the title bar on these, resetting the traffic lights.
+            tauri::WindowEvent::Resized(_)
+            | tauri::WindowEvent::Focused(_)
+            | tauri::WindowEvent::ScaleFactorChanged { .. }
+            | tauri::WindowEvent::ThemeChanged(_) => macos_titlebar::apply(&window_for_events),
+            _ => {}
+        });
+    }
+
     let should_start_minimized = settings::load(app_handle)
         .map(|settings| settings.start_minimized)
         .unwrap_or(false);
+
+    // macOS: WKWebView doesn't run the page's JS until its window has been on screen at least once,
+    // so the frontend's `ready` (below) would never arrive for a window that starts hidden. The
+    // window is therefore created visible (`build_main_window` - a `show()` from here, before the
+    // app finishes launching, is silently dropped), and `start_minimized` hides it again once the
+    // frontend is up; a window hidden *after* loading keeps running (only lightly throttled).
+    if cfg!(target_os = "macos") {
+        if should_start_minimized {
+            let window_for_ready = window.clone();
+            window.once("ready", move |_| {
+                if let Err(err) = window_for_ready.hide() {
+                    tracing::warn!(?err, "setup_window: failed to hide start-minimized window");
+                }
+            });
+        }
+        return Ok(());
+    }
 
     if cfg!(target_os = "linux") {
         if !should_start_minimized {

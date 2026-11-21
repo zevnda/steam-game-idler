@@ -125,9 +125,9 @@ export default function FeatureBento() {
             art={t => <AccountsArt t={t} />}
           />
           <Mini
-            title='Windows & Linux'
+            title='Windows, Linux & macOS'
             col={2}
-            body='Installer or portable zip on Windows; .deb, .rpm or AppImage on Linux.'
+            body='Installer or portable zip on Windows; .deb, .rpm or AppImage on Linux; .dmg on macOS.'
             loop={PLATFORMS_LOOP}
             art={t => <PlatformsArt t={t} />}
           />

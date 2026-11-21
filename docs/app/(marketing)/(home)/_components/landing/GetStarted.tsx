@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { FaLinux, FaSteam, FaWindows } from 'react-icons/fa6'
+import { FaApple, FaLinux, FaSteam, FaWindows } from 'react-icons/fa6'
 import { FiArrowUpRight } from 'react-icons/fi'
 import { TbAward, TbCards, TbCheck, TbDownload, TbPlayerPlay } from 'react-icons/tb'
 import { easeBack, easeOut, prog, useElapsed, useInViewPlay } from './art/storyboard'
@@ -9,7 +9,7 @@ import SectionHeading from './SectionHeading'
 import Link from 'next/link'
 import { Logo } from '@/app/(marketing)/_components/Logo'
 import { FadeIn } from '@/app/lib/animations'
-import { useGlobalStore } from '@/app/lib/globalStore'
+import { offeredOS, useGlobalStore } from '@/app/lib/globalStore'
 
 // One loop of the pipeline: each step plays in turn and a beam of light carries on to the next.
 const LOOP = 11
@@ -57,9 +57,9 @@ export default function GetStarted() {
               n={1}
               state={stepState(0, active, t)}
               title='Download & install'
-              body='Windows 10 or 11: one small installer, or a portable zip. Linux: a .deb, .rpm or AppImage package.'
+              body='Windows 10 or 11: one small installer, or a portable zip. Linux: a .deb, .rpm or AppImage package. macOS: a .dmg for Apple Silicon Macs.'
               href='/docs/get-started/install'
-              more='about installing SGI on Windows and Linux'
+              more='about installing SGI on Windows, Linux and macOS'
               visual={<DownloadScene t={t} />}
             />
             <Step
@@ -101,7 +101,7 @@ export default function GetStarted() {
                     <>
                       <span className='text-emerald-300'>Recommended</span>
                       <span className='w-1 h-1 rounded-full bg-white/25' />
-                      <FaWindows /> <FaLinux /> Windows & Linux
+                      <FaWindows /> <FaLinux /> <FaApple /> All platforms
                     </>
                   ) : (
                     <>
@@ -212,19 +212,22 @@ function Step({
 
 const fileName = (url: string, fallback: string) => {
   const last = decodeURIComponent(url.split('/').pop() ?? '')
-  return /\.(exe|zip|deb|rpm|AppImage)$/.test(last) ? last : fallback
+  return /\.(exe|zip|deb|rpm|AppImage|dmg)$/.test(last) ? last : fallback
 }
 
 /** An installer downloads, installs, and the app's icon pops in, ready. */
 function DownloadScene({ t }: { t: number }) {
-  const { downloadUrl, downloadSize, linuxDownloadUrl, linuxDownloadSize, selectedOS } =
-    useGlobalStore(s => s)
-  // same "fall back to Windows until a real Linux release exists" rule as DownloadHero.tsx
-  const linux = selectedOS === 'linux' && Boolean(linuxDownloadUrl)
-  const name = linux
-    ? fileName(linuxDownloadUrl, 'Linux package (.deb)')
-    : fileName(downloadUrl, 'Windows installer (.exe)')
-  const size = (linux ? linuxDownloadSize : downloadSize) || ''
+  const store = useGlobalStore(s => s)
+  const os = offeredOS(store)
+  const name = {
+    windows: fileName(store.downloadUrl, 'Windows installer (.exe)'),
+    linux: fileName(store.linuxDownloadUrl, 'Linux package (.deb)'),
+    macos: fileName(store.macDownloadUrl, 'macOS disk image (.dmg)'),
+  }[os]
+  const size =
+    { windows: store.downloadSize, linux: store.linuxDownloadSize, macos: store.macDownloadSize }[
+      os
+    ] || ''
   const dl = t > 0 ? easeOut(prog(t, 0.3, 1.9)) : 0
   const installing = t >= 2.2 && t < 2.9
   const ready = t >= 2.9
@@ -232,7 +235,9 @@ function DownloadScene({ t }: { t: number }) {
   return (
     <div className='scene-dl'>
       <div className='scene-dl__row'>
-        <span className='scene-dl__file'>{linux ? <FaLinux /> : <FaWindows />}</span>
+        <span className='scene-dl__file'>
+          {os === 'linux' ? <FaLinux /> : os === 'macos' ? <FaApple /> : <FaWindows />}
+        </span>
         <div className='flex-1 min-w-0'>
           <div className='truncate text-[13px] font-medium text-text-primary'>{name}</div>
           <div className='art-bar'>

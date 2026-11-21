@@ -3,7 +3,7 @@ import SectionHeading from '@/app/(marketing)/(home)/_components/landing/Section
 import { StaggerGroup, StaggerItem } from '@/app/lib/animations'
 
 // Mirrors docs/_content/get-started/install.mdx: the
-// installer and the AppImage update themselves; the portable .zip and .deb/.rpm don't. Keep the
+// installer, the AppImage and the macOS .dmg update themselves; the portable .zip and .deb/.rpm don't. Keep the
 // two in step if a format's update behaviour changes. `accent` is each card's glow hue, taken from
 // the home bento's palette (landing/features.ts).
 const FORMATS = [
@@ -39,6 +39,14 @@ const FORMATS = [
     body: 'Installs through your package manager on Debian, Ubuntu, Fedora or openSUSE based distros.',
     updates: false,
   },
+  {
+    os: 'macOS',
+    name: 'Disk image',
+    accent: '#f472b6',
+    file: '.dmg',
+    body: 'For Apple Silicon Macs (M1 or newer) on macOS 12 or later. Drag SGI into Applications, then allow it once in Privacy & Security.',
+    updates: true,
+  },
 ]
 
 export default function FormatGuide() {
@@ -54,7 +62,7 @@ export default function FormatGuide() {
                 Which file <span className='gradient-text'>do I need?</span>
               </>
             }
-            sub='Every release comes in four formats. Linux supports Steam Sign-in only; Windows supports both sign-in methods.'
+            sub='Every release comes in five formats. Linux and macOS support Steam Sign-in only; Windows supports both sign-in methods.'
           />
           <div className='mt-8 flex justify-center lg:justify-start'>
             <Link

@@ -23,9 +23,9 @@ const softwareApplication = {
   'alternateName': 'SGI',
   'url': 'https://steamgameidler.com/',
   'description':
-    'Steam Game Idler is a free Steam idler for Windows and Linux. It farms trading cards, boosts playtime hours, unlocks and manages achievements, sells inventory items and claims free games, for up to 32 games at once.',
+    'Steam Game Idler is a free Steam idler for Windows, Linux and macOS. It farms trading cards, boosts playtime hours, unlocks and manages achievements, sells inventory items and claims free games, for up to 32 games at once.',
   'applicationCategory': 'UtilitiesApplication',
-  'operatingSystem': 'Windows 10, Windows 11, Linux',
+  'operatingSystem': 'Windows 10, Windows 11, Linux, macOS',
   'downloadUrl': 'https://steamgameidler.com/download',
   'image': 'https://steamgameidler.com/og-image.png',
   'screenshot': 'https://cdn-steamgameidler.com/example_v2.webp',

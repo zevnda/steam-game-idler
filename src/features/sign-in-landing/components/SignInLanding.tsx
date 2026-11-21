@@ -1,7 +1,7 @@
 import { Trans, useTranslation } from 'react-i18next'
 import { Button, cn, Typography } from '@heroui/react'
 import { TierBadge } from '@/shared/components/TierBadge'
-import { usePlatformStore } from '@/shared/stores/platformStore'
+import { isAgentOnlyOs, usePlatformStore } from '@/shared/stores/platformStore'
 import { openExternalLink } from '@/shared/utils/links'
 
 interface SignInLandingProps {
@@ -16,7 +16,7 @@ interface SignInLandingProps {
   // can only ever be signed into one account at a time),
   // so the local-sign-in option is disabled once one is already signed in. This is a genuine
   // technical ceiling, not a monetization gate, so it stays a real native-disabled Button.
-  // Irrelevant on Linux, where the button is hidden entirely (see the `isLinux` check below) - no
+  // Irrelevant on Linux/macOS, where the button is hidden entirely (see `isAgentOnly` below) - no
   // local Steam client concept exists there at all, so there's no ceiling to reach in the first
   // place.
   localDisabled?: boolean
@@ -41,8 +41,8 @@ interface SignInLandingProps {
 // the primary/recommended action (it's the new, no-local-client-needed method users should be
 // steered toward), with local/CLI mode as the
 // secondary fallback for users who'd rather not enter their Steam credentials into the app. On
-// Linux the local/CLI button is hidden outright (not just disabled) - no local Steam client
-// concept exists there at all, so agent mode is the only sign-in path; see `isLinux` below. The
+// Linux/macOS the local/CLI button is hidden outright (not just disabled) - no local Steam client
+// concept exists there at all, so agent mode is the only sign-in path; see `isAgentOnly` below. The
 // full-screen two-pane shell (logo/glow, hero panel, language switch) lives one level up in
 // AuthLayout, not here - this only ever renders the card itself now.
 const SignInLanding = ({
@@ -56,10 +56,10 @@ const SignInLanding = ({
   onAgentUpsell,
 }: SignInLandingProps) => {
   const { t } = useTranslation()
-  // `null` (not yet checked) reads as "not Linux" - see platformStore's own doc comment on why
+  // `null` (not yet checked) reads as Windows - see platformStore's own doc comment on why
   // every consumer fails open onto pre-existing Windows-only behavior rather than hiding the
   // button for one frame on every platform while the check is in flight.
-  const isLinux = usePlatformStore(state => state.currentOs) === 'linux'
+  const isAgentOnly = isAgentOnlyOs(usePlatformStore(state => state.currentOs))
   const buttonClassName = 'h-12 text-[15px]'
 
   const buttons = (
@@ -78,7 +78,7 @@ const SignInLanding = ({
           {agentDisabledReason}
         </Typography>
       )}
-      {isLinux ? null : (
+      {isAgentOnly ? null : (
         <>
           <Button
             fullWidth
