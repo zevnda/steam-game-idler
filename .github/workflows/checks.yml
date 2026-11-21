@@ -149,3 +149,34 @@ jobs:
 
       - name: Tests
         run: cargo test --lib --locked
+
+  # The macOS-only cfg branches (window chrome, `macos_titlebar`'s AppKit calls) never compile on
+  # the Ubuntu job above, so without this a macOS-only break would first surface in a release run.
+  rust-macos:
+    needs: changes
+    if: needs.changes.outputs.rust == 'true'
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: src-tauri
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      # Same stand-ins as the Ubuntu job (see its comment).
+      - name: Stub build outputs
+        run: |
+          mkdir -p libs ../out
+          touch libs/ci-placeholder
+
+      - name: Clippy
+        run: cargo clippy --all-targets --locked -- -D warnings

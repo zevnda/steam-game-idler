@@ -905,6 +905,214 @@ jobs:
         with:
           name: dotnet-libs-linux
 
+  # Builds the macOS (Apple Silicon only) .dmg + updater .app.tar.gz. Agent-mode only, like Linux.
+  # Independent of the other platform jobs, same as build_linux_bundle. SteamUtility is published in
+  # this same job rather than a separate one: the .NET SDK only ad-hoc signs the osx-arm64 apphost
+  # when publishing on macOS, and Apple Silicon refuses to run an unsigned executable at all.
+  # Signing is ad-hoc (tauri.conf.json's signingIdentity "-") - no Apple Developer account, so no
+  # notarization; the docs' install page covers the resulting Gatekeeper prompt.
+  build_macos_bundle:
+    needs: prepare
+    timeout-minutes: 45
+    runs-on: macos-latest # arm64
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Apply version-bumped files
+        uses: actions/download-artifact@v4
+        with:
+          name: version-files
+          path: .
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Setup NuGet cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Setup .NET cache
+        id: cache-dotnet
+        uses: actions/cache@v4
+        with:
+          path: src-tauri/libs/
+          key: ${{ runner.os }}-dotnet-macos-${{ hashFiles('libs/**/*.cs', 'libs/**/*.csproj', '.github/workflows/release.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-dotnet-macos-
+
+      - name: Build SteamUtility (daemon-only)
+        if: steps.cache-dotnet.outputs.cache-hit != 'true' || github.event.inputs.force_dotnet_build == 'true'
+        # Same publish flags as build_dotnet_libs_linux, for osx-arm64 (matches scripts/build-libs.mjs)
+        run: |
+          set -euo pipefail
+          dotnet publish ./libs/SteamUtility/SteamUtility.csproj -c Release -r osx-arm64 --self-contained true -p:PublishSingleFile=false -p:PublishTrimmed=true -p:DebugType=none -o ./src-tauri/libs/
+
+      - name: Make SteamUtility executable
+        # A restored actions/cache tarball keeps the bit, but there's no harm in being sure
+        run: chmod +x src-tauri/libs/SteamUtility
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 11.17.0
+
+      - name: Get pnpm store directory
+        id: pnpm-store-path
+        run: |
+          set -euo pipefail
+          echo "store-path=$(pnpm store path)" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup pnpm cache
+        if: github.event.inputs.force_pnpm_install != 'true'
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-store-path.outputs.store-path }}
+          key: ${{ runner.OS }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.OS }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}-
+
+      - name: Install dependencies (pnpm)
+        run: |
+          set -euo pipefail
+          pnpm install --frozen-lockfile
+
+      - name: Setup Next.js cache
+        id: cache-nextjs
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: ${{ runner.OS }}-nextjs-${{ hashFiles('**.[jt]sx', '**.[jt]s', 'package.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-nextjs-
+
+      - name: Clean Next.js cache
+        if: steps.cache-nextjs.outputs.cache-hit != 'true' || github.event.inputs.force_nextjs_build == 'true'
+        run: rm -rf .next
+
+      - name: Setup Rust cache
+        id: cache-rust
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+
+      - name: Clean Cargo artifacts
+        if: steps.cache-rust.outputs.cache-hit != 'true' || github.event.inputs.force_cargo_clean == 'true'
+        run: cargo clean
+        working-directory: ./src-tauri
+
+      - name: Create .env file
+        run: echo "KEY=${{ secrets.KEY }}" > .env
+        working-directory: ${{ github.workspace }}
+
+      - name: Build and package Tauri app
+        # bundle.targets "all" produces the .app + .dmg on a macOS host; createUpdaterArtifacts adds
+        # the signed .app.tar.gz. The DMG script skips its Finder/AppleScript styling when CI is set.
+        run: |
+          set -euo pipefail
+          export NEXT_TELEMETRY_DISABLED=1
+          export TAURI_CI=1
+          pnpm tauri build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+
+      - name: Record build artifacts summary
+        run: |
+          echo "## Tauri bundle output (macOS)" >> "$GITHUB_STEP_SUMMARY"
+          for dir in macos dmg; do
+            bundleDir="./src-tauri/target/release/bundle/$dir"
+            if [ -d "$bundleDir" ]; then
+              find "$bundleDir" -maxdepth 1 -type f -exec basename {} \; | sed 's/^/- /' >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "No files found in $bundleDir" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          done
+
+      - name: Version the updater archive
+        # Tauri names the macOS updater archive "Steam Game Idler.app.tar.gz" with no version, so
+        # every release would reuse the same R2 key - which `publish` uploads with a year-long
+        # immutable cache, and before the version-bump PR merges, i.e. while the live manifest's
+        # signature still points at it. Rename it per version/arch like the other platforms' names,
+        # then re-sign so the signature's trusted comment names the file actually shipped (checked by
+        # scripts/verify-latest-json.mjs). Same key and password `tauri build` just signed with.
+        env:
+          VERSION: ${{ github.event.inputs.version }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          cd ./src-tauri/target/release/bundle/macos
+          versioned="Steam Game Idler_${VERSION}_aarch64.app.tar.gz"
+          mv "Steam Game Idler.app.tar.gz" "$versioned"
+          rm -f "Steam Game Idler.app.tar.gz.sig"
+          # Absolute path: `pnpm tauri` runs from the package root, not this directory.
+          pnpm tauri signer sign --app-version "$VERSION" "$PWD/$versioned"
+          test -s "$versioned.sig"
+
+      - name: Update latest.json with signature
+        # Same as build_linux_bundle's step, for this job's own darwin-aarch64 entry
+        run: |
+          set -euo pipefail
+          python3 -c "
+          import glob
+          import json
+          import os
+
+          bundle_dir = './src-tauri/target/release/bundle/macos'
+          sig_matches = glob.glob(os.path.join(bundle_dir, '*.app.tar.gz.sig'))
+          if len(sig_matches) != 1:
+              raise SystemExit(f'Expected one .app.tar.gz.sig file in {bundle_dir}, found {len(sig_matches)}')
+          sig_path = sig_matches[0]
+          artifact_name = os.path.basename(sig_path)[: -len('.sig')]
+
+          with open(sig_path, 'r') as sig_file:
+              new_signature = sig_file.read().strip()
+
+          latest_json_path = './latest.json'
+          with open(latest_json_path, 'r') as json_file:
+              latest_json = json.load(json_file)
+
+          url = f\"https://github.com/${{ github.repository }}/releases/download/${{ github.event.inputs.version }}/{artifact_name.replace(' ', '.')}\"
+          latest_json['platforms']['darwin-aarch64'] = {'signature': new_signature, 'url': url}
+
+          with open(latest_json_path, 'w') as json_file:
+              json.dump(latest_json, json_file, indent=2)
+
+          print(f'Updated latest.json with darwin-aarch64 entry: {url}')
+          "
+
+      - name: Stage bundle for publish
+        run: |
+          set -euo pipefail
+          mkdir -p ./dist-macos
+          cp ./src-tauri/target/release/bundle/dmg/*.dmg ./dist-macos/
+          cp ./src-tauri/target/release/bundle/macos/*.app.tar.gz ./dist-macos/
+          cp ./src-tauri/target/release/bundle/macos/*.app.tar.gz.sig ./dist-macos/
+          cp ./latest.json ./dist-macos/
+
+      - name: Upload macos-bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-bundle
+          retention-days: 1
+          path: ./dist-macos/*
+
   # The only job that mutates git or GitHub release state. Deliberately consolidated here - rather
   # than split across the two platform jobs, as it used to be - so nothing user-visible (branch
   # push, PR, GitHub release, Discord ping) can happen until BOTH platform builds are confirmed
@@ -914,17 +1122,18 @@ jobs:
   # pushes to the version-bump branch or calls action-gh-release, eliminating any possibility of a
   # race between two jobs writing to the same branch/release concurrently.
   publish:
-    needs: [fetch_previous_version, prepare, build_windows_bundle, build_linux_bundle]
+    needs: [fetch_previous_version, prepare, build_windows_bundle, build_linux_bundle, build_macos_bundle]
     if: |
       always() &&
       needs.build_linux_bundle.result == 'success' &&
+      needs.build_macos_bundle.result == 'success' &&
       (needs.build_windows_bundle.result == 'success' || needs.build_windows_bundle.result == 'skipped')
     timeout-minutes: 15
     runs-on: ubuntu-latest
     permissions:
       contents: write # push the version-bump branch commit, create the GitHub release
       pull-requests: write # open the version-bump PR
-      actions: write # delete the version-files/windows-bundle/linux-bundle artifacts
+      actions: write # delete the version-files/windows-bundle/linux-bundle/macos-bundle artifacts
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -948,6 +1157,12 @@ jobs:
           name: linux-bundle
           path: ./dist-linux
 
+      - name: Download macos bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: macos-bundle
+          path: ./dist-macos
+
       - name: Merge platform signatures into latest.json
         # Each platform job only ever wrote its own platforms.<x>.signature entry into its own copy
         # of latest.json (see build_windows_bundle's/build_linux_bundle's "Update latest.json with
@@ -970,6 +1185,10 @@ jobs:
           with open('dist-linux/latest.json', 'r') as f:
               linux_latest = json.load(f)
           latest_json['platforms']['linux-x86_64'] = linux_latest['platforms']['linux-x86_64']
+
+          with open('dist-macos/latest.json', 'r') as f:
+              macos_latest = json.load(f)
+          latest_json['platforms']['darwin-aarch64'] = macos_latest['platforms']['darwin-aarch64']
 
           is_major = True if '${{ github.event.inputs.is_major }}' == 'true' else False
           latest_json['major'] = is_major
@@ -995,7 +1214,7 @@ jobs:
           WINDOWS_RESULT: ${{ needs.build_windows_bundle.result }}
         run: |
           set -euo pipefail
-          dist_args=(--dist linux-x86_64=dist-linux)
+          dist_args=(--dist linux-x86_64=dist-linux --dist darwin-aarch64=dist-macos)
           if [ "$WINDOWS_RESULT" = "success" ]; then
             dist_args+=(--dist windows-x86_64=dist-windows)
           elif [ "$DRY_RUN" != "true" ]; then
@@ -1032,6 +1251,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           WINDOWS_NAME: ${{ steps.build_r2_latest.outputs.windows_name }}
           LINUX_NAME: ${{ steps.build_r2_latest.outputs.linux_name }}
+          MACOS_NAME: ${{ steps.build_r2_latest.outputs.macos_name }}
         # The binaries get a long, immutable cache, safe since their filenames are version-stamped.
         # Re-uploading after a failed release is still fine, because the verification below uses its
         # own cache entry (see scripts/verify-latest-json.mjs) and nothing else fetches them until
@@ -1052,6 +1272,7 @@ jobs:
 
           windows_files=(./dist-windows/*.nsis.zip)
           linux_files=(./dist-linux/*.AppImage.tar.gz)
+          macos_files=(./dist-macos/*.app.tar.gz)
 
           if [ "${#windows_files[@]}" -ne 1 ]; then
             echo "::error::Expected exactly one .nsis.zip file in dist-windows/, found ${#windows_files[@]}"
@@ -1059,6 +1280,10 @@ jobs:
           fi
           if [ "${#linux_files[@]}" -ne 1 ]; then
             echo "::error::Expected exactly one .AppImage.tar.gz file in dist-linux/, found ${#linux_files[@]}"
+            exit 1
+          fi
+          if [ "${#macos_files[@]}" -ne 1 ]; then
+            echo "::error::Expected exactly one .app.tar.gz file in dist-macos/, found ${#macos_files[@]}"
             exit 1
           fi
 
@@ -1069,6 +1294,11 @@ jobs:
 
           npx --yes wrangler r2 object put "steam-game-idler/updater/${LINUX_NAME}" \
             --file="${linux_files[0]}" \
+            --cache-control="public, max-age=31536000, immutable" \
+            --remote
+
+          npx --yes wrangler r2 object put "steam-game-idler/updater/${MACOS_NAME}" \
+            --file="${macos_files[0]}" \
             --cache-control="public, max-age=31536000, immutable" \
             --remote
 
@@ -1096,6 +1326,16 @@ jobs:
             dist-linux/*
             latest.json
 
+      - name: Upload macos bundle (dry run)
+        if: github.event.inputs.dry_run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-bundle-dry-run
+          retention-days: 3
+          path: |
+            dist-macos/*
+            latest.json
+
       - name: Verify currently published update files (dry run)
         # A real release can't be rehearsed, but this proves the download checks work from a GitHub
         # runner by running them against what's live right now, with no side effects.
@@ -1104,8 +1344,9 @@ jobs:
           set -euo pipefail
           curl -fsSL https://raw.githubusercontent.com/zevnda/steam-game-idler/main/latest.json -o published-github.json
           curl -fsSL https://cdn-steamgameidler.com/updater/latest.json -o published-r2.json
-          node scripts/verify-latest-json.mjs remote --latest published-github.json
-          node scripts/verify-latest-json.mjs remote --latest published-r2.json
+          # darwin-aarch64 is only live after the first macOS release; drop the flag after that.
+          node scripts/verify-latest-json.mjs remote --latest published-github.json --allow-missing darwin-aarch64
+          node scripts/verify-latest-json.mjs remote --latest published-r2.json --allow-missing darwin-aarch64
 
       - name: Generate release notes
         if: github.event.inputs.dry_run != 'true'
@@ -1166,6 +1407,9 @@ jobs:
             ./dist-linux/*.AppImage.tar.gz.sig
             ./dist-linux/*.deb
             ./dist-linux/*.rpm
+            ./dist-macos/*.dmg
+            ./dist-macos/*.app.tar.gz
+            ./dist-macos/*.app.tar.gz.sig
 
       - name: Verify published update files
         # Downloads what users would actually receive from each host, which also catches a url that
@@ -1257,6 +1501,12 @@ jobs:
         uses: geekyeggo/delete-artifact@v5
         with:
           name: linux-bundle
+
+      - name: Cleanup macos-bundle artifact
+        if: always()
+        uses: geekyeggo/delete-artifact@v5
+        with:
+          name: macos-bundle
 
   send_discord_notification:
     needs: [publish]
