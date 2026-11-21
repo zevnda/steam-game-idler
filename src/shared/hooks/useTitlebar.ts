@@ -5,7 +5,7 @@ import {
   requestPermission,
   sendNotification,
 } from '@tauri-apps/plugin-notification'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { invoke } from '@/shared/utils/invoke'
 
@@ -87,6 +87,19 @@ export const useTitlebar = () => {
     }
     localStorage.setItem(CLOSE_TO_TRAY_NOTIFIED_KEY, 'true')
   }
+
+  // macOS: the native red close button / Cmd+W are forwarded here by lib.rs's `setup_window`
+  // (`close-requested`), so they honor `close_to_tray` exactly like the custom button elsewhere.
+  const closeRef = useRef(close)
+  closeRef.current = close
+  useEffect(() => {
+    const unlisten = getCurrentWindow().listen('close-requested', () => {
+      void closeRef.current()
+    })
+    return () => {
+      unlisten.then(stop => stop())
+    }
+  }, [])
 
   return { isMaximized, minimize, toggleMaximize, close }
 }

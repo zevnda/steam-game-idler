@@ -13,7 +13,11 @@ import { invoke } from '@/shared/utils/invoke'
 export function usePlatform() {
   useEffect(() => {
     invoke<CurrentOs>('current_os')
-      .then(os => usePlatformStore.getState().setCurrentOs(os))
+      .then(os => {
+        usePlatformStore.getState().setCurrentOs(os)
+        // Drives OS-specific CSS, e.g. the macOS traffic-light keep-out area (globals.css).
+        document.documentElement.dataset.os = os
+      })
       .catch(error => {
         console.error('Error in (current_os):', error)
       })

@@ -3,6 +3,7 @@ import { RiSearchLine } from 'react-icons/ri'
 import { TbX } from 'react-icons/tb'
 import { cn } from '@heroui/react'
 import { useActiveSearchScope } from '@/shared/search/scopes'
+import { usePlatformStore } from '@/shared/stores/platformStore'
 import { useSearchStore } from '@/shared/stores/searchStore'
 
 // Mounted inside Titlebar's drag-region strip. Renders nothing on a route with no registered
@@ -23,9 +24,11 @@ import { useSearchStore } from '@/shared/stores/searchStore'
 // the right group. Long query/placeholder text truncates inside the pill either way.
 // The main shortcut useGlobalSearchShortcut.ts listens for
 const SEARCH_SHORTCUT = 'Ctrl K'
+const SEARCH_SHORTCUT_MAC = '⌘K'
 
 export const GlobalSearchBar = () => {
   const { t } = useTranslation()
+  const isMac = usePlatformStore(state => state.currentOs) === 'macos'
   const scope = useActiveSearchScope()
   const query = useSearchStore(state => (scope ? (state.queries[scope.id] ?? '') : ''))
   const open = useSearchStore(state => state.open)
@@ -44,7 +47,7 @@ export const GlobalSearchBar = () => {
         )}
       >
         <button
-          aria-keyshortcuts='Control+K /'
+          aria-keyshortcuts={isMac ? 'Meta+K /' : 'Control+K /'}
           className='flex h-full min-w-0 flex-1 items-center gap-2 px-3 text-left cursor-pointer'
           type='button'
           onClick={() => open(scope.id)}
@@ -56,7 +59,7 @@ export const GlobalSearchBar = () => {
           {/* Gives way to the clear button once there's a query */}
           {!query && (
             <kbd className='-mr-1.5 flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-foreground/10 px-1.5 font-sans text-[10px] font-semibold'>
-              {SEARCH_SHORTCUT}
+              {isMac ? SEARCH_SHORTCUT_MAC : SEARCH_SHORTCUT}
             </kbd>
           )}
         </button>
