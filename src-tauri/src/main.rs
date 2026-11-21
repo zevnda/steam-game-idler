@@ -32,9 +32,8 @@ fn main() {
     // or visibly breaking anything, that is the same class of timing bug as before, not proof this
     // approach "just doesn't help" - check with `strace`/timing diagnostics before concluding either
     // way, the same lesson quirks.md already logged once.
-    #[cfg(not(windows))]
+    #[cfg(target_os = "linux")]
     {
-        #[cfg(target_os = "linux")]
         appimage_prefer_system_libraries();
 
         if std::env::var_os("WAYLAND_DISPLAY").is_some() {

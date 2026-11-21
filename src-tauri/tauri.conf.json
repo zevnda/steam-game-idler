@@ -16,7 +16,13 @@
     "copyright": "Copyright © 2024-2026 zevnda",
     "targets": "all",
     "externalBin": [],
-    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.ico"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
     "windows": {
       "certificateThumbprint": null,
       "digestAlgorithm": "sha256",
@@ -34,7 +40,8 @@
       "exceptionDomain": "",
       "frameworks": [],
       "providerShortName": null,
-      "signingIdentity": null
+      "signingIdentity": "-",
+      "minimumSystemVersion": "12.0"
     },
     "resources": ["libs/*", "LICENSE", "THIRD-PARTY-NOTICES.md", ".installed"],
     "linux": {
