@@ -8,7 +8,7 @@ import { existsSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 
 const SOURCE_DIR = join(import.meta.dirname, '..', 'libs', 'SteamUtility')
-// win-x64 publishes keep the `.exe` suffix; the linux-x64 daemon-only publish doesn't (see
+// win-x64 publishes keep the `.exe` suffix; the linux-x64/osx-arm64 daemon-only publishes don't (see
 // `SteamUtility.csproj`'s RID-conditioned `RemovePublishExtras` target).
 const BUILT_EXE = join(
   import.meta.dirname,

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-#if !LINUX_DAEMON_ONLY
+#if !DAEMON_ONLY
 using SteamUtility.Cli;
 #endif
 using SteamUtility.Core.Logging;
@@ -39,8 +39,8 @@ namespace SteamUtility
                 return 0;
             }
 
-#if LINUX_DAEMON_ONLY
-            // This Linux publish is agent (daemon) mode only - CLI mode requires Steamworks.NET and
+#if DAEMON_ONLY
+            // This Linux/macOS publish is agent (daemon) mode only - CLI mode requires Steamworks.NET and
             // a real local running Steam client, neither of which this RID builds (see
             // SteamUtility.csproj's RuntimeIdentifier-conditioned Compile-Remove ItemGroup). Anything
             // other than "agent" is a usage error rather than a dispatch attempt.
@@ -53,7 +53,7 @@ namespace SteamUtility
         }
 
         // Lives here (not Cli/CliDispatcher.cs) so it stays available on every RID, including the
-        // Linux daemon-only build where the rest of Cli/** is excluded from compilation entirely.
+        // Linux/macOS daemon-only build where the rest of Cli/** is excluded from compilation entirely.
         private static void ShowUsage()
         {
             var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
@@ -62,7 +62,7 @@ namespace SteamUtility
             );
             Console.WriteLine();
             Console.WriteLine("Usage:");
-#if LINUX_DAEMON_ONLY
+#if DAEMON_ONLY
             Console.WriteLine(
                 "    SteamUtility agent               Start persistent daemon mode (sign in with Steam credentials)"
             );
@@ -79,7 +79,7 @@ namespace SteamUtility
             Console.WriteLine("    SteamUtility.exe [--help | -h]");
 #endif
 
-#if !LINUX_DAEMON_ONLY
+#if !DAEMON_ONLY
             var commandUsages = new Dictionary<string, string>
             {
                 {
