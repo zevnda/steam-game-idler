@@ -11,9 +11,10 @@ import { invoke } from '@/shared/utils/invoke'
 
 const CLOSE_TO_TRAY_NOTIFIED_KEY = 'closeToTrayNotified'
 
-// Drives the app-wide custom titlebar's window controls. The frameless/custom-chrome window
-// (tauri.conf.json's `decorations: false`) has no OS close box / `WindowEvent::CloseRequested` to
-// intercept, so `close` is the only place `Settings.close_to_tray` is ever read - fresh via
+// Drives the app-wide custom titlebar's window controls. On Windows/Linux the frameless window
+// (tauri.conf.json's `decorations: false`) has no OS close box at all; on macOS the native close
+// button and Cmd+W are forwarded here as `close-requested` (see below). Either way `close` is the
+// only place `Settings.close_to_tray` is ever read - fresh via
 // `get_settings` on every click rather than a store, since there's no ongoing side effect to keep
 // in sync (mirrors GeneralSettingsTab.tsx's own reasoning for not giving this setting a store).
 export const useTitlebar = () => {

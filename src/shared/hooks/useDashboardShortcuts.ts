@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import { useRouter } from 'next/router'
+import { usePlatformStore } from '@/shared/stores/platformStore'
 import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
 import { useSidebarStore } from '@/shared/stores/sidebarStore'
 import { countOpenModals, isAnyModalOpen } from '@/shared/utils/openModals'
@@ -65,7 +66,10 @@ export const useDashboardShortcuts = () => {
         return
       }
 
-      if ((e.key === 'w' || e.key === 'W') && !e.shiftKey) {
+      // macOS leaves Cmd+W to the native Close Window shortcut (lib.rs's `setup_window` forwards it
+      // to the titlebar's close), so there the sidebar toggle only answers to Control+W.
+      const isMac = usePlatformStore.getState().currentOs === 'macos'
+      if ((e.key === 'w' || e.key === 'W') && !e.shiftKey && (!isMac || e.ctrlKey)) {
         e.preventDefault()
         useSidebarStore.getState().toggle()
       }

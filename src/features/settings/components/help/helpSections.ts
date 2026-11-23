@@ -73,7 +73,7 @@ export const HELP_SECTIONS: HelpSection[] = [
         id: 'platforms',
         question: 'Which operating systems are supported?',
         answer:
-          'Windows 10 and 11, and Linux. Steam Sign-in works on both. Local Sign-in is Windows-only.',
+          'Windows 10 and 11, Linux, and macOS 12 or later on Apple Silicon Macs. Steam Sign-in works on all three. Local Sign-in is Windows-only.',
       },
       {
         id: 'adminRights',
