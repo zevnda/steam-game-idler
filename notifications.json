@@ -1,5 +1,13 @@
 [
   {
+    "id": "41",
+    "type": "testing",
+    "title": "macOS Support Needs Testers",
+    "message": "A macOS beta for Apple Silicon Macs is now available. If you have a Mac and some time to try it out and report back, it would help a lot before this goes live",
+    "url": "https://github.com/zevnda/steam-game-idler/discussions/2318",
+    "timestamp": "1795453916"
+  },
+  {
     "id": "40",
     "type": "testing",
     "title": "Linux Support Needs Testers",
