@@ -16,24 +16,11 @@ use crate::settings::{self, commands::SettingsResponse};
 use crate::steam_agent::ownership_settings::OwnershipSettings;
 use crate::steam_agent::AgentManager;
 
-/// `tracing_appender::rolling::daily` names files by prefix + rotation date, so there's no fixed
-/// filename to construct - the current file is whichever one in the log directory was written to
-/// most recently. Scanning by mtime rather than reconstructing the date-suffix naming scheme keeps
-/// this correct even if that scheme changes (e.g. `logging::init` switches rotation frequency).
+/// The log file currently being written to - see `logging::newest_log_file` for how it's picked.
 fn current_log_file(app_handle: &AppHandle) -> AppResult<PathBuf> {
     let dir = logging::log_dir(app_handle).map_err(|e| AppError::LogIo(e.to_string()))?;
 
-    fs::read_dir(&dir)
-        .map_err(|e| AppError::LogIo(e.to_string()))?
-        .filter_map(|entry| entry.ok())
-        .filter(|entry| entry.path().is_file())
-        .max_by_key(|entry| {
-            entry
-                .metadata()
-                .and_then(|m| m.modified())
-                .unwrap_or(std::time::SystemTime::UNIX_EPOCH)
-        })
-        .map(|entry| entry.path())
+    logging::newest_log_file(&dir)
         .ok_or_else(|| AppError::LogIo("no log file found yet".to_string()))
 }
 
