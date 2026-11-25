@@ -13,6 +13,7 @@ import type {
 } from '../types'
 import { getVersion } from '@tauri-apps/api/app'
 import { listen } from '@tauri-apps/api/event'
+import { writeText } from '@tauri-apps/plugin-clipboard-manager'
 import { revealItemInDir } from '@tauri-apps/plugin-opener'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -236,7 +237,10 @@ export function useDebugSettings({
         localStorage: collectLocalStorageSnapshot(),
       }
 
-      await navigator.clipboard.writeText(JSON.stringify(exportData, null, 2))
+      // The clipboard plugin, not `navigator.clipboard`: by the time the awaits above finish, the
+      // click no longer counts as a user gesture, and WebKitGTK (Linux) rejects a web clipboard
+      // write made outside one. WebView2 also refuses it if the window lost focus meanwhile.
+      await writeText(JSON.stringify(exportData, null, 2))
       toast.success(t('dashboard.settings.debug.exportSettings.success'))
     } catch (error) {
       console.error('Error in (exportSettings):', error)

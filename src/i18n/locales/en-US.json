@@ -31,6 +31,7 @@
       "cardFarmingBlacklist": "Card Farming Blacklist",
       "lists": "Lists"
     },
+    "copyFailed": "Couldn't copy to clipboard",
     "minutes": "minutes",
     "zeroUnlimitedHint": "0 = unlimited",
     "errorBoundary": {
