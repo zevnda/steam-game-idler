@@ -1,4 +1,5 @@
-use std::path::PathBuf;
+use std::io::Write;
+use std::path::{Path, PathBuf};
 
 use serde::Deserialize;
 use serde_json::Value;
@@ -35,6 +36,7 @@ pub fn init(app_handle: &tauri::AppHandle) -> Result<WorkerGuard, Box<dyn std::e
         .filename_suffix("log")
         .build(&log_dir)?;
     let (non_blocking, guard) = tracing_appender::non_blocking(file_appender);
+    install_panic_hook(log_dir.clone());
 
     let filter =
         EnvFilter::try_from_env("STEAM_GAME_IDLER_LOG").unwrap_or_else(|_| EnvFilter::new("info"));
@@ -71,6 +73,79 @@ pub(crate) fn log_dir(
     app_handle: &tauri::AppHandle,
 ) -> Result<PathBuf, Box<dyn std::error::Error>> {
     Ok(crate::platform::logs_dir(app_handle)?)
+}
+
+/// The log file currently being written to: whichever file in `dir` was modified most recently.
+/// Rotation names files by date (see `init`), so there's no fixed filename to construct, and
+/// judging by mtime stays correct even if that naming scheme changes. Shared by the Debug tab's
+/// log commands and the panic hook.
+pub(crate) fn newest_log_file(dir: &Path) -> Option<PathBuf> {
+    std::fs::read_dir(dir)
+        .ok()?
+        .filter_map(|entry| entry.ok())
+        .filter(|entry| entry.path().is_file())
+        .max_by_key(|entry| {
+            entry
+                .metadata()
+                .and_then(|m| m.modified())
+                .unwrap_or(std::time::SystemTime::UNIX_EPOCH)
+        })
+        .map(|entry| entry.path())
+}
+
+/// Records every Rust panic in the log file before the process dies.
+///
+/// Release builds use `panic = "abort"` (Cargo.toml), so any panic on any thread - this app's
+/// code, a tokio task, or a dependency such as tao's Windows event loop - kills the app on the
+/// spot. Without this hook, all a user sees is the window vanishing, and all Windows records is a
+/// bare `0xc0000409` in Event Viewer with no message, location or thread. `set_hook` is
+/// process-wide, so this one hook covers every thread; no per-call-site handling is needed.
+///
+/// The line is appended synchronously with plain `std::fs`, deliberately bypassing `tracing`:
+/// the file layer's writer is `non_blocking`, which hands lines to a background thread, and the
+/// abort right after this hook returns would kill that thread before it writes. Appending through
+/// a second handle is safe on every platform - Rust opens files with shared read/write access on
+/// Windows, and `O_APPEND` writes land at the current end of file on Linux.
+///
+/// The line mimics `tracing_subscriber::fmt`'s format so the in-app log viewer
+/// (`src/features/settings/utils/parseLogLine.ts`) shows it as a normal ERROR row. Everything here
+/// is best-effort: a failure to resolve or write the file is ignored, since nothing useful can be
+/// done while the process is already dying, and the default hook (stderr output in dev) still
+/// runs afterwards either way.
+fn install_panic_hook(log_dir: PathBuf) {
+    let default_hook = std::panic::take_hook();
+    std::panic::set_hook(Box::new(move |info| {
+        let payload = info.payload();
+        let message = payload
+            .downcast_ref::<&str>()
+            .map(|s| (*s).to_string())
+            .or_else(|| payload.downcast_ref::<String>().cloned())
+            .unwrap_or_else(|| "<non-string panic payload>".to_string());
+        // A panic message can embed an error's Display output, e.g. a failed request URL that
+        // carried the embedded Steam Web API key as a query parameter.
+        let message = mask_known_secrets(&message);
+        let location = info
+            .location()
+            .map(|loc| format!("{}:{}:{}", loc.file(), loc.line(), loc.column()))
+            .unwrap_or_else(|| "<unknown>".to_string());
+        let thread = std::thread::current();
+        let thread_name = thread.name().unwrap_or("<unnamed>");
+        let timestamp = chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Micros, true);
+
+        // `{:?}` quotes and escapes the message, keeping a multi-line panic message on one line.
+        let line = format!(
+            "{timestamp} ERROR steam_game_idler_lib::panic: app panicked, process will exit message={message:?} location={location} thread={thread_name}\n"
+        );
+
+        if let Some(path) = newest_log_file(&log_dir) {
+            if let Ok(mut file) = std::fs::OpenOptions::new().append(true).open(path) {
+                let _ = file.write_all(line.as_bytes());
+                let _ = file.flush();
+            }
+        }
+
+        default_hook(info);
+    }));
 }
 
 /// How long a rotated log file is kept before `purge_old_logs` deletes it on next launch.
@@ -235,5 +310,55 @@ pub fn log_frontend_event(
         FrontendLogLevel::Info => {
             tracing::info!(target: "frontend", source, ?context, "{message}")
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // Test builds unwind instead of aborting, so the panic can be contained in a thread and the
+    // file inspected afterwards. The hook is process-wide; it's swapped back out at the end so
+    // panicking tests elsewhere in the suite don't keep writing into this temp file.
+    #[test]
+    fn panic_hook_appends_a_parseable_error_line() {
+        let dir = std::env::temp_dir().join(format!("sgi-panic-hook-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let log_file = dir.join("steam-game-idler.2026-01-01.log");
+        std::fs::write(&log_file, "existing line\n").unwrap();
+
+        let previous_hook = std::panic::take_hook();
+        install_panic_hook(dir.clone());
+        let result = std::thread::Builder::new()
+            .name("panic-hook-test".into())
+            .spawn(|| panic!("boom\nsecond line"))
+            .unwrap()
+            .join();
+        // `take_hook` drops this test's hook; restoring the previous one undoes `set_hook`.
+        drop(std::panic::take_hook());
+        std::panic::set_hook(previous_hook);
+        assert!(result.is_err());
+
+        let contents = std::fs::read_to_string(&log_file).unwrap();
+        std::fs::remove_dir_all(&dir).ok();
+
+        assert!(
+            contents.starts_with("existing line\n"),
+            "must append, not truncate"
+        );
+        let line = contents
+            .lines()
+            .find(|l| l.contains("steam_game_idler_lib::panic:"))
+            .expect("panic line written");
+        // Same shape parseLogLine.ts expects: `<rfc3339>Z ERROR <target>: <message>`.
+        let (timestamp, rest) = line.split_once(' ').unwrap();
+        assert!(chrono::DateTime::parse_from_rfc3339(timestamp).is_ok());
+        assert!(rest.starts_with("ERROR steam_game_idler_lib::panic: "));
+        assert!(
+            line.contains(r#"message="boom\nsecond line""#),
+            "newline escaped: {line}"
+        );
+        assert!(line.contains("location=src"));
+        assert!(line.contains("thread=panic-hook-test"));
     }
 }
