@@ -1,8 +1,9 @@
 ﻿import type { SubscriptionApiResult } from '@/shared/utils/subscriptionApi'
+import { writeText } from '@tauri-apps/plugin-clipboard-manager'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from '@heroui/react'
-import { logFrontendInfo } from '@/shared/utils/frontendLogging'
+import { logFrontendInfo, logFrontendWarn } from '@/shared/utils/frontendLogging'
 import { invoke } from '@/shared/utils/invoke'
 import {
   applySubscriptionResult,
@@ -118,10 +119,19 @@ export function useSubscriptionSettings() {
     logFrontendInfo('useSubscriptionSettings', 'license key cleared')
   }
 
-  const copyLicenseKey = () => {
+  // Same clipboard plugin every other copy action uses, so it behaves the same on WebView2 and
+  // WebKitGTK. Only reports success once the write actually went through.
+  const copyLicenseKey = async () => {
     if (!storedKey) return
-    navigator.clipboard.writeText(storedKey)
-    toast.success(t('dashboard.settings.subscription.licenseKey.copied'))
+    try {
+      await writeText(storedKey)
+      toast.success(t('dashboard.settings.subscription.licenseKey.copied'))
+    } catch (error) {
+      logFrontendWarn('useSubscriptionSettings', 'license key copy failed', {
+        error: String(error),
+      })
+      toast.danger(t('common.copyFailed'))
+    }
   }
 
   return {

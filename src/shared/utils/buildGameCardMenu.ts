@@ -170,6 +170,7 @@ async function copyAppId(appId: number, t: TFunction) {
     toast.success(t('common.gameCardMenu.appIdCopied'))
   } catch (error) {
     console.error('Error in (writeText) [copy app id]:', error)
+    toast.danger(t('common.copyFailed'))
   }
 }
 
