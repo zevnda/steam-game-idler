@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn, Typography } from '@heroui/react'
 import { Keybind } from '@/shared/components/Keybind'
+import { usePlatformStore } from '@/shared/stores/platformStore'
 
 interface KeybindSectionProps {
   title: string
@@ -53,37 +54,41 @@ const KeybindRow = ({ label, keys, altKeys }: KeybindRowProps) => (
 // per-row-background KeybindsSettings.tsx) than as a stack of settings rows with nothing to act on.
 export const KeybindsSettingsTab = () => {
   const { t } = useTranslation()
+  // The listeners accept Ctrl or Cmd; macOS shows Cmd. Sidebar stays on Control there, since Cmd+W
+  // is the native Close Window shortcut.
+  const isMac = usePlatformStore(state => state.currentOs) === 'macos'
+  const mod = isMac ? '⌘' : 'Ctrl'
 
   return (
     <div className='flex min-h-0 flex-1 flex-col gap-5'>
       <div className='flex flex-col gap-5'>
         <KeybindSection title={t('dashboard.settings.keybinds.zoom')}>
           <KeybindRow
-            altKeys={['Ctrl', t('dashboard.settings.keybinds.scrollUp')]}
-            keys={['Ctrl', '+']}
+            altKeys={[mod, t('dashboard.settings.keybinds.scrollUp')]}
+            keys={[mod, '+']}
             label={t('dashboard.settings.keybinds.zoomIn')}
           />
           <KeybindRow
-            altKeys={['Ctrl', t('dashboard.settings.keybinds.scrollDown')]}
-            keys={['Ctrl', '-']}
+            altKeys={[mod, t('dashboard.settings.keybinds.scrollDown')]}
+            keys={[mod, '-']}
             label={t('dashboard.settings.keybinds.zoomOut')}
           />
-          <KeybindRow keys={['Ctrl', '0']} label={t('dashboard.settings.keybinds.resetZoom')} />
+          <KeybindRow keys={[mod, '0']} label={t('dashboard.settings.keybinds.resetZoom')} />
         </KeybindSection>
 
         <KeybindSection title={t('dashboard.settings.keybinds.navigation')}>
-          <KeybindRow keys={['Ctrl', ']']} label={t('dashboard.settings.keybinds.nextPage')} />
-          <KeybindRow keys={['Ctrl', '[']} label={t('dashboard.settings.keybinds.prevPage')} />
+          <KeybindRow keys={[mod, ']']} label={t('dashboard.settings.keybinds.nextPage')} />
+          <KeybindRow keys={[mod, '[']} label={t('dashboard.settings.keybinds.prevPage')} />
           <KeybindRow
             altKeys={['/']}
-            keys={['Ctrl', 'K']}
+            keys={[mod, 'K']}
             label={t('dashboard.settings.keybinds.openSearch')}
           />
+          <KeybindRow keys={[mod, ',']} label={t('dashboard.settings.keybinds.toggleSettings')} />
           <KeybindRow
-            keys={['Ctrl', ',']}
-            label={t('dashboard.settings.keybinds.toggleSettings')}
+            keys={[isMac ? '⌃' : mod, 'W']}
+            label={t('dashboard.settings.keybinds.toggleSidebar')}
           />
-          <KeybindRow keys={['Ctrl', 'W']} label={t('dashboard.settings.keybinds.toggleSidebar')} />
         </KeybindSection>
       </div>
     </div>

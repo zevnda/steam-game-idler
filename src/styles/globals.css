@@ -38,6 +38,25 @@ html {
   background-color: transparent !important;
 }
 
+/* macOS draws its native traffic lights over the window's top-left corner (centered in the 56px
+   titlebar, 20pt in - see src-tauri/src/macos_titlebar.rs), above all web content. Anything that can
+   cover the titlebar (full-window modals, overlays) must keep interactive content out of that corner:
+   size things with these variables instead of hardcoding offsets. `data-os` comes from usePlatform. */
+:root {
+  --traffic-lights-width: 0px;
+}
+html[data-os='macos'] {
+  --traffic-lights-width: 76px;
+}
+
+/* Full-window modals (`size='full'`) have no padding, so a top-left close button would sit under the
+   traffic lights, and clicks on it would hit the native close/minimize instead. Move it beside them.
+   Unlayered, so it wins over the Tailwind position utilities passed to `Modal.CloseTrigger`. */
+html[data-os='macos'] .modal__dialog--full .modal__close-trigger {
+  top: 0.75rem;
+  left: calc(var(--traffic-lights-width) + 0.75rem);
+}
+
 /* No page-level scrolling in this app shell - individual features that need scrollable regions
    scope it to their own container instead. */
 body {

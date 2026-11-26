@@ -62,6 +62,9 @@ export const Titlebar = ({ minimal = false }: TitlebarProps) => {
   const subscriptionTier = useSubscriptionStore(state => state.subscriptionTier)
   const hasPro = isSubscribed !== null && subscriptionTier !== null
   const forceReducedMotion = usePlatformStore(state => state.forceReducedMotion) === true
+  // macOS keeps its native traffic lights (lib.rs's `build_main_window` overlays them on this bar),
+  // so the custom window controls are dropped and the left edge leaves room for them instead.
+  const isMac = usePlatformStore(state => state.currentOs) === 'macos'
   // the brand slot narrowed to the collapsed sidebar's width - logo only (see the slot below)
   const brandCollapsed = isDashboard && collapsed
 
@@ -105,6 +108,9 @@ export const Titlebar = ({ minimal = false }: TitlebarProps) => {
       data-tauri-drag-region
     >
       <div className='flex h-14 w-full items-center' data-tauri-drag-region>
+        {isMac && (
+          <div className='h-14 w-(--traffic-lights-width) shrink-0' data-tauri-drag-region />
+        )}
         {!minimal && (
           <>
             {/* Brand/logo, leftmost in the titlebar itself now that Titlebar paints an opaque
@@ -179,38 +185,46 @@ export const Titlebar = ({ minimal = false }: TitlebarProps) => {
                 </>
               )}
 
-              {(isDashboard || updateAvailable) && <Separator orientation='vertical' />}
+              {!isMac && (isDashboard || updateAvailable) && <Separator orientation='vertical' />}
             </>
           )}
 
-          <Button
-            isIconOnly
-            className={cn('h-14 w-12 rounded-none', overArt && 'titlebar-frosted')}
-            variant='ghost'
-            onPress={minimize}
-          >
-            <VscChromeMinimize fontSize={16} />
-          </Button>
-          <Button
-            isIconOnly
-            aria-label={isMaximized ? 'Restore' : 'Maximize'}
-            className={cn('h-14 w-12 rounded-none', overArt && 'titlebar-frosted')}
-            variant='ghost'
-            onPress={toggleMaximize}
-          >
-            {isMaximized ? <VscChromeRestore fontSize={16} /> : <VscChromeMaximize fontSize={16} />}
-          </Button>
-          <Button
-            isIconOnly
-            className={cn(
-              'h-14 w-12 rounded-none',
-              overArt ? 'titlebar-frosted titlebar-frosted--close' : 'hover:bg-danger',
-            )}
-            variant='ghost'
-            onPress={close}
-          >
-            <VscChromeClose fontSize={16} />
-          </Button>
+          {!isMac && (
+            <>
+              <Button
+                isIconOnly
+                className={cn('h-14 w-12 rounded-none', overArt && 'titlebar-frosted')}
+                variant='ghost'
+                onPress={minimize}
+              >
+                <VscChromeMinimize fontSize={16} />
+              </Button>
+              <Button
+                isIconOnly
+                aria-label={isMaximized ? 'Restore' : 'Maximize'}
+                className={cn('h-14 w-12 rounded-none', overArt && 'titlebar-frosted')}
+                variant='ghost'
+                onPress={toggleMaximize}
+              >
+                {isMaximized ? (
+                  <VscChromeRestore fontSize={16} />
+                ) : (
+                  <VscChromeMaximize fontSize={16} />
+                )}
+              </Button>
+              <Button
+                isIconOnly
+                className={cn(
+                  'h-14 w-12 rounded-none',
+                  overArt ? 'titlebar-frosted titlebar-frosted--close' : 'hover:bg-danger',
+                )}
+                variant='ghost'
+                onPress={close}
+              >
+                <VscChromeClose fontSize={16} />
+              </Button>
+            </>
+          )}
         </div>
       </div>
 

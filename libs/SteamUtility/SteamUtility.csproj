@@ -9,7 +9,9 @@
          RuntimeIdentifier as an MSBuild global property and wins over this project-file default -
          that's what every `'$(RuntimeIdentifier)' != 'win-x64'` Condition below keys off of. -->
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <PlatformTarget>x64</PlatformTarget>
+    <!-- x64 for win-x64/linux-x64; the macOS publish (osx-arm64) must not pin x64 or the SDK rejects
+         the RID/PlatformTarget mismatch (NETSDK1032). -->
+    <PlatformTarget Condition="'$(RuntimeIdentifier)' != 'osx-arm64'">x64</PlatformTarget>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <!-- Interop/NativeStrings.cs uses raw pointer arithmetic for UTF-8 marshaling. -->
@@ -50,11 +52,11 @@
     <SupportedOSPlatform>windows</SupportedOSPlatform>
   </PropertyGroup>
 
-  <!-- Linux publish is agent (daemon) mode only - no local Steam client, so no Steamworks.NET/CLI
+  <!-- Linux and macOS publishes are agent (daemon) mode only - no local Steam client, so no Steamworks.NET/CLI
        surface exists at all for that RID (see the Compile-Remove ItemGroup and Program.cs's matching
-       `#if LINUX_DAEMON_ONLY`). DefineConstants is how that RID Condition reaches C# code. -->
+       `#if DAEMON_ONLY`). DefineConstants is how that RID Condition reaches C# code. -->
   <PropertyGroup Condition="'$(RuntimeIdentifier)' != 'win-x64'">
-    <DefineConstants>$(DefineConstants);LINUX_DAEMON_ONLY</DefineConstants>
+    <DefineConstants>$(DefineConstants);DAEMON_ONLY</DefineConstants>
   </PropertyGroup>
 
   <!-- Post Build (dev) -->
@@ -105,7 +107,7 @@
        RuntimeIdentifier split. -->
   <Target Name="RemoveDiagnosticOnlyPublishFiles" AfterTargets="Publish" Condition="'$(PublishSingleFile)' != 'true'">
     <ItemGroup>
-      <DiagnosticOnlyFiles Include="$(PublishDir)mscordaccore.dll;$(PublishDir)mscordaccore_*.dll;$(PublishDir)mscordbi.dll;$(PublishDir)createdump.exe;$(PublishDir)Microsoft.DiaSymReader.Native.amd64.dll;$(PublishDir)clretwrc.dll;$(PublishDir)libmscordaccore.so;$(PublishDir)libmscordbi.so;$(PublishDir)createdump;$(PublishDir)libcoreclrtraceptprovider.so" />
+      <DiagnosticOnlyFiles Include="$(PublishDir)mscordaccore.dll;$(PublishDir)mscordaccore_*.dll;$(PublishDir)mscordbi.dll;$(PublishDir)createdump.exe;$(PublishDir)Microsoft.DiaSymReader.Native.amd64.dll;$(PublishDir)clretwrc.dll;$(PublishDir)libmscordaccore.so;$(PublishDir)libmscordbi.so;$(PublishDir)createdump;$(PublishDir)libcoreclrtraceptprovider.so;$(PublishDir)libmscordaccore.dylib;$(PublishDir)libmscordbi.dylib" />
     </ItemGroup>
     <Delete Files="@(DiagnosticOnlyFiles)" />
   </Target>

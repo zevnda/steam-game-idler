@@ -47,6 +47,8 @@ interface ReleaseRow {
   // renders as "Unavailable" for those without needing to know which version Linux support
   // actually landed in.
   linux: { sizeLabel: string | null; url: string | null }
+  // Same for macOS: only releases after macOS support shipped have a .dmg
+  macos: { sizeLabel: string | null; url: string | null }
 }
 
 interface GroupState {
@@ -72,6 +74,7 @@ function compareGroupsDesc(a: string, b: string) {
 function toReleaseRow(release: GithubRelease) {
   const portable = release.assets?.find(asset => asset.name.endsWith('_x64-portable.zip'))
   const deb = release.assets?.find(asset => asset.name.endsWith('.deb'))
+  const dmg = release.assets?.find(asset => asset.name.endsWith('.dmg'))
   return {
     version: release.tag_name,
     date: new Date(release.published_at).toLocaleDateString('en-US', {
@@ -86,6 +89,10 @@ function toReleaseRow(release: GithubRelease) {
     linux: {
       sizeLabel: deb ? formatBytes(deb.size) : null,
       url: deb?.browser_download_url ?? null,
+    },
+    macos: {
+      sizeLabel: dmg ? formatBytes(dmg.size) : null,
+      url: dmg?.browser_download_url ?? null,
     },
   }
 }
@@ -234,8 +241,8 @@ export default function PreviousVersionsSection() {
     }
   }, [isDropdownOpen])
 
-  const isLinux = selectedOS === 'linux'
-  const swap = useSwapKey(isLinux)
+  const assetLabel = { windows: 'Portable .zip', linux: '.deb', macos: '.dmg' }[selectedOS]
+  const swap = useSwapKey(selectedOS)
   const currentGroupState = selectedGroup ? groupData[selectedGroup] : undefined
 
   return (
@@ -253,7 +260,7 @@ export default function PreviousVersionsSection() {
                 Need an <span className='gradient-text'>older version?</span>
               </>
             }
-            sub={`${isLinux ? '.deb' : 'Portable .zip'} downloads of past releases, kept around for compatibility. They no longer get bug fixes or security updates, and won't update themselves.`}
+            sub={`${assetLabel} downloads of past releases, kept around for compatibility. They no longer get bug fixes or security updates, and won't update themselves.`}
           />
         </div>
 
@@ -321,7 +328,7 @@ export default function PreviousVersionsSection() {
               </div>
             ) : (
               currentGroupState.items.map((release, i) => {
-                const asset = isLinux ? release.linux : release.windows
+                const asset = release[selectedOS]
                 return (
                   <div
                     key={release.version}
@@ -344,7 +351,7 @@ export default function PreviousVersionsSection() {
                         className='btn-ghost text-sm px-3.5 py-2 rounded-full shrink-0'
                       >
                         <FiDownload className='w-3.5 h-3.5' />
-                        {isLinux ? '.deb' : 'Portable .zip'}
+                        {assetLabel}
                       </Link>
                     ) : (
                       <span className='text-sm text-text-muted/60 shrink-0'>Unavailable</span>

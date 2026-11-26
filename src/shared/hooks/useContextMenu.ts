@@ -58,7 +58,8 @@ export function useContextMenu() {
       if (isDev) return
 
       const isRefreshShortcut =
-        event.key === 'F5' || (event.ctrlKey && (event.key === 'r' || event.key === 'R'))
+        event.key === 'F5' ||
+        ((event.ctrlKey || event.metaKey) && (event.key === 'r' || event.key === 'R'))
 
       if (isRefreshShortcut) {
         event.preventDefault()

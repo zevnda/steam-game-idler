@@ -1,7 +1,7 @@
 'use client'
 
 import type { Ref } from 'react'
-import { FaGithub, FaLinux, FaStar, FaWindows } from 'react-icons/fa6'
+import { FaApple, FaGithub, FaLinux, FaStar, FaWindows } from 'react-icons/fa6'
 import { TbArrowDown } from 'react-icons/tb'
 import { scrollToPlayground } from '../demoStore'
 import ReleaseBanner from './ReleaseBanner'
@@ -71,9 +71,9 @@ export default function ShowcaseHero({
           className='hero-recede mt-6 max-w-xl mx-auto text-base sm:text-lg text-text-muted leading-relaxed'
           style={{ '--i': 2 } as React.CSSProperties}
         >
-          Steam Game Idler is a Steam idler for Windows and Linux. It farms trading cards, builds up
-          playtime hours and unlocks achievements across your whole library while you do something
-          else.
+          Steam Game Idler is a Steam idler for Windows, Linux and macOS. It farms trading cards,
+          builds up playtime hours and unlocks achievements across your whole library while you do
+          something else.
         </p>
 
         {/* hero-recede--flat: no blur here - a filter would cut the ghost button's
@@ -105,7 +105,8 @@ export default function ShowcaseHero({
           <span className='inline-flex items-center gap-1.5'>
             <FaWindows className='w-3.5 h-3.5' aria-hidden='true' />
             <FaLinux className='w-3.5 h-3.5' aria-hidden='true' />
-            Windows & Linux
+            <FaApple className='w-3.5 h-3.5' aria-hidden='true' />
+            Windows, Linux & macOS
           </span>
           <span className='w-1 h-1 rounded-full bg-white/25' aria-hidden='true' />
           <Link

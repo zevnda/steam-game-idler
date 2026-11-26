@@ -46,7 +46,7 @@ export const FAQ = [
   {
     question: 'Which operating systems are supported?',
     answer:
-      'Windows 10 and 11 (installer or portable zip) and Linux (.deb, .rpm or AppImage). Steam Sign-in works on both. Local Sign-in is Windows-only.',
+      'Windows 10 and 11 (installer or portable zip), Linux (.deb, .rpm or AppImage) and macOS 12 or later on Apple Silicon Macs (.dmg). Steam Sign-in works on all three. Local Sign-in is Windows-only.',
   },
   {
     question: 'How does SGI unlock achievements for games?',

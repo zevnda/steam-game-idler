@@ -5,15 +5,16 @@ import {
   requestPermission,
   sendNotification,
 } from '@tauri-apps/plugin-notification'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { invoke } from '@/shared/utils/invoke'
 
 const CLOSE_TO_TRAY_NOTIFIED_KEY = 'closeToTrayNotified'
 
-// Drives the app-wide custom titlebar's window controls. The frameless/custom-chrome window
-// (tauri.conf.json's `decorations: false`) has no OS close box / `WindowEvent::CloseRequested` to
-// intercept, so `close` is the only place `Settings.close_to_tray` is ever read - fresh via
+// Drives the app-wide custom titlebar's window controls. On Windows/Linux the frameless window
+// (tauri.conf.json's `decorations: false`) has no OS close box at all; on macOS the native close
+// button and Cmd+W are forwarded here as `close-requested` (see below). Either way `close` is the
+// only place `Settings.close_to_tray` is ever read - fresh via
 // `get_settings` on every click rather than a store, since there's no ongoing side effect to keep
 // in sync (mirrors GeneralSettingsTab.tsx's own reasoning for not giving this setting a store).
 export const useTitlebar = () => {
@@ -87,6 +88,19 @@ export const useTitlebar = () => {
     }
     localStorage.setItem(CLOSE_TO_TRAY_NOTIFIED_KEY, 'true')
   }
+
+  // macOS: the native red close button / Cmd+W are forwarded here by lib.rs's `setup_window`
+  // (`close-requested`), so they honor `close_to_tray` exactly like the custom button elsewhere.
+  const closeRef = useRef(close)
+  closeRef.current = close
+  useEffect(() => {
+    const unlisten = getCurrentWindow().listen('close-requested', () => {
+      void closeRef.current()
+    })
+    return () => {
+      unlisten.then(stop => stop())
+    }
+  }, [])
 
   return { isMaximized, minimize, toggleMaximize, close }
 }

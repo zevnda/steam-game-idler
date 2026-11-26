@@ -95,11 +95,15 @@ export function describeReleaseAsset(href: string) {
           ? 'deb'
           : file.endsWith('.rpm')
             ? 'rpm'
-            : 'other'
+            : file.endsWith('.dmg')
+              ? 'dmg'
+              : 'other'
   const os = ['installer', 'portable'].includes(format)
     ? 'windows'
     : format === 'other'
       ? 'unknown'
-      : 'linux'
+      : format === 'dmg'
+        ? 'macos'
+        : 'linux'
   return { os, format, version }
 }

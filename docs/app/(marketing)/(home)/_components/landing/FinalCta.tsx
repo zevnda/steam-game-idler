@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation'
 import { Logo } from '@/app/(marketing)/_components/Logo'
 import DownloadButton from '@/app/(marketing)/(home)/_components/DownloadButton'
 import { FadeIn } from '@/app/lib/animations'
-import { useGlobalStore } from '@/app/lib/globalStore'
+import { offeredOS, useGlobalStore } from '@/app/lib/globalStore'
 
 /**
  * The closing call to action - framed in the same slowly rotating, muted rainbow rim the 3D app
@@ -29,12 +29,13 @@ export default function FinalCta({
   sub = 'Download Steam Game Idler and get started in minutes. No sign-up required.',
 }: FinalCtaProps) {
   const onHome = usePathname() === '/'
-  const { downloadSize, linuxDownloadUrl, linuxDownloadSize, selectedOS } = useGlobalStore(s => s)
-  // Same "fall back to Windows until a real Linux release exists" rule as DownloadHero.tsx.
-  const isLinux = selectedOS === 'linux' && Boolean(linuxDownloadUrl)
+  const store = useGlobalStore(s => s)
+  const os = offeredOS(store)
   const facts = [
-    isLinux ? 'Linux (64-bit)' : 'Windows 10 / 11',
-    (isLinux ? linuxDownloadSize : downloadSize) || '~7 MB',
+    { windows: 'Windows 10 / 11', linux: 'Linux (64-bit)', macos: 'macOS 12+ (Apple Silicon)' }[os],
+    { windows: store.downloadSize, linux: store.linuxDownloadSize, macos: store.macDownloadSize }[
+      os
+    ] || '~7 MB',
     'Free to use',
   ]
 

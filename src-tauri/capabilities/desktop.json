@@ -1,6 +1,6 @@
 {
   "identifier": "desktop-capability",
-  "platforms": ["windows", "linux"],
+  "platforms": ["windows", "linux", "macOS"],
   "windows": ["main"],
   "permissions": [
     "core:default",

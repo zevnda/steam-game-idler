@@ -39,8 +39,8 @@ const PINNED_ENDPOINTS = [
 const GITHUB_DOWNLOAD_BASE_URL = 'https://github.com/zevnda/steam-game-idler/releases/download'
 
 // Only platforms with a self-updating build belong here: Windows portable and Linux .deb/.rpm never
-// read latest.json (see platform::is_portable/can_auto_update)
-const PLATFORMS = ['windows-x86_64', 'linux-x86_64']
+// read latest.json (see platform::is_portable/can_auto_update). The macOS .app always self-updates.
+const PLATFORMS = ['windows-x86_64', 'linux-x86_64', 'darwin-aarch64']
 
 const DOWNLOAD_TIMEOUT_MS = 5 * 60_000
 const LIVE_MANIFEST_TIMEOUT_MS = 30_000
@@ -72,7 +72,9 @@ function assertPinnedUpdaterConfig() {
   }
 }
 
-function assertManifestShape(manifest, expectedVersion) {
+// `allowMissing` lists platforms a manifest may lack: only the dry run's check of what's live right
+// now passes it, since the live manifest predates a newly added platform until its first release.
+function assertManifestShape(manifest, expectedVersion, allowMissing = []) {
   if (typeof manifest.version !== 'string' || !manifest.version) {
     throw new VerifyError('latest.json has no version')
   }
@@ -86,13 +88,14 @@ function assertManifestShape(manifest, expectedVersion) {
   }
 
   const found = Object.keys(manifest.platforms ?? {}).sort()
-  if (JSON.stringify(found) !== JSON.stringify([...PLATFORMS].sort())) {
+  const expected = PLATFORMS.filter(p => found.includes(p) || !allowMissing.includes(p)).sort()
+  if (JSON.stringify(found) !== JSON.stringify(expected)) {
     throw new VerifyError(
       `latest.json platforms are [${found.join(', ')}], expected [${PLATFORMS.join(', ')}]`,
     )
   }
 
-  for (const platform of PLATFORMS) {
+  for (const platform of expected) {
     const { url, signature } = manifest.platforms[platform]
     if (typeof signature !== 'string' || !signature) {
       throw new VerifyError(`${platform} has no signature`)
@@ -257,14 +260,15 @@ async function download(url) {
   throw new VerifyError(`could not download ${url}: ${lastError.message}`)
 }
 
-async function runRemote({ latest, version }) {
+async function runRemote({ latest, version, 'allow-missing': allowMissing = [] }) {
   if (!latest) throw new VerifyError('remote needs --latest')
   assertPinnedUpdaterConfig()
 
   const manifest = readJson(latest)
-  assertManifestShape(manifest, version)
+  assertManifestShape(manifest, version, allowMissing)
 
-  await checkPlatforms(PLATFORMS, async platform => {
+  const present = PLATFORMS.filter(platform => manifest.platforms[platform])
+  await checkPlatforms(present, async platform => {
     const { url, signature } = manifest.platforms[platform]
     const data = await download(url)
     assertSignatureMatches({
@@ -297,7 +301,7 @@ function runR2Manifest({ in: input, out }) {
   if (process.env.GITHUB_OUTPUT) {
     appendFileSync(
       process.env.GITHUB_OUTPUT,
-      `windows_name=${names['windows-x86_64']}\nlinux_name=${names['linux-x86_64']}\n`,
+      `windows_name=${names['windows-x86_64']}\nlinux_name=${names['linux-x86_64']}\nmacos_name=${names['darwin-aarch64']}\n`,
     )
   }
   console.log(`Wrote ${out} for version ${manifest.version}`)
@@ -348,12 +352,13 @@ async function main() {
   const { positionals, values } = parseArgs({
     allowPositionals: true,
     options: {
-      latest: { type: 'string' },
-      version: { type: 'string' },
-      dist: { type: 'string', multiple: true },
-      in: { type: 'string' },
-      out: { type: 'string' },
-      current: { type: 'string' },
+      'latest': { type: 'string' },
+      'version': { type: 'string' },
+      'dist': { type: 'string', multiple: true },
+      'in': { type: 'string' },
+      'out': { type: 'string' },
+      'current': { type: 'string' },
+      'allow-missing': { type: 'string', multiple: true },
     },
   })
 
