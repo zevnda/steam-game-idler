@@ -1,8 +1,9 @@
 ---
-title: 'Steam Achievement Sets: What the Beta Changes for Achievement Hunters'
+title: 'Steam Achievement Sets: What Changes for Achievement Hunters'
 seoTitle: 'Steam Achievement Sets Explained - DLC, Archives & Tools'
-description: Steam Achievement Sets split games into base and DLC sets, retire achievements nobody can earn and enforce DLC ownership. What changes, and how to try it.
+description: Steam Achievement Sets split games into base and DLC sets, retire achievements nobody can earn and enforce DLC ownership. Here's what changed for everyone.
 date: 2026-10-20
+updated: 2026-11-26
 category: Steam News
 tags: [Achievements, Steam Beta]
 image: /blog/steam-achievement-sets/cover.webp
@@ -17,15 +18,15 @@ keywords:
 ---
 
 Steam Achievement Sets are a new Steam feature that lets developers split a game's achievements
-into groups, such as the base game and each DLC. They've been in beta since October 15, 2026.
-Every set gets its own progress bar and a "set complete" trophy. DLC achievements stop counting
+into groups, such as the base game and each DLC. After a month in beta, they reached every Steam
+user on November 11, 2026. Every set gets its own progress bar and a "set complete" trophy. DLC achievements stop counting
 against you until you own the DLC, and achievements nobody can earn anymore can be archived. Steam
 also now refuses to unlock a DLC set's achievements for anyone who doesn't own that DLC, which
 matters if you use achievement tools.
 
 <KeyTakeaways>
-- Achievement Sets are opt-in per game. Only games whose developers add sets show them, and you
-  need the Steam Client Beta to see them today.
+- Achievement Sets are live for everyone since November 11, 2026, with no beta needed. They're
+  opt-in per game: only games whose developers add sets show them.
 - DLC achievements live in their own sets and don't count toward your completion unless you own
   the DLC.
 - Archived achievements stay on the profiles of people who earned them and stop blocking
@@ -38,7 +39,8 @@ matters if you use achievement tools.
 ## What are Steam Achievement Sets?
 
 Achievement Sets are developer-defined groups of a game's achievements, each tracked separately.
-Valve [announced the beta on October 15, 2026](https://steamcommunity.com/games/593110/announcements/detail/710037059469839142),
+Valve [announced the beta on October 15, 2026](https://steamcommunity.com/games/593110/announcements/detail/710037059469839142)
+and [released it to everyone on November 11](https://steamcommunity.com/ogg/593110/announcements/detail/685269908095762672),
 pitching it as a fix for long-running games: achievements added with new content "can
 accidentally break the completion status of players who have already finished the game."
 
@@ -111,10 +113,10 @@ List on the web, or from a game in your Steam Library. Valve lists these changes
 A completed set stays completed. If a developer later adds achievements to it, your completion is
 preserved until you choose to go back for the new ones.
 
-Early beta testers have noticed some rough edges too. Mortismal Gaming pointed out that the
-profile showcase no longer shows your average completion rate, and that its completed counter now
-mixes completed games with completed sets. Valve has said it will keep making changes during the
-beta.
+Beta testers noticed some rough edges too. Mortismal Gaming pointed out that the profile showcase
+no longer shows your average completion rate, and that its completed counter now mixes completed
+games with completed sets. In the release announcement, Valve said it made improvements "based on
+feedback from both players and developers" during the beta and will keep doing so.
 
 <Figure
   src="/blog/steam-achievement-sets/steam-achievements-page-sets.webp"
@@ -124,36 +126,18 @@ beta.
   caption="Steam's new achievements page for Euro Truck Simulator 2 (captured October 20, 2026): 114 achievements in 14 sets, with DLC sets marked in purple."
 />
 
-## How to try Achievement Sets now
+## When did Achievement Sets come out?
 
-Achievement Sets are only in the Steam Client Beta for now. To join it, follow
-[Steam Support's instructions](https://help.steampowered.com/en/faqs/view/276C-85A0-C531-AFA3):
-
-<Steps>
-<Step>
-### On a desktop
-
-With Steam running, click **Steam** in the top-left corner, then **Settings**. On the
-**Interface** tab, open the **Client Beta Participation** dropdown, choose **Steam Beta Update**,
-and click **Restart Now**.
-</Step>
-<Step>
-### On Steam Deck
-
-Press the **Steam** button, go to **Settings** → **System**, open **Beta Participation**, set
-**System Update Channel** to **Beta**, and restart when prompted.
-</Step>
-<Step>
-### In Big Picture Mode
-
-Go to **Settings** → **System** → **Beta Participation**, set **Steam Client Update Channel** to
-**Steam Beta Update**, and restart when prompted.
-</Step>
-</Steps>
+Achievement Sets started as a Steam Client beta on October 15, 2026, and became available to all
+Steam users with the
+[November 11 client update](https://store.steampowered.com/news/app/593110/view/685269908095762671).
+You don't need to join the beta anymore: update Steam, then open any game's achievements from your
+Library or your Games List on the web. If the game shows a single list, its developer hasn't added
+sets yet.
 
 ## Which games support Achievement Sets?
 
-Seventeen games had added sets when the beta launched:
+Seventeen games had added sets when the beta launched in October:
 
 - Against the Storm
 - Age of Wonders 4
@@ -191,6 +175,11 @@ achievement now requires owning the DLC, whichever tool sends the request.
 We saw the same thing while adding set support to Steam Game Idler: on Euro Truck Simulator 2,
 Steam rejected an unlock for an achievement in a DLC set the account didn't own. So this isn't a
 bug in any particular tool. It's Steam's rule, and the fix is to own the DLC.
+
+Re-locking works the same way. Steam Game Idler users who unlocked DLC achievements before the
+update [found they now stay unlocked](https://github.com/zevnda/steam-game-idler/issues/2317)
+when they try to lock them again: with sets in place, Steam only accepts a lock or an unlock for a
+DLC set's achievements from an account that owns the DLC (owning it through Steam Families counts).
 
 Archived achievements are the other edge case. Steam won't unlock achievements in an archived
 set, and Valve tells developers to stop awarding archived achievements in their games. Treat an
@@ -231,8 +220,8 @@ and it shows a game's sets as soon as the developer adds them.
 
 ### Do I need the Steam Client Beta to see Achievement Sets?
 
-Yes, for now. Achievement Sets are a Steam Client beta feature, and the game also has to be one
-whose developer has added sets. Valve hasn't announced a date for the stable client.
+No. Achievement Sets left beta on November 11, 2026, and every up-to-date Steam client shows them.
+The game also has to be one whose developer has added sets.
 
 ### Do DLC achievements count toward 100% completion?
 
@@ -257,6 +246,12 @@ If the game uses DLC sets, Steam refuses to unlock a DLC set's achievements for 
 don't own the DLC, and it refuses achievements in archived sets. That check happens on Steam's
 servers, so no tool can get around it. Owning the DLC is the only way.
 
+### Can I re-lock DLC achievements I unlocked before Achievement Sets?
+
+Only if you own the DLC. Once a game moves those achievements into a DLC set, Steam refuses to lock
+them for an account without the DLC, just as it refuses to unlock them. They stay unlocked on your
+profile until you own the DLC, or have it shared with you through Steam Families.
+
 ### Can a completed set become incomplete again?
 
 No. Steam keeps a set marked as completed even if the developer adds more achievements to it
@@ -264,9 +259,11 @@ later. The new achievements show up for you to go after, but the trophy stays.
 
 ## Sources
 
+- Valve, [Steam Achievement Sets - Now Available to Everyone](https://steamcommunity.com/ogg/593110/announcements/detail/685269908095762672), November 11, 2026.
+- Valve, [Steam Client Update - November 11th](https://store.steampowered.com/news/app/593110/view/685269908095762671), November 11, 2026.
 - Valve, [Steam Achievement Sets Now in Beta](https://steamcommunity.com/games/593110/announcements/detail/710037059469839142), October 15, 2026.
 - Steamworks Documentation, [Step by Step: Achievements](https://partner.steamgames.com/doc/features/achievements/ach_guide), accessed October 20, 2026.
-- Steam Support, [Steam Client Beta](https://help.steampowered.com/en/faqs/view/276C-85A0-C531-AFA3), accessed October 20, 2026.
 - Steam Achievement Manager, [issue #651: Steam Achievement Sets](https://github.com/gibbed/SteamAchievementManager/issues/651), October 18, 2026.
+- Steam Game Idler, [issue #2317: Cannot re-lock DLC achievements unlocked before the Steam Achievement Sets update](https://github.com/zevnda/steam-game-idler/issues/2317), November 22, 2026.
 - Mortismal Gaming, [Steam Is Overhauling The Achievement System](https://www.youtube.com/watch?v=PkZL4R9ZUuM), October 18, 2026.
 - Bigman, [Valve Is Ruining Rare Steam Achievements](https://www.youtube.com/watch?v=TtlmE-2JGgo), October 17, 2026.
