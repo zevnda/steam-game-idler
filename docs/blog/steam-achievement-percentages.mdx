@@ -3,6 +3,7 @@ title: 'Steam Achievement Percentages Explained: How Rarity Is Calculated'
 seoTitle: 'Steam Achievement Percentages - How Rarity Is Calculated'
 description: A Steam achievement's percentage is the share of players who unlocked it. Here's who Steam counts, why the numbers run low, and what makes one rare.
 date: 2026-10-29
+updated: 2026-11-26
 category: Explainers
 tags: [Achievements]
 image: /blog/steam-achievement-percentages/cover.webp
@@ -30,7 +31,7 @@ Steam labels an achievement **rare** when fewer than 10% of players have it.
 - Steam calls an achievement rare when fewer than 10% of players have unlocked it. We matched
   Steam's "rare" counts against the raw data for four games.
 - Global Stats now sit behind a **Show Global Stats** toggle on Steam's new achievements page,
-  part of the Achievement Sets beta.
+  which every Steam user has had since the Achievement Sets release on November 11, 2026.
 - Anyone can read the same numbers from Steam's public Web API without a key.
 </KeyTakeaways>
 
@@ -91,10 +92,12 @@ Most low percentages come from who's counted, not just from difficulty:
 - **Achievements added later.** An achievement added in an update or DLC starts at 0% for
   everyone, including players who stopped playing before it existed.
 
-The Achievement Sets beta changes how DLC and seasonal achievements are grouped, but Valve's
-[announcement](https://steamcommunity.com/ogg/593110/announcements/detail/710037059469839142)
-doesn't say whether a DLC set's percentages are measured against DLC owners or all players. Our
-[Achievement Sets explainer](/blog/steam-achievement-sets) covers what the beta does change.
+Achievement Sets, out for everyone since November 11, 2026, change how DLC and seasonal
+achievements are grouped. Neither the
+[beta announcement](https://steamcommunity.com/ogg/593110/announcements/detail/710037059469839142)
+nor the [release announcement](https://steamcommunity.com/ogg/593110/announcements/detail/685269908095762672)
+says whether a DLC set's percentages are measured against DLC owners or all players. Our
+[Achievement Sets explainer](/blog/steam-achievement-sets) covers what sets do change.
 
 ## What counts as a rare achievement on Steam?
 
@@ -192,6 +195,7 @@ reflect how few people bought the DLC.
 ## Sources
 
 - Valve, [Steamworks Documentation: ISteamUserStats](https://partner.steamgames.com/doc/api/ISteamUserStats), accessed October 29, 2026.
+- Valve, [Steam Achievement Sets - Now Available to Everyone](https://steamcommunity.com/ogg/593110/announcements/detail/685269908095762672), November 11, 2026.
 - Valve, [Steam Achievement Sets Now in Beta](https://steamcommunity.com/ogg/593110/announcements/detail/710037059469839142), October 15, 2026.
 - Valve, [Steam Client Update - June 14th](https://steamcommunity.com/ogg/593110/announcements/detail/3687931965598323437), June 15, 2023.
 - Steam Web API, `ISteamUserStats/GetGlobalAchievementPercentagesForApp` and `GetSchemaForGame` for Terraria, Hades, Portal 2 and Team Fortress 2, accessed October 29, 2026.
